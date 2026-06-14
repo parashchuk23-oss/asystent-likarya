@@ -6,7 +6,7 @@ export default function ConclusionEditor({ conclusion, onChange }) {
       <div className="mb-3">
         <h2 className="text-base font-semibold text-slate-900">Заключення</h2>
         <p className="mt-1 text-sm text-slate-500">
-          На Етапі 1 це редаговане поле. AI буде підключено на наступному етапі.
+          Заключення формується лікарем на основі введених даних.
         </p>
       </div>
 

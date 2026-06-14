@@ -8,15 +8,36 @@ import QuestionnairesTab from './QuestionnairesTab';
 import Score2Tab from './Score2Tab';
 
 const tabs = [
-  { id: 'assistant', label: 'Асистент лікаря' },
-  { id: 'score2', label: 'Кардіоваскулярний ризик' },
-  { id: 'egfr', label: 'Ниркова функція' },
-  { id: 'calculators', label: 'Калькулятори' },
-  { id: 'questionnaires', label: 'Опитувальники' },
+  {
+    id: 'assistant',
+    label: 'Асистент лікаря',
+    description: 'Заключення формується лікарем на основі введених даних.',
+  },
+  {
+    id: 'score2',
+    label: 'Кардіоваскулярний ризик',
+    description: 'SCORE2 / SCORE2-OP',
+  },
+  {
+    id: 'egfr',
+    label: 'Ниркова функція',
+    description: 'CKD-EPI 2021, Cockcroft-Gault, ACR, KDIGO',
+  },
+  {
+    id: 'calculators',
+    label: 'Калькулятори',
+    description: 'CHA₂DS₂-VASc, HAS-BLED',
+  },
+  {
+    id: 'questionnaires',
+    label: 'Опитувальники',
+    description: 'GAD-7, PHQ-9, FINDRISC, AUDIT-C, STOP-Bang',
+  },
 ];
 
 export default function AppTabs() {
   const [activeTab, setActiveTab] = useState('assistant');
+  const activeTabData = tabs.find((tab) => tab.id === activeTab);
 
   return (
     <section className="rounded-lg border border-slate-200 bg-white">
@@ -36,6 +57,12 @@ export default function AppTabs() {
           </button>
         ))}
       </div>
+
+      {activeTabData?.description && (
+        <div className="border-b border-slate-100 px-4 py-3">
+          <p className="text-sm text-slate-500">{activeTabData.description}</p>
+        </div>
+      )}
 
       <div className="p-4">
         {activeTab === 'assistant' && <CardioAssistantTab />}
