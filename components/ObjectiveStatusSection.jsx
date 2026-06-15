@@ -116,27 +116,14 @@ export default function ObjectiveStatusSection({ formData, onChange }) {
         </FormField>
       </div>
 
-      <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <FormField label="Систолічний АТ" hint="мм рт.ст.">
+      <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <FormField label="Артеріальний тиск" hint="мм рт.ст.">
           <input
-            type="number"
-            value={formData.systolicBP}
-            onChange={(event) => onChange('systolicBP', event.target.value)}
-            placeholder="120"
-            min="50"
-            max="300"
-            className={inputClass}
-          />
-        </FormField>
-
-        <FormField label="Діастолічний АТ" hint="мм рт.ст.">
-          <input
-            type="number"
-            value={formData.diastolicBP}
-            onChange={(event) => onChange('diastolicBP', event.target.value)}
-            placeholder="80"
-            min="30"
-            max="200"
+            type="text"
+            inputMode="numeric"
+            value={formData.bloodPressure}
+            onChange={(event) => onChange('bloodPressure', event.target.value)}
+            placeholder="120-80"
             className={inputClass}
           />
         </FormField>

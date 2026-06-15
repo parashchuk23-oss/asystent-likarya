@@ -17,6 +17,7 @@ const initialForm = {
   lymphNodes: 'без особливостей',
   thyroid: 'не збільшена, безболісна при пальпації',
   oralCavity: 'зів рожевий, мигдалики чисті',
+  bloodPressure: '',
   systolicBP: '',
   diastolicBP: '',
   heartRate: '',
@@ -50,6 +51,24 @@ function parseDateValue(value) {
   }
 
   return null;
+}
+
+function formatBirthDate(value) {
+  let digits = value.replace(/\D/g, '').slice(0, 8);
+
+  if (digits.length === 1 && Number(digits) > 3) {
+    digits = `0${digits}`;
+  }
+
+  if (digits.length === 3 && Number(digits.slice(2, 3)) > 1) {
+    digits = `${digits.slice(0, 2)}0${digits.slice(2)}`;
+  }
+
+  const day = digits.slice(0, 2);
+  const month = digits.slice(2, 4);
+  const year = digits.slice(4, 8);
+
+  return [day, month, year].filter(Boolean).join('.');
 }
 
 function calculateAge(birthDate, visitDate) {
@@ -92,9 +111,10 @@ export default function CardioAssistantTab() {
 
   function handleChange(field, value) {
     setFormData((current) => {
+      const nextValue = field === 'birthDate' ? formatBirthDate(value) : value;
       const nextForm = {
         ...current,
-        [field]: value,
+        [field]: nextValue,
       };
 
       if (field === 'birthDate' || field === 'visitDate') {
