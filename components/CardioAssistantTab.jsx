@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import ConclusionEditor from './ConclusionEditor';
 import PatientForm from './PatientForm';
+import { buildDoctorConclusion } from '../utils/doctorConclusion';
 
 const initialForm = {
   age: '',
@@ -129,9 +130,22 @@ export default function CardioAssistantTab() {
     });
   }
 
+  function handleGenerateConclusion() {
+    setConclusion(buildDoctorConclusion(formData));
+  }
+
+  function handleClearConclusion() {
+    setConclusion('');
+  }
+
   return (
     <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-      <PatientForm formData={formData} onChange={handleChange} />
+      <PatientForm
+        formData={formData}
+        onChange={handleChange}
+        onGenerateConclusion={handleGenerateConclusion}
+        onClearConclusion={handleClearConclusion}
+      />
       <ConclusionEditor conclusion={conclusion} onChange={setConclusion} />
     </div>
   );

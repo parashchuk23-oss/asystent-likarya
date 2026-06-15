@@ -6,7 +6,7 @@ import FormField from './FormField';
 import SectionHeader from './SectionHeader';
 import { inputClass, textareaClass } from './formStyles';
 
-export default function PatientForm({ formData, onChange }) {
+export default function PatientForm({ formData, onChange, onGenerateConclusion, onClearConclusion }) {
   return (
     <form className="space-y-4">
       <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -99,6 +99,23 @@ export default function PatientForm({ formData, onChange }) {
               className={textareaClass}
             />
           </FormField>
+
+          <div className="flex flex-wrap gap-3 pt-1">
+            <button
+              type="button"
+              onClick={onGenerateConclusion}
+              className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
+            >
+              Розрахувати
+            </button>
+            <button
+              type="button"
+              onClick={onClearConclusion}
+              className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+            >
+              Очистити
+            </button>
+          </div>
         </div>
       </section>
     </form>
