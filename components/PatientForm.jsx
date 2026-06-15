@@ -14,16 +14,6 @@ export default function PatientForm({ formData, onChange }) {
 
         <div className="grid gap-3 md:grid-cols-2">
           <label className="text-sm">
-            <span className="mb-1 block text-slate-600">Вік</span>
-            <input
-              type="number"
-              value={formData.age}
-              onChange={(event) => onChange('age', event.target.value)}
-              className={inputClass}
-            />
-          </label>
-
-          <label className="text-sm">
             <span className="mb-1 block text-slate-600">Дата прийому</span>
             <input
               type="date"
@@ -32,6 +22,56 @@ export default function PatientForm({ formData, onChange }) {
               className={inputClass}
             />
           </label>
+
+          <label className="text-sm">
+            <span className="mb-1 block text-slate-600">Дата народження</span>
+            <input
+              type="date"
+              value={formData.birthDate}
+              onChange={(event) => onChange('birthDate', event.target.value)}
+              className={inputClass}
+            />
+          </label>
+
+          <label className="text-sm">
+            <span className="mb-1 block text-slate-600">Вік</span>
+            <input
+              type="text"
+              value={formData.age ? `${formData.age} р.` : ''}
+              readOnly
+              placeholder="Розраховується автоматично"
+              className={`${inputClass} bg-slate-50 text-slate-600`}
+            />
+          </label>
+
+          <div className="text-sm">
+            <span className="mb-1 block text-slate-600">Стать</span>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { value: 'жінка', label: 'Жінка' },
+                { value: 'чоловік', label: 'Чоловік' },
+              ].map((option) => (
+                <label
+                  key={option.value}
+                  className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition-colors ${
+                    formData.sex === option.value
+                      ? 'border-blue-500 bg-blue-50 text-blue-700'
+                      : 'border-slate-300 bg-white text-slate-700'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="patient-sex"
+                    value={option.value}
+                    checked={formData.sex === option.value}
+                    onChange={(event) => onChange('sex', event.target.value)}
+                    className="h-4 w-4"
+                  />
+                  {option.label}
+                </label>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
