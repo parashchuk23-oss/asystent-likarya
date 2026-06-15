@@ -21,7 +21,7 @@ const initialRiskData = {
 
 function CheckboxField({ label, checked, onChange }) {
   return (
-    <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50">
+    <label className="flex cursor-pointer items-start gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50">
       <input
         type="checkbox"
         checked={checked}
@@ -95,8 +95,10 @@ export default function Score2Tab() {
   const [riskData, setRiskData] = useState(initialRiskData);
   const [calculatedResult, setCalculatedResult] = useState(null);
   const isCalculateEnabled = canCalculateRisk(riskData);
-  const actionButtonClass =
-    'w-full rounded-lg bg-blue-600 px-5 py-3 text-base font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 sm:w-auto';
+  const primaryButtonClass =
+    'w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none sm:w-auto';
+  const secondaryButtonClass =
+    'w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto';
 
   function handleChange(field, value) {
     setRiskData((current) => ({
@@ -118,9 +120,10 @@ export default function Score2Tab() {
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,28rem)_minmax(0,28rem)]">
-      <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="mb-4 border-b-2 border-blue-100 pb-2">
-          <h2 className="text-base font-semibold text-blue-700">Кардіоваскулярний ризик</h2>
+      <section className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-200/60">
+        <div className="mb-4 border-b border-blue-100 pb-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">SCORE2 / SCORE2-OP</p>
+          <h2 className="mt-1 text-base font-semibold tracking-tight text-slate-950">Кардіоваскулярний ризик</h2>
         </div>
 
         <div className="space-y-3">
@@ -220,20 +223,21 @@ export default function Score2Tab() {
             type="button"
             onClick={handleCalculate}
             disabled={!isCalculateEnabled}
-            className={actionButtonClass}
+            className={primaryButtonClass}
           >
             Розрахувати
           </button>
 
-          <button type="button" onClick={handleClear} className={actionButtonClass}>
+          <button type="button" onClick={handleClear} className={secondaryButtonClass}>
             Очистити
           </button>
         </div>
       </section>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="mb-4 border-b-2 border-blue-100 pb-2">
-          <h2 className="text-base font-semibold text-blue-700">Заключення</h2>
+      <section className="rounded-lg border border-blue-100 bg-white p-5 shadow-sm shadow-slate-200/60">
+        <div className="mb-4 border-b border-blue-100 pb-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">Результат</p>
+          <h2 className="mt-1 text-base font-semibold tracking-tight text-slate-950">Заключення</h2>
         </div>
 
         {calculatedResult ? (

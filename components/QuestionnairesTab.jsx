@@ -67,23 +67,32 @@ export default function QuestionnairesTab() {
         const isOpen = openId === questionnaire.id;
 
         return (
-          <article key={questionnaire.id} className="rounded-xl border border-slate-200 bg-white shadow-sm">
+          <article
+            key={questionnaire.id}
+            className={`rounded-lg border bg-white shadow-sm shadow-slate-200/60 transition ${
+              isOpen ? 'border-blue-200 ring-1 ring-blue-100' : 'border-slate-200/80'
+            }`}
+          >
             <button
               type="button"
               onClick={() => toggleQuestionnaire(questionnaire.id)}
-              className="flex w-full items-center justify-between gap-4 p-5 text-left transition hover:bg-slate-50"
+              className="flex w-full items-center justify-between gap-4 rounded-lg p-5 text-left transition hover:bg-blue-50/50"
             >
               <span>
-                <span className="block text-base font-semibold text-blue-700">{questionnaire.title}</span>
+                <span className="block text-base font-semibold tracking-tight text-slate-950">
+                  {questionnaire.title}
+                </span>
                 <span className="mt-1 block text-sm text-slate-500">{questionnaire.description}</span>
               </span>
-              <span className="text-xl font-semibold text-slate-400">{isOpen ? '−' : '+'}</span>
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-xl font-semibold text-blue-700">
+                {isOpen ? '−' : '+'}
+              </span>
             </button>
 
             {isOpen && (
               <div className="border-t border-slate-100 p-5">
                 {questionnaire.component || (
-                  <p className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-500">
+                  <p className="rounded-md border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-500">
                     Буде додано пізніше.
                   </p>
                 )}

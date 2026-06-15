@@ -40,17 +40,17 @@ export default function AppTabs() {
   const activeTabData = tabs.find((tab) => tab.id === activeTab);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white">
-      <div className="flex border-b border-slate-200">
+    <section className="overflow-hidden rounded-lg border border-slate-200/80 bg-white/95 shadow-sm shadow-slate-200/70">
+      <div className="flex gap-1 overflow-x-auto border-b border-slate-200 bg-slate-50/80 p-2">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-3 text-sm font-medium transition-colors ${
+            className={`shrink-0 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors ${
               activeTab === tab.id
-                ? 'border-b-2 border-blue-600 text-blue-700'
-                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+                ? 'bg-white text-blue-700 shadow-sm ring-1 ring-blue-100'
+                : 'text-slate-500 hover:bg-white/80 hover:text-slate-800'
             }`}
           >
             {tab.label}
@@ -59,8 +59,8 @@ export default function AppTabs() {
       </div>
 
       {activeTabData?.description && (
-        <div className="border-b border-slate-100 px-4 py-3">
-          <p className="text-sm text-slate-500">{activeTabData.description}</p>
+        <div className="border-b border-slate-100 bg-white px-4 py-3">
+          <p className="text-sm font-medium text-slate-500">{activeTabData.description}</p>
         </div>
       )}
 

@@ -56,12 +56,13 @@ export default function BmiCalculator() {
   }
 
   return (
-    <article className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="mb-4 border-b-2 border-blue-100 pb-2">
-        <h2 className="text-base font-semibold text-blue-700">BMI (ІМТ)</h2>
+    <article className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-200/60">
+      <div className="mb-4 border-b border-blue-100 pb-3">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">Калькулятор</p>
+        <h2 className="mt-1 text-base font-semibold tracking-tight text-slate-950">BMI (ІМТ)</h2>
       </div>
 
-      <div className="mb-5 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-relaxed text-slate-700">
+      <div className="mb-5 rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
         <p className="font-semibold text-slate-900">Про калькулятор BMI (ІМТ)</p>
         <p className="mt-2">
           BMI, або індекс маси тіла, використовується для орієнтовної оцінки співвідношення
@@ -107,7 +108,7 @@ export default function BmiCalculator() {
           type="button"
           onClick={handleCalculate}
           disabled={!isCalculateEnabled}
-          className="w-full rounded-lg bg-blue-600 px-5 py-3 text-base font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 sm:w-auto"
+          className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none sm:w-auto"
         >
           Розрахувати
         </button>
@@ -115,13 +116,13 @@ export default function BmiCalculator() {
         <button
           type="button"
           onClick={handleClear}
-          className="w-full rounded-lg bg-blue-600 px-5 py-3 text-base font-semibold text-white transition hover:bg-blue-700 sm:w-auto"
+          className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
           Очистити
         </button>
       </div>
 
-      <div className="mt-5 rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
+      <div className="mt-5 rounded-md border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
         <p className="text-slate-600">ІМТ</p>
         <p className="text-3xl font-semibold text-blue-800">{result?.bmi || '—'}</p>
         <p className="mt-2">

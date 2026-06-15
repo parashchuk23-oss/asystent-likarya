@@ -4,7 +4,7 @@ import { textareaClass } from './formStyles';
 
 export default function ComplaintsSection({ formData, onChange }) {
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-200/60">
       <SectionHeader icon="💬" title="Скарги" subtitle="Основні та другорядні скарги пацієнта" />
       <FormField label="Скарги пацієнта">
         <textarea

@@ -47,7 +47,7 @@ export default function StopBangQuestionnaire() {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-relaxed text-slate-700">
+      <div className="rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
         <p className="font-semibold text-slate-900">Про STOP-Bang</p>
         <p className="mt-2">
           STOP-Bang використовується для скринінгу ризику обструктивного апное сну.
@@ -59,7 +59,7 @@ export default function StopBangQuestionnaire() {
 
       <div className="space-y-4">
         {questions.map((question) => (
-          <div key={question.key} className="rounded-lg border border-slate-200 bg-white p-4">
+          <div key={question.key} className="rounded-md border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-100/60">
             <p className="text-sm font-semibold text-slate-900">{question.text}</p>
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
               {options.map((option) => (
@@ -84,7 +84,7 @@ export default function StopBangQuestionnaire() {
         <button
           type="button"
           onClick={handleCalculate}
-          className="w-full rounded-lg bg-blue-600 px-5 py-3 text-base font-semibold text-white transition hover:bg-blue-700 sm:w-auto"
+          className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
         >
           Розрахувати
         </button>
@@ -92,7 +92,7 @@ export default function StopBangQuestionnaire() {
         <button
           type="button"
           onClick={handleClear}
-          className="w-full rounded-lg bg-blue-600 px-5 py-3 text-base font-semibold text-white transition hover:bg-blue-700 sm:w-auto"
+          className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
           Очистити
         </button>

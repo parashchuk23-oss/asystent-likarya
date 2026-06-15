@@ -4,13 +4,13 @@ import { inputClass, textareaClass } from './formStyles';
 
 export default function ObjectiveStatusSection({ formData, onChange }) {
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-200/60">
       <SectionHeader icon="🩺" title="Об'єктивний статус" subtitle="Дані огляду та обстеження" />
 
       <FormField label="Загальний стан">
         <div className="mt-1 flex flex-wrap gap-5">
           {['задовільний', 'відносно задовільний', 'середній', 'тяжкий'].map((option) => (
-            <label key={option} className="flex cursor-pointer items-center gap-2">
+            <label key={option} className="flex cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 transition hover:border-blue-200 hover:bg-blue-50">
               <input
                 type="radio"
                 name="generalCondition"
@@ -19,7 +19,7 @@ export default function ObjectiveStatusSection({ formData, onChange }) {
                 onChange={() => onChange('generalCondition', option)}
                 className="h-4 w-4 cursor-pointer text-blue-600"
               />
-              <span className="text-sm text-slate-700">{option}</span>
+              <span className="text-sm font-medium text-slate-700">{option}</span>
             </label>
           ))}
         </div>

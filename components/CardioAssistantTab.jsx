@@ -139,7 +139,7 @@ export default function CardioAssistantTab() {
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,1.08fr)_minmax(26rem,0.92fr)]">
       <PatientForm
         formData={formData}
         onChange={handleChange}
