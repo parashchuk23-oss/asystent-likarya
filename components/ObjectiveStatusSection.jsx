@@ -23,6 +23,13 @@ export default function ObjectiveStatusSection({ formData, onChange }) {
             </label>
           ))}
         </div>
+        <input
+          type="text"
+          value={formData.generalConditionNote}
+          onChange={(event) => onChange('generalConditionNote', event.target.value)}
+          placeholder="Додаткова інформація"
+          className={`${inputClass} mt-3`}
+        />
       </FormField>
 
       <FormField label="Шкірні покриви">
@@ -73,7 +80,7 @@ export default function ObjectiveStatusSection({ formData, onChange }) {
         />
       </FormField>
 
-      <div className="mb-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
         <FormField label="Зріст" hint="см">
           <input
             type="number"
@@ -98,6 +105,42 @@ export default function ObjectiveStatusSection({ formData, onChange }) {
           />
         </FormField>
 
+        <FormField label="Індекс маси тіла" hint="кг/м²">
+          <input
+            type="text"
+            value={formData.bmi}
+            readOnly
+            placeholder="Автоматично"
+            className={`${inputClass} bg-slate-50 text-slate-600`}
+          />
+        </FormField>
+      </div>
+
+      <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <FormField label="Систолічний АТ" hint="мм рт.ст.">
+          <input
+            type="number"
+            value={formData.systolicBP}
+            onChange={(event) => onChange('systolicBP', event.target.value)}
+            placeholder="120"
+            min="50"
+            max="300"
+            className={inputClass}
+          />
+        </FormField>
+
+        <FormField label="Діастолічний АТ" hint="мм рт.ст.">
+          <input
+            type="number"
+            value={formData.diastolicBP}
+            onChange={(event) => onChange('diastolicBP', event.target.value)}
+            placeholder="80"
+            min="30"
+            max="200"
+            className={inputClass}
+          />
+        </FormField>
+
         <FormField label="ЧСС" hint="уд/хв">
           <input
             type="number"
@@ -108,29 +151,6 @@ export default function ObjectiveStatusSection({ formData, onChange }) {
             max="300"
             className={inputClass}
           />
-        </FormField>
-
-        <FormField label="АТ" hint="мм рт.ст.">
-          <div className="grid grid-cols-2 gap-2">
-            <input
-              type="number"
-              value={formData.systolicBP}
-              onChange={(event) => onChange('systolicBP', event.target.value)}
-              placeholder="120"
-              min="50"
-              max="300"
-              className={inputClass}
-            />
-            <input
-              type="number"
-              value={formData.diastolicBP}
-              onChange={(event) => onChange('diastolicBP', event.target.value)}
-              placeholder="80"
-              min="30"
-              max="200"
-              className={inputClass}
-            />
-          </div>
         </FormField>
       </div>
 

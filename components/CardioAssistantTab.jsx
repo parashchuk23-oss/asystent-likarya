@@ -11,6 +11,7 @@ const initialForm = {
   sex: '',
   complaints: '',
   generalCondition: 'задовільний',
+  generalConditionNote: '',
   skinCondition: 'чисті, блідо-рожеві',
   bodyType: 'нормостенічний',
   lymphNodes: 'без особливостей',
@@ -21,6 +22,7 @@ const initialForm = {
   heartRate: '',
   height: '',
   weight: '',
+  bmi: '',
   heartAuscultation: '',
   lungAuscultation: '',
   abdomen: "живіт м'який, безболісний",
@@ -32,13 +34,31 @@ const initialForm = {
   recommendations: '',
 };
 
+function parseDateValue(value) {
+  if (!value) return null;
+
+  const isoMatch = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoMatch) {
+    const [, year, month, day] = isoMatch;
+    return new Date(Number(year), Number(month) - 1, Number(day));
+  }
+
+  const ukrainianDateMatch = value.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  if (ukrainianDateMatch) {
+    const [, day, month, year] = ukrainianDateMatch;
+    return new Date(Number(year), Number(month) - 1, Number(day));
+  }
+
+  return null;
+}
+
 function calculateAge(birthDate, visitDate) {
   if (!birthDate || !visitDate) return '';
 
-  const birth = new Date(birthDate);
-  const visit = new Date(visitDate);
+  const birth = parseDateValue(birthDate);
+  const visit = parseDateValue(visitDate);
 
-  if (Number.isNaN(birth.getTime()) || Number.isNaN(visit.getTime()) || birth > visit) {
+  if (!birth || !visit || Number.isNaN(birth.getTime()) || Number.isNaN(visit.getTime()) || birth > visit) {
     return '';
   }
 
@@ -54,6 +74,18 @@ function calculateAge(birthDate, visitDate) {
   return String(age);
 }
 
+function calculateBmi(height, weight) {
+  const heightCm = Number(height);
+  const weightKg = Number(weight);
+
+  if (!heightCm || !weightKg || heightCm <= 0 || weightKg <= 0) {
+    return '';
+  }
+
+  const heightM = heightCm / 100;
+  return (weightKg / (heightM * heightM)).toFixed(1);
+}
+
 export default function CardioAssistantTab() {
   const [formData, setFormData] = useState(initialForm);
   const [conclusion, setConclusion] = useState('');
@@ -67,6 +99,10 @@ export default function CardioAssistantTab() {
 
       if (field === 'birthDate' || field === 'visitDate') {
         nextForm.age = calculateAge(nextForm.birthDate, nextForm.visitDate);
+      }
+
+      if (field === 'height' || field === 'weight') {
+        nextForm.bmi = calculateBmi(nextForm.height, nextForm.weight);
       }
 
       return nextForm;

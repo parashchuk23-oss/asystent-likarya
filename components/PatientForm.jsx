@@ -26,9 +26,11 @@ export default function PatientForm({ formData, onChange }) {
           <label className="text-sm">
             <span className="mb-1 block text-slate-600">Дата народження</span>
             <input
-              type="date"
+              type="text"
+              inputMode="numeric"
               value={formData.birthDate}
               onChange={(event) => onChange('birthDate', event.target.value)}
+              placeholder="дд.мм.рррр"
               className={inputClass}
             />
           </label>
