@@ -12,15 +12,15 @@ const tabs = [
     id: 'score2',
     label: 'Кардіоваскулярний ризик',
     description: 'SCORE2 / SCORE2-OP',
-    detail: 'Оцінка 10-річного ризику фатальних та нефатальних серцево-судинних подій.',
+    detail: 'Оцінка 10-річного СС-ризику.',
     icon: '⌁',
     tone: 'blue',
   },
   {
     id: 'egfr',
     label: 'Ниркова функція',
-    description: 'CKD-EPI 2021, Cockcroft-Gault, ACR, KDIGO',
-    detail: 'Оцінка ШКФ, альбумінурії та стадії ХХН за рекомендаціями KDIGO.',
+    description: 'CKD-EPI, Cockcroft-Gault, ACR',
+    detail: 'ШКФ, альбумінурія та KDIGO-ризик.',
     icon: '◖',
     tone: 'emerald',
   },
@@ -28,23 +28,23 @@ const tabs = [
     id: 'calculators',
     label: 'Калькулятори',
     description: 'CHA₂DS₂-VASc, HAS-BLED, BMI та інші',
-    detail: 'Швидкі клінічні шкали для прийняття рішень у повсякденній практиці.',
+    detail: 'Клінічні шкали для практики.',
     icon: '▦',
     tone: 'blue',
   },
   {
     id: 'questionnaires',
     label: 'Опитувальники',
-    description: 'GAD-7, PHQ-9, FINDRISC, AUDIT-C, STOP-Bang',
-    detail: 'Скринінгові шкали для оцінки ризиків та якості життя пацієнтів.',
+    description: 'GAD-7, PHQ-9, FINDRISC, AUDIT-C',
+    detail: 'Скринінгові опитувальники.',
     icon: '?',
     tone: 'teal',
   },
   {
     id: 'assistant',
     label: 'Асистент лікаря',
-    description: 'Генерація структурованого медичного висновку',
-    detail: 'Створіть професійний медичний висновок на основі введених даних.',
+    description: 'Структурований медичний висновок',
+    detail: 'Заключення на основі даних.',
     icon: '▤',
     tone: 'slate',
   },
@@ -83,21 +83,21 @@ export default function AppTabs() {
 
   return (
     <section className="overflow-hidden rounded-lg border border-slate-200/80 bg-white/95 shadow-sm shadow-slate-200/70">
-      <div className="border-b border-slate-200 bg-white p-4">
-        <div className="mb-3 flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-blue-50 text-sm font-bold text-blue-700 ring-1 ring-blue-100">
+      <div className="border-b border-slate-200 bg-white p-3">
+        <div className="mb-2 flex items-center gap-2">
+          <span className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-50 text-xs font-bold text-blue-700 ring-1 ring-blue-100">
             ▦
           </span>
-          <h2 className="text-base font-semibold tracking-tight text-blue-700">
+          <h2 className="text-sm font-semibold tracking-tight text-blue-700">
             Калькулятори та інструменти
           </h2>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
           {tabs.map((tab) => (
             <article
               key={tab.id}
-              className={`flex min-h-[12rem] flex-col rounded-lg border bg-white p-4 shadow-sm shadow-slate-100/80 transition ${
+              className={`flex min-h-[8.5rem] flex-col rounded-lg border bg-white p-3 shadow-sm shadow-slate-100/80 transition ${
                 activeTab === tab.id
                   ? `${toneClasses[tab.tone].active} ring-2`
                   : 'border-slate-200 hover:border-blue-200 hover:bg-slate-50/40'
@@ -108,25 +108,25 @@ export default function AppTabs() {
                 onClick={() => setActiveTab(tab.id)}
                 className="flex flex-1 flex-col text-left"
               >
-                <span className="flex items-start gap-3">
-                  <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-2xl font-bold ring-1 ${toneClasses[tab.tone].icon}`}>
+                <span className="flex items-start gap-2">
+                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-lg font-bold ring-1 ${toneClasses[tab.tone].icon}`}>
                     {tab.icon}
                   </span>
                   <span>
                     <span className={`block text-sm font-semibold ${toneClasses[tab.tone].title}`}>
                       {tab.label}
                     </span>
-                    <span className="mt-1 block text-sm font-semibold text-slate-600">
+                    <span className="mt-0.5 block text-xs font-semibold leading-4 text-slate-600">
                       {tab.description}
                     </span>
                   </span>
                 </span>
-                <span className="mt-4 block text-sm leading-5 text-slate-600">{tab.detail}</span>
+                <span className="mt-2 block text-xs leading-4 text-slate-600">{tab.detail}</span>
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`mt-4 rounded-md border px-3 py-2 text-sm font-semibold transition ${toneClasses[tab.tone].button}`}
+                className={`mt-2 rounded-md border px-2.5 py-1.5 text-xs font-semibold transition ${toneClasses[tab.tone].button}`}
               >
                 Перейти
               </button>
