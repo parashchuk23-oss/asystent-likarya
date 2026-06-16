@@ -1,13 +1,10 @@
 <svg width="720" height="220" viewBox="0 0 720 220" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Асистент лікаря full logo</title>
-  <desc id="desc">Full logo lockup for the Asystent Likarya brand.</desc>
-  <rect width="720" height="220" rx="32" fill="#F8FAFC"/>
-  <rect x="40" y="34" width="152" height="152" rx="36" fill="white" stroke="#DBEAFE" stroke-width="3"/>
-  <path d="M78 145L106 74C109.8 64.5 123.2 64.5 127 74L155 145" stroke="#0F172A" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M92 116H141" stroke="#14B8A6" stroke-width="13" stroke-linecap="round"/>
-  <path d="M68 145H91" stroke="#38BDF8" stroke-width="17" stroke-linecap="round"/>
-  <path d="M141 145H165" stroke="#14B8A6" stroke-width="17" stroke-linecap="round"/>
-  <circle cx="116.5" cy="74" r="7" fill="#38BDF8"/>
+  <desc id="desc">Full logo lockup for the Asystent Likarya brand without mark container.</desc>
+  <rect width="720" height="220" fill="white"/>
+  <path d="M90 43H143C153 43 160 53 156 62L134 120C131 129 122 135 112 135H59C49 135 42 125 46 116L68 58C71 49 80 43 90 43Z" fill="#0F172A"/>
+  <path d="M60 148H113C123 148 130 158 126 167L117 190C114 199 105 205 95 205H42C32 205 25 195 29 186L38 163C41 154 50 148 60 148Z" fill="#0F172A"/>
+  <path d="M161 76L207 181C212 192 204 205 192 205H148C139 205 132 200 129 192L106 139C104 135 105 130 107 126L138 82C144 73 157 67 161 76Z" fill="#14B8A6"/>
   <text x="232" y="98" fill="#0F172A" font-family="Inter, Manrope, Arial, sans-serif" font-size="46" font-weight="780" letter-spacing="-0.7">Асистент лікаря</text>
   <text x="235" y="137" fill="#475569" font-family="Inter, Manrope, Arial, sans-serif" font-size="20" font-weight="600">Цифровий робочий простір лікаря</text>
   <rect x="236" y="158" width="92" height="4" rx="2" fill="#14B8A6"/>

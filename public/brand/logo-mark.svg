@@ -1,11 +1,8 @@
 <svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Асистент лікаря symbol</title>
-  <desc id="desc">Modular A logo mark for the Asystent Likarya product.</desc>
-  <rect width="256" height="256" rx="56" fill="#F8FAFC"/>
-  <rect x="24" y="24" width="208" height="208" rx="44" fill="white" stroke="#DBEAFE" stroke-width="4"/>
-  <path d="M74 184L118 72C121.3 63.6 133.2 63.6 136.5 72L181 184" stroke="#0F172A" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M96 137H158" stroke="#14B8A6" stroke-width="20" stroke-linecap="round"/>
-  <path d="M62 184H99" stroke="#38BDF8" stroke-width="24" stroke-linecap="round"/>
-  <path d="M157 184H195" stroke="#14B8A6" stroke-width="24" stroke-linecap="round"/>
-  <circle cx="128" cy="75" r="10" fill="#38BDF8"/>
+  <desc id="desc">Modular A logo mark without container frame.</desc>
+  <rect width="256" height="256" fill="white"/>
+  <path d="M111 55H169C178 55 184 64 181 72L156 136C153 144 146 149 137 149H80C71 149 65 140 68 132L93 68C96 60 103 55 111 55Z" fill="#0F172A"/>
+  <path d="M80 160H135C144 160 150 169 147 177L136 205C133 213 126 218 117 218H62C53 218 47 209 50 201L61 173C64 165 71 160 80 160Z" fill="#0F172A"/>
+  <path d="M171 93L218 199C222 208 216 218 206 218H158C151 218 145 214 142 207L118 154C116 150 116 145 118 141L151 95C156 87 168 85 171 93Z" fill="#14B8A6"/>
 </svg>
