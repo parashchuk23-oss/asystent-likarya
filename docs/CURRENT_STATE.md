@@ -1,0 +1,134 @@
+# Поточний стан
+
+Дата оновлення: 2026-06-16
+
+## Проєкт
+
+Асистент лікаря — веб-сайт для медичних працівників з клінічними інструментами, калькуляторами, опитувальниками та формою для створення лікарського заключення.
+
+## Поточний стек
+
+* Next.js 15
+* React
+* Tailwind CSS
+* JavaScript
+* Vercel
+* GitHub
+
+## Vercel
+
+Сайт опублікований на Vercel.
+
+Основний домен:
+
+* https://asystent-likarya.vercel.app
+
+Після ручного деплою production alias було прив'язано до актуального deployment.
+
+## GitHub
+
+Код зберігається у репозиторії:
+
+* https://github.com/parashchuk23-oss/asystent-likarya
+
+Основна гілка:
+
+* main
+
+## Google Search Console
+
+Google Search Console verification додано через Next.js metadata API у `app/layout.jsx`.
+
+## Sitemap
+
+Sitemap реалізовано через App Router:
+
+* `app/sitemap.js`
+* URL: https://asystent-likarya.vercel.app/sitemap.xml
+
+## Robots.txt
+
+Robots.txt реалізовано через App Router:
+
+* `app/robots.js`
+* URL: https://asystent-likarya.vercel.app/robots.txt
+
+Індексація сайту дозволена.
+
+## Логотип
+
+Обрано логотип Modular A.
+
+Поточний логотип:
+
+* SVG mark
+* horizontal SVG для header
+* full SVG
+* PNG-версії для світлого та темного фону
+* favicon 32x32, 64x64, 128x128
+
+Файли зберігаються у:
+
+* `public/brand/`
+
+## Брендбук
+
+Створено `BRANDBOOK.md`.
+
+Ключова ідея бренду:
+
+* сучасний медичний SaaS;
+* професійний інструмент для лікаря;
+* не сайт клініки;
+* не державний медичний портал.
+
+## Дизайн-концепція
+
+Обрана концепція:
+
+* сучасний SaaS для лікарів;
+* Clinical Blue як база;
+* акуратність у стилі Notion / Linear / Stripe / Vercel.
+
+## Реалізовані вкладки
+
+* Асистент лікаря
+* Кардіоваскулярний ризик
+* Ниркова функція
+* Калькулятори
+* Опитувальники
+
+## Реалізовані калькулятори
+
+* SCORE2
+* SCORE2-OP
+* CKD-EPI 2021
+* Cockcroft-Gault
+* ACR
+* KDIGO-ризик
+* BMI / ІМТ
+* CHA2DS2-VASc
+* HAS-BLED
+
+## Реалізовані опитувальники
+
+* GAD-7
+* PHQ-9
+* FINDRISC
+* AUDIT-C
+* Fagerstrom
+* STOP-Bang
+* Epworth
+
+## Що НЕ реалізовано
+
+* OpenAI / Claude API
+* AI-генерація заключень через зовнішній API
+* авторизація
+* база даних
+* оплата
+* RAG
+* кабінет користувача
+* збереження пацієнтів на сервері
+* окремі SEO-сторінки під кожен калькулятор
+
