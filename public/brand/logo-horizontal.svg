@@ -1,0 +1,13 @@
+<svg width="512" height="112" viewBox="0 0 512 112" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Асистент лікаря horizontal logo</title>
+  <desc id="desc">Horizontal logo for the Asystent Likarya website header.</desc>
+  <rect x="4" y="4" width="104" height="104" rx="24" fill="#F8FAFC"/>
+  <rect x="11" y="11" width="90" height="90" rx="20" fill="white" stroke="#DBEAFE" stroke-width="2"/>
+  <path d="M32 78L50 33C52.7 26.4 61.7 26.4 64.3 33L82 78" stroke="#0F172A" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M41 59H73" stroke="#14B8A6" stroke-width="8" stroke-linecap="round"/>
+  <path d="M26 78H41" stroke="#38BDF8" stroke-width="10" stroke-linecap="round"/>
+  <path d="M73 78H88" stroke="#14B8A6" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="57" cy="33" r="4" fill="#38BDF8"/>
+  <text x="130" y="51" fill="#0F172A" font-family="Inter, Manrope, Arial, sans-serif" font-size="28" font-weight="750" letter-spacing="-0.4">Асистент лікаря</text>
+  <text x="131" y="78" fill="#64748B" font-family="Inter, Manrope, Arial, sans-serif" font-size="14" font-weight="600">Цифровий робочий простір лікаря</text>
+</svg>
