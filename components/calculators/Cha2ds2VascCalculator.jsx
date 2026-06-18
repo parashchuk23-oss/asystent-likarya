@@ -64,12 +64,7 @@ export default function Cha2ds2VascCalculator() {
   }
 
   return (
-    <article className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-200/60">
-      <div className="mb-4 border-b border-blue-100 pb-3">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">Калькулятор</p>
-        <h2 className="mt-1 text-base font-semibold tracking-tight text-slate-950">CHA₂DS₂-VASc</h2>
-      </div>
-
+    <>
       <div className="mb-5 rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
         <p className="font-semibold text-slate-900">Про шкалу CHA₂DS₂-VASc</p>
         <p className="mt-2">
@@ -126,6 +121,6 @@ export default function Cha2ds2VascCalculator() {
           Рішення щодо антикоагуляції приймає лікар з урахуванням клінічного контексту.
         </p>
       </div>
-    </article>
+    </>
   );
 }
