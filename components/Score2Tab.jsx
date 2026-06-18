@@ -119,7 +119,7 @@ export default function Score2Tab() {
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,28rem)_minmax(0,28rem)]">
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,1.38fr)_minmax(0,1fr)]">
       <section className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-200/60">
         <div className="mb-4 border-b border-blue-100 pb-3">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">SCORE2 / SCORE2-OP</p>
