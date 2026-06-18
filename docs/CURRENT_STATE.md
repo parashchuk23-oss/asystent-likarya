@@ -65,7 +65,7 @@ Robots.txt реалізовано через App Router:
 
 * оригінальний PNG у `public/brand/logo-source.png`
 * обрізаний PNG для header у `public/brand/logo-mark.png`
-* favicon 32x32, 64x64, 128x128
+* прозорий favicon v2 у розмірах 16x16, 32x32, 64x64, 128x128 та 180x180
 
 Файли зберігаються у:
 
