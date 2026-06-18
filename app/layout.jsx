@@ -5,7 +5,7 @@ export const metadata = {
   description: 'Веб-інструменти для медичних працівників: калькулятори, опитувальники та асистент лікаря.',
   icons: {
     icon: [
-      { url: '/brand/logo-mark.svg', type: 'image/svg+xml' },
+      { url: '/brand/logo-mark.png', sizes: '840x840', type: 'image/png' },
       { url: '/brand/favicon-32.png', sizes: '32x32', type: 'image/png' },
       { url: '/brand/favicon-64.png', sizes: '64x64', type: 'image/png' },
       { url: '/brand/favicon-128.png', sizes: '128x128', type: 'image/png' },

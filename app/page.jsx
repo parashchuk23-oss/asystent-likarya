@@ -7,12 +7,21 @@ export default function HomePage() {
         <header className="mb-5 rounded-lg border border-blue-100/80 bg-white/90 p-5 shadow-sm shadow-slate-200/70 backdrop-blur">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <img
-                src="/brand/logo-horizontal.svg"
-                alt="Асистент лікаря"
-                className="h-auto w-[260px] max-w-full sm:w-[320px]"
-              />
-              <h1 className="sr-only">Асистент лікаря</h1>
+              <div className="flex items-center gap-3">
+                <img
+                  src="/brand/logo-mark.png"
+                  alt="Логотип Асистента лікаря"
+                  className="h-16 w-16 shrink-0 object-contain sm:h-20 sm:w-20"
+                />
+                <div>
+                  <h1 className="text-xl font-bold text-slate-900 sm:text-2xl">
+                    Асистент лікаря
+                  </h1>
+                  <p className="mt-1 text-xs font-medium text-slate-500 sm:text-sm">
+                    Цифровий робочий простір лікаря
+                  </p>
+                </div>
+              </div>
               <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
                 Веб-інструменти для медичних працівників: консультації, калькулятори,
                 опитувальники та клінічні підказки в одному робочому просторі.
