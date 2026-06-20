@@ -46,6 +46,8 @@ Sitemap реалізовано через App Router:
 * `app/sitemap.js`
 * URL: https://asystent-likarya.vercel.app/sitemap.xml
 
+Sitemap містить головну сторінку та окремі SEO-сторінки популярних інструментів.
+
 ## Robots.txt
 
 Robots.txt реалізовано через App Router:
@@ -124,6 +126,14 @@ Robots.txt реалізовано через App Router:
 * STOP-Bang
 * Epworth
 
+## SEO-сторінки
+
+* `/egfr`
+* `/score2`
+* `/gad7`
+* `/phq9`
+* `/findrisk`
+
 ## Що НЕ реалізовано
 
 * OpenAI / Claude API
@@ -134,4 +144,3 @@ Robots.txt реалізовано через App Router:
 * RAG
 * кабінет користувача
 * збереження пацієнтів на сервері
-* окремі SEO-сторінки під кожен калькулятор

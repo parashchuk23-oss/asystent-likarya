@@ -80,7 +80,7 @@ const initialAnswers = questions.reduce((answers, question) => {
   return answers;
 }, {});
 
-export default function FindriscQuestionnaire() {
+export default function FindriscQuestionnaire({ showIntro = true }) {
   const [answers, setAnswers] = useState(initialAnswers);
   const [result, setResult] = useState(null);
 
@@ -103,16 +103,18 @@ export default function FindriscQuestionnaire() {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
-        <p className="font-semibold text-slate-900">Про FINDRISC</p>
-        <p className="mt-2">
-          FINDRISC використовується для орієнтовної оцінки ризику розвитку цукрового
-          діабету 2 типу протягом наступних років.
-        </p>
-        <p className="mt-2">
-          Результат є допоміжним інструментом і не замінює клінічне рішення лікаря.
-        </p>
-      </div>
+      {showIntro ? (
+        <div className="rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
+          <p className="font-semibold text-slate-900">Про FINDRISC</p>
+          <p className="mt-2">
+            FINDRISC використовується для орієнтовної оцінки ризику розвитку цукрового
+            діабету 2 типу протягом наступних років.
+          </p>
+          <p className="mt-2">
+            Результат є допоміжним інструментом і не замінює клінічне рішення лікаря.
+          </p>
+        </div>
+      ) : null}
 
       <div className="space-y-4">
         {questions.map((question) => (

@@ -27,7 +27,7 @@ const initialAnswers = questions.reduce((answers, _question, index) => {
   return answers;
 }, {});
 
-export default function Phq9Questionnaire() {
+export default function Phq9Questionnaire({ showIntro = true }) {
   const [answers, setAnswers] = useState(initialAnswers);
   const [result, setResult] = useState(null);
 
@@ -50,16 +50,18 @@ export default function Phq9Questionnaire() {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
-        <p className="font-semibold text-slate-900">Про PHQ-9</p>
-        <p className="mt-2">
-          PHQ-9 використовується для скринінгової оцінки депресивних симптомів за останні 2
-          тижні.
-        </p>
-        <p className="mt-2">
-          Результат є допоміжним інструментом і не замінює клінічне рішення лікаря.
-        </p>
-      </div>
+      {showIntro ? (
+        <div className="rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
+          <p className="font-semibold text-slate-900">Про PHQ-9</p>
+          <p className="mt-2">
+            PHQ-9 використовується для скринінгової оцінки депресивних симптомів за останні 2
+            тижні.
+          </p>
+          <p className="mt-2">
+            Результат є допоміжним інструментом і не замінює клінічне рішення лікаря.
+          </p>
+        </div>
+      ) : null}
 
       <div className="space-y-4">
         {questions.map((question, index) => (
