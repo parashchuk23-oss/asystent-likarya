@@ -1,11 +1,9 @@
 import FormField from './FormField';
-import SectionHeader from './SectionHeader';
 import { textareaClass } from './formStyles';
 
 export default function ComplaintsSection({ formData, onChange }) {
   return (
-    <section className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-200/60">
-      <SectionHeader icon="💬" title="Скарги" subtitle="Основні та другорядні скарги пацієнта" />
+    <>
       <FormField label="Скарги пацієнта">
         <textarea
           value={formData.complaints}
@@ -15,6 +13,6 @@ export default function ComplaintsSection({ formData, onChange }) {
           className={textareaClass}
         />
       </FormField>
-    </section>
+    </>
   );
 }

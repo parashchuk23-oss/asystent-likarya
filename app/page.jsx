@@ -2,11 +2,11 @@ import Link from 'next/link';
 import AppTabs from '../components/AppTabs';
 
 const popularTools = [
-  { href: '/egfr', label: 'ШКФ (eGFR)' },
+  { href: '/egfr', label: 'ШКФ (CKD-EPI)' },
   { href: '/score2', label: 'SCORE2' },
   { href: '/gad7', label: 'GAD-7' },
   { href: '/phq9', label: 'PHQ-9' },
-  { href: '/findrisk', label: 'FINDRISC' },
+  { href: '/findrisk', label: 'FINDRISK' },
 ];
 
 export default function HomePage() {
@@ -62,9 +62,19 @@ export default function HomePage() {
         </section>
 
         <footer className="mt-6 rounded-lg border border-slate-200/80 bg-white/90 p-4 text-xs leading-relaxed text-slate-500 shadow-sm shadow-slate-200/60">
-          Асистент лікаря є допоміжним інструментом для медичних працівників. Результати
-          калькуляторів, опитувальників та AI-згенеровані тексти не замінюють клінічне
-          рішення лікаря.
+          <p>
+            Асистент лікаря є допоміжним інструментом для медичних працівників. Результати
+            калькуляторів та опитувальників не замінюють клінічне рішення лікаря.
+          </p>
+          <div className="mt-3 flex flex-col gap-2 border-t border-slate-200 pt-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="font-semibold text-slate-700">Асистент лікаря v1.0</p>
+              <p>Оновлено: червень 2026</p>
+            </div>
+            <Link href="/about" className="font-semibold text-blue-700 hover:text-blue-800 hover:underline">
+              Про проєкт
+            </Link>
+          </div>
         </footer>
       </div>
     </main>

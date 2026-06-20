@@ -1,12 +1,9 @@
 import FormField from './FormField';
-import SectionHeader from './SectionHeader';
 import { inputClass, textareaClass } from './formStyles';
 
 export default function ObjectiveStatusSection({ formData, onChange }) {
   return (
-    <section className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-200/60">
-      <SectionHeader icon="🩺" title="Об'єктивний статус" subtitle="Дані огляду та обстеження" />
-
+    <>
       <FormField label="Загальний стан">
         <div className="mt-1 flex flex-wrap gap-5">
           {['задовільний', 'відносно задовільний', 'середній', 'тяжкий'].map((option) => (
@@ -207,6 +204,6 @@ export default function ObjectiveStatusSection({ formData, onChange }) {
           className={inputClass}
         />
       </FormField>
-    </section>
+    </>
   );
 }

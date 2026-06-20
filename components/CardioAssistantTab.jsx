@@ -109,6 +109,7 @@ function calculateBmi(height, weight) {
 export default function CardioAssistantTab() {
   const [formData, setFormData] = useState(initialForm);
   const [conclusion, setConclusion] = useState('');
+  const [openSection, setOpenSection] = useState('passport');
 
   function handleChange(field, value) {
     setFormData((current) => {
@@ -132,21 +133,33 @@ export default function CardioAssistantTab() {
 
   function handleGenerateConclusion() {
     setConclusion(buildDoctorConclusion(formData));
+    setOpenSection('conclusion');
   }
 
   function handleClearConclusion() {
     setConclusion('');
   }
 
+  function handleToggleSection(sectionId) {
+    setOpenSection((current) => (current === sectionId ? null : sectionId));
+  }
+
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1.08fr)_minmax(26rem,0.92fr)]">
+    <div className="space-y-3">
       <PatientForm
         formData={formData}
         onChange={handleChange}
         onGenerateConclusion={handleGenerateConclusion}
         onClearConclusion={handleClearConclusion}
+        openSection={openSection}
+        onToggleSection={handleToggleSection}
       />
-      <ConclusionEditor conclusion={conclusion} onChange={setConclusion} />
+      <ConclusionEditor
+        conclusion={conclusion}
+        onChange={setConclusion}
+        isOpen={openSection === 'conclusion'}
+        onToggle={() => handleToggleSection('conclusion')}
+      />
     </div>
   );
 }

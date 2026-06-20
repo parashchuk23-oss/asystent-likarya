@@ -9,6 +9,7 @@ export default function sitemap() {
     { path: '/gad7', priority: 0.8 },
     { path: '/phq9', priority: 0.8 },
     { path: '/findrisk', priority: 0.8 },
+    { path: '/about', priority: 0.6 },
   ].map((page) => ({
     url: `${baseUrl}${page.path}`,
     lastModified,

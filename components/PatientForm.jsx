@@ -1,17 +1,28 @@
 'use client';
 
+import AccordionSection from './AccordionSection';
 import ComplaintsSection from './ComplaintsSection';
 import ObjectiveStatusSection from './ObjectiveStatusSection';
 import FormField from './FormField';
-import SectionHeader from './SectionHeader';
 import { inputClass, textareaClass } from './formStyles';
 
-export default function PatientForm({ formData, onChange, onGenerateConclusion, onClearConclusion }) {
+export default function PatientForm({
+  formData,
+  onChange,
+  onGenerateConclusion,
+  onClearConclusion,
+  openSection,
+  onToggleSection,
+}) {
   return (
-    <form className="space-y-4">
-      <section className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-200/60">
-        <SectionHeader icon="👤" title="Паспортна частина" subtitle="Основні дані пацієнта" />
-
+    <form className="space-y-3">
+      <AccordionSection
+        id="passport"
+        title="Паспортна частина"
+        subtitle="Основні дані пацієнта"
+        isOpen={openSection === 'passport'}
+        onToggle={() => onToggleSection('passport')}
+      >
         <div className="grid gap-3 md:grid-cols-2">
           <label className="text-sm">
             <span className="mb-1 block text-slate-600">Дата прийому</span>
@@ -75,14 +86,35 @@ export default function PatientForm({ formData, onChange, onGenerateConclusion, 
             </div>
           </div>
         </div>
-      </section>
+      </AccordionSection>
 
-      <ComplaintsSection formData={formData} onChange={onChange} />
-      <ObjectiveStatusSection formData={formData} onChange={onChange} />
+      <AccordionSection
+        id="complaints"
+        title="Скарги"
+        subtitle="Основні та другорядні скарги пацієнта"
+        isOpen={openSection === 'complaints'}
+        onToggle={() => onToggleSection('complaints')}
+      >
+        <ComplaintsSection formData={formData} onChange={onChange} />
+      </AccordionSection>
 
-      <section className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-200/60">
-        <SectionHeader icon="📋" title="Заключні дані" subtitle="Діагноз та рекомендації" />
+      <AccordionSection
+        id="objective-status"
+        title="Об'єктивний статус"
+        subtitle="Дані огляду та обстеження"
+        isOpen={openSection === 'objective-status'}
+        onToggle={() => onToggleSection('objective-status')}
+      >
+        <ObjectiveStatusSection formData={formData} onChange={onChange} />
+      </AccordionSection>
 
+      <AccordionSection
+        id="clinical-data"
+        title="Клінічні дані"
+        subtitle="Діагноз та рекомендації"
+        isOpen={openSection === 'clinical-data'}
+        onToggle={() => onToggleSection('clinical-data')}
+      >
         <div className="space-y-3">
           <FormField label="Діагноз">
             <textarea
@@ -117,7 +149,7 @@ export default function PatientForm({ formData, onChange, onGenerateConclusion, 
             </button>
           </div>
         </div>
-      </section>
+      </AccordionSection>
     </form>
   );
 }
