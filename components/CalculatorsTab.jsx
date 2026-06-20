@@ -3,7 +3,10 @@
 import { useState } from 'react';
 import BmiCalculator from './calculators/BmiCalculator';
 import Cha2ds2VascCalculator from './calculators/Cha2ds2VascCalculator';
+import FraxCalculator from './calculators/FraxCalculator';
+import H2fpefCalculator from './calculators/H2fpefCalculator';
 import HasBledCalculator from './calculators/HasBledCalculator';
+import WellsDimerCalculator from './calculators/WellsDimerCalculator';
 
 const calculators = [
   {
@@ -23,6 +26,24 @@ const calculators = [
     title: 'HAS-BLED',
     description: 'Оцінка ризику кровотечі під час антикоагулянтної терапії',
     component: <HasBledCalculator />,
+  },
+  {
+    id: 'h2fpef',
+    title: 'H2FPEF Score',
+    description: 'Оцінка ймовірності HFpEF у пацієнтів із задишкою',
+    component: <H2fpefCalculator />,
+  },
+  {
+    id: 'wells-dimer',
+    title: 'Підозра на ТЕЛА / ТГВ',
+    description: 'Wells PE та віковий поріг D-димеру',
+    component: <WellsDimerCalculator />,
+  },
+  {
+    id: 'fracture-risk',
+    title: 'Оцінка факторів ризику остеопоротичних переломів',
+    description: 'Спрощена структурована оцінка, не офіційний FRAX',
+    component: <FraxCalculator />,
   },
 ];
 

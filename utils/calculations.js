@@ -23,6 +23,13 @@ function parsePositiveNumber(value) {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
 }
 
+function parseNonNegativeNumber(value) {
+  if (!hasValue(value)) return null;
+
+  const parsed = Number(String(value).replace(',', '.'));
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+}
+
 function normalizeCreatinineToMgDl(creatinine, unit) {
   const parsed = parsePositiveNumber(creatinine);
   if (parsed === null) return null;
@@ -237,6 +244,103 @@ export function calculateHasBled(data) {
 
   return {
     score,
+    interpretation,
+  };
+}
+
+export function calculateH2fpef(data) {
+  const score =
+    (data.obesity ? 2 : 0) +
+    (data.multipleAntihypertensives ? 1 : 0) +
+    (data.atrialFibrillation ? 3 : 0) +
+    (data.pulmonaryHypertension ? 1 : 0) +
+    (data.ageOver60 ? 1 : 0) +
+    (data.elevatedFillingPressure ? 1 : 0);
+
+  let interpretation = 'Низька ймовірність HFpEF.';
+
+  if (score >= 2 && score <= 5) {
+    interpretation = 'Проміжна ймовірність HFpEF.';
+  }
+
+  if (score >= 6) {
+    interpretation = 'Висока ймовірність HFpEF.';
+  }
+
+  return {
+    score,
+    interpretation,
+  };
+}
+
+export function calculateWellsPe(data) {
+  const score =
+    (data.clinicalDvtSigns ? 3 : 0) +
+    (data.peMoreLikely ? 3 : 0) +
+    (data.heartRateOver100 ? 1.5 : 0) +
+    (data.immobilizationOrSurgery ? 1.5 : 0) +
+    (data.previousDvtPe ? 1.5 : 0) +
+    (data.hemoptysis ? 1 : 0) +
+    (data.activeCancer ? 1 : 0);
+
+  return {
+    score,
+    interpretation: score <= 4 ? 'ТЕЛА малоймовірна.' : 'ТЕЛА ймовірна.',
+  };
+}
+
+export function calculateAgeAdjustedDimer(data) {
+  const age = parsePositiveNumber(data.age);
+  const dimer = parseNonNegativeNumber(data.dimer);
+
+  if (age === null || dimer === null) return null;
+
+  const threshold = age <= 50 ? 500 : Math.round(age * 10);
+  const unitLabel = data.dimerUnit === 'mcgLFeu' ? 'мкг/л FEU' : 'нг/мл FEU';
+
+  return {
+    threshold,
+    dimer,
+    exceedsThreshold: dimer > threshold,
+    unitLabel,
+  };
+}
+
+export function calculateFractureRisk(data) {
+  const age = parsePositiveNumber(data.age);
+  const weight = parsePositiveNumber(data.weight);
+  const height = parsePositiveNumber(data.height);
+
+  if (age === null || weight === null || height === null || !data.sex) return null;
+
+  const factorCount = [
+    data.previousFracture,
+    data.parentalHipFracture,
+    data.currentSmoking,
+    data.glucocorticoids,
+    data.rheumatoidArthritis,
+    data.secondaryOsteoporosis,
+    data.alcoholThreeOrMore,
+  ].filter(Boolean).length;
+
+  let interpretation = 'Нижчий орієнтовний ризик.';
+
+  if (factorCount >= 2 && factorCount <= 3) {
+    interpretation = 'Помірний орієнтовний ризик.';
+  }
+
+  if (factorCount >= 4 || data.previousFracture) {
+    interpretation = 'Високий орієнтовний ризик.';
+  }
+
+  const parsedTScore = hasValue(data.femoralNeckTScore)
+    ? Number(String(data.femoralNeckTScore).replace(',', '.'))
+    : null;
+
+  return {
+    factorCount,
+    bmi: calculateBMI(weight, height),
+    tScore: Number.isFinite(parsedTScore) ? parsedTScore : null,
     interpretation,
   };
 }
