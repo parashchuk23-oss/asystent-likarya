@@ -2,7 +2,7 @@ export const arbs = [
   {
     internationalName: 'Losartan',
     ukrainianName: 'Лозартан',
-    tradeNames: ['Козаар', 'Лозап', 'Лоріста'],
+    tradeNames: ['Лозап', 'Лоріста'],
     usualDose: '50 мг/добу',
     maxDose: '100 мг/добу',
     frequency: '1 раз на добу; інколи 2 прийоми',
@@ -14,7 +14,7 @@ export const arbs = [
   {
     internationalName: 'Valsartan',
     ukrainianName: 'Валсартан',
-    tradeNames: ['Діован', 'Вальсакор', 'Нортіван'],
+    tradeNames: ['Діокор Соло', 'Вальсакор', 'Валсартан-Тева'],
     usualDose: '80–160 мг/добу',
     maxDose: '320 мг/добу',
     frequency: '1 раз на добу при гіпертензії',
@@ -26,7 +26,7 @@ export const arbs = [
   {
     internationalName: 'Irbesartan',
     ukrainianName: 'Ірбесартан',
-    tradeNames: ['Апровель', 'Авапро', 'Ібертан'],
+    tradeNames: ['Ірбетан', 'Конверіум'],
     usualDose: '150 мг/добу',
     maxDose: '300 мг/добу',
     frequency: '1 раз на добу',
@@ -38,7 +38,7 @@ export const arbs = [
   {
     internationalName: 'Candesartan',
     ukrainianName: 'Кандесартан',
-    tradeNames: ['Атаканд', 'Кандекор', 'Касарк'],
+    tradeNames: ['Касарк', 'Кантаб'],
     usualDose: '8–16 мг/добу',
     maxDose: '32 мг/добу',
     frequency: '1 раз на добу; інколи 2 прийоми',
@@ -50,7 +50,7 @@ export const arbs = [
   {
     internationalName: 'Telmisartan',
     ukrainianName: 'Телмісартан',
-    tradeNames: ['Мікардіс', 'Прітор', 'Телміста'],
+    tradeNames: ['Мікардис', 'Телміста', 'Телпрес'],
     usualDose: '40 мг/добу',
     maxDose: '80 мг/добу',
     frequency: '1 раз на добу',
@@ -62,7 +62,7 @@ export const arbs = [
   {
     internationalName: 'Olmesartan',
     ukrainianName: 'Олмесартан',
-    tradeNames: ['Олметек', 'Бенікар', 'Кардосал'],
+    tradeNames: ['Кардосал', 'Олмесар', 'Олмесартан Маклеодс'],
     usualDose: '20 мг/добу',
     maxDose: '40 мг/добу',
     frequency: '1 раз на добу',
