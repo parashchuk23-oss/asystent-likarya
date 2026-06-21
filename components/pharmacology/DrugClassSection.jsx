@@ -7,7 +7,7 @@ function normalizeSearchValue(value) {
   return value.trim().toLocaleLowerCase('uk-UA');
 }
 
-export default function DrugClassSection({ drugs }) {
+export default function DrugClassSection({ classId, eyebrow, title, description, drugs }) {
   const [query, setQuery] = useState('');
   const [openDrug, setOpenDrug] = useState(null);
 
@@ -25,14 +25,9 @@ export default function DrugClassSection({ drugs }) {
   return (
     <section className="mt-6">
       <div className="border-b border-blue-100 pb-4">
-        <p className="text-sm font-semibold text-teal-700">БРА / сартани</p>
-        <h3 className="mt-1 text-xl font-semibold text-slate-950">
-          Блокатори рецепторів ангіотензину II
-        </h3>
-        <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
-          Швидке порівняння представників класу для лікування дорослих. Дозування для окремих
-          показань може відрізнятися від режиму при артеріальній гіпертензії.
-        </p>
+        <p className="text-sm font-semibold text-teal-700">{eyebrow}</p>
+        <h3 className="mt-1 text-xl font-semibold text-slate-950">{title}</h3>
+        <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{description}</p>
       </div>
 
       <label className="mt-5 block max-w-xl">
@@ -51,8 +46,8 @@ export default function DrugClassSection({ drugs }) {
       </p>
 
       {filteredDrugs.length ? (
-        <section className="mt-6" aria-labelledby="arb-cards-title">
-          <h4 id="arb-cards-title" className="mb-3 text-base font-semibold text-slate-950">
+        <section className="mt-6" aria-labelledby={`${classId}-cards-title`}>
+          <h4 id={`${classId}-cards-title`} className="mb-3 text-base font-semibold text-slate-950">
             Препарати
           </h4>
           <div className="space-y-3">
