@@ -4,6 +4,7 @@ import { useState } from 'react';
 import CalculatorsTab from './CalculatorsTab';
 import CardioAssistantTab from './CardioAssistantTab';
 import EgfrTab from './EgfrTab';
+import PharmacologyTab from './PharmacologyTab';
 import QuestionnairesTab from './QuestionnairesTab';
 import Score2Tab from './Score2Tab';
 
@@ -32,6 +33,11 @@ const tabs = [
     id: 'questionnaires',
     label: 'Опитувальники',
     description: 'GAD-7, PHQ-9, FINDRISC, AUDIT-C, STOP-Bang',
+  },
+  {
+    id: 'drugs',
+    label: 'Препарати',
+    description: 'Практичний фармакологічний довідник',
   },
 ];
 
@@ -70,6 +76,7 @@ export default function AppTabs() {
         {activeTab === 'egfr' && <EgfrTab />}
         {activeTab === 'calculators' && <CalculatorsTab />}
         {activeTab === 'questionnaires' && <QuestionnairesTab />}
+        {activeTab === 'drugs' && <PharmacologyTab />}
       </div>
     </section>
   );
