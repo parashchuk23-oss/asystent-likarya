@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react';
 import DrugCard from './DrugCard';
-import DrugComparisonTable from './DrugComparisonTable';
 
 function normalizeSearchValue(value) {
   return value.trim().toLocaleLowerCase('uk-UA');
@@ -52,34 +51,25 @@ export default function DrugClassSection({ drugs }) {
       </p>
 
       {filteredDrugs.length ? (
-        <>
-          <section className="mt-6" aria-labelledby="arb-comparison-title">
-            <h4 id="arb-comparison-title" className="mb-3 text-base font-semibold text-slate-950">
-              Порівняльна таблиця
-            </h4>
-            <DrugComparisonTable drugs={filteredDrugs} />
-          </section>
-
-          <section className="mt-7" aria-labelledby="arb-cards-title">
-            <h4 id="arb-cards-title" className="mb-3 text-base font-semibold text-slate-950">
-              Картки препаратів
-            </h4>
-            <div className="space-y-3">
-              {filteredDrugs.map((drug) => (
-                <DrugCard
-                  key={drug.internationalName}
-                  drug={drug}
-                  isOpen={openDrug === drug.internationalName}
-                  onToggle={() =>
-                    setOpenDrug((current) =>
-                      current === drug.internationalName ? null : drug.internationalName,
-                    )
-                  }
-                />
-              ))}
-            </div>
-          </section>
-        </>
+        <section className="mt-6" aria-labelledby="arb-cards-title">
+          <h4 id="arb-cards-title" className="mb-3 text-base font-semibold text-slate-950">
+            Препарати
+          </h4>
+          <div className="space-y-3">
+            {filteredDrugs.map((drug) => (
+              <DrugCard
+                key={drug.internationalName}
+                drug={drug}
+                isOpen={openDrug === drug.internationalName}
+                onToggle={() =>
+                  setOpenDrug((current) =>
+                    current === drug.internationalName ? null : drug.internationalName,
+                  )
+                }
+              />
+            ))}
+          </div>
+        </section>
       ) : (
         <div className="mt-6 rounded-md border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center text-sm text-slate-600">
           За цим запитом препаратів не знайдено.

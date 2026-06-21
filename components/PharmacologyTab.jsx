@@ -25,6 +25,20 @@ export default function PharmacologyTab() {
 
       <DrugClassSection drugs={arbs} />
 
+      <section className="mt-8 border-t border-slate-200 pt-5">
+        <h3 className="text-base font-semibold text-slate-950">Спільне для класу БРА</h3>
+        <p className="mt-2 max-w-5xl text-sm leading-6 text-slate-600">
+          Перед початком і після зміни дози контролюють АТ, калій та креатинін / eGFR. БРА не
+          застосовують під час вагітності; подвійна блокада РААС зазвичай не рекомендована, а
+          при дефіциті об’єму, гіперкаліємії або реноваскулярній патології потрібна окрема оцінка.
+        </p>
+        <p className="mt-2 max-w-5xl text-xs leading-5 text-slate-500">
+          Наведене зниження САТ — середній орієнтир із клінічних досліджень, а не прогноз для
+          конкретного пацієнта. Результат залежить від вихідного АТ, дози, методу вимірювання,
+          комбінацій, прихильності та споживання солі.
+        </p>
+      </section>
+
       <aside className="mt-8 border-l-4 border-amber-400 bg-amber-50 px-4 py-3 text-sm leading-6 text-slate-700">
         {disclaimer}
       </aside>
