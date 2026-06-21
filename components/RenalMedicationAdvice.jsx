@@ -21,12 +21,9 @@ export default function RenalMedicationAdvice({ advice }) {
   }
 
   return (
-    <section className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-200/60 lg:col-span-2">
+    <section className="border-t border-blue-100 pt-4">
       <div className="border-b border-blue-100 pb-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">
-          Довідкова перевірка
-        </p>
-        <h2 className="mt-1 text-base font-semibold tracking-tight text-slate-950">
+        <h2 className="text-base font-semibold tracking-tight text-slate-950">
           Лікарські засоби: на що звернути увагу
         </h2>
         <dl className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600">

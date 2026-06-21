@@ -22,29 +22,6 @@ const initialFormData = {
   potassium: '',
 };
 
-const additionalChecks = [
-  {
-    title: 'ACR сечі',
-    description: 'Для оцінки пошкодження клубочків.',
-  },
-  {
-    title: 'Загальний аналіз сечі',
-    description: 'Для виявлення гематурії та інших патологічних змін.',
-  },
-  {
-    title: 'Калій',
-    description: 'Для безпечного призначення ІАПФ, БРА, АМКР.',
-  },
-  {
-    title: 'Натрій',
-    description: 'Для оцінки водно-електролітного балансу.',
-  },
-  {
-    title: 'Контроль креатиніну в динаміці',
-    description: 'Для оцінки прогресування ураження нирок.',
-  },
-];
-
 const kdigoColorClasses = {
   green: 'border-emerald-200 bg-emerald-50 text-emerald-900',
   yellow: 'border-yellow-200 bg-yellow-50 text-yellow-900',
@@ -321,17 +298,9 @@ export default function EgfrTab() {
               </div>
             )}
 
-            <div>
-              <p className="font-semibold">Що перевірити додатково:</p>
-              <ul className="mt-2 space-y-2">
-                {additionalChecks.map((check) => (
-                  <li key={check.title} className="rounded-md border border-slate-200/80 bg-slate-50 p-3">
-                    <p className="font-semibold">✓ {check.title}</p>
-                    <p className="mt-1 text-slate-600">{check.description}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {result.medicationAdvice ? (
+              <RenalMedicationAdvice advice={result.medicationAdvice} />
+            ) : null}
           </div>
         ) : (
           <p className="text-sm text-slate-500">
@@ -340,9 +309,6 @@ export default function EgfrTab() {
         )}
       </section>
 
-      {result?.medicationAdvice ? (
-        <RenalMedicationAdvice advice={result.medicationAdvice} />
-      ) : null}
     </div>
   );
 }
