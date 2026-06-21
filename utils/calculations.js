@@ -193,6 +193,130 @@ export function calculateCockcroftGault(data) {
   };
 }
 
+export function getRenalMedicationAdvice(egfr, crcl, potassium) {
+  const numericEgfr = parsePositiveNumber(egfr);
+  if (numericEgfr === null) return null;
+
+  const numericCrCl = parsePositiveNumber(crcl);
+  const numericPotassium = parsePositiveNumber(potassium);
+  const category = getGCategory(numericEgfr).category;
+  const advice = {
+    category,
+    egfr: roundToOneDecimal(numericEgfr),
+    crcl: numericCrCl === null ? null : roundToOneDecimal(numericCrCl),
+    potassium: numericPotassium === null ? null : roundToOneDecimal(numericPotassium),
+    preferredOrUseful: [],
+    useWithCaution: [],
+    avoidOrReview: [],
+    doseAdjustmentNeeded: [],
+    monitoring: [],
+  };
+
+  advice.monitoring.push(
+    'Контролювати креатинін та eGFR у динаміці, особливо після початку або зміни терапії, що впливає на функцію нирок.',
+    'При гострому пошкодженні нирок або швидкій зміні креатиніну не покладатися лише на розрахункові eGFR і CrCl для вибору дози.',
+  );
+
+  if (numericPotassium === null) {
+    advice.monitoring.push(
+      'Калій не вказаний. Перед застосуванням препаратів, що впливають на калієвий баланс, потрібен актуальний результат.',
+    );
+  } else {
+    advice.monitoring.push(
+      `Введений калій: ${roundToOneDecimal(numericPotassium)} ммоль/л. Оцінити його відповідно до референсного діапазону лабораторії та клінічного контексту.`,
+    );
+  }
+
+  if (category === 'G1' || category === 'G2') {
+    advice.preferredOrUseful.push(
+      'Дозування більшості препаратів зазвичай не потребує змін лише на підставі eGFR ≥60 мл/хв/1,73 м².',
+      'Нефро- та кардіопротективна терапія може застосовуватися за відповідними показами без автоматичної відміни через категорію G1–G2.',
+    );
+    advice.useWithCaution.push(
+      'Навіть при G1–G2 враховувати ACR, калій, супутні захворювання та динаміку креатиніну.',
+    );
+    advice.avoidOrReview.push(
+      'Переглянути регулярне застосування потенційно нефротоксичних препаратів і безрецептурних НПЗП.',
+    );
+    advice.doseAdjustmentNeeded.push(
+      numericCrCl === null
+        ? 'CrCl не розрахований. Якщо інструкція прив’язує дозування до Cockcroft-Gault, потрібні маса тіла та розрахунок CrCl.'
+        : `CrCl становить ${roundToOneDecimal(numericCrCl)} мл/хв. Для препаратів із дозуванням за Cockcroft-Gault звірити інструкцію.`,
+    );
+    advice.monitoring.push('Контролювати ACR, калій та креатинін у динаміці за клінічними показами.');
+  }
+
+  if (category === 'G3a') {
+    advice.preferredOrUseful.push(
+      'Нефро- та кардіопротективні класи можуть залишатися корисними за наявності показань; категорія G3a не є автоматичною причиною їх відміни.',
+    );
+    advice.useWithCaution.push(
+      'Метформін: оцінити доцільність, чинну дозу, ризики та частоту контролю eGFR відповідно до інструкції.',
+      'ІАПФ, БРА та антагоністи мінералокортикоїдних рецепторів: контролювати калій і креатинін.',
+    );
+    advice.avoidOrReview.push(
+      'Переглянути регулярне застосування НПЗП та одночасне використання кількох потенційно нефротоксичних препаратів.',
+    );
+    advice.doseAdjustmentNeeded.push(
+      'Перевірити дозування препаратів, виведення яких істотно залежить від функції нирок.',
+      numericCrCl === null
+        ? 'НОАК: CrCl не розрахований. Для оцінки дозування за Cockcroft-Gault потрібно ввести масу тіла.'
+        : `НОАК: оцінювати дозування за CrCl Cockcroft-Gault (${roundToOneDecimal(numericCrCl)} мл/хв) та інструкцією конкретного препарату.`,
+    );
+    advice.monitoring.push('Контролювати eGFR, CrCl за потреби, калій та переносимість терапії.');
+  }
+
+  if (category === 'G3b') {
+    advice.preferredOrUseful.push(
+      'Терапія з доведеною нефро- або кардіопротективною користю може застосовуватися лише за відповідними показами, з перевіркою допустимості та моніторингом.',
+    );
+    advice.useWithCaution.push(
+      'Метформін: не починати без окремої оцінки; при наближенні eGFR до 30 мл/хв/1,73 м² переглянути допустимість, дозу та інструкцію.',
+      'ІАПФ, БРА, антагоністи мінералокортикоїдних рецепторів і калійзберігаючі діуретики: підвищена увага до калію та креатиніну.',
+    );
+    advice.avoidOrReview.push(
+      'Уникати регулярного або тривалого застосування НПЗП без окремого обґрунтування користі та ризику.',
+      'Переглянути комбінації потенційно нефротоксичних препаратів.',
+    );
+    advice.doseAdjustmentNeeded.push(
+      numericCrCl === null
+        ? 'НОАК: дозування не можна оцінити без CrCl Cockcroft-Gault; потрібно ввести масу тіла.'
+        : `НОАК: дозування визначати лише після оцінки CrCl Cockcroft-Gault (${roundToOneDecimal(numericCrCl)} мл/хв) та інструкції.`,
+      'Дигоксин, соталол і частина антибіотиків можуть потребувати корекції дози або інтервалу введення.',
+    );
+    advice.monitoring.push(
+      'Частіше контролювати функцію нирок, калій, натрій, об’ємний статус і небажані реакції.',
+    );
+  }
+
+  if (category === 'G4' || category === 'G5') {
+    advice.preferredOrUseful.push(
+      'Не відміняти всю терапію автоматично: потенційно корисні препарати оцінювати індивідуально за показами, інструкцією та клінічним станом.',
+    );
+    advice.useWithCaution.push(
+      'Калійзберігаючі препарати мають високий ризик гіперкаліємії та потребують окремої оцінки допустимості й моніторингу.',
+      'Будь-які препарати з вузьким терапевтичним вікном або істотним нирковим виведенням потребують посиленого контролю.',
+    );
+    advice.avoidOrReview.push(
+      'Уникати НПЗП, якщо немає окремого клінічного обґрунтування та плану контролю.',
+      'Метформін протипоказаний при eGFR <30 мл/хв/1,73 м².',
+    );
+    advice.doseAdjustmentNeeded.push(
+      'Обов’язково переглянути всі препарати та активні метаболіти, що виводяться нирками.',
+      numericCrCl === null
+        ? 'НОАК: CrCl не розрахований. Перевірити покази, отримати CrCl Cockcroft-Gault і звірити інструкцію конкретного препарату.'
+        : `НОАК: перевірити покази, CrCl Cockcroft-Gault (${roundToOneDecimal(numericCrCl)} мл/хв) та інструкцію конкретного препарату.`,
+      'Дигоксин, соталол, частина антибіотиків та інші нирково еліміновані препарати можуть потребувати суттєвої корекції або альтернативи.',
+    );
+    advice.monitoring.push(
+      'Контролювати eGFR, CrCl за потреби, калій, натрій, кислотно-лужний стан, об’ємний статус і небажані реакції.',
+      'Консультація нефролога бажана у відповідному клінічному контексті.',
+    );
+  }
+
+  return advice;
+}
+
 export function calculateCha2ds2Vasc(data) {
   const score =
     (data.heartFailure ? 1 : 0) +

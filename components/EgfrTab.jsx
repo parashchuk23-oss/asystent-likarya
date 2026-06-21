@@ -3,11 +3,13 @@
 import { useState } from 'react';
 import FormField from './FormField';
 import { inputClass } from './formStyles';
+import RenalMedicationAdvice from './RenalMedicationAdvice';
 import {
   calculateCKDEPI,
   calculateCockcroftGault,
   getACategory,
   getKDIGORisk,
+  getRenalMedicationAdvice,
 } from '../utils/calculations';
 
 const initialFormData = {
@@ -17,6 +19,7 @@ const initialFormData = {
   creatinineUnit: 'umolL',
   weight: '',
   acr: '',
+  potassium: '',
 };
 
 const additionalChecks = [
@@ -134,12 +137,18 @@ export default function EgfrTab() {
     const cockcroftGault = calculateCockcroftGault(formData);
     const acr = getACategory(formData.acr);
     const kdigoRisk = getKDIGORisk(ckdEpi?.category, acr?.category);
+    const medicationAdvice = getRenalMedicationAdvice(
+      ckdEpi?.egfr,
+      cockcroftGault?.crCl,
+      formData.potassium,
+    );
 
     setResult({
       ckdEpi,
       cockcroftGault,
       acr,
       kdigoRisk,
+      medicationAdvice,
     });
   }
 
@@ -221,6 +230,22 @@ export default function EgfrTab() {
               onChange={(event) => handleChange('acr', event.target.value)}
               className={inputClass}
               placeholder="25"
+              min="0"
+              step="0.1"
+            />
+          </FormField>
+        </div>
+
+        <div className="mt-5 border-t border-slate-100 pt-4">
+          <h3 className="mb-3 text-sm font-semibold text-slate-800">Безпека лікування</h3>
+
+          <FormField label="Калій" hint="ммоль/л, якщо відомий">
+            <input
+              type="number"
+              value={formData.potassium}
+              onChange={(event) => handleChange('potassium', event.target.value)}
+              className={inputClass}
+              placeholder="4.5"
               min="0"
               step="0.1"
             />
@@ -314,6 +339,10 @@ export default function EgfrTab() {
           </p>
         )}
       </section>
+
+      {result?.medicationAdvice ? (
+        <RenalMedicationAdvice advice={result.medicationAdvice} />
+      ) : null}
     </div>
   );
 }
