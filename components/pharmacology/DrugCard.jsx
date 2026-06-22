@@ -12,10 +12,24 @@ export default function DrugCard({ drug, isOpen, onToggle }) {
         aria-controls={panelId}
         className="flex w-full items-start justify-between gap-4 px-4 py-4 text-left transition hover:bg-slate-50 sm:px-5"
       >
-        <span className="min-w-0">
-          <span className="block text-base font-semibold text-slate-950">{drug.ukrainianName}</span>
-          <span className="mt-1 block text-sm text-slate-500">
-            {drug.internationalName} · {drug.usualDose} · {drug.frequency}
+        <span className="grid min-w-0 flex-1 gap-3 sm:grid-cols-[minmax(0,1.1fr)_minmax(0,2.8fr)] sm:items-start">
+          <span className="block">
+            <span className="block text-base font-semibold text-slate-950">{drug.ukrainianName}</span>
+            <span className="mt-1 block text-sm text-slate-500">{drug.internationalName}</span>
+          </span>
+          <span className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <span>
+              <span className="block text-xs font-semibold text-slate-500">Звичайна доза</span>
+              <span className="mt-1 block text-sm text-slate-800">{drug.usualDose}</span>
+            </span>
+            <span>
+              <span className="block text-xs font-semibold text-slate-500">Кратність</span>
+              <span className="mt-1 block text-sm text-slate-800">{drug.frequency}</span>
+            </span>
+            <span className="col-span-2 sm:col-span-1">
+              <span className="block text-xs font-semibold text-slate-500">Напіввиведення</span>
+              <span className="mt-1 block text-sm text-slate-800">{drug.halfLife}</span>
+            </span>
           </span>
         </span>
         <span className="shrink-0 text-xl leading-none text-teal-700" aria-hidden="true">
