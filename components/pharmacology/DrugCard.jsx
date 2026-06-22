@@ -1,7 +1,8 @@
 'use client';
 
 export default function DrugCard({ drug, isOpen, onToggle }) {
-  const panelId = `drug-${drug.internationalName.toLowerCase()}`;
+  const panelId = `drug-${(drug.id ?? drug.internationalName).toLowerCase()}`;
+  const displayName = drug.displayName ?? drug.ukrainianName;
 
   return (
     <article className="overflow-hidden rounded-md border border-slate-200 bg-white">
@@ -14,8 +15,11 @@ export default function DrugCard({ drug, isOpen, onToggle }) {
       >
         <span className="grid min-w-0 flex-1 gap-3 sm:grid-cols-[minmax(0,1.1fr)_minmax(0,2.8fr)] sm:items-start">
           <span className="block">
-            <span className="block text-base font-semibold text-slate-950">{drug.ukrainianName}</span>
-            <span className="mt-1 block text-sm text-slate-500">{drug.internationalName}</span>
+            <span className="block text-base font-semibold text-slate-950">{displayName}</span>
+            <span className="mt-1 block text-sm text-slate-500">
+              {drug.displayName ? `${drug.ukrainianName} · ` : ''}
+              {drug.internationalName}
+            </span>
           </span>
           <span className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             <span>
@@ -64,7 +68,9 @@ export default function DrugCard({ drug, isOpen, onToggle }) {
 
           {drug.approximateBpReduction ? (
             <div className="mt-5 border-l-4 border-sky-400 bg-sky-50 px-4 py-3 text-sm leading-6 text-slate-700">
-              <span className="font-semibold text-slate-900">Орієнтовне зниження САТ: </span>
+              <span className="font-semibold text-slate-900">
+                {drug.bpReductionLabel ?? 'Орієнтовне зниження САТ'}:{' '}
+              </span>
               {drug.approximateBpReduction}
             </div>
           ) : null}
@@ -73,6 +79,21 @@ export default function DrugCard({ drug, isOpen, onToggle }) {
             <h4 className="text-sm font-semibold text-slate-950">Що відрізняє препарат</h4>
             <p className="mt-2 text-sm leading-6 text-slate-700">{drug.distinctiveFeatures}</p>
           </section>
+
+          {drug.evidence ? (
+            <aside className="mt-5 border-l-4 border-teal-500 bg-teal-50 px-4 py-3 text-sm leading-6 text-slate-700">
+              <p className="font-semibold text-slate-950">{drug.evidence.title}</p>
+              <p className="mt-1">{drug.evidence.text}</p>
+              <a
+                href={drug.evidence.url}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-2 inline-block font-semibold text-blue-700 underline decoration-blue-300 underline-offset-2 hover:text-blue-800"
+              >
+                {drug.evidence.label}
+              </a>
+            </aside>
+          ) : null}
         </div>
       ) : null}
     </article>

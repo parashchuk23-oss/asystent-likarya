@@ -63,18 +63,20 @@ export default function DrugClassSection({
 
           {filteredDrugs.length ? (
             <div className="mt-5 space-y-3">
-              {filteredDrugs.map((drug) => (
-                <DrugCard
-                  key={drug.internationalName}
-                  drug={drug}
-                  isOpen={openDrug === drug.internationalName}
-                  onToggle={() =>
-                    setOpenDrug((current) =>
-                      current === drug.internationalName ? null : drug.internationalName,
-                    )
-                  }
-                />
-              ))}
+              {filteredDrugs.map((drug) => {
+                const drugId = drug.id ?? drug.internationalName;
+
+                return (
+                  <DrugCard
+                    key={drugId}
+                    drug={drug}
+                    isOpen={openDrug === drugId}
+                    onToggle={() =>
+                      setOpenDrug((current) => (current === drugId ? null : drugId))
+                    }
+                  />
+                );
+              })}
             </div>
           ) : (
             <div className="mt-5 rounded-md border border-dashed border-slate-300 bg-slate-50 px-4 py-7 text-center text-sm text-slate-600">
