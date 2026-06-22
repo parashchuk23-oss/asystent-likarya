@@ -62,10 +62,12 @@ export default function DrugCard({ drug, isOpen, onToggle }) {
             </div>
           </dl>
 
-          <div className="mt-5 border-l-4 border-sky-400 bg-sky-50 px-4 py-3 text-sm leading-6 text-slate-700">
-            <span className="font-semibold text-slate-900">Орієнтовне зниження САТ: </span>
-            {drug.approximateBpReduction}
-          </div>
+          {drug.approximateBpReduction ? (
+            <div className="mt-5 border-l-4 border-sky-400 bg-sky-50 px-4 py-3 text-sm leading-6 text-slate-700">
+              <span className="font-semibold text-slate-900">Орієнтовне зниження САТ: </span>
+              {drug.approximateBpReduction}
+            </div>
+          ) : null}
 
           <section className="mt-5">
             <h4 className="text-sm font-semibold text-slate-950">Що відрізняє препарат</h4>
