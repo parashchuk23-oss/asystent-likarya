@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 function getInitialConstructorState(disease) {
   return {
@@ -11,22 +11,6 @@ function getInitialConstructorState(disease) {
     comorbidities: [],
     additionalText: '',
   };
-}
-
-function buildFullTemplate(disease) {
-  const diagnosisBlock = disease.diagnosisExamples
-    .map((example) => `${example.title}:\n${example.text}`)
-    .join('\n\n');
-
-  return `${disease.title}
-
-Діагностичні орієнтири:
-${disease.diagnosticCriteria.map((item) => `- ${item}`).join('\n')}
-
-Приклади формулювання діагнозу:
-${diagnosisBlock}
-
-${disease.recommendationTemplate}`;
 }
 
 function buildDiagnosisFromState(state) {
@@ -62,23 +46,17 @@ async function writeClipboardText(text) {
   }
 }
 
-export default function DiseaseTemplateCard({ disease }) {
+export default function DiseaseTemplateCard({ disease, onAddDiagnosis }) {
   const [copiedKey, setCopiedKey] = useState('');
   const [copyError, setCopyError] = useState(false);
   const [constructorState, setConstructorState] = useState(() =>
     getInitialConstructorState(disease),
   );
-  const [diagnosisDraft, setDiagnosisDraft] = useState('');
 
-  const fullTemplate = useMemo(() => buildFullTemplate(disease), [disease]);
   const constructedDiagnosis = useMemo(
     () => buildDiagnosisFromState(constructorState),
     [constructorState],
   );
-
-  useEffect(() => {
-    setDiagnosisDraft(constructedDiagnosis);
-  }, [constructedDiagnosis]);
 
   function updateConstructorValue(field, value) {
     setConstructorState((current) => ({ ...current, [field]: value }));
@@ -109,48 +87,32 @@ export default function DiseaseTemplateCard({ disease }) {
   }
 
   return (
-    <article className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-      <header className="border-b border-slate-100 bg-slate-50/70 px-5 py-4">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">
-              {disease.category}
-            </p>
-            <h3 className="mt-1 text-xl font-semibold text-slate-950">{disease.title}</h3>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{disease.summary}</p>
-          </div>
-          <button
-            type="button"
-            onClick={() => copyText('all', fullTemplate)}
-            className="w-full rounded-md bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 lg:w-auto"
-          >
-            {copiedKey === 'all' ? 'Скопійовано' : 'Скопіювати все'}
-          </button>
-        </div>
+    <article>
+      <header className="border-b border-slate-100 px-5 py-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">
+          {disease.category}
+        </p>
+        <h3 className="mt-1 text-xl font-semibold text-slate-950">{disease.title}</h3>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{disease.summary}</p>
       </header>
 
-      <div className="grid gap-5 p-5 xl:grid-cols-[0.9fr_1.1fr]">
-        <section>
-          <h4 className="text-sm font-semibold text-slate-950">Діагностичні орієнтири</h4>
-          <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-600">
-            {disease.diagnosticCriteria.map((item) => (
-              <li key={item} className="rounded-md border border-slate-100 bg-white px-3 py-2">
-                {item}
-              </li>
-            ))}
-          </ul>
+      <div className="p-5">
+        <div className="rounded-lg border border-slate-200">
+          <details open>
+            <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-slate-950">
+              Діагностичні орієнтири
+            </summary>
+            <ul className="space-y-2 border-t border-slate-100 p-4 text-sm leading-6 text-slate-600">
+              {disease.diagnosticCriteria.map((item) => (
+                <li key={item} className="rounded-md border border-slate-100 bg-slate-50 px-3 py-2">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </details>
+        </div>
 
-          <h4 className="mt-5 text-sm font-semibold text-slate-950">Що уточнити для діагнозу</h4>
-          <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-600">
-            {disease.constructorFields.map((item) => (
-              <li key={item} className="rounded-md bg-slate-50 px-3 py-2">
-                {item}
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section>
+        <section className="mt-5">
           <h4 className="text-sm font-semibold text-slate-950">Конструктор діагнозу</h4>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             <label className="block">
@@ -262,19 +224,14 @@ export default function DiseaseTemplateCard({ disease }) {
                 <p className="text-xs font-semibold uppercase tracking-[0.12em] text-blue-700">
                   Сформований діагноз
                 </p>
-                <textarea
-                  value={diagnosisDraft}
-                  onChange={(event) => setDiagnosisDraft(event.target.value)}
-                  rows={4}
-                  className="mt-2 w-full rounded-md border border-blue-100 bg-white px-3 py-2 text-sm leading-6 text-slate-900 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                />
+                <p className="mt-2 text-sm leading-6 text-slate-900">{constructedDiagnosis}</p>
               </div>
               <button
                 type="button"
-                onClick={() => copyText('constructed-diagnosis', diagnosisDraft)}
+                onClick={() => onAddDiagnosis(constructedDiagnosis)}
                 className="rounded-md bg-blue-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-800"
               >
-                {copiedKey === 'constructed-diagnosis' ? 'Скопійовано' : 'Скопіювати діагноз'}
+                Додати до діагнозу
               </button>
             </div>
           </div>
