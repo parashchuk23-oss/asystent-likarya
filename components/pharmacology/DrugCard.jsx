@@ -75,6 +75,13 @@ export default function DrugCard({ drug, isOpen, onToggle }) {
             </div>
           ) : null}
 
+          {drug.diureticEffect ? (
+            <div className="mt-5 border-l-4 border-cyan-500 bg-cyan-50 px-4 py-3 text-sm leading-6 text-slate-700">
+              <span className="font-semibold text-slate-900">Діуретичний ефект: </span>
+              {drug.diureticEffect}
+            </div>
+          ) : null}
+
           <section className="mt-5">
             <h4 className="text-sm font-semibold text-slate-950">Що відрізняє препарат</h4>
             <p className="mt-2 text-sm leading-6 text-slate-700">{drug.distinctiveFeatures}</p>

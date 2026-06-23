@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import CalculatorsTab from './CalculatorsTab';
 import CardioAssistantTab from './CardioAssistantTab';
+import DiseasesTab from './DiseasesTab';
 import EgfrTab from './EgfrTab';
 import PharmacologyTab from './PharmacologyTab';
 import QuestionnairesTab from './QuestionnairesTab';
@@ -38,6 +39,11 @@ const tabs = [
     id: 'drugs',
     label: 'Препарати',
     description: 'Практичний фармакологічний довідник',
+  },
+  {
+    id: 'diseases',
+    label: 'Хвороби',
+    description: 'Діагнози та рекомендації для копіювання',
   },
 ];
 
@@ -77,6 +83,7 @@ export default function AppTabs() {
         {activeTab === 'calculators' && <CalculatorsTab />}
         {activeTab === 'questionnaires' && <QuestionnairesTab />}
         {activeTab === 'drugs' && <PharmacologyTab />}
+        {activeTab === 'diseases' && <DiseasesTab />}
       </div>
     </section>
   );
