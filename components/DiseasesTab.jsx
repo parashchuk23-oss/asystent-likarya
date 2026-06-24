@@ -71,6 +71,32 @@ export default function DiseasesTab() {
       </header>
 
       <section className="mt-6 grid gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.15fr)]">
+        <section className="rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div className="border-b border-slate-100 bg-slate-50/70 p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+              Хвороби
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {diseases.map((disease) => (
+                <button
+                  key={disease.id}
+                  type="button"
+                  onClick={() => setActiveDiseaseId(disease.id)}
+                  className={`rounded-md px-3 py-2 text-sm font-semibold transition ${
+                    activeDiseaseId === disease.id
+                      ? 'bg-blue-700 text-white shadow-sm'
+                      : 'border border-slate-200 bg-white text-slate-600 hover:border-blue-200 hover:text-blue-700'
+                  }`}
+                >
+                  {disease.title}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <DiseaseTemplateCard disease={activeDisease} onAddDiagnosis={appendDiagnosis} />
+        </section>
+
         <aside className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
@@ -120,32 +146,6 @@ export default function DiseasesTab() {
             )}
           </div>
         </aside>
-
-        <section className="rounded-lg border border-slate-200 bg-white shadow-sm">
-          <div className="border-b border-slate-100 bg-slate-50/70 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-              Хвороби
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {diseases.map((disease) => (
-                <button
-                  key={disease.id}
-                  type="button"
-                  onClick={() => setActiveDiseaseId(disease.id)}
-                  className={`rounded-md px-3 py-2 text-sm font-semibold transition ${
-                    activeDiseaseId === disease.id
-                      ? 'bg-blue-700 text-white shadow-sm'
-                      : 'border border-slate-200 bg-white text-slate-600 hover:border-blue-200 hover:text-blue-700'
-                  }`}
-                >
-                  {disease.title}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <DiseaseTemplateCard disease={activeDisease} onAddDiagnosis={appendDiagnosis} />
-        </section>
       </section>
     </div>
   );
