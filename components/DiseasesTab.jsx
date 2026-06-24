@@ -4,8 +4,6 @@ import { useState } from 'react';
 import { hypertensionDisease } from '../data/diseases/hypertension';
 import DiseaseTemplateCard from './diseases/DiseaseTemplateCard';
 
-const diseases = [hypertensionDisease];
-
 async function writeClipboardText(text) {
   try {
     await navigator.clipboard.writeText(text);
@@ -26,12 +24,13 @@ async function writeClipboardText(text) {
 }
 
 export default function DiseasesTab() {
-  const [activeDiseaseId, setActiveDiseaseId] = useState(diseases[0].id);
   const [diagnosisText, setDiagnosisText] = useState('');
   const [copied, setCopied] = useState(false);
   const [copyError, setCopyError] = useState(false);
+  const [copiedRecommendations, setCopiedRecommendations] = useState(false);
+  const [recommendationsCopyError, setRecommendationsCopyError] = useState(false);
 
-  const activeDisease = diseases.find((disease) => disease.id === activeDiseaseId) ?? diseases[0];
+  const activeDisease = hypertensionDisease;
 
   function appendDiagnosis(fragment) {
     const normalizedFragment = fragment.trim();
@@ -57,6 +56,19 @@ export default function DiseasesTab() {
     window.setTimeout(() => setCopied(false), 1600);
   }
 
+  async function copyRecommendations() {
+    const copiedToClipboard = await writeClipboardText(activeDisease.recommendationTemplate);
+    if (!copiedToClipboard) {
+      setRecommendationsCopyError(true);
+      window.setTimeout(() => setRecommendationsCopyError(false), 2200);
+      return;
+    }
+
+    setRecommendationsCopyError(false);
+    setCopiedRecommendations(true);
+    window.setTimeout(() => setCopiedRecommendations(false), 1600);
+  }
+
   return (
     <div>
       <header className="border-b border-slate-200 pb-5">
@@ -70,28 +82,36 @@ export default function DiseasesTab() {
         </p>
       </header>
 
-      <section className="mt-6 grid gap-5 xl:grid-cols-[minmax(260px,0.32fr)_minmax(0,0.68fr)]">
-        <aside className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-            Хвороби
-          </p>
-          <div className="mt-3 space-y-2">
-            {diseases.map((disease) => (
-              <button
-                key={disease.id}
-                type="button"
-                onClick={() => setActiveDiseaseId(disease.id)}
-                className={`w-full rounded-md px-3 py-2.5 text-left text-sm font-semibold transition ${
-                  activeDiseaseId === disease.id
-                    ? 'bg-blue-700 text-white shadow-sm'
-                    : 'border border-slate-200 bg-white text-slate-600 hover:border-blue-200 hover:text-blue-700'
-                }`}
-              >
-                {disease.title}
-              </button>
-            ))}
+      <section className="mt-6 grid items-start gap-5 xl:grid-cols-2">
+        <article className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+          <header className="border-b border-slate-100 px-5 py-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">
+              {activeDisease.category}
+            </p>
+            <h3 className="mt-1 text-xl font-semibold text-slate-950">{activeDisease.title}</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-600">{activeDisease.summary}</p>
+          </header>
+
+          <div className="p-5">
+            <div className="rounded-lg border border-slate-200">
+              <details open>
+                <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-slate-950">
+                  Діагностичні орієнтири
+                </summary>
+                <ul className="space-y-2 border-t border-slate-100 p-4 text-sm leading-6 text-slate-600">
+                  {activeDisease.diagnosticCriteria.map((item) => (
+                    <li
+                      key={item}
+                      className="rounded-md border border-slate-100 bg-slate-50 px-3 py-2"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            </div>
           </div>
-        </aside>
+        </article>
 
         <section className="rounded-lg border border-slate-200 bg-white shadow-sm">
           <DiseaseTemplateCard disease={activeDisease} onAddDiagnosis={appendDiagnosis} />
@@ -99,53 +119,79 @@ export default function DiseasesTab() {
       </section>
 
       <section className="mt-5 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">
-                Робоче поле
-              </p>
-              <h3 className="mt-1 text-lg font-semibold text-slate-950">Загальний діагноз</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Додавайте фрагменти з різних хвороб. Порядок, первинність і фінальне формулювання
-                лікар редагує самостійно.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setDiagnosisText('')}
-              className="rounded-md border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-rose-200 hover:text-rose-700"
-            >
-              Очистити
-            </button>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">
+              Робоче поле
+            </p>
+            <h3 className="mt-1 text-lg font-semibold text-slate-950">Загальний діагноз</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              Додавайте фрагменти з різних хвороб. Порядок, первинність і фінальне формулювання
+              лікар редагує самостійно.
+            </p>
           </div>
+          <button
+            type="button"
+            onClick={() => setDiagnosisText('')}
+            className="rounded-md border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-rose-200 hover:text-rose-700"
+          >
+            Очистити
+          </button>
+        </div>
 
-          <textarea
-            value={diagnosisText}
-            onChange={(event) => setDiagnosisText(event.target.value)}
-            rows={14}
-            placeholder="Тут зʼявляться додані фрагменти діагнозу. Текст можна редагувати вручну."
-            className="mt-4 min-h-[320px] w-full rounded-md border border-slate-300 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
-          />
+        <textarea
+          value={diagnosisText}
+          onChange={(event) => setDiagnosisText(event.target.value)}
+          rows={14}
+          placeholder="Тут зʼявляться додані фрагменти діагнозу. Текст можна редагувати вручну."
+          className="mt-4 min-h-[320px] w-full rounded-md border border-slate-300 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+        />
 
-          <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <button
-              type="button"
-              onClick={copyDiagnosis}
-              disabled={!diagnosisText.trim()}
-              className="rounded-md bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
-            >
-              {copied ? 'Скопійовано' : 'Скопіювати діагноз'}
-            </button>
-            {copyError ? (
-              <p className="text-xs font-medium text-rose-600">
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <button
+            type="button"
+            onClick={copyDiagnosis}
+            disabled={!diagnosisText.trim()}
+            className="rounded-md bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+          >
+            {copied ? 'Скопійовано' : 'Скопіювати діагноз'}
+          </button>
+          {copyError ? (
+            <p className="text-xs font-medium text-rose-600">
+              Не вдалося скопіювати автоматично. Виділіть текст вручну.
+            </p>
+          ) : (
+            <p className="text-xs text-slate-500">
+              Новий фрагмент додається нижче, не стираючи попередній.
+            </p>
+          )}
+        </div>
+      </section>
+
+      <section className="mt-5 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 className="text-sm font-semibold text-slate-950">Шаблон рекомендацій</h3>
+            {recommendationsCopyError ? (
+              <p className="mt-1 text-xs font-medium text-rose-600">
                 Не вдалося скопіювати автоматично. Виділіть текст вручну.
               </p>
-            ) : (
-              <p className="text-xs text-slate-500">
-                Новий фрагмент додається нижче, не стираючи попередній.
-              </p>
-            )}
+            ) : null}
           </div>
+          <button
+            type="button"
+            onClick={copyRecommendations}
+            className="rounded-md border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:text-blue-700"
+          >
+            {copiedRecommendations ? 'Скопійовано' : 'Скопіювати рекомендації'}
+          </button>
+        </div>
+
+        <div className="mt-3 max-h-[420px] overflow-auto rounded-md border border-slate-200 bg-slate-50 p-4">
+          <pre className="whitespace-pre-wrap font-sans text-sm leading-6 text-slate-700">
+            {activeDisease.recommendationTemplate}
+          </pre>
+        </div>
       </section>
     </div>
   );
