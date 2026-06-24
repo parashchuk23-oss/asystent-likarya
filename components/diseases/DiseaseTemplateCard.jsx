@@ -236,32 +236,6 @@ export default function DiseaseTemplateCard({ disease, onAddDiagnosis }) {
             </div>
           </div>
 
-          <div className="mt-6 flex items-center justify-between gap-3">
-            <h4 className="text-sm font-semibold text-slate-950">Приклади діагнозу</h4>
-            <p className="text-xs text-slate-500">Кожен приклад копіюється окремо.</p>
-          </div>
-
-          <div className="mt-3 space-y-3">
-            {disease.diagnosisExamples.map((example, index) => (
-              <div key={example.title} className="rounded-md border border-slate-200 p-3">
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-                    {example.title}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => copyText(`diagnosis-example-${index}`, example.text)}
-                    className="rounded-md border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:text-blue-700"
-                  >
-                    {copiedKey === `diagnosis-example-${index}` ? 'Скопійовано' : 'Скопіювати'}
-                  </button>
-                </div>
-                <p className="mt-2 whitespace-pre-line text-sm leading-6 text-slate-800">
-                  {example.text}
-                </p>
-              </div>
-            ))}
-          </div>
         </section>
       </div>
 

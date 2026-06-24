@@ -70,34 +70,35 @@ export default function DiseasesTab() {
         </p>
       </header>
 
-      <section className="mt-6 grid gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.15fr)]">
-        <section className="rounded-lg border border-slate-200 bg-white shadow-sm">
-          <div className="border-b border-slate-100 bg-slate-50/70 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
-              Хвороби
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {diseases.map((disease) => (
-                <button
-                  key={disease.id}
-                  type="button"
-                  onClick={() => setActiveDiseaseId(disease.id)}
-                  className={`rounded-md px-3 py-2 text-sm font-semibold transition ${
-                    activeDiseaseId === disease.id
-                      ? 'bg-blue-700 text-white shadow-sm'
-                      : 'border border-slate-200 bg-white text-slate-600 hover:border-blue-200 hover:text-blue-700'
-                  }`}
-                >
-                  {disease.title}
-                </button>
-              ))}
-            </div>
+      <section className="mt-6 grid gap-5 xl:grid-cols-[minmax(260px,0.32fr)_minmax(0,0.68fr)]">
+        <aside className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+            Хвороби
+          </p>
+          <div className="mt-3 space-y-2">
+            {diseases.map((disease) => (
+              <button
+                key={disease.id}
+                type="button"
+                onClick={() => setActiveDiseaseId(disease.id)}
+                className={`w-full rounded-md px-3 py-2.5 text-left text-sm font-semibold transition ${
+                  activeDiseaseId === disease.id
+                    ? 'bg-blue-700 text-white shadow-sm'
+                    : 'border border-slate-200 bg-white text-slate-600 hover:border-blue-200 hover:text-blue-700'
+                }`}
+              >
+                {disease.title}
+              </button>
+            ))}
           </div>
+        </aside>
 
+        <section className="rounded-lg border border-slate-200 bg-white shadow-sm">
           <DiseaseTemplateCard disease={activeDisease} onAddDiagnosis={appendDiagnosis} />
         </section>
+      </section>
 
-        <aside className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <section className="mt-5 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">
@@ -145,7 +146,6 @@ export default function DiseasesTab() {
               </p>
             )}
           </div>
-        </aside>
       </section>
     </div>
   );
