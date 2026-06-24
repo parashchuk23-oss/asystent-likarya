@@ -2,7 +2,10 @@
 
 import { useState } from 'react';
 import { hypertensionDisease } from '../data/diseases/hypertension';
+import { ihdDisease } from '../data/diseases/ihd';
 import DiseaseTemplateCard from './diseases/DiseaseTemplateCard';
+
+const diseases = [hypertensionDisease, ihdDisease];
 
 async function writeClipboardText(text) {
   try {
@@ -29,8 +32,9 @@ export default function DiseasesTab() {
   const [copyError, setCopyError] = useState(false);
   const [copiedRecommendations, setCopiedRecommendations] = useState(false);
   const [recommendationsCopyError, setRecommendationsCopyError] = useState(false);
+  const [activeDiseaseId, setActiveDiseaseId] = useState(diseases[0].id);
 
-  const activeDisease = hypertensionDisease;
+  const activeDisease = diseases.find((disease) => disease.id === activeDiseaseId) ?? diseases[0];
 
   function appendDiagnosis(fragment) {
     const normalizedFragment = fragment.trim();
@@ -81,6 +85,27 @@ export default function DiseasesTab() {
           для редагування лікарем перед копіюванням у заключення.
         </p>
       </header>
+
+      <div className="mt-5 flex flex-wrap gap-2">
+        {diseases.map((disease) => (
+          <button
+            key={disease.id}
+            type="button"
+            onClick={() => {
+              setActiveDiseaseId(disease.id);
+              setCopiedRecommendations(false);
+              setRecommendationsCopyError(false);
+            }}
+            className={`rounded-md px-3 py-2 text-sm font-semibold transition ${
+              activeDiseaseId === disease.id
+                ? 'bg-blue-700 text-white shadow-sm'
+                : 'border border-slate-200 bg-white text-slate-600 hover:border-blue-200 hover:text-blue-700'
+            }`}
+          >
+            {disease.title}
+          </button>
+        ))}
+      </div>
 
       <section className="mt-6 grid items-start gap-5 xl:grid-cols-2">
         <article className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
