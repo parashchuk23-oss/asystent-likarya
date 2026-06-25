@@ -45,17 +45,6 @@ function buildDiagnosisFromState(disease, state) {
 
   if (disease.id === 'ihd') {
     const anginaPart = [state.clinicalForm, state.functionalClass].filter(Boolean).join(' ');
-    const lvFunctionPart = [
-      state.lvFunction,
-      state.efValue
-        ? formatFreeTextValue(
-            constructor.freeTextFields.find((field) => field.id === 'efValue'),
-            state.efValue,
-          )
-        : '',
-    ]
-      .filter(Boolean)
-      .join(' ');
     const eventYear = state.eventYear
       ? formatFreeTextValue(
           constructor.freeTextFields.find((field) => field.id === 'eventYear'),
@@ -66,7 +55,6 @@ function buildDiagnosisFromState(disease, state) {
     const detailParts = [
       eventYear,
       ...checkboxParts,
-      lvFunctionPart,
       additionalText,
     ].filter(Boolean);
     const base = `${constructor.textPrefix}. ${anginaPart}.`;
