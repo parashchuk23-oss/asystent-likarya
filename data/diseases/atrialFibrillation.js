@@ -16,6 +16,10 @@ export const atrialFibrillationDisease = {
   ],
   diagnosisConstructor: {
     textPrefix: 'Фібриляція передсердь',
+    icd10: {
+      code: 'I48',
+      label: 'Фібриляція та тріпотіння передсердь',
+    },
     selectFields: [
       {
         id: 'afForm',

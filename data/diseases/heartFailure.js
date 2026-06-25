@@ -14,6 +14,10 @@ export const heartFailureDisease = {
   ],
   diagnosisConstructor: {
     textPrefix: 'Серцева недостатність',
+    icd10: {
+      code: 'I50.9',
+      label: 'Серцева недостатність неуточнена',
+    },
     selectFields: [
       {
         id: 'stage',

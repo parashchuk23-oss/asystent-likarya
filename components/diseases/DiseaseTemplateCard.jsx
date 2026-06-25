@@ -27,6 +27,26 @@ function formatFreeTextValue(field, value) {
   return `${field.prefix ?? ''}${normalizedValue}${field.suffix ?? ''}`;
 }
 
+function formatIcd10Items(items) {
+  return items.map((item) => `${item.code} — ${item.label}`).join('\n');
+}
+
+function getIcd10FromState(disease, state) {
+  const constructor = disease.diagnosisConstructor;
+
+  if (constructor.icd10) {
+    return formatIcd10Items([constructor.icd10]);
+  }
+
+  const matchedOption = constructor.icd10Options?.find(
+    (option) => state[option.field] === option.value,
+  );
+
+  if (!matchedOption) return '';
+
+  return formatIcd10Items(matchedOption.items);
+}
+
 function buildDiagnosisFromState(disease, state) {
   const constructor = disease.diagnosisConstructor;
   const checkboxParts = constructor.checkboxGroups.flatMap((group) => state[group.id] ?? []);
@@ -135,6 +155,10 @@ export default function DiseaseTemplateCard({ disease, onAddDiagnosis }) {
     () => buildDiagnosisFromState(disease, constructorState),
     [disease, constructorState],
   );
+  const constructedIcd10 = useMemo(
+    () => getIcd10FromState(disease, constructorState),
+    [disease, constructorState],
+  );
 
   function updateConstructorValue(field, value) {
     setConstructorState((current) => ({ ...current, [field]: value }));
@@ -225,10 +249,20 @@ export default function DiseaseTemplateCard({ disease, onAddDiagnosis }) {
                   Сформований діагноз
                 </p>
                 <p className="mt-2 text-sm leading-6 text-slate-900">{constructedDiagnosis}</p>
+                {constructedIcd10 ? (
+                  <div className="mt-3 rounded-md border border-blue-100 bg-white/70 px-3 py-2">
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-blue-700">
+                      МКХ-10
+                    </p>
+                    <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-700">
+                      {constructedIcd10}
+                    </p>
+                  </div>
+                ) : null}
               </div>
               <button
                 type="button"
-                onClick={() => onAddDiagnosis(constructedDiagnosis)}
+                onClick={() => onAddDiagnosis(constructedDiagnosis, constructedIcd10)}
                 className="rounded-md bg-blue-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-800"
               >
                 Додати до діагнозу

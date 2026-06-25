@@ -20,6 +20,10 @@ export const hypertensionDisease = {
   ],
   diagnosisConstructor: {
     textPrefix: 'Гіпертонічна хвороба',
+    icd10: {
+      code: 'I10',
+      label: 'Есенціальна (первинна) гіпертензія',
+    },
     selectFields: [
       {
         id: 'stage',

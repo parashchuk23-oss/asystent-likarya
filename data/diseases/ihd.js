@@ -14,6 +14,66 @@ export const ihdDisease = {
   ],
   diagnosisConstructor: {
     textPrefix: 'ІХС',
+    icd10Options: [
+      {
+        field: 'clinicalForm',
+        value: 'Стабільна стенокардія напруги',
+        items: [
+          {
+            code: 'I20.8',
+            label: 'Інші форми стенокардії',
+          },
+        ],
+      },
+      {
+        field: 'clinicalForm',
+        value: 'Постінфарктний кардіосклероз',
+        items: [
+          {
+            code: 'I25.2',
+            label: 'Перенесений у минулому інфаркт міокарда',
+          },
+        ],
+      },
+      {
+        field: 'clinicalForm',
+        value: 'Безбольова ішемія міокарда',
+        items: [
+          {
+            code: 'I25.6',
+            label: 'Безбольова ішемія міокарда',
+          },
+        ],
+      },
+      {
+        field: 'clinicalForm',
+        value: 'Стан після стентування коронарних артерій',
+        items: [
+          {
+            code: 'I25.1',
+            label: 'Атеросклеротична хвороба серця',
+          },
+          {
+            code: 'Z95.5',
+            label: 'Наявність коронарного ангіопластичного імплантату та трансплантату',
+          },
+        ],
+      },
+      {
+        field: 'clinicalForm',
+        value: 'Стан після АКШ',
+        items: [
+          {
+            code: 'I25.1',
+            label: 'Атеросклеротична хвороба серця',
+          },
+          {
+            code: 'Z95.1',
+            label: 'Наявність аортокоронарного шунта',
+          },
+        ],
+      },
+    ],
     selectFields: [
       {
         id: 'clinicalForm',
