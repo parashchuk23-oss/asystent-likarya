@@ -136,6 +136,52 @@ export const ihdDisease = {
       },
     ],
   },
+  recommendationGroups: {
+    labs: [
+      { id: 'cbc', text: 'ЗАК' },
+      { id: 'creatinine-egfr', text: 'креатинін/eGFR' },
+      { id: 'liver-tests', text: 'печінкові проби' },
+      { id: 'glucose-hba1c', text: 'глюкоза / HbA1c' },
+      { id: 'lipid-panel', text: 'ліпідограма' },
+      { id: 'electrolytes-na-k', text: 'електроліти (Na, K)' },
+    ],
+    instrumental: [
+      { id: 'ecg', text: 'ЕКГ' },
+      { id: 'echo', text: 'ЕхоКГ' },
+      { id: 'holter', text: 'Холтер-ЕКГ за показами' },
+      {
+        id: 'ischemia-testing',
+        text: 'тест з фізичним навантаженням / стрес-візуалізація / КТ-коронарографія за показами',
+      },
+    ],
+    consultations: [
+      { id: 'cardiologist-if-needed', text: 'кардіолог за потреби' },
+      {
+        id: 'revascularization-consult',
+        text: 'кардіохірург / інтервенційний кардіолог при показах до реваскуляризації',
+      },
+    ],
+    lifestyle: [
+      { id: 'mediterranean-diet', text: 'середземноморська дієта' },
+      { id: 'smoking-cessation', text: 'відмова від куріння' },
+      {
+        id: 'physical-activity',
+        text: 'дозовані фізичні навантаження в межах переносимості',
+      },
+      { id: 'weight-control', text: 'контроль маси тіла' },
+    ],
+    medications: [
+      {
+        id: 'beta-blockers-angina',
+        text: 'бета-блокатори (контроль ЧСС, зменшення симптомів стенокардії)',
+      },
+      {
+        id: 'antithrombotic-therapy',
+        text: 'антитромботична терапія (профілактика тромботичних подій)',
+      },
+      { id: 'lipid-lowering-therapy', text: 'ліпідознижувальна терапія' },
+    ],
+  },
   recommendationTemplate: `Рекомендовано:
 
 1. Оцінити симптоми стенокардії, толерантність до навантаження, частоту нападів, потребу в нітратах короткої дії та фактори, що провокують біль.

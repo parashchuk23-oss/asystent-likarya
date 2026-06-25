@@ -101,6 +101,40 @@ export const atrialFibrillationDisease = {
       },
     ],
   },
+  recommendationGroups: {
+    labs: [
+      { id: 'cbc', text: 'ЗАК' },
+      { id: 'creatinine-egfr', text: 'креатинін/eGFR' },
+      { id: 'electrolytes-na-k-mg', text: 'електроліти (Na, K, Mg за показами)' },
+      { id: 'liver-tests', text: 'печінкові проби' },
+      { id: 'tsh', text: 'ТТГ' },
+      { id: 'glucose-hba1c', text: 'глюкоза / HbA1c' },
+    ],
+    instrumental: [
+      { id: 'ecg', text: 'ЕКГ' },
+      {
+        id: 'holter-long-monitoring',
+        text: 'Холтер-ЕКГ / тривале моніторування ритму за показами',
+      },
+      { id: 'echo', text: 'ЕхоКГ' },
+    ],
+    consultations: [
+      { id: 'arrhythmologist-if-needed', text: 'кардіолог / аритмолог за показами' },
+    ],
+    lifestyle: [
+      { id: 'bp-control', text: 'контроль АТ' },
+      { id: 'weight-control', text: 'контроль маси тіла' },
+      { id: 'alcohol-limit', text: 'обмеження алкоголю' },
+      { id: 'risk-factor-correction', text: 'корекція факторів ризику' },
+      { id: 'sleep-apnea-if-needed', text: 'оцінка апное сну за показами' },
+    ],
+    medications: [
+      {
+        id: 'anticoagulation-af',
+        text: 'антикоагулянтна терапія (після оцінки CHA2DS2-VASc і HAS-BLED)',
+      },
+    ],
+  },
   recommendationTemplate: `Рекомендовано:
 
 1. Підтвердити ФП за ЕКГ або даними тривалого моніторування ритму, якщо епізод не зафіксований на стандартній ЕКГ.

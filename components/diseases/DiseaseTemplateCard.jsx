@@ -262,7 +262,7 @@ export default function DiseaseTemplateCard({ disease, onAddDiagnosis }) {
               </div>
               <button
                 type="button"
-                onClick={() => onAddDiagnosis(constructedDiagnosis, constructedIcd10)}
+                onClick={() => onAddDiagnosis(constructedDiagnosis, constructedIcd10, disease.id)}
                 className="rounded-md bg-blue-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-800"
               >
                 Додати до діагнозу

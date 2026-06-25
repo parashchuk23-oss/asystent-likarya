@@ -87,6 +87,39 @@ export const hypertensionDisease = {
       },
     ],
   },
+  recommendationGroups: {
+    labs: [
+      { id: 'cbc', text: 'ЗАК' },
+      { id: 'urinalysis', text: 'ЗАС' },
+      { id: 'creatinine-egfr', text: 'креатинін/eGFR' },
+      { id: 'liver-tests', text: 'печінкові проби' },
+      { id: 'electrolytes-na-k', text: 'електроліти (Na, K)' },
+      { id: 'glucose-hba1c', text: 'глюкоза / HbA1c' },
+      { id: 'lipid-panel', text: 'ліпідограма' },
+      { id: 'tsh', text: 'ТТГ' },
+    ],
+    instrumental: [
+      { id: 'ecg', text: 'ЕКГ' },
+      { id: 'echo', text: 'ЕхоКГ' },
+      { id: 'renal-ultrasound', text: 'УЗД нирок' },
+    ],
+    consultations: [
+      { id: 'ophthalmologist-fundus', text: 'офтальмолог (огляд очного дна)' },
+    ],
+    lifestyle: [
+      { id: 'salt-restriction', text: 'обмеження солі' },
+      { id: 'physical-activity', text: 'дозовані фізичні навантаження' },
+      { id: 'weight-control', text: 'контроль маси тіла' },
+      { id: 'smoking-cessation', text: 'відмова від куріння' },
+      { id: 'alcohol-limit', text: 'обмеження алкоголю' },
+    ],
+    medications: [
+      {
+        id: 'dual-antihypertensive-therapy',
+        text: 'подвійна антигіпертензивна терапія',
+      },
+    ],
+  },
   diagnosisExamples: [
     {
       title: 'Базовий варіант',

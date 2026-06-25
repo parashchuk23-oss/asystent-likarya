@@ -119,6 +119,62 @@ export const heartFailureDisease = {
       },
     ],
   },
+  recommendationGroups: {
+    labs: [
+      { id: 'cbc', text: 'ЗАК' },
+      { id: 'urinalysis', text: 'ЗАС' },
+      { id: 'creatinine-egfr', text: 'креатинін/eGFR' },
+      { id: 'electrolytes-na-k', text: 'електроліти (Na, K)' },
+      { id: 'liver-tests', text: 'печінкові проби' },
+      { id: 'glucose-hba1c', text: 'глюкоза / HbA1c' },
+      { id: 'lipid-panel', text: 'ліпідограма' },
+      { id: 'tsh', text: 'ТТГ' },
+      { id: 'nt-probnp-bnp', text: 'NT-proBNP/BNP за наявності' },
+    ],
+    instrumental: [
+      { id: 'ecg', text: 'ЕКГ' },
+      { id: 'echo', text: 'ЕхоКГ' },
+      { id: 'chest-xray-if-needed', text: 'рентген ОГК за показами' },
+    ],
+    consultations: [
+      { id: 'cardiologist-if-needed', text: 'кардіолог за показами' },
+    ],
+    lifestyle: [
+      { id: 'weight-control', text: 'контроль маси тіла' },
+      {
+        id: 'daily-weight-fluid-retention',
+        text: 'щоденне зважування при набряках / затримці рідини',
+      },
+      { id: 'salt-restriction', text: 'обмеження солі' },
+      { id: 'fluid-control-if-needed', text: 'контроль рідини за показами' },
+      {
+        id: 'physical-activity',
+        text: 'дозовані навантаження в межах переносимості',
+      },
+    ],
+    medications: [
+      {
+        id: 'sglt2-hf',
+        text: 'іНЗКТГ-2 (зниження ризику госпіталізацій через СН та серцево-судинних подій)',
+      },
+      {
+        id: 'ace-arb-arni-hf',
+        text: 'ІАПФ / БРА / ARNI (нейрогуморальна блокада, прогноз)',
+      },
+      {
+        id: 'beta-blockers-hf',
+        text: 'бета-блокатори (контроль ЧСС, прогноз)',
+      },
+      {
+        id: 'mra-hf',
+        text: 'антагоністи мінералокортикоїдних рецепторів (прогноз, затримка рідини)',
+      },
+      {
+        id: 'diuretics-fluid-retention',
+        text: 'діуретики (при затримці рідини)',
+      },
+    ],
+  },
   recommendationTemplate: `Рекомендовано:
 
 1. Оцінити симптоми серцевої недостатності, наявність застою, масу тіла, АТ, ЧСС, сатурацію та толерантність до навантаження.
