@@ -3,9 +3,16 @@
 import { useState } from 'react';
 import { hypertensionDisease } from '../data/diseases/hypertension';
 import { ihdDisease } from '../data/diseases/ihd';
+import { heartFailureDisease } from '../data/diseases/heartFailure';
+import { atrialFibrillationDisease } from '../data/diseases/atrialFibrillation';
 import DiseaseTemplateCard from './diseases/DiseaseTemplateCard';
 
-const diseases = [hypertensionDisease, ihdDisease];
+const diseases = [
+  hypertensionDisease,
+  ihdDisease,
+  heartFailureDisease,
+  atrialFibrillationDisease,
+];
 
 async function writeClipboardText(text) {
   try {

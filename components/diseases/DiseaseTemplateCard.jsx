@@ -45,10 +45,15 @@ function buildDiagnosisFromState(disease, state) {
 
   if (disease.id === 'ihd') {
     const anginaPart = [state.clinicalForm, state.functionalClass].filter(Boolean).join(' ');
-    const lvFunctionPart = [state.lvFunction, state.efValue ? formatFreeTextValue(
-      constructor.freeTextFields.find((field) => field.id === 'efValue'),
-      state.efValue,
-    ) : '']
+    const lvFunctionPart = [
+      state.lvFunction,
+      state.efValue
+        ? formatFreeTextValue(
+            constructor.freeTextFields.find((field) => field.id === 'efValue'),
+            state.efValue,
+          )
+        : '',
+    ]
       .filter(Boolean)
       .join(' ');
     const eventYear = state.eventYear
@@ -65,6 +70,55 @@ function buildDiagnosisFromState(disease, state) {
       additionalText,
     ].filter(Boolean);
     const base = `${constructor.textPrefix}. ${anginaPart}.`;
+    if (!detailParts.length) return base;
+
+    return `${base} ${detailParts.join('. ')}.`;
+  }
+
+  if (disease.id === 'heartFailure') {
+    const efPart = [
+      state.efCategory,
+      state.efValue
+        ? formatFreeTextValue(
+            constructor.freeTextFields.find((field) => field.id === 'efValue'),
+            state.efValue,
+          )
+        : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+    const baseParts = [
+      state.stage,
+      efPart,
+      state.nyhaClass,
+      state.chfClass,
+    ].filter(Boolean);
+    const base = `${constructor.textPrefix}, ${baseParts.join(', ')}.`;
+    const additionalText = state.additionalText?.trim() ?? '';
+    const detailParts = [
+      state.etiology,
+      ...checkboxParts,
+      additionalText,
+    ].filter(Boolean);
+    if (!detailParts.length) return base;
+
+    return `${base} ${detailParts.join('. ')}.`;
+  }
+
+  if (disease.id === 'atrialFibrillation') {
+    const baseParts = [state.afForm, state.rateVariant].filter(Boolean);
+    const base = `${constructor.textPrefix}, ${baseParts.join(', ')}.`;
+    const riskParts = constructor.freeTextFields
+      .filter((field) => field.id !== 'additionalText')
+      .map((field) => formatFreeTextValue(field, state[field.id] ?? ''))
+      .filter(Boolean);
+    const additionalText = state.additionalText?.trim() ?? '';
+    const detailParts = [
+      state.strategy,
+      ...riskParts,
+      ...checkboxParts,
+      additionalText,
+    ].filter(Boolean);
     if (!detailParts.length) return base;
 
     return `${base} ${detailParts.join('. ')}.`;
