@@ -3,12 +3,26 @@
 import { useState } from 'react';
 import BmiCalculator from './calculators/BmiCalculator';
 import Cha2ds2VascCalculator from './calculators/Cha2ds2VascCalculator';
+import EgfrTab from './EgfrTab';
 import FraxCalculator from './calculators/FraxCalculator';
 import H2fpefCalculator from './calculators/H2fpefCalculator';
 import HasBledCalculator from './calculators/HasBledCalculator';
+import Score2Tab from './Score2Tab';
 import WellsDimerCalculator from './calculators/WellsDimerCalculator';
 
 const calculators = [
+  {
+    id: 'score2',
+    title: 'Кардіоваскулярний ризик',
+    description: 'SCORE2 / SCORE2-OP',
+    component: <Score2Tab />,
+  },
+  {
+    id: 'renal-function',
+    title: 'Ниркова функція',
+    description: 'CKD-EPI 2021, Cockcroft-Gault, ACR, KDIGO і медикаментозна безпека',
+    component: <EgfrTab />,
+  },
   {
     id: 'bmi',
     title: 'BMI (ІМТ)',

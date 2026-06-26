@@ -4,10 +4,8 @@ import { useState } from 'react';
 import CalculatorsTab from './CalculatorsTab';
 import CardioAssistantTab from './CardioAssistantTab';
 import DiseasesTab from './DiseasesTab';
-import EgfrTab from './EgfrTab';
 import PharmacologyTab from './PharmacologyTab';
 import QuestionnairesTab from './QuestionnairesTab';
-import Score2Tab from './Score2Tab';
 
 const tabs = [
   {
@@ -16,19 +14,9 @@ const tabs = [
     description: 'Заключення формується лікарем на основі введених даних.',
   },
   {
-    id: 'score2',
-    label: 'Кардіоваскулярний ризик',
-    description: 'SCORE2 / SCORE2-OP',
-  },
-  {
-    id: 'egfr',
-    label: 'Ниркова функція',
-    description: 'CKD-EPI 2021, Cockcroft-Gault, ACR, KDIGO',
-  },
-  {
     id: 'calculators',
     label: 'Калькулятори',
-    description: 'CHA₂DS₂-VASc, HAS-BLED',
+    description: 'SCORE2, ниркова функція, CHA₂DS₂-VASc, HAS-BLED та інші інструменти',
   },
   {
     id: 'questionnaires',
@@ -78,8 +66,6 @@ export default function AppTabs() {
 
       <div className="p-4">
         {activeTab === 'assistant' && <CardioAssistantTab />}
-        {activeTab === 'score2' && <Score2Tab />}
-        {activeTab === 'egfr' && <EgfrTab />}
         {activeTab === 'calculators' && <CalculatorsTab />}
         {activeTab === 'questionnaires' && <QuestionnairesTab />}
         {activeTab === 'drugs' && <PharmacologyTab />}
