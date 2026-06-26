@@ -101,6 +101,22 @@ export default function DrugCard({ drug, isOpen, onToggle }) {
               </a>
             </aside>
           ) : null}
+
+          {drug.clinicalProfile?.length ? (
+            <section className="mt-5">
+              <h4 className="text-sm font-semibold text-slate-950">Клінічний профіль</h4>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                {drug.clinicalProfile.map((item) => (
+                  <div key={item.label} className="rounded-md border border-slate-200 bg-slate-50 p-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-teal-700">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-slate-700">{item.text}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ) : null}
         </div>
       ) : null}
     </article>
