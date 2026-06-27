@@ -649,6 +649,139 @@ export function calculateH2fpef(data) {
   };
 }
 
+function getH2fpefNextStep(score) {
+  if (score <= 1) {
+    return 'Низька ймовірність СН зі збереженою ФВ (HFpEF). Доцільно розглянути інші причини задишки та оцінити клінічний контекст.';
+  }
+
+  if (score <= 5) {
+    return 'Проміжна ймовірність СН зі збереженою ФВ (HFpEF). Потрібна додаткова оцінка: BNP або NT-proBNP, ЕхоКГ, навантажувальне тестування за показами.';
+  }
+
+  return 'Висока ймовірність СН зі збереженою ФВ (HFpEF). Потрібна клінічна верифікація, оцінка супутніх станів і пошук факторів декомпенсації.';
+}
+
+function getAccAhaHeartFailureStage(data) {
+  if (data.refractorySymptoms) {
+    return {
+      stage: 'Stage D',
+      title: 'Рефрактерна / advanced СН',
+      interpretation:
+        'Рефрактерні симптоми попри оптимальну терапію або часті госпіталізації. Потрібна спеціалізована оцінка.',
+    };
+  }
+
+  if (data.heartFailureSymptoms) {
+    return {
+      stage: 'Stage C',
+      title: 'Симптомна СН',
+      interpretation:
+        'Є поточні або попередні симптоми серцевої недостатності на тлі структурного ураження серця.',
+    };
+  }
+
+  if (data.structuralHeartDiseaseOrBiomarkers) {
+    return {
+      stage: 'Stage B',
+      title: 'Пре-СН',
+      interpretation:
+        'Є структурне ураження серця або підвищені біомаркери, але немає поточних чи попередніх симптомів СН.',
+    };
+  }
+
+  if (data.heartFailureRiskFactors) {
+    return {
+      stage: 'Stage A',
+      title: 'Ризик СН',
+      interpretation:
+        'Є фактори ризику серцевої недостатності без структурного ураження серця та без симптомів.',
+    };
+  }
+
+  return {
+    stage: 'Не визначено',
+    title: 'Недостатньо даних',
+    interpretation: 'Позначте фактори ризику, структурні зміни або симптоми для орієнтовного staging.',
+  };
+}
+
+function getNyhaClass(data) {
+  if (data.symptomsAtRest) {
+    return {
+      className: 'NYHA IV',
+      interpretation: 'Симптоми серцевої недостатності є у спокої.',
+    };
+  }
+
+  if (data.symptomsWithLessThanOrdinaryActivity) {
+    return {
+      className: 'NYHA III',
+      interpretation: 'Симптоми виникають при меншому, ніж звичайне, фізичному навантаженні.',
+    };
+  }
+
+  if (data.symptomsWithOrdinaryActivity) {
+    return {
+      className: 'NYHA II',
+      interpretation: 'Симптоми виникають при звичайному фізичному навантаженні.',
+    };
+  }
+
+  return {
+    className: 'NYHA I',
+    interpretation: 'Немає обмеження звичайної фізичної активності симптомами СН.',
+  };
+}
+
+export function calculateHeartFailureHfpEfAssessment(data) {
+  const age = parsePositiveNumber(data.age);
+  const height = parsePositiveNumber(data.height);
+  const weight = parsePositiveNumber(data.weight);
+  const antihypertensiveCount = parseNonNegativeNumber(data.antihypertensiveCount);
+  const pasp = parsePositiveNumber(data.pasp);
+  const eOverEPrime = parsePositiveNumber(data.eOverEPrime);
+  const bmi = height !== null && weight !== null ? calculateBMI(weight, height) : '';
+  const numericBmi = parsePositiveNumber(bmi);
+
+  if (age === null || height === null || weight === null) return null;
+
+  const h2fpef = calculateH2fpef({
+    obesity: numericBmi !== null && numericBmi > 30,
+    multipleAntihypertensives: antihypertensiveCount !== null && antihypertensiveCount >= 2,
+    atrialFibrillation: data.atrialFibrillation,
+    pulmonaryHypertension: pasp !== null && pasp > 35,
+    ageOver60: age > 60,
+    elevatedFillingPressure: eOverEPrime !== null && eOverEPrime > 9,
+  });
+
+  return {
+    bmi,
+    h2fpef: {
+      ...h2fpef,
+      nextStep: getH2fpefNextStep(h2fpef.score),
+    },
+    accAhaStage: getAccAhaHeartFailureStage(data),
+    nyha: getNyhaClass(data),
+    additionalChecks: [
+      'ЕхоКГ',
+      'BNP або NT-proBNP',
+      'ЕКГ',
+      'Креатинін / ШКФ',
+      'Калій / натрій',
+      'Hb',
+      'ТТГ за показами',
+      'Оцінка ФП, ІХС, ожиріння, апное сну',
+    ],
+    relatedTools: [
+      'ШКФ',
+      'ІМТ / оцінка маси тіла',
+      'SCORE2',
+      'ФП / антикоагуляція',
+      'Препарати',
+    ],
+  };
+}
+
 export function calculateWellsPe(data) {
   const score =
     (data.clinicalDvtSigns ? 3 : 0) +

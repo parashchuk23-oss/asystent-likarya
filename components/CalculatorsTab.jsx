@@ -36,8 +36,8 @@ const calculators = [
   },
   {
     id: 'h2fpef',
-    title: 'H2FPEF Score',
-    description: 'Оцінка ймовірності HFpEF у пацієнтів із задишкою',
+    title: 'СН зі збереженою ФВ (HFpEF)',
+    description: 'H2FPEF, стадія СН ACC/AHA та функціональний клас NYHA',
     component: <H2fpefCalculator />,
   },
   {
