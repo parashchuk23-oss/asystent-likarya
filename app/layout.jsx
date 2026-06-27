@@ -1,4 +1,8 @@
 import './globals.css';
+import { GoogleAnalytics } from '@next/third-parties/google';
+
+const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const isProduction = process.env.NODE_ENV === 'production';
 
 export const metadata = {
   title: 'Асистент лікаря',
@@ -21,7 +25,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="uk" className="scroll-smooth">
-      <body>{children}</body>
+      <body>
+        {children}
+        {isProduction && gaMeasurementId ? <GoogleAnalytics gaId={gaMeasurementId} /> : null}
+      </body>
     </html>
   );
 }

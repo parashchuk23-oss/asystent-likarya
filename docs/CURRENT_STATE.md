@@ -39,6 +39,12 @@
 
 Google Search Console verification додано через Next.js metadata API у `app/layout.jsx`.
 
+## Google Analytics
+
+Google Analytics 4 підключено через офіційний компонент `GoogleAnalytics` з `@next/third-parties/google`.
+
+Measurement ID береться зі змінної середовища `NEXT_PUBLIC_GA_MEASUREMENT_ID` і не хардкодиться в коді. Аналітика рендериться тільки у production-збірці.
+
 ## Sitemap
 
 Sitemap реалізовано через App Router:
