@@ -45,6 +45,8 @@ Google Analytics 4 підключено через офіційний компо
 
 Measurement ID береться зі змінної середовища `NEXT_PUBLIC_GA_MEASUREMENT_ID` і не хардкодиться в коді. Аналітика рендериться тільки у production-збірці.
 
+Інтеграцію GA4 перевірено: production environment Vercel містить `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `npm run build` проходить успішно, а production HTML містить Google tag після збірки.
+
 ## Sitemap
 
 Sitemap реалізовано через App Router:
