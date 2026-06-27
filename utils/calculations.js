@@ -1,15 +1,142 @@
 export function calculateBMI(weight, height) {
-  const numericWeight = Number(weight);
-  const numericHeight = Number(height);
+  const numericWeight = parsePositiveNumber(weight);
+  const numericHeight = parsePositiveNumber(height);
 
-  if (!numericWeight || !numericHeight) {
+  if (numericWeight === null || numericHeight === null) {
     return '';
   }
 
   const heightInMeters = numericHeight / 100;
   const bmi = numericWeight / (heightInMeters * heightInMeters);
 
-  return String(Math.round(bmi * 10) / 10);
+  return String(roundToOneDecimal(bmi));
+}
+
+export function getBMICategory(bmi) {
+  const numericBmi = parsePositiveNumber(bmi);
+
+  if (numericBmi === null) return null;
+
+  if (numericBmi < 18.5) return 'Недостатня маса тіла.';
+  if (numericBmi < 25) return 'Нормальна маса тіла.';
+  if (numericBmi < 30) return 'Надмірна маса тіла.';
+  if (numericBmi < 35) return 'Ожиріння I ступеня.';
+  if (numericBmi < 40) return 'Ожиріння II ступеня.';
+  return 'Ожиріння III ступеня.';
+}
+
+export function calculateTargetWeightRange(height, currentWeight) {
+  const numericHeight = parsePositiveNumber(height);
+  const numericWeight = parsePositiveNumber(currentWeight);
+
+  if (numericHeight === null) return null;
+
+  const heightInMeters = numericHeight / 100;
+  const heightSquared = heightInMeters * heightInMeters;
+  const minNormalWeight = roundToOneDecimal(18.5 * heightSquared);
+  const maxNormalWeight = roundToOneDecimal(24.9 * heightSquared);
+  const weightForBmi25 = roundToOneDecimal(25 * heightSquared);
+  const reductionToBmi25 =
+    numericWeight !== null && numericWeight > weightForBmi25
+      ? roundToOneDecimal(numericWeight - weightForBmi25)
+      : null;
+
+  return {
+    normalRange: `${minNormalWeight}–${maxNormalWeight} кг`,
+    weightForBmi25: `${weightForBmi25} кг`,
+    reductionToBmi25: reductionToBmi25 !== null ? `${reductionToBmi25} кг` : null,
+  };
+}
+
+export function getWaistRisk(sex, waist) {
+  const numericWaist = parsePositiveNumber(waist);
+
+  if (!sex || numericWaist === null) return null;
+
+  if (sex === 'male') {
+    if (numericWaist < 94) return { level: 'lower', label: 'нижчий ризик' };
+    if (numericWaist < 102) return { level: 'increased', label: 'підвищений ризик' };
+    return { level: 'high', label: 'високий ризик' };
+  }
+
+  if (sex === 'female') {
+    if (numericWaist < 80) return { level: 'lower', label: 'нижчий ризик' };
+    if (numericWaist < 88) return { level: 'increased', label: 'підвищений ризик' };
+    return { level: 'high', label: 'високий ризик' };
+  }
+
+  return null;
+}
+
+export function getCardiometabolicRisk(bmi, waistRisk) {
+  const numericBmi = parsePositiveNumber(bmi);
+
+  if (numericBmi === null) return null;
+
+  const hasHighWaist = waistRisk?.level === 'high';
+  const hasIncreasedWaist = waistRisk?.level === 'increased';
+
+  if (numericBmi >= 35 && hasHighWaist) {
+    return {
+      level: 'very-high',
+      marker: '🔴',
+      label: 'дуже високий',
+      className: 'border-red-200 bg-red-50 text-red-800',
+    };
+  }
+
+  if (numericBmi >= 30 || hasHighWaist) {
+    return {
+      level: 'high',
+      marker: '🟠',
+      label: 'високий',
+      className: 'border-orange-200 bg-orange-50 text-orange-800',
+    };
+  }
+
+  if (numericBmi >= 25 || hasIncreasedWaist) {
+    return {
+      level: 'increased',
+      marker: '🟡',
+      label: 'підвищений',
+      className: 'border-yellow-200 bg-yellow-50 text-yellow-800',
+    };
+  }
+
+  return {
+    level: 'lower',
+    marker: '🟢',
+    label: 'нижчий',
+    className: 'border-emerald-200 bg-emerald-50 text-emerald-800',
+  };
+}
+
+export function getBMIRecommendations(bmi, waistRisk) {
+  const numericBmi = parsePositiveNumber(bmi);
+  const needsAdditionalAssessment =
+    numericBmi !== null &&
+    (numericBmi >= 30 || (numericBmi >= 27 && waistRisk?.level && waistRisk.level !== 'lower'));
+
+  return {
+    additionalChecks: [
+      'Артеріальний тиск',
+      'HbA1c або глюкоза крові',
+      'Ліпідограма',
+      'АЛТ / АСТ',
+      'Креатинін та ШКФ',
+      'ACR сечі за наявності ЦД, АГ або ХХН',
+    ],
+    patientDiscussion: [
+      'Зниження маси тіла на 5–10% може мати клінічну користь.',
+      'Регулярна фізична активність.',
+      'Харчові звички та калорійність раціону.',
+      'Сон, стрес і алкоголь.',
+      'Контроль ваги та окружності талії в динаміці.',
+    ],
+    needsAdditionalAssessment,
+    additionalAssessmentText:
+      'Розглянути додаткову клінічну оцінку кардіометаболічного ризику, супутніх захворювань та можливих варіантів лікування згідно з чинними клінічними рекомендаціями.',
+  };
 }
 
 function hasValue(value) {

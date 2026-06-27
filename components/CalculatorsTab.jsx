@@ -25,8 +25,8 @@ const calculators = [
   },
   {
     id: 'bmi',
-    title: 'BMI (ІМТ)',
-    description: 'Розрахунок індексу маси тіла',
+    title: 'Оцінка маси тіла',
+    description: 'ІМТ, цільова вага, окружність талії та кардіометаболічний ризик',
     component: <BmiCalculator />,
   },
   {

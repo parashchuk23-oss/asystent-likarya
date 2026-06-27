@@ -119,7 +119,7 @@ Robots.txt реалізовано через App Router:
 * Cockcroft-Gault
 * ACR
 * KDIGO-ризик
-* BMI / ІМТ
+* Оцінка маси тіла: ІМТ, цільова вага, окружність талії та кардіометаболічний ризик
 * CHA2DS2-VASc
 * HAS-BLED
 
