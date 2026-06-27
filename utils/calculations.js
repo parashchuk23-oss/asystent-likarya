@@ -815,6 +815,195 @@ export function calculateAgeAdjustedDimer(data) {
   };
 }
 
+export function calculateWellsDvt(data) {
+  const score =
+    (data.activeCancer ? 1 : 0) +
+    (data.paralysisOrImmobilization ? 1 : 0) +
+    (data.bedriddenOrSurgery ? 1 : 0) +
+    (data.localTenderness ? 1 : 0) +
+    (data.entireLegSwollen ? 1 : 0) +
+    (data.calfSwelling ? 1 : 0) +
+    (data.pittingEdema ? 1 : 0) +
+    (data.collateralVeins ? 1 : 0) +
+    (data.previousDvt ? 1 : 0) -
+    (data.alternativeDiagnosis ? 2 : 0);
+
+  return {
+    score,
+    isLikely: score >= 2,
+    interpretation: score >= 2 ? 'ТГВ ймовірний.' : 'ТГВ малоймовірний.',
+  };
+}
+
+export function calculatePercRule(data) {
+  const positiveCriteria = [
+    data.ageOver50,
+    data.heartRateAtLeast100,
+    data.spo2Below95,
+    data.unilateralLegSwelling,
+    data.hemoptysis,
+    data.recentSurgeryOrTrauma,
+    data.previousDvtPe,
+    data.estrogenUse,
+  ].filter(Boolean).length;
+
+  return {
+    positiveCriteria,
+    isNegative: positiveCriteria === 0,
+    interpretation:
+      positiveCriteria === 0
+        ? 'PERC негативний: усі критерії “ні”.'
+        : 'PERC позитивний: є щонайменше один критерій.',
+  };
+}
+
+export function calculateSpesi(data) {
+  const score = [
+    data.ageOver80,
+    data.cancer,
+    data.chronicCardiopulmonaryDisease,
+    data.heartRateAtLeast110,
+    data.systolicBpBelow100,
+    data.spo2Below90,
+  ].filter(Boolean).length;
+
+  return {
+    score,
+    isLowRisk: score === 0,
+    interpretation: score === 0 ? 'Низький ризик за sPESI.' : 'Підвищений ризик за sPESI.',
+  };
+}
+
+export function calculateHestia(data) {
+  const positiveCriteria = [
+    data.hemodynamicInstability,
+    data.needThrombolysisOrEmbolectomy,
+    data.activeBleedingOrHighRisk,
+    data.needOxygenMoreThan24h,
+    data.peDuringAnticoagulation,
+    data.severePainIvAnalgesia,
+    data.medicalOrSocialAdmissionReason,
+    data.crclBelow30,
+    data.severeLiverFailure,
+    data.pregnancy,
+    data.historyHit,
+  ].filter(Boolean).length;
+
+  return {
+    positiveCriteria,
+    isEligibleForOutpatientConsideration: positiveCriteria === 0,
+    interpretation:
+      positiveCriteria === 0
+        ? 'Усі критерії Hestia “ні”: можна розглянути амбулаторне лікування у відповідному клінічному контексті.'
+        : 'Є щонайменше один критерій Hestia: амбулаторне лікування не рекомендується за Hestia.',
+  };
+}
+
+export function calculateVteBleed(data) {
+  const score =
+    (data.activeCancer ? 2 : 0) +
+    (data.maleWithUncontrolledHypertension ? 1 : 0) +
+    (data.anemia ? 1.5 : 0) +
+    (data.bleedingHistory ? 1.5 : 0) +
+    (data.ageAtLeast60 ? 1.5 : 0) +
+    (data.renalDysfunction ? 1.5 : 0);
+
+  return {
+    score,
+    isHighRisk: score >= 2,
+    interpretation:
+      score >= 2
+        ? 'Вищий ризик кровотечі під час антикоагуляції за VTE-BLEED.'
+        : 'Нижчий ризик кровотечі під час антикоагуляції за VTE-BLEED.',
+  };
+}
+
+export function calculateHerdoo2(data) {
+  const score = [
+    data.legHyperpigmentationEdemaRedness,
+    data.elevatedDimer,
+    data.bmiAtLeast30,
+    data.ageAtLeast65,
+  ].filter(Boolean).length;
+
+  if (data.sex !== 'female') {
+    return {
+      score,
+      isApplicable: false,
+      interpretation:
+        'HERDOO2 не застосовується для чоловіків як інструмент визначення низького ризику рецидиву.',
+    };
+  }
+
+  return {
+    score,
+    isApplicable: true,
+    interpretation:
+      score <= 1
+        ? '0–1 критерій: нижчий ризик рецидиву у жінки після першого неспровокованого ВТЕ.'
+        : '≥2 критерії: вищий ризик рецидиву.',
+  };
+}
+
+export function calculateDashScore(data) {
+  const score =
+    (data.elevatedDimerAfterStopping ? 2 : 0) +
+    (data.ageAtMost50 ? 1 : 0) +
+    (data.maleSex ? 1 : 0) -
+    (data.hormoneAssociatedVteInWomen ? 2 : 0);
+
+  let recurrenceRisk = 'нижчий орієнтовний ризик рецидиву';
+  if (score === 2) recurrenceRisk = 'проміжний орієнтовний ризик рецидиву';
+  if (score >= 3) recurrenceRisk = 'вищий орієнтовний ризик рецидиву';
+
+  return {
+    score,
+    recurrenceRisk,
+    interpretation:
+      'DASH є допоміжною оцінкою ризику рецидиву після завершення антикоагуляції і не визначає тривалість лікування самостійно.',
+  };
+}
+
+export function getVteNextStep({ scenario, wellsDvt, wellsPe, perc, dimer, hestia, spesi }) {
+  if (scenario === 'dvt') {
+    if (wellsDvt?.isLikely) {
+      return 'Клінічна ймовірність ТГВ висока: розглянути компресійне УЗД вен згідно з клінічним контекстом.';
+    }
+    if (dimer && !dimer.exceedsThreshold) {
+      return 'Низька клінічна ймовірність і D-димер не перевищує віковий поріг: ТГВ менш ймовірний у межах валідованого алгоритму.';
+    }
+    if (dimer?.exceedsThreshold) {
+      return 'D-димер перевищує віковий поріг: розглянути компресійне УЗД вен.';
+    }
+    return 'Для наступного кроку оцініть D-димер або розгляньте візуалізацію за клінічними показами.';
+  }
+
+  if (scenario === 'pe') {
+    if (wellsPe?.score > 4) {
+      return 'За Wells PE ТЕЛА ймовірна: D-димер не використовується для самостійного виключення, розглянути КТ-ангіографію або іншу діагностику.';
+    }
+    if (perc?.isNegative) {
+      return 'Низька клінічна ймовірність і PERC негативний: ТЕЛА малоймовірна, D-димер може бути не потрібний.';
+    }
+    if (dimer && !dimer.exceedsThreshold) {
+      return 'Клінічна ймовірність невисока, але PERC позитивний; D-димер не перевищує віковий поріг і може підтримувати виключення ТЕЛА в межах алгоритму.';
+    }
+    if (dimer?.exceedsThreshold) {
+      return 'D-димер перевищує віковий поріг: розглянути КТ-ангіографію або іншу діагностику згідно з клінічним контекстом.';
+    }
+    return 'PERC позитивний або не застосовується: оцініть D-димер або перейдіть до візуалізації за клінічними показами.';
+  }
+
+  if (scenario === 'confirmedPe') {
+    if (spesi?.isLowRisk && hestia?.isEligibleForOutpatientConsideration) {
+      return 'sPESI низький і всі критерії Hestia “ні”: можна розглянути амбулаторне лікування у відповідному клінічному контексті.';
+    }
+    return 'Потрібна оцінка ризику, гемодинаміки, потреби госпіталізації та безпеки подальшої тактики.';
+  }
+
+  return 'Оцініть баланс ризику рецидиву ВТЕ та кровотечі. Рішення щодо тривалості антикоагуляції приймається індивідуально.';
+}
+
 export function calculateFractureRisk(data) {
   const age = parsePositiveNumber(data.age);
   const weight = parsePositiveNumber(data.weight);

@@ -42,8 +42,8 @@ const calculators = [
   },
   {
     id: 'wells-dimer',
-    title: 'Підозра на ТЕЛА / ТГВ',
-    description: 'Wells PE та віковий поріг D-димеру',
+    title: 'Венозна тромбоемболія',
+    description: 'Оцінка ймовірності ТГВ / ТЕЛА, D-димер та клінічний маршрут',
     component: <WellsDimerCalculator />,
   },
   {
