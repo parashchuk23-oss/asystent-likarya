@@ -662,7 +662,7 @@ function getH2fpefNextStep(score) {
 }
 
 function getAccAhaHeartFailureStage(data) {
-  if (data.refractorySymptoms) {
+  if (data.accAhaStageChoice === 'stageD') {
     return {
       stage: 'Stage D',
       title: 'Рефрактерна / advanced СН',
@@ -671,7 +671,7 @@ function getAccAhaHeartFailureStage(data) {
     };
   }
 
-  if (data.heartFailureSymptoms) {
+  if (data.accAhaStageChoice === 'stageC') {
     return {
       stage: 'Stage C',
       title: 'Симптомна СН',
@@ -680,7 +680,7 @@ function getAccAhaHeartFailureStage(data) {
     };
   }
 
-  if (data.structuralHeartDiseaseOrBiomarkers) {
+  if (data.accAhaStageChoice === 'stageB') {
     return {
       stage: 'Stage B',
       title: 'Пре-СН',
@@ -689,7 +689,7 @@ function getAccAhaHeartFailureStage(data) {
     };
   }
 
-  if (data.heartFailureRiskFactors) {
+  if (data.accAhaStageChoice === 'stageA') {
     return {
       stage: 'Stage A',
       title: 'Ризик СН',
@@ -706,21 +706,21 @@ function getAccAhaHeartFailureStage(data) {
 }
 
 function getNyhaClass(data) {
-  if (data.symptomsAtRest) {
+  if (data.nyhaClassChoice === 'nyha4') {
     return {
       className: 'NYHA IV',
       interpretation: 'Симптоми серцевої недостатності є у спокої.',
     };
   }
 
-  if (data.symptomsWithLessThanOrdinaryActivity) {
+  if (data.nyhaClassChoice === 'nyha3') {
     return {
       className: 'NYHA III',
       interpretation: 'Симптоми виникають при меншому, ніж звичайне, фізичному навантаженні.',
     };
   }
 
-  if (data.symptomsWithOrdinaryActivity) {
+  if (data.nyhaClassChoice === 'nyha2') {
     return {
       className: 'NYHA II',
       interpretation: 'Симптоми виникають при звичайному фізичному навантаженні.',

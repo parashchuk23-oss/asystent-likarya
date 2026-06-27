@@ -13,33 +13,28 @@ const initialFormData = {
   atrialFibrillation: false,
   pasp: '',
   eOverEPrime: '',
-  heartFailureRiskFactors: false,
-  structuralHeartDiseaseOrBiomarkers: false,
-  heartFailureSymptoms: false,
-  refractorySymptoms: false,
-  symptomsAtRest: false,
-  symptomsWithLessThanOrdinaryActivity: false,
-  symptomsWithOrdinaryActivity: false,
+  accAhaStageChoice: '',
+  nyhaClassChoice: 'nyha1',
 };
 
 const accAhaQuestions = [
   {
-    key: 'heartFailureRiskFactors',
+    key: 'stageA',
     title: 'Є фактори ризику СН',
     description: 'АГ, ЦД, ожиріння, ІХС, кардіотоксична терапія або сімейна кардіоміопатія.',
   },
   {
-    key: 'structuralHeartDiseaseOrBiomarkers',
+    key: 'stageB',
     title: 'Є структурне ураження серця або підвищені біомаркери',
     description: 'Наприклад: гіпертрофія/дилатація камер, клапанна патологія, перенесений ІМ, підвищені BNP/NT-proBNP.',
   },
   {
-    key: 'heartFailureSymptoms',
+    key: 'stageC',
     title: 'Є поточні або попередні симптоми СН',
     description: 'Задишка, набряки, ортопное, зниження толерантності до навантаження у відповідному клінічному контексті.',
   },
   {
-    key: 'refractorySymptoms',
+    key: 'stageD',
     title: 'Є рефрактерні симптоми або часті госпіталізації',
     description: 'Симптоми попри оптимальну терапію, повторні госпіталізації або ознаки advanced HF.',
   },
@@ -47,19 +42,24 @@ const accAhaQuestions = [
 
 const nyhaQuestions = [
   {
-    key: 'symptomsAtRest',
-    title: 'Симптоми СН у спокої',
-    description: 'Якщо так — це відповідає NYHA IV.',
+    key: 'nyha1',
+    title: 'Немає обмежень звичайної активності',
+    description: 'Звичайна фізична активність не спричиняє симптомів СН — NYHA I.',
   },
   {
-    key: 'symptomsWithLessThanOrdinaryActivity',
+    key: 'nyha2',
+    title: 'Симптоми при звичайному фізичному навантаженні',
+    description: 'Звичайна активність спричиняє задишку, втому або серцебиття — NYHA II.',
+  },
+  {
+    key: 'nyha3',
     title: 'Симптоми при меншому, ніж звичайне, навантаженні',
     description: 'Наприклад, симптоми при мінімальній побутовій активності — NYHA III.',
   },
   {
-    key: 'symptomsWithOrdinaryActivity',
-    title: 'Симптоми при звичайному фізичному навантаженні',
-    description: 'Звичайна активність спричиняє задишку, втому або серцебиття — NYHA II.',
+    key: 'nyha4',
+    title: 'Симптоми СН у спокої',
+    description: 'Симптоми серцевої недостатності є навіть у спокої — NYHA IV.',
   },
 ];
 
@@ -76,6 +76,24 @@ function CheckboxCard({ title, description, checked, onChange }) {
         checked={checked}
         onChange={(event) => onChange(event.target.checked)}
         className="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+      />
+      <span>
+        <span className="block font-semibold text-slate-900">{title}</span>
+        <span className="mt-1 block leading-6 text-slate-600">{description}</span>
+      </span>
+    </label>
+  );
+}
+
+function RadioCard({ name, title, description, checked, onChange }) {
+  return (
+    <label className="flex cursor-pointer gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm transition hover:border-blue-200 hover:bg-blue-50">
+      <input
+        type="radio"
+        name={name}
+        checked={checked}
+        onChange={onChange}
+        className="mt-1 h-4 w-4 shrink-0 border-slate-300 text-blue-600 focus:ring-blue-500"
       />
       <span>
         <span className="block font-semibold text-slate-900">{title}</span>
@@ -222,14 +240,18 @@ export default function H2fpefCalculator() {
 
       <section className="mt-4 rounded-md border border-slate-200 bg-white p-4">
         <h3 className="font-semibold text-slate-950">B. Стадія СН ACC/AHA</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Оберіть один найвищий відповідний етап. Одночасний вибір кількох стадій неможливий.
+        </p>
         <div className="mt-4 grid gap-3 lg:grid-cols-2">
           {accAhaQuestions.map((question) => (
-            <CheckboxCard
+            <RadioCard
               key={question.key}
+              name="accAhaStageChoice"
               title={question.title}
               description={question.description}
-              checked={formData[question.key]}
-              onChange={(value) => handleChange(question.key, value)}
+              checked={formData.accAhaStageChoice === question.key}
+              onChange={() => handleChange('accAhaStageChoice', question.key)}
             />
           ))}
         </div>
@@ -238,16 +260,17 @@ export default function H2fpefCalculator() {
       <section className="mt-4 rounded-md border border-slate-200 bg-white p-4">
         <h3 className="font-semibold text-slate-950">C. Функціональний клас NYHA</h3>
         <p className="mt-1 text-sm text-slate-600">
-          Якщо жоден пункт не позначений, результат буде NYHA I.
+          Оберіть один функціональний клас, який найкраще описує поточні симптоми.
         </p>
         <div className="mt-4 grid gap-3">
           {nyhaQuestions.map((question) => (
-            <CheckboxCard
+            <RadioCard
               key={question.key}
+              name="nyhaClassChoice"
               title={question.title}
               description={question.description}
-              checked={formData[question.key]}
-              onChange={(value) => handleChange(question.key, value)}
+              checked={formData.nyhaClassChoice === question.key}
+              onChange={() => handleChange('nyhaClassChoice', question.key)}
             />
           ))}
         </div>
