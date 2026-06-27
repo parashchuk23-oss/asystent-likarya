@@ -4,10 +4,16 @@ import { useState } from 'react';
 import CalculatorsTab from './CalculatorsTab';
 import CardioAssistantTab from './CardioAssistantTab';
 import DiseasesTab from './DiseasesTab';
+import HomeTab from './HomeTab';
 import PharmacologyTab from './PharmacologyTab';
 import QuestionnairesTab from './QuestionnairesTab';
 
 const tabs = [
+  {
+    id: 'home',
+    label: 'Головна',
+    description: 'Що це за продукт і з чого почати.',
+  },
   {
     id: 'assistant',
     label: 'Асистент лікаря',
@@ -36,7 +42,7 @@ const tabs = [
 ];
 
 export default function AppTabs() {
-  const [activeTab, setActiveTab] = useState('assistant');
+  const [activeTab, setActiveTab] = useState('home');
   const activeTabData = tabs.find((tab) => tab.id === activeTab);
 
   return (
@@ -65,6 +71,7 @@ export default function AppTabs() {
       )}
 
       <div className="p-4">
+        {activeTab === 'home' && <HomeTab onSelectTab={setActiveTab} />}
         {activeTab === 'assistant' && <CardioAssistantTab />}
         {activeTab === 'calculators' && <CalculatorsTab />}
         {activeTab === 'questionnaires' && <QuestionnairesTab />}
