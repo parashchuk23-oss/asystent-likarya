@@ -267,17 +267,17 @@ export default function Score2Tab() {
             {calculatedResult.recommendations.length > 0 && (
               <div>
                 <p className="font-semibold">Рекомендації:</p>
+                {calculatedResult.patientInfo && (
+                  <p className="mt-2 rounded-md border border-sky-100 bg-sky-50 px-3 py-2 text-sm leading-6 text-slate-700">
+                    {calculatedResult.patientInfo}
+                  </p>
+                )}
+
                 <ol className="mt-2 list-decimal space-y-1 pl-5">
                   {calculatedResult.recommendations.map((recommendation) => (
                     <li key={recommendation}>{recommendation}</li>
                   ))}
                 </ol>
-
-                {calculatedResult.patientInfo && (
-                  <p className="mt-3 rounded-md border border-sky-100 bg-sky-50 px-3 py-2 text-sm leading-6 text-slate-700">
-                    {calculatedResult.patientInfo}
-                  </p>
-                )}
               </div>
             )}
           </div>
