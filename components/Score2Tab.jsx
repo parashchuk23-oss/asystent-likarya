@@ -272,6 +272,12 @@ export default function Score2Tab() {
                     <li key={recommendation}>{recommendation}</li>
                   ))}
                 </ol>
+
+                {calculatedResult.patientInfo && (
+                  <p className="mt-3 rounded-md border border-sky-100 bg-sky-50 px-3 py-2 text-sm leading-6 text-slate-700">
+                    {calculatedResult.patientInfo}
+                  </p>
+                )}
               </div>
             )}
           </div>

@@ -126,13 +126,15 @@ function getLdlTarget(interpretation) {
   return null;
 }
 
+const cholesterolPatientInfo =
+  'Холестерин сприяє утворенню атеросклеротичних бляшок у судинах. Його зниження допомагає зменшити ризик інфаркту, інсульту та прогресування атеросклерозу.';
+
 function getLifestyleRecommendations(interpretation) {
   const ldlTarget = getLdlTarget(interpretation);
   const recommendations = [
     'Зменшити в раціоні яєчні жовтки, субпродукти, жирні сорти м’яса та жирні молочні продукти.',
     'Морська риба 2 рази на тиждень.',
     'Збільшити в раціоні цільнозернові продукти, бобові, горох, фрукти, ягоди та овочі.',
-    'Холестерин сприяє утворенню атеросклеротичних бляшок у судинах. Його зниження допомагає зменшити ризик інфаркту, інсульту та прогресування атеросклерозу.',
     'Контроль глюкози крові. По можливості обмежити солодощі.',
     'За наявності надлишкової маси тіла рекомендовано поступове зниження ваги на 5-10% протягом 6 місяців.',
     'Контроль сечової кислоти за клінічної потреби.',
@@ -263,6 +265,7 @@ export function calculateScore2Risk(data) {
       ldlTarget: getLdlTarget(interpretation),
       reason: 'Встановлене атеросклеротичне серцево-судинне захворювання.',
       recommendations: getLifestyleRecommendations(interpretation),
+      patientInfo: cholesterolPatientInfo,
       missing: [],
     };
   }
@@ -275,6 +278,7 @@ export function calculateScore2Risk(data) {
       ldlTarget: null,
       reason: 'Для пацієнтів із цукровим діабетом потрібна окрема оцінка кардіоваскулярного ризику.',
       recommendations: getLifestyleRecommendations('високий'),
+      patientInfo: cholesterolPatientInfo,
       missing: [],
     };
   }
@@ -289,6 +293,7 @@ export function calculateScore2Risk(data) {
       ldlTarget: getLdlTarget(interpretation),
       reason: egfr !== null && egfr < 30 ? `ШКФ ${egfr} мл/хв/1,73 м².` : 'Хронічна хвороба нирок.',
       recommendations: getLifestyleRecommendations(interpretation),
+      patientInfo: cholesterolPatientInfo,
       missing: [],
     };
   }
@@ -303,6 +308,7 @@ export function calculateScore2Risk(data) {
       ldlTarget: getLdlTarget(interpretation),
       reason: `Знижена ШКФ ${egfr} мл/хв/1,73 м².`,
       recommendations: getLifestyleRecommendations(interpretation),
+      patientInfo: cholesterolPatientInfo,
       missing: [],
     };
   }
@@ -369,6 +375,7 @@ export function calculateScore2Risk(data) {
     ldlTarget: getLdlTarget(interpretation),
     reason: `Розраховано за ${modelName} для первинної профілактики.`,
     recommendations: getLifestyleRecommendations(interpretation),
+    patientInfo: cholesterolPatientInfo,
     missing: [],
   };
 }
