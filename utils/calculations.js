@@ -499,6 +499,131 @@ export function calculateHasBled(data) {
   };
 }
 
+function getCha2ds2VascAnnualStrokeRisk(score) {
+  const riskByScore = {
+    0: '≈0.2%/рік',
+    1: '≈0.6%/рік',
+    2: '≈2.2%/рік',
+    3: '≈3.2%/рік',
+    4: '≈4.8%/рік',
+    5: '≈7.2%/рік',
+    6: '≈9.7%/рік',
+    7: '≈11.2%/рік',
+    8: '≈10.8%/рік',
+    9: '≈12.2%/рік',
+  };
+
+  return riskByScore[score] || 'високий орієнтовний ризик';
+}
+
+function getCha2ds2VascEscInterpretation(score, sex) {
+  const isFemale = sex === 'female';
+
+  if ((!isFemale && score === 0) || (isFemale && score === 1)) {
+    return {
+      category: 'Низький ризик',
+      status: 'lower',
+      text:
+        'За ESC-орієнтованим підходом антикоагуляція зазвичай не показана, якщо немає інших клінічних причин.',
+      anticoagulationLikely: false,
+    };
+  }
+
+  if ((!isFemale && score === 1) || (isFemale && score === 2)) {
+    return {
+      category: 'Проміжний ризик',
+      status: 'increased',
+      text:
+        'Антикоагуляцію доцільно розглянути індивідуально з урахуванням додаткових факторів ризику та побажань пацієнта.',
+      anticoagulationLikely: true,
+    };
+  }
+
+  return {
+    category: 'Підвищений ризик',
+    status: 'high',
+    text:
+      'Антикоагулянтна терапія зазвичай розглядається за наявності показань і відсутності абсолютних протипоказань.',
+    anticoagulationLikely: true,
+  };
+}
+
+function getHasBledCategory(score) {
+  if (score <= 1) {
+    return {
+      category: 'Низький ризик кровотечі',
+      status: 'lower',
+    };
+  }
+
+  if (score === 2) {
+    return {
+      category: 'Помірний ризик кровотечі',
+      status: 'increased',
+    };
+  }
+
+  return {
+    category: 'Високий ризик кровотечі',
+    status: 'high',
+  };
+}
+
+export function calculateAfAnticoagulationAssessment(data) {
+  const age = parsePositiveNumber(data.age);
+  const sex = data.sex;
+
+  if (age === null || !sex) return null;
+
+  const cha2ds2VascData = {
+    heartFailure: data.heartFailure,
+    hypertension: data.hypertension,
+    age75OrOlder: age >= 75,
+    diabetes: data.diabetes,
+    strokeTiaThromboembolism: data.strokeTiaThromboembolism,
+    vascularDisease: data.vascularDisease,
+    age65To74: age >= 65 && age < 75,
+    femaleSex: sex === 'female',
+  };
+
+  const hasBledData = {
+    hypertension: data.hypertension,
+    abnormalRenalFunction: data.abnormalRenalFunction,
+    abnormalLiverFunction: data.abnormalLiverFunction,
+    strokeHistory: data.strokeTiaThromboembolism,
+    bleedingHistory: data.bleedingHistory,
+    labileInr: data.labileInr,
+    ageOver65: age > 65,
+    drugs: data.drugs,
+    alcohol: data.alcohol,
+  };
+
+  const cha2ds2Vasc = calculateCha2ds2Vasc(cha2ds2VascData);
+  const hasBled = calculateHasBled(hasBledData);
+  const chaEsc = getCha2ds2VascEscInterpretation(cha2ds2Vasc.score, sex);
+  const hasBledCategory = getHasBledCategory(hasBled.score);
+
+  return {
+    cha2ds2Vasc: {
+      ...cha2ds2Vasc,
+      category: chaEsc.category,
+      status: chaEsc.status,
+      annualStrokeRisk: getCha2ds2VascAnnualStrokeRisk(cha2ds2Vasc.score),
+      escInterpretation: chaEsc.text,
+      anticoagulationLikely: chaEsc.anticoagulationLikely,
+    },
+    hasBled: {
+      ...hasBled,
+      category: hasBledCategory.category,
+      status: hasBledCategory.status,
+      isHigh: hasBled.score >= 3,
+    },
+    nextStep: chaEsc.anticoagulationLikely
+      ? 'Якщо антикоагуляція розглядається, перед вибором препарату доцільно оцінити функцію нирок, масу тіла, ризик взаємодій і фактори кровотечі.'
+      : 'За низького тромбоемболічного ризику антикоагуляція зазвичай не потрібна; доцільний періодичний перегляд ризику при зміні клінічного стану.',
+  };
+}
+
 export function calculateH2fpef(data) {
   const score =
     (data.obesity ? 2 : 0) +

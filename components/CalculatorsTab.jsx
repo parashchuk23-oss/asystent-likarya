@@ -1,12 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import AfAnticoagulationCalculator from './calculators/AfAnticoagulationCalculator';
 import BmiCalculator from './calculators/BmiCalculator';
-import Cha2ds2VascCalculator from './calculators/Cha2ds2VascCalculator';
 import EgfrTab from './EgfrTab';
 import FraxCalculator from './calculators/FraxCalculator';
 import H2fpefCalculator from './calculators/H2fpefCalculator';
-import HasBledCalculator from './calculators/HasBledCalculator';
 import Score2Tab from './Score2Tab';
 import WellsDimerCalculator from './calculators/WellsDimerCalculator';
 
@@ -30,16 +29,10 @@ const calculators = [
     component: <BmiCalculator />,
   },
   {
-    id: 'cha2ds2-vasc',
-    title: 'CHA₂DS₂-VASc',
-    description: 'Оцінка ризику інсульту при фібриляції передсердь',
-    component: <Cha2ds2VascCalculator />,
-  },
-  {
-    id: 'has-bled',
-    title: 'HAS-BLED',
-    description: 'Оцінка ризику кровотечі під час антикоагулянтної терапії',
-    component: <HasBledCalculator />,
+    id: 'af-anticoagulation',
+    title: 'Оцінка антикоагулянтної терапії при ФП',
+    description: 'CHA₂DS₂-VASc, HAS-BLED і наступний клінічний крок',
+    component: <AfAnticoagulationCalculator />,
   },
   {
     id: 'h2fpef',
