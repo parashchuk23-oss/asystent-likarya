@@ -782,6 +782,68 @@ export function calculateHeartFailureHfpEfAssessment(data) {
   };
 }
 
+export function calculateHeartScore(data) {
+  const history = parseNonNegativeNumber(data.history);
+  const ecg = parseNonNegativeNumber(data.ecg);
+  const age = parseNonNegativeNumber(data.age);
+  const riskFactors = parseNonNegativeNumber(data.riskFactors);
+  const troponin = parseNonNegativeNumber(data.troponin);
+
+  if ([history, ecg, age, riskFactors, troponin].some((value) => value === null)) {
+    return null;
+  }
+
+  const score = history + ecg + age + riskFactors + troponin;
+
+  let riskLevel = 'low';
+  let riskLabel = 'Низький ризик';
+  let maceRisk = 'орієнтовно 0.9–1.7%';
+  let interpretation =
+    'Низький HEART Score асоціюється з нижчою ймовірністю 30-денних великих серцево-судинних подій, але результат потрібно оцінювати разом із клінічною картиною.';
+  let nextSteps = [
+    'Розглянути серійний тропонін.',
+    'Провести повторну клінічну оцінку.',
+    'Повторити ЕКГ за показами.',
+    'Визначити подальшу тактику відповідно до клінічної ситуації.',
+  ];
+
+  if (score >= 4 && score <= 6) {
+    riskLevel = 'intermediate';
+    riskLabel = 'Проміжний ризик';
+    maceRisk = 'орієнтовно 12–17%';
+    interpretation =
+      'Проміжний HEART Score потребує уважної повторної оцінки, динаміки тропоніну й ЕКГ та визначення потреби в додатковій діагностиці.';
+    nextSteps = [
+      'Доцільно оцінити повторні тропоніни.',
+      'Оцінити динаміку ЕКГ.',
+      'Розглянути консультацію кардіолога.',
+      'Оцінити необхідність додаткових тестів відповідно до клінічного контексту.',
+    ];
+  }
+
+  if (score >= 7) {
+    riskLevel = 'high';
+    riskLabel = 'Високий ризик';
+    maceRisk = 'орієнтовно 50–65%';
+    interpretation =
+      'Високий HEART Score асоціюється з підвищеною ймовірністю 30-денних великих серцево-судинних подій і потребує невідкладної клінічної оцінки.';
+    nextSteps = [
+      'Доцільна невідкладна оцінка кардіологом.',
+      'Оцінити потребу в госпіталізації згідно з клінічною ситуацією.',
+      'Планувати подальше обстеження відповідно до чинних рекомендацій.',
+    ];
+  }
+
+  return {
+    score,
+    riskLevel,
+    riskLabel,
+    maceRisk,
+    interpretation,
+    nextSteps,
+  };
+}
+
 export function calculateWellsPe(data) {
   const score =
     (data.clinicalDvtSigns ? 3 : 0) +

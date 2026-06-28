@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import AfAnticoagulationCalculator from './calculators/AfAnticoagulationCalculator';
 import BmiCalculator from './calculators/BmiCalculator';
+import ChestPainHeartCalculator from './calculators/ChestPainHeartCalculator';
 import EgfrTab from './EgfrTab';
 import FraxCalculator from './calculators/FraxCalculator';
 import H2fpefCalculator from './calculators/H2fpefCalculator';
@@ -33,6 +34,12 @@ const calculators = [
     title: 'Оцінка антикоагулянтної терапії при ФП',
     description: 'CHA₂DS₂-VASc, HAS-BLED і наступний клінічний крок',
     component: <AfAnticoagulationCalculator />,
+  },
+  {
+    id: 'chest-pain-heart',
+    title: 'Оцінка пацієнта з болем у грудях',
+    description: 'HEART Score та подальша клінічна оцінка пацієнта',
+    component: <ChestPainHeartCalculator />,
   },
   {
     id: 'h2fpef',
