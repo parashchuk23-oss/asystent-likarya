@@ -1005,41 +1005,90 @@ export function getVteNextStep({ scenario, wellsDvt, wellsPe, perc, dimer, hesti
 }
 
 export function calculateFractureRisk(data) {
-  const age = parsePositiveNumber(data.age);
-  const weight = parsePositiveNumber(data.weight);
-  const height = parsePositiveNumber(data.height);
-
-  if (age === null || weight === null || height === null || !data.sex) return null;
+  const parseNumber = (value) => {
+    if (!hasValue(value)) return null;
+    const parsed = Number(String(value).replace(',', '.'));
+    return Number.isFinite(parsed) ? parsed : null;
+  };
 
   const factorCount = [
-    data.previousFracture,
-    data.parentalHipFracture,
-    data.currentSmoking,
-    data.glucocorticoids,
+    data.ageAtLeast50,
+    data.postmenopausalWoman,
+    data.manAtLeast70,
+    data.lowEnergyFracture,
+    data.heightLoss,
+    data.longTermGlucocorticoids,
     data.rheumatoidArthritis,
+    data.lowBodyWeight,
+    data.smoking,
+    data.excessiveAlcohol,
+    data.parentalHipFracture,
     data.secondaryOsteoporosis,
-    data.alcoholThreeOrMore,
   ].filter(Boolean).length;
 
-  let interpretation = 'Нижчий орієнтовний ризик.';
+  const femoralNeckTScore = parseNumber(data.femoralNeckTScore);
+  const lumbarTScore = parseNumber(data.lumbarTScore);
+  const validTScores = [femoralNeckTScore, lumbarTScore].filter((value) => value !== null);
+  const lowestTScore = validTScores.length > 0 ? Math.min(...validTScores) : null;
 
-  if (factorCount >= 2 && factorCount <= 3) {
-    interpretation = 'Помірний орієнтовний ризик.';
+  let riskLevel = 'low';
+  let riskLabel = 'Низький ризик';
+  let riskInterpretation = 'Наразі позначено небагато факторів ризику.';
+
+  if (factorCount >= 2) {
+    riskLevel = 'moderate';
+    riskLabel = 'Помірний ризик';
+    riskInterpretation = 'Є кілька факторів ризику, доцільне уточнення ризику та потреби в DXA/FRAX.';
   }
 
-  if (factorCount >= 4 || data.previousFracture) {
-    interpretation = 'Високий орієнтовний ризик.';
+  if (factorCount >= 4 || data.lowEnergyFracture || (lowestTScore !== null && lowestTScore <= -2.5)) {
+    riskLevel = 'high';
+    riskLabel = 'Високий ризик';
+    riskInterpretation = 'Є значущі фактори ризику або DXA-критерій, потрібна клінічна верифікація та оцінка тактики.';
   }
 
-  const parsedTScore = hasValue(data.femoralNeckTScore)
-    ? Number(String(data.femoralNeckTScore).replace(',', '.'))
-    : null;
+  let dxaInterpretation =
+    'За відсутності DXA ризик можна уточнити за допомогою офіційного FRAX.';
+
+  if (lowestTScore !== null) {
+    if (lowestTScore <= -2.5) {
+      dxaInterpretation = 'T-score ≤ -2.5 відповідає DXA-критерію остеопорозу у відповідному клінічному контексті.';
+    } else if (lowestTScore < -1) {
+      dxaInterpretation = 'T-score від -1.0 до -2.5 відповідає зниженій мінеральній щільності кісткової тканини.';
+    } else {
+      dxaInterpretation = 'T-score ≥ -1.0 зазвичай відповідає нормальній мінеральній щільності кісткової тканини.';
+    }
+  }
+
+  const nextStepsByRisk = {
+    low: [
+      'Фізична активність.',
+      'Профілактика падінь.',
+      'Адекватне споживання кальцію.',
+      'Оцінка вітаміну D за показами.',
+    ],
+    moderate: [
+      'Виконати DXA.',
+      'Оцінити ризик через офіційний FRAX або локально валідований інструмент.',
+      'Виключити вторинний остеопороз.',
+    ],
+    high: [
+      'Підтвердити діагноз.',
+      'Оцінити показання до лікування.',
+      'Розглянути консультацію спеціаліста.',
+    ],
+  };
 
   return {
     factorCount,
-    bmi: calculateBMI(weight, height),
-    tScore: Number.isFinite(parsedTScore) ? parsedTScore : null,
-    interpretation,
+    riskLevel,
+    riskLabel,
+    riskInterpretation,
+    femoralNeckTScore,
+    lumbarTScore,
+    lowestTScore,
+    dxaInterpretation,
+    nextSteps: nextStepsByRisk[riskLevel],
   };
 }
 
