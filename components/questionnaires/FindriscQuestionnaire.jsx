@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { calculateFindrisc } from '../../utils/calculations';
+import PrintableQuestionnaire, { PrintQuestionnaireButton } from './PrintableQuestionnaire';
 
 const questions = [
   {
@@ -155,6 +156,8 @@ export default function FindriscQuestionnaire({ showIntro = true }) {
         >
           Очистити
         </button>
+
+        <PrintQuestionnaireButton />
       </div>
 
       <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
@@ -165,6 +168,12 @@ export default function FindriscQuestionnaire({ showIntro = true }) {
           {result?.interpretation || 'Натисніть “Розрахувати” після заповнення опитувальника.'}
         </p>
       </div>
+
+      <PrintableQuestionnaire
+        title="FINDRISC"
+        instruction="Оберіть один варіант відповіді в кожному пункті."
+        questions={questions}
+      />
     </div>
   );
 }

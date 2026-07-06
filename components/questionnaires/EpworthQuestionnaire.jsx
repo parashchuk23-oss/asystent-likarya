@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { calculateEpworth } from '../../utils/calculations';
+import PrintableQuestionnaire, { PrintQuestionnaireButton } from './PrintableQuestionnaire';
 
 const questions = [
   'Сидите та читаєте',
@@ -99,6 +100,8 @@ export default function EpworthQuestionnaire() {
         >
           Очистити
         </button>
+
+        <PrintQuestionnaireButton />
       </div>
 
       <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
@@ -109,6 +112,13 @@ export default function EpworthQuestionnaire() {
           {result?.interpretation || 'Натисніть “Розрахувати” після заповнення опитувальника.'}
         </p>
       </div>
+
+      <PrintableQuestionnaire
+        title="Epworth Sleepiness Scale"
+        instruction="Оцініть імовірність заснути в кожній ситуації."
+        questions={questions}
+        options={options}
+      />
     </div>
   );
 }

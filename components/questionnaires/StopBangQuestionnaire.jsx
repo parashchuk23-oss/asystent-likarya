@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { calculateStopBang } from '../../utils/calculations';
+import PrintableQuestionnaire, { PrintQuestionnaireButton } from './PrintableQuestionnaire';
 
 const questions = [
   { key: 'snoring', text: 'Гучне хропіння' },
@@ -96,6 +97,8 @@ export default function StopBangQuestionnaire() {
         >
           Очистити
         </button>
+
+        <PrintQuestionnaireButton />
       </div>
 
       <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
@@ -106,6 +109,13 @@ export default function StopBangQuestionnaire() {
           {result?.interpretation || 'Натисніть “Розрахувати” після заповнення опитувальника.'}
         </p>
       </div>
+
+      <PrintableQuestionnaire
+        title="STOP-Bang"
+        instruction="Позначте відповідь “Так” або “Ні” для кожного пункту."
+        questions={questions}
+        options={options}
+      />
     </div>
   );
 }

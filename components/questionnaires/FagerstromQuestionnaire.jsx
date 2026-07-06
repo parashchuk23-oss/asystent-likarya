@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { calculateFagerstrom } from '../../utils/calculations';
+import PrintableQuestionnaire, { PrintQuestionnaireButton } from './PrintableQuestionnaire';
 
 const questions = [
   {
@@ -136,6 +137,8 @@ export default function FagerstromQuestionnaire() {
         >
           Очистити
         </button>
+
+        <PrintQuestionnaireButton />
       </div>
 
       <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
@@ -146,6 +149,12 @@ export default function FagerstromQuestionnaire() {
           {result?.interpretation || 'Натисніть “Розрахувати” після заповнення опитувальника.'}
         </p>
       </div>
+
+      <PrintableQuestionnaire
+        title="Тест Fagerström"
+        instruction="Оберіть один варіант відповіді в кожному пункті."
+        questions={questions}
+      />
     </div>
   );
 }

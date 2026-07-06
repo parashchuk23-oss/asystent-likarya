@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { calculatePhq9 } from '../../utils/calculations';
+import PrintableQuestionnaire, { PrintQuestionnaireButton } from './PrintableQuestionnaire';
 
 const questions = [
   'Мало інтересу або задоволення від справ',
@@ -102,6 +103,8 @@ export default function Phq9Questionnaire({ showIntro = true }) {
         >
           Очистити
         </button>
+
+        <PrintQuestionnaireButton />
       </div>
 
       <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
@@ -112,6 +115,13 @@ export default function Phq9Questionnaire({ showIntro = true }) {
           {result?.interpretation || 'Натисніть “Розрахувати” після заповнення опитувальника.'}
         </p>
       </div>
+
+      <PrintableQuestionnaire
+        title="PHQ-9"
+        instruction="За останні 2 тижні як часто вас турбували такі проблеми?"
+        questions={questions}
+        options={options}
+      />
     </div>
   );
 }
