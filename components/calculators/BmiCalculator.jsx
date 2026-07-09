@@ -37,6 +37,37 @@ function InfoList({ title, items }) {
   );
 }
 
+function SexSegmentedControl({ value, onChange }) {
+  const options = [
+    { value: 'male', label: 'Чоловік' },
+    { value: 'female', label: 'Жінка' },
+  ];
+
+  return (
+    <div className="grid h-[50px] grid-cols-2 rounded-md border border-slate-300 bg-white p-1 shadow-sm shadow-slate-100">
+      {options.map((option) => {
+        const isSelected = value === option.value;
+
+        return (
+          <button
+            key={option.value}
+            type="button"
+            onClick={() => onChange(isSelected ? '' : option.value)}
+            className={`rounded px-3 text-sm font-semibold transition ${
+              isSelected
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-600 hover:bg-blue-50 hover:text-blue-700'
+            }`}
+            aria-pressed={isSelected}
+          >
+            {option.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function BmiCalculator() {
   const [formData, setFormData] = useState(initialFormData);
   const [result, setResult] = useState(null);
@@ -110,15 +141,10 @@ export default function BmiCalculator() {
         </FormField>
 
         <FormField label="Стать" hint="необов’язково">
-          <select
+          <SexSegmentedControl
             value={formData.sex}
-            onChange={(event) => handleChange('sex', event.target.value)}
-            className={inputClass}
-          >
-            <option value="">Не вказано</option>
-            <option value="male">Чоловік</option>
-            <option value="female">Жінка</option>
-          </select>
+            onChange={(value) => handleChange('sex', value)}
+          />
         </FormField>
 
         <FormField label="Окружність талії" hint="см, необов’язково">
