@@ -44,7 +44,7 @@ function SexSegmentedControl({ value, onChange }) {
   ];
 
   return (
-    <div className="grid h-[50px] grid-cols-2 rounded-md border border-slate-300 bg-white p-1 shadow-sm shadow-slate-100">
+    <div className="grid h-[42px] grid-cols-2 rounded-md border border-slate-300 bg-white p-1 shadow-sm shadow-slate-100">
       {options.map((option) => {
         const isSelected = value === option.value;
 
