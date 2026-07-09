@@ -48,6 +48,64 @@ export function calculateTargetWeightRange(height, currentWeight) {
   };
 }
 
+export function calculateWeightLossGoal(weight, bmi) {
+  const numericWeight = parsePositiveNumber(weight);
+  const numericBmi = parsePositiveNumber(bmi);
+
+  if (numericWeight === null || numericBmi === null) return null;
+
+  if (numericBmi < 18.5) {
+    return {
+      text:
+        'Поточний ІМТ відповідає недостатній масі тіла. Зниження маси тіла не рекомендоване; доцільно оцінити харчування, можливі причини втрати ваги та безпечну корекцію маси тіла з лікарем.',
+    };
+  }
+
+  if (numericBmi < 25) {
+    return {
+      text:
+        'Поточний ІМТ відповідає нормальній масі тіла. Спеціальне зниження маси тіла за ІМТ не потрібне; доцільно підтримувати стабільну вагу, регулярну фізичну активність і контроль окружності талії в динаміці.',
+    };
+  }
+
+  const targetPercent = numericBmi >= 30 ? 10 : 5;
+  const targetLoss = numericWeight * (targetPercent / 100);
+  const roundedLoss = Math.max(1, Math.round(targetLoss));
+  const roundedTargetWeight = Math.round(numericWeight - targetLoss);
+  const weeks = Math.max(1, Math.round(targetLoss / 0.75));
+  const weeksText = weeks === 1 ? '1 тижня' : `${weeks} тижнів`;
+
+  return {
+    percent: targetPercent,
+    lossKg: roundedLoss,
+    targetWeightKg: roundedTargetWeight,
+    weeks,
+    text:
+      `Поточна маса тіла — ${Math.round(numericWeight)} кг; початкова ціль — зниження на ${roundedLoss} кг до приблизно ${roundedTargetWeight} кг протягом ${weeksText}. ` +
+      'Навіть помірне зниження маси тіла може покращити артеріальний тиск, рівень глюкози, ліпіди та кардіометаболічний ризик.',
+  };
+}
+
+export function getWaistCategory(sex, waist) {
+  const numericWaist = parsePositiveNumber(waist);
+
+  if (!sex || numericWaist === null) return null;
+
+  if (sex === 'male') {
+    if (numericWaist < 94) return { level: 'target', label: 'в межах цільового діапазону' };
+    if (numericWaist < 102) return { level: 'increased', label: 'підвищена' };
+    return { level: 'high', label: 'значно підвищена' };
+  }
+
+  if (sex === 'female') {
+    if (numericWaist < 80) return { level: 'target', label: 'в межах цільового діапазону' };
+    if (numericWaist < 88) return { level: 'increased', label: 'підвищена' };
+    return { level: 'high', label: 'значно підвищена' };
+  }
+
+  return null;
+}
+
 export function getWaistRisk(sex, waist) {
   const numericWaist = parsePositiveNumber(waist);
 

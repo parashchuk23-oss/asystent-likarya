@@ -5,10 +5,11 @@ import FormField from '../FormField';
 import { inputClass } from '../formStyles';
 import {
   calculateBMI,
-  calculateTargetWeightRange,
+  calculateWeightLossGoal,
   getBMICategory,
   getBMIRecommendations,
   getCardiometabolicRisk,
+  getWaistCategory,
   getWaistRisk,
 } from '../../utils/calculations';
 
@@ -33,6 +34,15 @@ function InfoList({ title, items }) {
           <li key={item}>{item}</li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+function TextInfo({ title, children }) {
+  return (
+    <div className="rounded-md border border-slate-200 bg-white p-4">
+      <h3 className="font-semibold text-slate-950">{title}</h3>
+      <div className="mt-3 text-sm leading-6 text-slate-700">{children}</div>
     </div>
   );
 }
@@ -86,7 +96,8 @@ export default function BmiCalculator() {
 
     const bmi = calculateBMI(formData.weight, formData.height);
     const bmiCategory = getBMICategory(bmi);
-    const targetWeight = calculateTargetWeightRange(formData.height, formData.weight);
+    const weightLossGoal = calculateWeightLossGoal(formData.weight, bmi);
+    const waistCategory = getWaistCategory(formData.sex, formData.waist);
     const waistRisk = getWaistRisk(formData.sex, formData.waist);
     const cardiometabolicRisk = getCardiometabolicRisk(bmi, waistRisk);
     const recommendations = getBMIRecommendations(bmi, waistRisk);
@@ -94,7 +105,8 @@ export default function BmiCalculator() {
     setResult({
       bmi,
       bmiCategory,
-      targetWeight,
+      weightLossGoal,
+      waistCategory,
       waistRisk,
       cardiometabolicRisk,
       recommendations,
@@ -181,8 +193,8 @@ export default function BmiCalculator() {
 
       {result ? (
         <div className="mt-5 space-y-4">
-          <div className="grid gap-4 lg:grid-cols-3">
-            <div className="rounded-md border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
+          <div className="grid items-stretch gap-4 lg:grid-cols-3">
+            <div className="h-full rounded-md border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
               <p className="text-slate-600">ІМТ</p>
               <p className="text-3xl font-semibold text-blue-800">{result.bmi}</p>
               <p className="mt-2">
@@ -190,23 +202,29 @@ export default function BmiCalculator() {
               </p>
             </div>
 
-            <div className="rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-900">
-              <p className="font-semibold">Орієнтовна цільова вага</p>
-              <p className="mt-2 text-slate-700">
-                ІМТ 18.5–24.9: {result.targetWeight.normalRange}
-              </p>
-              <p className="mt-1 text-slate-700">
-                Маса для ІМТ 25: {result.targetWeight.weightForBmi25}
-              </p>
-              {result.targetWeight.reductionToBmi25 && (
-                <p className="mt-1 text-slate-700">
-                  Орієнтовне зниження маси до ІМТ 25: {result.targetWeight.reductionToBmi25}
+            <div className="h-full rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-900">
+              <p className="font-semibold">Окружність талії</p>
+              {result.waistCategory ? (
+                <>
+                  <p className="mt-2 text-slate-700">Значення: {formData.waist} см</p>
+                  <p className="mt-1 text-slate-700">
+                    Категорія: <span className="font-semibold">{result.waistCategory.label}</span>
+                  </p>
+                </>
+              ) : (
+                <p className="mt-2 text-slate-700">
+                  Додайте стать та окружність талії для інтерпретації.
                 </p>
               )}
+              <div className="mt-3 border-t border-slate-100 pt-3 text-xs leading-5 text-slate-500">
+                <p>Орієнтири:</p>
+                <p>чоловіки: &lt;94 см, 94–101 см, ≥102 см</p>
+                <p>жінки: &lt;80 см, 80–87 см, ≥88 см</p>
+              </div>
             </div>
 
             <div
-              className={`rounded-md border p-4 text-sm ${
+              className={`h-full rounded-md border p-4 text-sm ${
                 result.cardiometabolicRisk?.className || 'border-slate-200 bg-white text-slate-800'
               }`}
             >
@@ -221,15 +239,14 @@ export default function BmiCalculator() {
             </div>
           </div>
 
-          {result.waistRisk && (
-            <div className="rounded-md border border-teal-100 bg-teal-50/60 p-4 text-sm text-slate-800">
-              <p className="font-semibold">Окружність талії</p>
-              <p className="mt-2">Інтерпретація: {result.waistRisk.label}.</p>
-            </div>
-          )}
-
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="grid gap-4 lg:grid-cols-3">
             <InfoList title="Що перевірити додатково" items={result.recommendations.additionalChecks} />
+            <TextInfo title="Орієнтовна цільова вага">
+              <p>{result.weightLossGoal?.text}</p>
+              <p className="mt-2 text-xs text-slate-500">
+                Розрахунок терміну виконано за орієнтовним темпом 0,75 кг на тиждень.
+              </p>
+            </TextInfo>
             <InfoList title="Що обговорити з пацієнтом" items={result.recommendations.patientDiscussion} />
           </div>
 
