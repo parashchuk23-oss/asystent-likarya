@@ -2,9 +2,9 @@ import SeoToolPage from '../../components/SeoToolPage';
 import Gad7Questionnaire from '../../components/questionnaires/Gad7Questionnaire';
 
 export const metadata = {
-  title: 'Опитувальник GAD-7 українською | Асистент лікаря',
+  title: 'Скринінг тривожності GAD-7 українською | Асистент лікаря',
   description:
-    'GAD-7 українською для скринінгової оцінки вираженості симптомів тривоги за останні два тижні.',
+    'GAD-7 українською для оцінки вираженості симптомів тривоги протягом останніх двох тижнів.',
   alternates: {
     canonical: 'https://asystent-likarya.vercel.app/gad7',
   },
@@ -40,8 +40,8 @@ const faq = [
 export default function Gad7Page() {
   return (
     <SeoToolPage
-      title="Опитувальник GAD-7 українською"
-      description="Заповніть сім запитань, щоб структуровано оцінити вираженість симптомів тривоги за останні два тижні."
+      title="Скринінг тривожності — GAD-7"
+      description="Оцінка вираженості симптомів тривоги протягом останніх двох тижнів."
       faq={faq}
       disclaimer="GAD-7 не встановлює діагноз і не замінює консультацію фахівця. Результат потрібно інтерпретувати разом із клінічними симптомами, анамнезом і впливом стану на повсякденне життя."
     >
