@@ -17,6 +17,29 @@ function listLabels(group, values = [], otherText = '') {
   return labels.join(', ');
 }
 
+const noduleLocationText = {
+  upperThird: 'верхній третині',
+  middleThird: 'середній третині',
+  lowerThird: 'нижній третині',
+};
+
+const lobeGenitiveText = {
+  right: 'правої частки',
+  left: 'лівої частки',
+  isthmus: 'перешийка',
+};
+
+const contourInstrumentalText = {
+  smooth: 'рівним',
+  uneven: 'нерівним',
+  lobulated: 'лобульованим',
+};
+
+const clarityInstrumentalText = {
+  clear: 'чітким',
+  unclear: 'нечітким',
+};
+
 function generateLobeLine(label, dimensions, volume) {
   const sizeText = formatDimensions(dimensions);
   if (!sizeText && !volume) return '';
@@ -97,27 +120,61 @@ function generateParenchymaText(data) {
 }
 
 function generateNoduleText(nodule, index) {
-  const location =
-    nodule.location === 'other' ? nodule.locationOther : optionLabel('noduleLocation', nodule.location);
-  const lobe = optionLabel('noduleLobe', nodule.lobe);
+  const location = getNoduleLocationPhrase(nodule);
+  const contour = getNoduleContourPhrase(nodule);
   const inclusions = listLabels('noduleInclusions', nodule.inclusions, nodule.inclusionOther);
   const dimensions = formatDimensions(nodule.dimensions);
 
   return sentence([
-    `${index + 1}. У ${location.toLowerCase()} ${lobe.toLowerCase()} візуалізується`,
-    optionLabel('noduleType', nodule.type),
-    optionLabel('noduleEchogenicity', nodule.echogenicity),
-    'вузлове утворення',
-    optionLabel('noduleShape', nodule.shape),
-    optionLabel('noduleOrientation', nodule.orientation),
-    optionLabel('noduleContour', nodule.contour),
-    optionLabel('clarity', nodule.clarity) ? `контур ${optionLabel('clarity', nodule.clarity)}` : '',
+    `${index + 1}. ${location}, візуалізується`,
+    `${compact([optionLabel('noduleType', nodule.type), optionLabel('noduleEchogenicity', nodule.echogenicity)]).join(', ')},`,
+    `вузлове утворення, ${optionLabel('noduleShape', nodule.shape)} ${optionLabel('noduleOrientation', nodule.orientation)},`.trim(),
+    contour,
     optionLabel('noduleStructure', nodule.structure),
     inclusions,
     dimensions ? `розміром ${dimensions}` : '',
     optionLabel('bloodFlow', nodule.bloodFlow),
     nodule.tirads ? nodule.tirads : '',
   ]);
+}
+
+function getNoduleLocationPhrase(nodule) {
+  const lobe = lobeGenitiveText[nodule.lobe] || optionLabel('noduleLobe', nodule.lobe).toLowerCase();
+
+  if (nodule.location === 'border') {
+    if (nodule.lobe === 'right') return 'На межі правої частки та перешийка';
+    if (nodule.lobe === 'left') return 'На межі лівої частки та перешийка';
+    return 'У ділянці перешийка';
+  }
+
+  if (nodule.location === 'other') {
+    return nodule.locationOther ? `У ${nodule.locationOther}` : `У ${lobe}`;
+  }
+
+  return `У ${noduleLocationText[nodule.location] || optionLabel('noduleLocation', nodule.location).toLowerCase()} ${lobe}`;
+}
+
+function getNoduleContourPhrase(nodule) {
+  const contour = contourInstrumentalText[nodule.contour];
+  const clarity = clarityInstrumentalText[nodule.clarity];
+
+  if (contour && clarity) {
+    return `з ${contour}, ${clarity} контуром`;
+  }
+
+  if (contour) {
+    return `з ${contour} контуром`;
+  }
+
+  if (nodule.contour === 'noExtension') {
+    return 'без ознак екстратиреоїдного поширення';
+  }
+
+  if (nodule.contour === 'suspectedExtension') {
+    return 'з підозрою на екстратиреоїдне поширення';
+  }
+
+  return '';
 }
 
 function generatePerithyroidText(item, index) {
