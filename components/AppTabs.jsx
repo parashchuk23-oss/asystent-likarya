@@ -7,6 +7,7 @@ import DiseasesTab from './DiseasesTab';
 import HomeTab from './HomeTab';
 import PharmacologyTab from './PharmacologyTab';
 import QuestionnairesTab from './QuestionnairesTab';
+import UltrasoundTab from './ultrasound/UltrasoundTab';
 
 const tabs = [
   {
@@ -28,6 +29,11 @@ const tabs = [
     id: 'questionnaires',
     label: 'Опитувальники',
     description: 'GAD-7, PHQ-9, FINDRISC, AUDIT-C, STOP-Bang',
+  },
+  {
+    id: 'ultrasound',
+    label: 'УЗД',
+    description: 'Структуровані протоколи ультразвукових досліджень',
   },
   {
     id: 'drugs',
@@ -75,6 +81,7 @@ export default function AppTabs() {
         {activeTab === 'assistant' && <CardioAssistantTab />}
         {activeTab === 'calculators' && <CalculatorsTab />}
         {activeTab === 'questionnaires' && <QuestionnairesTab />}
+        {activeTab === 'ultrasound' && <UltrasoundTab />}
         {activeTab === 'drugs' && <PharmacologyTab />}
         {activeTab === 'diseases' && <DiseasesTab />}
       </div>
