@@ -4,8 +4,16 @@ import FormField from '../FormField';
 import { inputClass } from '../formStyles';
 
 function NumberField({ label, value, onChange, max = 200 }) {
+  const error = validatePositiveNumber(value, { max });
+
   return (
-    <FormField className="mb-2" label={label} hint="мм" error={validatePositiveNumber(value, { max })}>
+    <div className="mb-2">
+      <div className="mb-1.5 flex min-h-5 items-baseline justify-between gap-2">
+        <label className="min-w-0 text-sm font-semibold leading-tight text-slate-700">
+          {label}
+        </label>
+        <span className="shrink-0 text-xs font-medium text-slate-400">мм</span>
+      </div>
       <input
         type="number"
         min="0"
@@ -14,7 +22,8 @@ function NumberField({ label, value, onChange, max = 200 }) {
         onChange={(event) => onChange(event.target.value)}
         className={inputClass}
       />
-    </FormField>
+      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+    </div>
   );
 }
 
