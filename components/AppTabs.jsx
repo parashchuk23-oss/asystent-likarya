@@ -4,6 +4,7 @@ import { useState } from 'react';
 import CalculatorsTab from './CalculatorsTab';
 import CardioAssistantTab from './CardioAssistantTab';
 import DiseasesTab from './DiseasesTab';
+import EcgTab from './ecg/EcgTab';
 import HomeTab from './HomeTab';
 import PharmacologyTab from './PharmacologyTab';
 import QuestionnairesTab from './QuestionnairesTab';
@@ -34,6 +35,11 @@ const tabs = [
     id: 'ultrasound',
     label: 'УЗД',
     description: 'Структуровані протоколи ультразвукових досліджень',
+  },
+  {
+    id: 'ecg',
+    label: 'ЕКГ',
+    description: 'Структурована інтерпретація ЕКГ, QT/QTc, електрична вісь та клінічні чек-листи',
   },
   {
     id: 'drugs',
@@ -82,6 +88,7 @@ export default function AppTabs() {
         {activeTab === 'calculators' && <CalculatorsTab />}
         {activeTab === 'questionnaires' && <QuestionnairesTab />}
         {activeTab === 'ultrasound' && <UltrasoundTab />}
+        {activeTab === 'ecg' && <EcgTab />}
         {activeTab === 'drugs' && <PharmacologyTab />}
         {activeTab === 'diseases' && <DiseasesTab />}
       </div>
