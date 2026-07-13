@@ -206,7 +206,7 @@ export default function ThyroidUltrasoundModule() {
             onVascularizationChange={(value) => updateData('vascularization', value)}
           />
           <div className="mt-4">
-            <FormField label="Як формувати дифузні зміни у висновку">
+            <FormField className="mb-2" label="Як формувати дифузні зміни у висновку">
               <select value={data.diffuseInterpretation} onChange={(event) => updateData('diffuseInterpretation', event.target.value)} className={inputClass}>
                 <option value="diffuseChanges">УЗ-ознаки дифузних змін</option>
                 <option value="thyroiditis">УЗ-ознаки, які можуть відповідати тиреоїдиту</option>

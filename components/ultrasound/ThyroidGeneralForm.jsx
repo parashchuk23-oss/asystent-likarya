@@ -4,7 +4,7 @@ import { inputClass } from '../formStyles';
 
 function SelectField({ label, value, onChange, options }) {
   return (
-    <FormField label={label}>
+    <FormField className="mb-2" label={label}>
       <select value={value} onChange={(event) => onChange(event.target.value)} className={inputClass}>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -20,7 +20,7 @@ export default function ThyroidGeneralForm({ data, onChange }) {
   const update = (field, value) => onChange({ ...data, [field]: value });
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-3 md:grid-cols-2">
       <SelectField
         label="Стан залози"
         value={data.surgeryStatus}
@@ -40,7 +40,7 @@ export default function ThyroidGeneralForm({ data, onChange }) {
         options={thyroidOptions.shape}
       />
       {data.shape === 'other' ? (
-        <FormField label="Форма: уточнення">
+        <FormField className="mb-2" label="Форма: уточнення">
           <input
             value={data.shapeOther}
             onChange={(event) => update('shapeOther', event.target.value)}

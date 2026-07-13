@@ -4,7 +4,7 @@ import { inputClass } from '../formStyles';
 
 function SelectField({ label, value, onChange, options }) {
   return (
-    <FormField label={label}>
+    <FormField className="mb-2" label={label}>
       <select value={value} onChange={(event) => onChange(event.target.value)} className={inputClass}>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -47,14 +47,14 @@ export default function ThyroidParenchymaForm({ appearance, parenchyma, vascular
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-3 md:grid-cols-2">
         <SelectField label="Контури" value={appearance.contour} onChange={(value) => updateAppearance('contour', value)} options={thyroidOptions.contour} />
         <SelectField label="Чіткість контурів" value={appearance.clarity} onChange={(value) => updateAppearance('clarity', value)} options={thyroidOptions.clarity} />
         <SelectField label="Капсула" value={appearance.capsule} onChange={(value) => updateAppearance('capsule', value)} options={thyroidOptions.capsule} />
         <SelectField label="Ехогенність" value={appearance.echogenicity} onChange={(value) => updateAppearance('echogenicity', value)} options={thyroidOptions.echogenicity} />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-3 md:grid-cols-2">
         <SelectField
           label="Паренхіма"
           value={parenchyma.structure}
@@ -72,8 +72,8 @@ export default function ThyroidParenchymaForm({ appearance, parenchyma, vascular
             values={parenchyma.features}
             onChange={(values) => updateParenchyma('features', values)}
           />
-          <div className="mt-4 grid gap-4 md:grid-cols-3">
-            <FormField label="Гіпоехогенні ділянки до" hint="мм">
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <FormField className="mb-2" label="Гіпоехогенні ділянки до" hint="мм">
               <input
                 type="number"
                 min="0"
@@ -83,7 +83,7 @@ export default function ThyroidParenchymaForm({ appearance, parenchyma, vascular
                 className={inputClass}
               />
             </FormField>
-            <FormField label="Фіброзні ділянки до" hint="мм">
+            <FormField className="mb-2" label="Фіброзні ділянки до" hint="мм">
               <input
                 type="number"
                 min="0"
@@ -94,7 +94,7 @@ export default function ThyroidParenchymaForm({ appearance, parenchyma, vascular
               />
             </FormField>
             {parenchyma.features.includes('other') ? (
-              <FormField label="Інше">
+              <FormField className="mb-2" label="Інше">
                 <input value={parenchyma.other} onChange={(event) => updateParenchyma('other', event.target.value)} className={inputClass} />
               </FormField>
             ) : null}

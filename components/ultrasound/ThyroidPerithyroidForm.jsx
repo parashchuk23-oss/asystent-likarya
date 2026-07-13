@@ -6,14 +6,14 @@ function DimensionInputs({ value, onChange }) {
   const update = (field, nextValue) => onChange({ ...value, [field]: nextValue });
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
-      <FormField label="Довжина" hint="мм">
+    <div className="grid gap-3 md:grid-cols-3">
+      <FormField className="mb-2" label="Довжина" hint="мм">
         <input type="number" min="0" step="0.1" value={value.length} onChange={(event) => update('length', event.target.value)} className={inputClass} />
       </FormField>
-      <FormField label="Товщина" hint="мм">
+      <FormField className="mb-2" label="Товщина" hint="мм">
         <input type="number" min="0" step="0.1" value={value.thickness} onChange={(event) => update('thickness', event.target.value)} className={inputClass} />
       </FormField>
-      <FormField label="Ширина" hint="мм">
+      <FormField className="mb-2" label="Ширина" hint="мм">
         <input type="number" min="0" step="0.1" value={value.width} onChange={(event) => update('width', event.target.value)} className={inputClass} />
       </FormField>
     </div>
@@ -46,23 +46,23 @@ export default function ThyroidPerithyroidForm({ items, onAdd, onUpdate, onRemov
               </button>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <FormField label="Локалізація">
+            <div className="grid gap-3 md:grid-cols-2">
+              <FormField className="mb-2" label="Локалізація">
                 <input value={item.localization} onChange={(event) => update('localization', event.target.value)} className={inputClass} />
               </FormField>
-              <FormField label="Форма">
+              <FormField className="mb-2" label="Форма">
                 <input value={item.shape} onChange={(event) => update('shape', event.target.value)} className={inputClass} />
               </FormField>
-              <FormField label="Ехогенність">
+              <FormField className="mb-2" label="Ехогенність">
                 <input value={item.echogenicity} onChange={(event) => update('echogenicity', event.target.value)} className={inputClass} />
               </FormField>
-              <FormField label="Контури">
+              <FormField className="mb-2" label="Контури">
                 <input value={item.contours} onChange={(event) => update('contours', event.target.value)} className={inputClass} />
               </FormField>
-              <FormField label="Кровотік">
+              <FormField className="mb-2" label="Кровотік">
                 <input value={item.bloodFlow} onChange={(event) => update('bloodFlow', event.target.value)} className={inputClass} />
               </FormField>
-              <FormField label="Компресія">
+              <FormField className="mb-2" label="Компресія">
                 <select value={item.compression} onChange={(event) => update('compression', event.target.value)} className={inputClass}>
                   <option value="стискається">стискається</option>
                   <option value="не стискається">не стискається</option>

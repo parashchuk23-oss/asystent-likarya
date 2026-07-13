@@ -10,14 +10,14 @@ export default function ThyroidLymphNodesForm({ data, onChange }) {
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 md:grid-cols-2">
-        <FormField label="Стан">
+      <div className="grid gap-3 md:grid-cols-2">
+        <FormField className="mb-2" label="Стан">
           <select value={data.status} onChange={(event) => update('status', event.target.value)} className={inputClass}>
             <option value="notEnlarged">не збільшені</option>
             <option value="enlarged">збільшені</option>
           </select>
         </FormField>
-        <FormField label="Максимальна коротка вісь" hint="мм">
+        <FormField className="mb-2" label="Максимальна коротка вісь" hint="мм">
           <input
             type="number"
             min="0"
@@ -43,8 +43,8 @@ export default function ThyroidLymphNodesForm({ data, onChange }) {
         ))}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <FormField label="Структура">
+      <div className="grid gap-3 md:grid-cols-2">
+        <FormField className="mb-2" label="Структура">
           <select value={data.structure} onChange={(event) => update('structure', event.target.value)} className={inputClass}>
             <option value="без особливостей">без особливостей</option>
             <option value="помірні реактивні зміни">помірні реактивні зміни</option>
@@ -54,7 +54,7 @@ export default function ThyroidLymphNodesForm({ data, onChange }) {
             <option value="диференціація порушена">диференціація порушена</option>
           </select>
         </FormField>
-        <FormField label="Кровотік">
+        <FormField className="mb-2" label="Кровотік">
           <select value={data.bloodFlow} onChange={(event) => update('bloodFlow', event.target.value)} className={inputClass}>
             <option value="центральний">центральний</option>
             <option value="периферичний">периферичний</option>

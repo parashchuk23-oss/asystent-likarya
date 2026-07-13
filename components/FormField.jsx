@@ -1,6 +1,6 @@
-export default function FormField({ label, required, error, children, hint }) {
+export default function FormField({ label, required, error, children, hint, className = 'mb-4' }) {
   return (
-    <div className="mb-4">
+    <div className={className}>
       <label className="mb-1.5 block text-sm font-semibold text-slate-700">
         {label}
         {required && <span className="ml-1 text-red-500">*</span>}

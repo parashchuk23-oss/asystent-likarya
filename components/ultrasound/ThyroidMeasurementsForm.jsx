@@ -5,7 +5,7 @@ import { inputClass } from '../formStyles';
 
 function NumberField({ label, value, onChange, max = 200 }) {
   return (
-    <FormField label={label} hint="мм" error={validatePositiveNumber(value, { max })}>
+    <FormField className="mb-2" label={label} hint="мм" error={validatePositiveNumber(value, { max })}>
       <input
         type="number"
         min="0"
@@ -44,19 +44,19 @@ export default function ThyroidMeasurementsForm({ data, onChange }) {
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-3 lg:grid-cols-2">
         <LobeFields title="Права частка" value={data.right} volume={volumes.rightVolume} onChange={(value) => update('right', value)} />
         <LobeFields title="Ліва частка" value={data.left} volume={volumes.leftVolume} onChange={(value) => update('left', value)} />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-3 md:grid-cols-3">
         <NumberField
           label="Перешийок"
           value={data.isthmus.thickness}
           onChange={(value) => update('isthmus', { ...data.isthmus, thickness: value })}
           max={80}
         />
-        <FormField label="Статус перешийка">
+        <FormField className="mb-2" label="Статус перешийка">
           <select
             value={data.isthmus.status}
             onChange={(event) => update('isthmus', { ...data.isthmus, status: event.target.value })}
@@ -69,15 +69,15 @@ export default function ThyroidMeasurementsForm({ data, onChange }) {
             ))}
           </select>
         </FormField>
-        <FormField label="Сумарний об’єм">
+        <FormField className="mb-2" label="Сумарний об’єм">
           <div className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-700">
             {volumes.totalVolume ? `${formatDecimal(volumes.totalVolume)} см³` : 'Буде розраховано автоматично'}
           </div>
         </FormField>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <FormField label="Статус сумарного об’єму">
+      <div className="grid gap-3 md:grid-cols-2">
+        <FormField className="mb-2" label="Статус сумарного об’єму">
           <select
             value={data.totalVolumeStatus}
             onChange={(event) => update('totalVolumeStatus', event.target.value)}
@@ -90,7 +90,7 @@ export default function ThyroidMeasurementsForm({ data, onChange }) {
             ))}
           </select>
         </FormField>
-        <FormField label="Збільшена приблизно на" hint="% від обраної норми, необов’язково">
+        <FormField className="mb-2" label="Збільшена приблизно на" hint="% від обраної норми, необов’язково">
           <input
             type="number"
             min="0"

@@ -4,7 +4,7 @@ import { inputClass } from '../formStyles';
 
 function SelectField({ label, value, onChange, options }) {
   return (
-    <FormField label={label}>
+    <FormField className="mb-2" label={label}>
       <select value={value} onChange={(event) => onChange(event.target.value)} className={inputClass}>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -55,13 +55,13 @@ function Dimensions({ value, onChange }) {
   const update = (field, nextValue) => onChange({ ...value, [field]: nextValue });
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="grid gap-3 md:grid-cols-3">
       {[
         ['length', 'Довжина'],
         ['thickness', 'Товщина'],
         ['width', 'Ширина'],
       ].map(([field, label]) => (
-        <FormField key={field} label={label} hint="мм">
+        <FormField className="mb-2" key={field} label={label} hint="мм">
           <input
             type="number"
             min="0"
@@ -107,7 +107,7 @@ export default function ThyroidNoduleForm({ nodules, onAdd, onUpdate, onRemove }
               </button>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-3 md:grid-cols-2">
               <SelectField label="Локалізація" value={nodule.lobe} onChange={(value) => update('lobe', value)} options={thyroidOptions.noduleLobe} />
               <SelectField
                 label="Рівень"
@@ -116,7 +116,7 @@ export default function ThyroidNoduleForm({ nodules, onAdd, onUpdate, onRemove }
                 options={thyroidOptions.noduleLocation}
               />
               {nodule.location === 'other' ? (
-                <FormField label="Локалізація: уточнення">
+                <FormField className="mb-2" label="Локалізація: уточнення">
                   <input value={nodule.locationOther} onChange={(event) => update('locationOther', event.target.value)} className={inputClass} />
                 </FormField>
               ) : null}

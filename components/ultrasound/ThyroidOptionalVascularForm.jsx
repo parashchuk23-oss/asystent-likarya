@@ -18,20 +18,20 @@ export default function ThyroidOptionalVascularForm({ data, onChange }) {
           Внутрішні яремні вени
         </label>
         {data.jugularEnabled ? (
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            <FormField label="Діаметр праворуч" hint="мм">
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <FormField className="mb-2" label="Діаметр праворуч" hint="мм">
               <input value={data.jugular.rightDiameter} onChange={(event) => updateGroup('jugular', 'rightDiameter', event.target.value)} className={inputClass} />
             </FormField>
-            <FormField label="Діаметр ліворуч" hint="мм">
+            <FormField className="mb-2" label="Діаметр ліворуч" hint="мм">
               <input value={data.jugular.leftDiameter} onChange={(event) => updateGroup('jugular', 'leftDiameter', event.target.value)} className={inputClass} />
             </FormField>
-            <FormField label="Стан">
+            <FormField className="mb-2" label="Стан">
               <select value={data.jugular.dilation} onChange={(event) => updateGroup('jugular', 'dilation', event.target.value)} className={inputClass}>
                 <option value="не розширені">не розширені</option>
                 <option value="розширені">розширені</option>
               </select>
             </FormField>
-            <FormField label="Компресія">
+            <FormField className="mb-2" label="Компресія">
               <select value={data.jugular.compression} onChange={(event) => updateGroup('jugular', 'compression', event.target.value)} className={inputClass}>
                 <option value="стискаються повністю">стискаються повністю</option>
                 <option value="стискаються частково">стискаються частково</option>
@@ -53,14 +53,14 @@ export default function ThyroidOptionalVascularForm({ data, onChange }) {
           Загальні сонні артерії
         </label>
         {data.carotidEnabled ? (
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            <FormField label="Хід">
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <FormField className="mb-2" label="Хід">
               <select value={data.carotid.course} onChange={(event) => updateGroup('carotid', 'course', event.target.value)} className={inputClass}>
                 <option value="прямолінійний">прямолінійний</option>
                 <option value="звивистий">звивистий</option>
               </select>
             </FormField>
-            <FormField label="Інтима">
+            <FormField className="mb-2" label="Інтима">
               <select value={data.carotid.intima} onChange={(event) => updateGroup('carotid', 'intima', event.target.value)} className={inputClass}>
                 <option value="чітко диференціюється">чітко диференціюється</option>
                 <option value="диференціація порушена">диференціація порушена</option>
@@ -68,13 +68,13 @@ export default function ThyroidOptionalVascularForm({ data, onChange }) {
                 <option value="не потовщена">не потовщена</option>
               </select>
             </FormField>
-            <FormField label="КІМ праворуч" hint="мм">
+            <FormField className="mb-2" label="КІМ праворуч" hint="мм">
               <input value={data.carotid.cimtRight} onChange={(event) => updateGroup('carotid', 'cimtRight', event.target.value)} className={inputClass} />
             </FormField>
-            <FormField label="КІМ ліворуч" hint="мм">
+            <FormField className="mb-2" label="КІМ ліворуч" hint="мм">
               <input value={data.carotid.cimtLeft} onChange={(event) => updateGroup('carotid', 'cimtLeft', event.target.value)} className={inputClass} />
             </FormField>
-            <FormField label="Біфуркація">
+            <FormField className="mb-2" label="Біфуркація">
               <select value={data.carotid.bifurcation} onChange={(event) => updateGroup('carotid', 'bifurcation', event.target.value)} className={inputClass}>
                 <option value="без локального потовщення">без локального потовщення</option>
                 <option value="локальне потовщення праворуч">локальне потовщення праворуч</option>
@@ -82,7 +82,7 @@ export default function ThyroidOptionalVascularForm({ data, onChange }) {
                 <option value="локальне потовщення з обох боків">локальне потовщення з обох боків</option>
               </select>
             </FormField>
-            <FormField label="Бляшки">
+            <FormField className="mb-2" label="Бляшки">
               <select value={data.carotid.plaques} onChange={(event) => updateGroup('carotid', 'plaques', event.target.value)} className={inputClass}>
                 <option value="notDetected">не виявлені</option>
                 <option value="detected">виявлені</option>
@@ -90,7 +90,7 @@ export default function ThyroidOptionalVascularForm({ data, onChange }) {
             </FormField>
             {data.carotid.plaques === 'detected' ? (
               <div className="md:col-span-2">
-                <FormField label="Опис бляшок">
+                <FormField className="mb-2" label="Опис бляшок">
                   <textarea
                     value={data.carotid.plaqueDescription}
                     onChange={(event) => updateGroup('carotid', 'plaqueDescription', event.target.value)}
