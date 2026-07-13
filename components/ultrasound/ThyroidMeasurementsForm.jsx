@@ -3,7 +3,7 @@ import { formatDecimal, getCalculatedVolumes, validatePositiveNumber } from '../
 import FormField from '../FormField';
 import { inputClass } from '../formStyles';
 
-function NumberField({ label, value, onChange, max = 200 }) {
+function NumberField({ label, value, onChange, max = 200, showUnit = true }) {
   const error = validatePositiveNumber(value, { max });
 
   return (
@@ -12,7 +12,7 @@ function NumberField({ label, value, onChange, max = 200 }) {
         <label className="min-w-0 text-sm font-semibold leading-tight text-slate-700">
           {label}
         </label>
-        <span className="shrink-0 text-xs font-medium text-slate-400">мм</span>
+        {showUnit ? <span className="shrink-0 text-xs font-medium text-slate-400">мм</span> : null}
       </div>
       <input
         type="number"
@@ -33,15 +33,18 @@ function LobeFields({ title, value, volume, onChange }) {
   return (
     <div className="rounded-lg border border-slate-200 p-4">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <h4 className="font-semibold text-slate-950">{title}</h4>
+        <div>
+          <h4 className="font-semibold text-slate-950">{title}</h4>
+          <p className="mt-0.5 text-xs font-medium text-slate-400">розміри в мм</p>
+        </div>
         <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600">
           {volume ? `${formatDecimal(volume)} см³` : 'об’єм —'}
         </span>
       </div>
       <div className="grid gap-3 sm:grid-cols-3">
-        <NumberField label="Довжина" value={value.length} onChange={(nextValue) => update('length', nextValue)} />
-        <NumberField label="Товщина" value={value.thickness} onChange={(nextValue) => update('thickness', nextValue)} />
-        <NumberField label="Ширина" value={value.width} onChange={(nextValue) => update('width', nextValue)} />
+        <NumberField label="Довжина" value={value.length} onChange={(nextValue) => update('length', nextValue)} showUnit={false} />
+        <NumberField label="Товщина" value={value.thickness} onChange={(nextValue) => update('thickness', nextValue)} showUnit={false} />
+        <NumberField label="Ширина" value={value.width} onChange={(nextValue) => update('width', nextValue)} showUnit={false} />
       </div>
     </div>
   );
