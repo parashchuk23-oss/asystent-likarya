@@ -1,0 +1,62 @@
+import { abdomenOptions } from '../../../data/ultrasound/abdomenOptions';
+import { CheckboxGroup, ModeToggle, NumberField, SelectField, TextField } from './AbdomenFormControls';
+
+export default function LiverForm({ data, onChange }) {
+  const update = (field, value) => onChange({ ...data, [field]: value });
+
+  return (
+    <div>
+      <ModeToggle value={data.mode} onChange={(value) => update('mode', value)} />
+
+      <div className="grid gap-3 md:grid-cols-3">
+        <NumberField label="Права частка" value={data.rightLobeLength} onChange={(value) => update('rightLobeLength', value)} />
+        <NumberField label="Ліва частка" value={data.leftLobeLength} onChange={(value) => update('leftLobeLength', value)} />
+        <NumberField label="Хвостата частка" value={data.caudateLobe} onChange={(value) => update('caudateLobe', value)} />
+      </div>
+
+      {data.mode === 'changed' ? (
+        <div className="space-y-3">
+          <div className="grid gap-3 md:grid-cols-3">
+            <SelectField label="Контури" value={data.contours} onChange={(value) => update('contours', value)} options={abdomenOptions.contours} />
+            <SelectField label="Ехогенність" value={data.echogenicity} onChange={(value) => update('echogenicity', value)} options={abdomenOptions.echogenicity} />
+            <SelectField label="Структура" value={data.structure} onChange={(value) => update('structure', value)} options={abdomenOptions.structure} />
+          </div>
+
+          {data.structure === 'heterogeneous' ? (
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <h4 className="mb-2 text-sm font-bold text-slate-950">Ознаки неоднорідності</h4>
+              <CheckboxGroup options={abdomenOptions.liverChanges} values={data.changes} onChange={(values) => update('changes', values)} />
+              {data.changes.includes('other') ? (
+                <div className="mt-3">
+                  <TextField label="Інше" value={data.otherChange} onChange={(value) => update('otherChange', value)} />
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+
+      <div className="mt-3 grid gap-3 md:grid-cols-3">
+        <NumberField label="Портальна вена" value={data.portalVein} onChange={(value) => update('portalVein', value)} />
+        <SelectField
+          label="Печінкові вени"
+          value={data.hepaticVeins}
+          onChange={(value) => update('hepaticVeins', value)}
+          options={[
+            { value: 'notDilated', label: 'не розширені' },
+            { value: 'dilated', label: 'розширені' },
+          ]}
+        />
+        <SelectField
+          label="Жовчні протоки"
+          value={data.bileDucts}
+          onChange={(value) => update('bileDucts', value)}
+          options={[
+            { value: 'notDilated', label: 'не розширені' },
+            { value: 'dilated', label: 'розширені' },
+          ]}
+        />
+      </div>
+    </div>
+  );
+}
