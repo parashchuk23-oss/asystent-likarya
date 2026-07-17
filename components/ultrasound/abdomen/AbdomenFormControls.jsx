@@ -15,7 +15,7 @@ export function SelectField({ label, value, onChange, options }) {
   );
 }
 
-export function NumberField({ label, value, onChange, unit = 'мм' }) {
+export function NumberField({ label, value, onChange, unit = 'мм', norm = '' }) {
   return (
     <FormField className="mb-2" label={label} hint={unit}>
       <input
@@ -26,6 +26,7 @@ export function NumberField({ label, value, onChange, unit = 'мм' }) {
         onChange={(event) => onChange(event.target.value)}
         className={inputClass}
       />
+      {norm ? <p className="mt-1 text-xs font-medium leading-snug text-slate-500">Орієнтир: {norm}</p> : null}
     </FormField>
   );
 }

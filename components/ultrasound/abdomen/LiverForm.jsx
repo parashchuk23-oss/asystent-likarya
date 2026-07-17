@@ -7,9 +7,9 @@ export default function LiverForm({ data, onChange }) {
   return (
     <div>
       <div className="grid gap-3 md:grid-cols-3">
-        <NumberField label="Права частка" value={data.rightLobeLength} onChange={(value) => update('rightLobeLength', value)} />
-        <NumberField label="Ліва частка" value={data.leftLobeLength} onChange={(value) => update('leftLobeLength', value)} />
-        <NumberField label="Хвостата частка" value={data.caudateLobe} onChange={(value) => update('caudateLobe', value)} />
+        <NumberField label="Права частка" value={data.rightLobeLength} onChange={(value) => update('rightLobeLength', value)} norm="до 155 мм" />
+        <NumberField label="Ліва частка" value={data.leftLobeLength} onChange={(value) => update('leftLobeLength', value)} norm="до 80 мм" />
+        <NumberField label="Хвостата частка" value={data.caudateLobe} onChange={(value) => update('caudateLobe', value)} norm="до 35 мм" />
       </div>
 
       <div className="space-y-3">
@@ -33,7 +33,7 @@ export default function LiverForm({ data, onChange }) {
       </div>
 
       <div className="mt-3 grid gap-3 md:grid-cols-3">
-        <NumberField label="Портальна вена" value={data.portalVein} onChange={(value) => update('portalVein', value)} />
+        <NumberField label="Портальна вена" value={data.portalVein} onChange={(value) => update('portalVein', value)} norm="до 13 мм" />
         <SelectField
           label="Печінкові вени"
           value={data.hepaticVeins}

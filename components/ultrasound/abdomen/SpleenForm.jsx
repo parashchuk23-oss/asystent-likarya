@@ -8,9 +8,9 @@ export default function SpleenForm({ data, onChange }) {
   return (
     <div>
       <div className="grid gap-3 md:grid-cols-3">
-        <NumberField label="Довжина" value={data.length} onChange={(value) => update('length', value)} />
-        <NumberField label="Ширина" value={data.width} onChange={(value) => update('width', value)} />
-        <NumberField label="Селезінкова вена" value={data.splenicVein} onChange={(value) => update('splenicVein', value)} />
+        <NumberField label="Довжина" value={data.length} onChange={(value) => update('length', value)} norm="до 120 мм" />
+        <NumberField label="Ширина" value={data.width} onChange={(value) => update('width', value)} norm="до 60 мм" />
+        <NumberField label="Селезінкова вена" value={data.splenicVein} onChange={(value) => update('splenicVein', value)} norm="до 10 мм" />
       </div>
 
       <div className="space-y-3">

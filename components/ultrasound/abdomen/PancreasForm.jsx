@@ -8,9 +8,9 @@ export default function PancreasForm({ data, onChange }) {
   return (
     <div>
       <div className="grid gap-3 md:grid-cols-3">
-        <NumberField label="Головка" value={data.head} onChange={(value) => update('head', value)} />
-        <NumberField label="Тіло" value={data.body} onChange={(value) => update('body', value)} />
-        <NumberField label="Хвіст" value={data.tail} onChange={(value) => update('tail', value)} />
+        <NumberField label="Головка" value={data.head} onChange={(value) => update('head', value)} norm="до 30 мм" />
+        <NumberField label="Тіло" value={data.body} onChange={(value) => update('body', value)} norm="до 25 мм" />
+        <NumberField label="Хвіст" value={data.tail} onChange={(value) => update('tail', value)} norm="до 30 мм" />
       </div>
 
       <div className="space-y-3">
@@ -20,7 +20,7 @@ export default function PancreasForm({ data, onChange }) {
           <SelectField label="Структура" value={data.structure} onChange={(value) => update('structure', value)} options={abdomenOptions.structure} />
         </div>
         <div className="grid gap-3 md:grid-cols-2">
-          <NumberField label="Вірсунгова протока" value={data.wirsung} onChange={(value) => update('wirsung', value)} />
+          <NumberField label="Вірсунгова протока" value={data.wirsung} onChange={(value) => update('wirsung', value)} norm="до 2,5 мм" />
           <TextField
             label="Парапанкреатична клітковина"
             value={data.peripancreaticTissue}

@@ -21,9 +21,9 @@ export default function GallbladderForm({ data, onChange }) {
       <div className="grid gap-3 md:grid-cols-2">
         <SelectField label="Форма" value={data.shape} onChange={(value) => update('shape', value)} options={abdomenOptions.gallbladderShape} />
         <SelectField label="Перегин" value={data.inflection} onChange={(value) => update('inflection', value)} options={abdomenOptions.gallbladderInflection} />
-        <NumberField label="Довжина" value={data.length} onChange={(value) => update('length', value)} />
-        <NumberField label="Ширина" value={data.width} onChange={(value) => update('width', value)} />
-        <NumberField label="Стінка" value={data.wall} onChange={(value) => update('wall', value)} />
+        <NumberField label="Довжина" value={data.length} onChange={(value) => update('length', value)} norm="70–120 мм" />
+        <NumberField label="Ширина" value={data.width} onChange={(value) => update('width', value)} norm="до 40 мм" />
+        <NumberField label="Стінка" value={data.wall} onChange={(value) => update('wall', value)} norm="до 3 мм" />
         <SelectField label="Вміст" value={data.content} onChange={(value) => update('content', value)} options={abdomenOptions.gallbladderContent} />
       </div>
 
