@@ -99,11 +99,17 @@ export default function ThyroidNoduleForm({ nodules, onAdd, onUpdate, onRemove }
       {nodules.map((nodule, index) => {
         const update = (field, value) => onUpdate(nodule.id, { ...nodule, [field]: value });
         const tirads = calculateAcrTirads(nodule);
+        const protocolTirads = nodule.tirads || tirads.category;
 
         return (
           <article key={nodule.id} className="rounded-lg border border-slate-200 bg-white p-4">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <h4 className="font-bold text-slate-950">Вузол {index + 1}</h4>
+            <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap items-center gap-2">
+                <h4 className="font-bold text-slate-950">Вузол {index + 1}</h4>
+                <span className="rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-bold text-teal-800">
+                  ACR TI-RADS: {tirads.category}, {tirads.points} балів
+                </span>
+              </div>
               <button type="button" onClick={() => onRemove(nodule.id)} className="text-sm font-semibold text-red-600">
                 Видалити
               </button>
@@ -145,8 +151,14 @@ export default function ThyroidNoduleForm({ nodules, onAdd, onUpdate, onRemove }
                 options={thyroidOptions.noduleStructure}
               />
               <SelectField label="Кровотік" value={nodule.bloodFlow} onChange={(value) => update('bloodFlow', value)} options={thyroidOptions.bloodFlow} />
+              <FormField className="mb-2" label="ACR TI-RADS автоматично">
+                <div className={`${inputClass} flex items-center justify-between bg-teal-50 font-bold text-teal-900`}>
+                  <span>{tirads.category}</span>
+                  <span className="text-sm font-semibold text-teal-700">{tirads.points} балів</span>
+                </div>
+              </FormField>
               <SelectField
-                label="Ручна корекція ACR TI-RADS"
+                label="Ручна корекція, якщо потрібно"
                 value={nodule.tirads}
                 onChange={(value) => update('tirads', value)}
                 options={thyroidOptions.tirads}
@@ -171,11 +183,13 @@ export default function ThyroidNoduleForm({ nodules, onAdd, onUpdate, onRemove }
                   </p>
                   <p className="mt-1 text-sm text-slate-700">{tirads.interpretation}</p>
                 </div>
-                {nodule.tirads ? (
-                  <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800">
-                    У протоколі: ручна корекція {nodule.tirads}
-                  </span>
-                ) : null}
+                <span
+                  className={`rounded-full border px-3 py-1 text-xs font-semibold ${
+                    nodule.tirads ? 'border-amber-200 bg-amber-50 text-amber-800' : 'border-teal-200 bg-white text-teal-800'
+                  }`}
+                >
+                  У протоколі: {nodule.tirads ? `ручна корекція ${protocolTirads}` : `автоматично ${protocolTirads}`}
+                </span>
               </div>
               <div className="mt-3 grid gap-2 text-xs font-semibold text-slate-600 sm:grid-cols-5">
                 <span>Склад: {tirads.pointsByFeature.composition}</span>
