@@ -10,10 +10,16 @@ export function formatNumber(value, digits = 1) {
 }
 
 export function isLiverEnlarged(liver) {
-  const right = parsePositiveNumber(liver.rightLobeLength);
+  const rightCraniocaudal = parsePositiveNumber(liver.rightLobeLength);
+  const rightAp = parsePositiveNumber(liver.rightLobeAp);
   const left = parsePositiveNumber(liver.leftLobeLength);
   const caudate = parsePositiveNumber(liver.caudateLobe);
-  return Boolean((right && right > 155) || (left && left > 80) || (caudate && caudate > 35));
+  return Boolean(
+    (rightCraniocaudal && rightCraniocaudal > 150) ||
+      (rightAp && rightAp > 120) ||
+      (left && left > 80) ||
+      (caudate && caudate > 35)
+  );
 }
 
 export function isPortalVeinDilated(value) {

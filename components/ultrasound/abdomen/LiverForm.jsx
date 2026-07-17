@@ -6,10 +6,11 @@ export default function LiverForm({ data, onChange }) {
 
   return (
     <div>
-      <div className="grid gap-3 md:grid-cols-3">
-        <NumberField label="Права частка" value={data.rightLobeLength} onChange={(value) => update('rightLobeLength', value)} norm="до 155 мм" />
-        <NumberField label="Ліва частка" value={data.leftLobeLength} onChange={(value) => update('leftLobeLength', value)} norm="до 80 мм" />
-        <NumberField label="Хвостата частка" value={data.caudateLobe} onChange={(value) => update('caudateLobe', value)} norm="до 35 мм" />
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <NumberField label="Права частка, КВР" value={data.rightLobeLength} onChange={(value) => update('rightLobeLength', value)} norm="до 150 мм" />
+        <NumberField label="Права частка, ПЗР" value={data.rightLobeAp} onChange={(value) => update('rightLobeAp', value)} norm="до 120 мм" />
+        <NumberField label="Ліва частка, ПЗР / товщина" value={data.leftLobeLength} onChange={(value) => update('leftLobeLength', value)} norm="до 80 мм" />
+        <NumberField label="Хвостата частка, ПЗР / товщина" value={data.caudateLobe} onChange={(value) => update('caudateLobe', value)} norm="до 35 мм" />
       </div>
 
       <div className="space-y-3">

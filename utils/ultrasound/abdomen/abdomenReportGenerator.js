@@ -26,9 +26,10 @@ function list(items) {
 function generateLiver(data) {
   const liver = data.liver;
   const dimensions = list([
-    liver.rightLobeLength ? `права частка ${formatMm(liver.rightLobeLength)}` : '',
-    liver.leftLobeLength ? `ліва частка ${formatMm(liver.leftLobeLength)}` : '',
-    liver.caudateLobe ? `хвостата частка ${formatMm(liver.caudateLobe)}` : '',
+    liver.rightLobeLength ? `права частка, КВР ${formatMm(liver.rightLobeLength)}` : '',
+    liver.rightLobeAp ? `права частка, ПЗР ${formatMm(liver.rightLobeAp)}` : '',
+    liver.leftLobeLength ? `ліва частка, ПЗР / товщина ${formatMm(liver.leftLobeLength)}` : '',
+    liver.caudateLobe ? `хвостата частка, ПЗР / товщина ${formatMm(liver.caudateLobe)}` : '',
   ]);
   const changes = liver.structure === 'heterogeneous'
     ? list([

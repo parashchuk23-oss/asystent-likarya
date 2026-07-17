@@ -15,6 +15,7 @@ import SpleenForm from './SpleenForm';
 const initialData = {
   liver: {
     rightLobeLength: '',
+    rightLobeAp: '',
     leftLobeLength: '',
     caudateLobe: '',
     contours: 'smooth',
