@@ -131,5 +131,5 @@ export function calculateAcrTirads(nodule) {
 }
 
 export function getEffectiveTirads(nodule) {
-  return nodule.tirads || calculateAcrTirads(nodule).category;
+  return getTiradsLabel(nodule.tirads || calculateAcrTirads(nodule).category);
 }
