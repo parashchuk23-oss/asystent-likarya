@@ -75,12 +75,12 @@ export function generateThyroidConclusion(data) {
 
 export function generateThyroidRecommendations(data) {
   const recommendations = [
-    'Консультація ендокринолога за клінічними показами.',
-    'ТТГ; вільний Т4 за показами.',
+    'Консультація ендокринолога.',
+    'ТТГ; вільний Т4.',
   ];
 
   if (hasDiffuseChanges(data)) {
-    recommendations.push('Антитіла до ТПО за показами та з урахуванням клінічної картини.');
+    recommendations.push('Антитіла до ТПО з урахуванням клінічної картини.');
   }
 
   if (data.perithyroidFormations.length) {
@@ -91,7 +91,7 @@ export function generateThyroidRecommendations(data) {
     recommendations.push(
       'Тактика щодо спостереження або ТАПБ визначається з урахуванням категорії ACR TI-RADS, максимального розміру вузла, анамнезу та клінічних факторів ризику.',
     );
-    recommendations.push('Динамічний УЗ-контроль за клінічними показами.');
+    recommendations.push('Динамічний УЗ-контроль.');
   }
 
   return recommendations.join('\n');

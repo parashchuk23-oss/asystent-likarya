@@ -60,7 +60,7 @@ export function generateAbdomenConclusion(data) {
 }
 
 export function generateAbdomenRecommendations(data) {
-  const recommendations = ['Консультація гастроентеролога за клінічними показами.'];
+  const recommendations = ['Консультація гастроентеролога.'];
 
   if (
     data.liver.echogenicity !== 'medium' ||
@@ -73,22 +73,22 @@ export function generateAbdomenRecommendations(data) {
     data.pancreas.structure !== 'homogeneous' ||
     data.pancreas.lesions.length
   ) {
-    recommendations.push('Біохімічний аналіз крові: АЛТ, АСТ, білірубін, ЛФ, ГГТ; амілаза / ліпаза за показами.');
+    recommendations.push('Біохімічний аналіз крові: АЛТ, АСТ, білірубін, ЛФ, ГГТ; амілаза / ліпаза.');
   }
 
   if (data.gallbladder.stones.length || data.gallbladder.content !== 'anechoic') {
-    recommendations.push('ФГДС та консультація профільного спеціаліста за клінічними показами.');
+    recommendations.push('ФГДС та консультація профільного спеціаліста.');
   }
 
   if (data.commonBileDuct.lumen === 'stone' || isCommonBileDuctDilated(data.commonBileDuct.diameter)) {
-    recommendations.push('МРХПГ / КТ / МРТ за клінічними показами для уточнення стану жовчних проток.');
+    recommendations.push('МРХПГ / КТ / МРТ для уточнення стану жовчних проток.');
   }
 
   if (data.pancreas.lesions.length || data.spleen.lesions.length) {
-    recommendations.push('КТ або МРТ з контрастуванням за клінічними показами для уточнення виявлених змін.');
+    recommendations.push('КТ або МРТ з контрастуванням для уточнення виявлених змін.');
   }
 
-  recommendations.push('Повторне УЗД у динаміці за клінічними показами.');
+  recommendations.push('Повторне УЗД у динаміці.');
 
   return recommendations.join('\n');
 }
