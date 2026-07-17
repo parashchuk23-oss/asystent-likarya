@@ -1,8 +1,4 @@
 export const abdomenOptions = {
-  organMode: [
-    { value: 'normal', label: 'Без особливостей' },
-    { value: 'changed', label: 'Зміни' },
-  ],
   contours: [
     { value: 'smooth', label: 'рівні' },
     { value: 'uneven', label: 'нерівні' },

@@ -14,7 +14,6 @@ import SpleenForm from './SpleenForm';
 
 const initialData = {
   liver: {
-    mode: 'normal',
     rightLobeLength: '',
     leftLobeLength: '',
     caudateLobe: '',
@@ -28,7 +27,6 @@ const initialData = {
     bileDucts: 'notDilated',
   },
   gallbladder: {
-    mode: 'normal',
     shape: 'ovoid',
     inflection: 'none',
     length: '',
@@ -43,7 +41,6 @@ const initialData = {
     lumen: 'free',
   },
   pancreas: {
-    mode: 'normal',
     head: '',
     body: '',
     tail: '',
@@ -55,7 +52,6 @@ const initialData = {
     lesions: [],
   },
   spleen: {
-    mode: 'normal',
     length: '',
     width: '',
     echogenicity: 'medium',
@@ -117,7 +113,7 @@ export default function AbdomenUltrasoundModule() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h3 className="text-lg font-bold text-slate-950">Протокол УЗД органів черевної порожнини</h3>
-              <p className="mt-1 text-sm text-slate-600">Конструктор протоколу: оберіть зміни лише там, де вони потрібні.</p>
+              <p className="mt-1 text-sm text-slate-600">Конструктор протоколу з полями, заповненими нормальними значеннями за замовчуванням.</p>
             </div>
             <div className="flex flex-wrap gap-2">
               <button type="button" onClick={fillNormal} className="rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700">

@@ -63,10 +63,15 @@ export function generateAbdomenRecommendations(data) {
   const recommendations = ['Консультація гастроентеролога за клінічними показами.'];
 
   if (
-    data.liver.mode === 'changed' ||
-    data.gallbladder.mode === 'changed' ||
+    data.liver.echogenicity !== 'medium' ||
+    data.liver.structure !== 'homogeneous' ||
+    data.gallbladder.content !== 'anechoic' ||
+    data.gallbladder.stones.length ||
+    data.gallbladder.polyps.length ||
     data.commonBileDuct.lumen !== 'free' ||
-    data.pancreas.mode === 'changed'
+    data.pancreas.echogenicity !== 'medium' ||
+    data.pancreas.structure !== 'homogeneous' ||
+    data.pancreas.lesions.length
   ) {
     recommendations.push('Біохімічний аналіз крові: АЛТ, АСТ, білірубін, ЛФ, ГГТ; амілаза / ліпаза за показами.');
   }

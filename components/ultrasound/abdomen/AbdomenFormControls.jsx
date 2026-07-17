@@ -46,30 +46,6 @@ export function TextareaField({ label, value, onChange, placeholder = '' }) {
   );
 }
 
-export function ModeToggle({ value, onChange }) {
-  return (
-    <div className="mb-3 grid grid-cols-2 gap-2">
-      {[
-        ['normal', 'Без особливостей'],
-        ['changed', 'Зміни'],
-      ].map(([mode, label]) => (
-        <button
-          key={mode}
-          type="button"
-          onClick={() => onChange(mode)}
-          className={`rounded-md border px-3 py-2 text-sm font-semibold transition ${
-            value === mode
-              ? 'border-blue-200 bg-blue-50 text-blue-700'
-              : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-          }`}
-        >
-          {label}
-        </button>
-      ))}
-    </div>
-  );
-}
-
 export function CheckboxGroup({ options, values, onChange }) {
   const toggle = (value) => {
     onChange(values.includes(value) ? values.filter((item) => item !== value) : [...values, value]);
