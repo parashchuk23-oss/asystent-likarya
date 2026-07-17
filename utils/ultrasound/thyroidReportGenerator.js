@@ -1,5 +1,6 @@
 import { optionLabel } from '../../data/ultrasound/thyroidOptions';
 import { formatDecimal, formatDimensions, getCalculatedVolumes, parsePositiveNumber } from './thyroidCalculations';
+import { getEffectiveTirads } from './thyroidTirads';
 
 function compact(items) {
   return items.filter(Boolean);
@@ -134,7 +135,7 @@ function generateNoduleText(nodule, index) {
     inclusions,
     dimensions ? `розміром ${dimensions}` : '',
     optionLabel('bloodFlow', nodule.bloodFlow),
-    nodule.tirads ? nodule.tirads : '',
+    getEffectiveTirads(nodule),
   ]);
 }
 

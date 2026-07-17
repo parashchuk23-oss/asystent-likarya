@@ -218,7 +218,7 @@ export default function ThyroidUltrasoundModule() {
         <AccordionSection
           id="thyroid-nodules"
           title="4. Вузлові утворення"
-          subtitle="Окремі картки для кожного вузла, ручний ACR TI-RADS"
+          subtitle="Окремі картки для кожного вузла, автоматичний ACR TI-RADS"
           isOpen={openSection === 'nodules'}
           onToggle={() => setOpenSection(openSection === 'nodules' ? null : 'nodules')}
         >

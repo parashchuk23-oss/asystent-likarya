@@ -1,4 +1,5 @@
 import { getCalculatedVolumes } from './thyroidCalculations';
+import { getEffectiveTirads } from './thyroidTirads';
 
 function hasDiffuseChanges(data) {
   return (
@@ -28,7 +29,7 @@ function getNoduleConclusion(data) {
   if (!data.nodules.length) return '';
 
   const lobes = new Set(data.nodules.map((nodule) => nodule.lobe));
-  const tirads = [...new Set(data.nodules.map((nodule) => nodule.tirads).filter(Boolean))].join(', ');
+  const tirads = [...new Set(data.nodules.map((nodule) => getEffectiveTirads(nodule)).filter(Boolean))].join(', ');
 
   if (lobes.size > 1) {
     return `Вузлові утворення щитоподібної залози${tirads ? `, ${tirads}` : ''}.`;

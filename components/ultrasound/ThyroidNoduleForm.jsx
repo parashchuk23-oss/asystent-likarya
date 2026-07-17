@@ -1,4 +1,5 @@
 import { thyroidOptions } from '../../data/ultrasound/thyroidOptions';
+import { calculateAcrTirads } from '../../utils/ultrasound/thyroidTirads';
 import FormField from '../FormField';
 import { inputClass } from '../formStyles';
 
@@ -97,6 +98,7 @@ export default function ThyroidNoduleForm({ nodules, onAdd, onUpdate, onRemove }
 
       {nodules.map((nodule, index) => {
         const update = (field, value) => onUpdate(nodule.id, { ...nodule, [field]: value });
+        const tirads = calculateAcrTirads(nodule);
 
         return (
           <article key={nodule.id} className="rounded-lg border border-slate-200 bg-white p-4">
@@ -143,7 +145,12 @@ export default function ThyroidNoduleForm({ nodules, onAdd, onUpdate, onRemove }
                 options={thyroidOptions.noduleStructure}
               />
               <SelectField label="Кровотік" value={nodule.bloodFlow} onChange={(value) => update('bloodFlow', value)} options={thyroidOptions.bloodFlow} />
-              <SelectField label="ACR TI-RADS" value={nodule.tirads} onChange={(value) => update('tirads', value)} options={thyroidOptions.tirads} />
+              <SelectField
+                label="Ручна корекція ACR TI-RADS"
+                value={nodule.tirads}
+                onChange={(value) => update('tirads', value)}
+                options={thyroidOptions.tirads}
+              />
             </div>
 
             <div className="mt-2">
@@ -155,6 +162,33 @@ export default function ThyroidNoduleForm({ nodules, onAdd, onUpdate, onRemove }
               onChange={(values) => update('inclusions', values)}
               onOtherChange={(value) => update('inclusionOther', value)}
             />
+            <div className="mt-3 rounded-lg border border-teal-200 bg-teal-50 p-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">Автоматичний ACR TI-RADS</p>
+                  <p className="mt-1 text-base font-bold text-slate-950">
+                    {tirads.label}: {tirads.points} балів
+                  </p>
+                  <p className="mt-1 text-sm text-slate-700">{tirads.interpretation}</p>
+                </div>
+                {nodule.tirads ? (
+                  <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800">
+                    У протоколі: ручна корекція {nodule.tirads}
+                  </span>
+                ) : null}
+              </div>
+              <div className="mt-3 grid gap-2 text-xs font-semibold text-slate-600 sm:grid-cols-5">
+                <span>Склад: {tirads.pointsByFeature.composition}</span>
+                <span>Ехогенність: {tirads.pointsByFeature.echogenicity}</span>
+                <span>Форма: {tirads.pointsByFeature.shape}</span>
+                <span>Контур: {tirads.pointsByFeature.margin}</span>
+                <span>Включення: {tirads.pointsByFeature.echogenicFoci}</span>
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-slate-700">{tirads.recommendation}</p>
+              <p className="mt-2 text-xs leading-relaxed text-slate-500">
+                Розрахунок є довідковою підказкою за ACR TI-RADS 2017 і не замінює клінічне рішення лікаря.
+              </p>
+            </div>
           </article>
         );
       })}
