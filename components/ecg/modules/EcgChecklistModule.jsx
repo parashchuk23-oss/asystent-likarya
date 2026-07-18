@@ -19,6 +19,20 @@ const checklistItems = [
   { id: 'q', label: 'Патологічні Q', placeholder: 'Наприклад: патологічні Q не виявлені' },
 ];
 
+const normalChecklistValues = {
+  rate: 'ЧСС 60–90/хв',
+  rhythm: 'ритм синусовий, регулярний',
+  axis: 'електрична вісь серця не відхилена',
+  pq: 'PQ у межах норми',
+  qrs: 'QRS вузький, тривалість у межах норми',
+  qt: 'QT / QTc у межах норми',
+  blocks: 'ознак порушення провідності не виявлено',
+  hypertrophy: 'ЕКГ-критерії гіпертрофії камер серця не виконуються',
+  st: 'сегмент ST без значущої елевації або депресії',
+  t: 'зубці T без гострих ішемічних змін',
+  q: 'патологічні зубці Q не виявлені',
+};
+
 function buildConclusion(values) {
   const lines = checklistItems
     .map((item) => values[item.id]?.trim())
@@ -32,10 +46,11 @@ function buildConclusion(values) {
 }
 
 export default function EcgChecklistModule() {
-  const [values, setValues] = useState({});
+  const [values, setValues] = useState(normalChecklistValues);
   const conclusion = useMemo(() => buildConclusion(values), [values]);
 
   const update = (id, value) => setValues((current) => ({ ...current, [id]: value }));
+  const resetToNormal = () => setValues(normalChecklistValues);
 
   return (
     <EcgModuleShell
@@ -43,6 +58,19 @@ export default function EcgChecklistModule() {
       title="Покроковий аналіз ЕКГ"
       description="Базовий маршрут: ЧСС, ритм, вісь, інтервали, провідність, гіпертрофія, ST-T та патологічні Q."
     >
+      <div className="flex flex-col gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm leading-relaxed text-emerald-900">
+          Чек-лист заповнений приблизною нормою. Змініть лише ті пункти, де на ЕКГ є відхилення.
+        </p>
+        <button
+          type="button"
+          onClick={resetToNormal}
+          className="rounded-md border border-emerald-300 bg-white px-4 py-2 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-100"
+        >
+          Повернути норму
+        </button>
+      </div>
+
       <div className="grid gap-3 md:grid-cols-2">
         {checklistItems.map((item) => (
           <label key={item.id} className="block">
