@@ -88,6 +88,21 @@ export default function EcgChecklistModule() {
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">
+        <label className="block">
+          <span className="mb-1.5 block text-sm font-semibold text-slate-700">Швидкість плівки</span>
+          <select
+            value={qtForm.paperSpeed}
+            onChange={(event) => updateQtForm('paperSpeed', event.target.value)}
+            className={inputClass}
+          >
+            <option value="25">25 мм/с</option>
+            <option value="50">50 мм/с</option>
+          </select>
+          <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
+            1 маленька клітинка = {getSmallCellDurationMs(qtForm.paperSpeed)} мс
+          </span>
+        </label>
+
         {checklistItems.map((item) => (
           <label key={item.id} className="block">
             <span className="mb-1.5 block text-sm font-semibold text-slate-700">{item.label}</span>
@@ -120,21 +135,13 @@ export default function EcgChecklistModule() {
           </button>
         </div>
 
-        <div className="mt-3 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
+        <div className="mt-3 grid gap-3 md:grid-cols-3 xl:grid-cols-5">
           <label>
             <span className="mb-1.5 block text-sm font-semibold text-slate-700">Спосіб</span>
             <select value={qtForm.inputMode} onChange={(event) => updateQtForm('inputMode', event.target.value)} className={inputClass}>
               <option value="cells">маленькі клітинки</option>
               <option value="ms">мілісекунди</option>
             </select>
-          </label>
-          <label>
-            <span className="mb-1.5 block text-sm font-semibold text-slate-700">Швидкість</span>
-            <select value={qtForm.paperSpeed} onChange={(event) => updateQtForm('paperSpeed', event.target.value)} className={inputClass}>
-              <option value="25">25 мм/с</option>
-              <option value="50">50 мм/с</option>
-            </select>
-            <span className="mt-1 block text-xs font-medium text-slate-500">1 клітинка = {getSmallCellDurationMs(qtForm.paperSpeed)} мс</span>
           </label>
           <label>
             <span className="mb-1.5 block text-sm font-semibold text-slate-700">QT</span>
