@@ -6,26 +6,26 @@ import EcgDisclaimer from '../EcgDisclaimer';
 import EcgModuleShell from '../EcgModuleShell';
 
 const checklistItems = [
-  { id: 'rate', label: 'ЧСС', placeholder: 'Наприклад: 72/хв' },
-  { id: 'rhythm', label: 'Ритм', placeholder: 'Наприклад: синусовий' },
-  { id: 'axis', label: 'Електрична вісь', placeholder: 'Наприклад: не відхилена' },
-  { id: 'pq', label: 'PQ', placeholder: 'Наприклад: 160 мс' },
-  { id: 'qrs', label: 'QRS', placeholder: 'Наприклад: 90 мс' },
-  { id: 'qt', label: 'QT / QTc', placeholder: 'Наприклад: QTc 420 мс' },
-  { id: 'blocks', label: 'Блокади', placeholder: 'Наприклад: ознак блокад немає' },
-  { id: 'hypertrophy', label: 'Гіпертрофія', placeholder: 'Наприклад: критерії ГЛШ не виконуються' },
-  { id: 'st', label: 'ST', placeholder: 'Наприклад: елевації ST не виявлено' },
-  { id: 't', label: 'T', placeholder: 'Наприклад: T без гострих змін' },
-  { id: 'q', label: 'Патологічні Q', placeholder: 'Наприклад: патологічні Q не виявлені' },
+  { id: 'rate', label: 'ЧСС', placeholder: 'Наприклад: 76/хв', norm: 'приблизна норма: 60–100/хв' },
+  { id: 'rhythm', label: 'Ритм', placeholder: 'Наприклад: синусовий, регулярний', norm: 'приблизна норма: синусовий, регулярний' },
+  { id: 'axis', label: 'Електрична вісь', placeholder: 'Наприклад: не відхилена', norm: 'приблизна норма: −30°…+90°' },
+  { id: 'pq', label: 'PQ', placeholder: 'Наприклад: 180 мс', norm: 'приблизна норма: 120–200 мс' },
+  { id: 'qrs', label: 'QRS', placeholder: 'Наприклад: 90 мс', norm: 'приблизна норма: 60–110 мс' },
+  { id: 'qt', label: 'QT / QTc', placeholder: 'Наприклад: QTc 420 мс', norm: 'приблизна норма QTc: до 450 мс у чоловіків, до 460 мс у жінок' },
+  { id: 'blocks', label: 'Блокади', placeholder: 'Наприклад: ознак блокад немає', norm: 'приблизна норма: ознак порушення провідності немає' },
+  { id: 'hypertrophy', label: 'Гіпертрофія', placeholder: 'Наприклад: критерії ГЛШ не виконуються', norm: 'приблизна норма: ЕКГ-критерії гіпертрофії не виконуються' },
+  { id: 'st', label: 'ST', placeholder: 'Наприклад: без значущих змін', norm: 'приблизна норма: без значущої елевації або депресії' },
+  { id: 't', label: 'T', placeholder: 'Наприклад: без гострих ішемічних змін', norm: 'приблизна норма: без гострих ішемічних змін' },
+  { id: 'q', label: 'Патологічні Q', placeholder: 'Наприклад: не виявлені', norm: 'приблизна норма: патологічні Q не виявлені' },
 ];
 
 const normalChecklistValues = {
-  rate: 'ЧСС 60–90/хв',
+  rate: 'ЧСС 76/хв',
   rhythm: 'ритм синусовий, регулярний',
-  axis: 'електрична вісь серця не відхилена',
-  pq: 'PQ у межах норми',
-  qrs: 'QRS вузький, тривалість у межах норми',
-  qt: 'QT / QTc у межах норми',
+  axis: 'електрична вісь серця не відхилена, приблизно +60°',
+  pq: 'PQ 180 мс',
+  qrs: 'QRS 90 мс',
+  qt: 'QTc 420 мс',
   blocks: 'ознак порушення провідності не виявлено',
   hypertrophy: 'ЕКГ-критерії гіпертрофії камер серця не виконуються',
   st: 'сегмент ST без значущої елевації або депресії',
@@ -81,6 +81,7 @@ export default function EcgChecklistModule() {
               placeholder={item.placeholder}
               className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm shadow-slate-100/60 transition-all duration-150 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
             />
+            <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">{item.norm}</span>
           </label>
         ))}
       </div>
