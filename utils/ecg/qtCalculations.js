@@ -10,6 +10,16 @@ export function calculateRrFromHeartRate(heartRate) {
   return 60 / hr;
 }
 
+export function getSmallCellDurationMs(paperSpeed) {
+  return Number(paperSpeed) === 50 ? 20 : 40;
+}
+
+export function convertSmallCellsToMs(cells, paperSpeed) {
+  const cellCount = toNumber(cells);
+  if (!cellCount) return null;
+  return cellCount * getSmallCellDurationMs(paperSpeed);
+}
+
 export function normalizeRrSeconds({ rr, heartRate }) {
   const rrValue = toNumber(rr);
   if (rrValue) {
@@ -41,6 +51,22 @@ export function calculateQtMetrics({ qt, rr, heartRate, sex }) {
     qtcFramingham: Math.round(qtcFramingham),
     qtcHodges: Math.round(qtcHodges),
     interpretation: interpretQtc(qtcFridericia, sex),
+  };
+}
+
+export function buildQtMetricsInput({ inputMode, paperSpeed, qt, rr, heartRate, sex }) {
+  if (inputMode !== 'cells') {
+    return { qt, rr, heartRate, sex };
+  }
+
+  const qtMs = convertSmallCellsToMs(qt, paperSpeed);
+  const rrMs = convertSmallCellsToMs(rr, paperSpeed);
+
+  return {
+    qt: qtMs ? String(Math.round(qtMs)) : '',
+    rr: rrMs ? String(Math.round(rrMs)) : '',
+    heartRate,
+    sex,
   };
 }
 

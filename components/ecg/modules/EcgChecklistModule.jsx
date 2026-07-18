@@ -1,7 +1,8 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { textareaClass } from '../../formStyles';
+import { buildQtMetricsInput, calculateQtMetrics, getSmallCellDurationMs } from '../../../utils/ecg/qtCalculations';
+import { inputClass, textareaClass } from '../../formStyles';
 import EcgDisclaimer from '../EcgDisclaimer';
 import EcgModuleShell from '../EcgModuleShell';
 
@@ -47,10 +48,25 @@ function buildConclusion(values) {
 
 export default function EcgChecklistModule() {
   const [values, setValues] = useState(normalChecklistValues);
+  const [qtForm, setQtForm] = useState({
+    inputMode: 'cells',
+    paperSpeed: '25',
+    qt: '10.5',
+    rr: '19.75',
+    heartRate: '',
+    sex: 'male',
+  });
   const conclusion = useMemo(() => buildConclusion(values), [values]);
+  const qtMetricsInput = useMemo(() => buildQtMetricsInput(qtForm), [qtForm]);
+  const qtMetrics = useMemo(() => calculateQtMetrics(qtMetricsInput), [qtMetricsInput]);
 
   const update = (id, value) => setValues((current) => ({ ...current, [id]: value }));
   const resetToNormal = () => setValues(normalChecklistValues);
+  const updateQtForm = (field, value) => setQtForm((current) => ({ ...current, [field]: value }));
+  const applyQtToChecklist = () => {
+    if (!qtMetrics) return;
+    update('qt', `QT ${qtMetrics.qt} мс, QTc Fridericia ${qtMetrics.qtcFridericia} мс (${qtMetrics.interpretation.label.toLowerCase()})`);
+  };
 
   return (
     <EcgModuleShell
@@ -84,6 +100,84 @@ export default function EcgChecklistModule() {
             <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">{item.norm}</span>
           </label>
         ))}
+      </div>
+
+      <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h4 className="font-bold text-slate-950">QT / QTc: розрахунок із клітинок</h4>
+            <p className="mt-1 text-sm leading-relaxed text-slate-600">
+              Введіть QT і RR у мілісекундах або в маленьких клітинках. При 25 мм/с одна маленька клітинка = 40 мс, при 50 мм/с = 20 мс.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={applyQtToChecklist}
+            disabled={!qtMetrics}
+            className="rounded-md bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+          >
+            Внести в QT/QTc
+          </button>
+        </div>
+
+        <div className="mt-3 grid gap-3 md:grid-cols-3 xl:grid-cols-6">
+          <label>
+            <span className="mb-1.5 block text-sm font-semibold text-slate-700">Спосіб</span>
+            <select value={qtForm.inputMode} onChange={(event) => updateQtForm('inputMode', event.target.value)} className={inputClass}>
+              <option value="cells">маленькі клітинки</option>
+              <option value="ms">мілісекунди</option>
+            </select>
+          </label>
+          <label>
+            <span className="mb-1.5 block text-sm font-semibold text-slate-700">Швидкість</span>
+            <select value={qtForm.paperSpeed} onChange={(event) => updateQtForm('paperSpeed', event.target.value)} className={inputClass}>
+              <option value="25">25 мм/с</option>
+              <option value="50">50 мм/с</option>
+            </select>
+            <span className="mt-1 block text-xs font-medium text-slate-500">1 клітинка = {getSmallCellDurationMs(qtForm.paperSpeed)} мс</span>
+          </label>
+          <label>
+            <span className="mb-1.5 block text-sm font-semibold text-slate-700">QT</span>
+            <input
+              type="number"
+              min="0"
+              step="0.25"
+              value={qtForm.qt}
+              onChange={(event) => updateQtForm('qt', event.target.value)}
+              className={inputClass}
+            />
+            <span className="mt-1 block text-xs font-medium text-slate-500">{qtForm.inputMode === 'cells' ? 'маленьких клітинок' : 'мс'}</span>
+          </label>
+          <label>
+            <span className="mb-1.5 block text-sm font-semibold text-slate-700">RR</span>
+            <input
+              type="number"
+              min="0"
+              step="0.25"
+              value={qtForm.rr}
+              onChange={(event) => updateQtForm('rr', event.target.value)}
+              className={inputClass}
+            />
+            <span className="mt-1 block text-xs font-medium text-slate-500">{qtForm.inputMode === 'cells' ? 'маленьких клітинок' : 'мс'}</span>
+          </label>
+          <label>
+            <span className="mb-1.5 block text-sm font-semibold text-slate-700">Стать</span>
+            <select value={qtForm.sex} onChange={(event) => updateQtForm('sex', event.target.value)} className={inputClass}>
+              <option value="male">чоловік</option>
+              <option value="female">жінка</option>
+            </select>
+          </label>
+          <div className="rounded-md border border-blue-100 bg-white p-3">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-700">Результат</p>
+            {qtMetrics ? (
+              <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-900">
+                QT {qtMetrics.qt} мс, RR {Math.round(qtMetrics.rr * 1000)} мс, QTcF {qtMetrics.qtcFridericia} мс
+              </p>
+            ) : (
+              <p className="mt-2 text-sm text-slate-500">Введіть QT і RR.</p>
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="rounded-lg border border-blue-100 bg-blue-50 p-4">
