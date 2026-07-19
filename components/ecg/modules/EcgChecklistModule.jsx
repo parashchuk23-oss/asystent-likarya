@@ -6,13 +6,25 @@ import { inputClass, textareaClass } from '../../formStyles';
 import EcgDisclaimer from '../EcgDisclaimer';
 import EcgModuleShell from '../EcgModuleShell';
 
-const checklistItems = [
-  { id: 'rate', label: 'ЧСС', placeholder: 'Наприклад: 76/хв', norm: 'приблизна норма: 60–100/хв' },
-  { id: 'rhythm', label: 'Ритм', placeholder: 'Наприклад: синусовий, регулярний', norm: 'приблизна норма: синусовий, регулярний' },
-  { id: 'axis', label: 'Електрична вісь', placeholder: 'Наприклад: не відхилена', norm: 'приблизна норма: −30°…+90°' },
-  { id: 'pq', label: 'PQ', placeholder: 'Наприклад: 180 мс', norm: 'приблизна норма: 120–200 мс' },
-  { id: 'qrs', label: 'QRS', placeholder: 'Наприклад: 90 мс', norm: 'приблизна норма: 60–110 мс' },
-  { id: 'qt', label: 'QT / QTc', placeholder: 'Наприклад: QTc 420 мс', norm: 'приблизна норма QTc: до 450 мс у чоловіків, до 460 мс у жінок' },
+const rhythmOptions = [
+  { value: 'синусовий, регулярний', label: 'синусовий, регулярний' },
+  { value: 'синусовий, нерегулярний', label: 'синусовий, нерегулярний' },
+  { value: 'фібриляція передсердь', label: 'фібриляція передсердь' },
+  { value: 'тріпотіння передсердь', label: 'тріпотіння передсердь' },
+  { value: 'передсердний ритм', label: 'передсердний ритм' },
+  { value: 'вузловий ритм', label: 'вузловий ритм' },
+  { value: 'шлуночковий ритм', label: 'шлуночковий ритм' },
+  { value: 'ритм ЕКС', label: 'ритм ЕКС' },
+  { value: 'інше', label: 'інше' },
+];
+
+const polarityOptions = [
+  { value: 'positive', label: 'позитивний' },
+  { value: 'negative', label: 'негативний' },
+  { value: 'isoelectric', label: 'R=S / ізоелектричний' },
+];
+
+const freeTextItems = [
   { id: 'blocks', label: 'Блокади', placeholder: 'Наприклад: ознак блокад немає', norm: 'приблизна норма: ознак порушення провідності немає' },
   { id: 'hypertrophy', label: 'Гіпертрофія', placeholder: 'Наприклад: критерії ГЛШ не виконуються', norm: 'приблизна норма: ЕКГ-критерії гіпертрофії не виконуються' },
   { id: 'st', label: 'ST', placeholder: 'Наприклад: без значущих змін', norm: 'приблизна норма: без значущої елевації або депресії' },
@@ -21,11 +33,14 @@ const checklistItems = [
 ];
 
 const normalChecklistValues = {
-  rate: 'ЧСС 76/хв',
-  rhythm: 'ритм синусовий, регулярний',
-  axis: 'електрична вісь серця не відхилена, приблизно +60°',
-  pq: 'PQ 180 мс',
-  qrs: 'QRS 90 мс',
+  rate: '76',
+  rhythm: 'синусовий, регулярний',
+  rhythmOther: '',
+  axisI: 'positive',
+  axisII: 'positive',
+  axisAvf: 'positive',
+  pqCells: '4.5',
+  qrsCells: '2.25',
   qt: 'QTc 420 мс',
   blocks: 'ознак порушення провідності не виявлено',
   hypertrophy: 'ЕКГ-критерії гіпертрофії камер серця не виконуються',
@@ -34,10 +49,62 @@ const normalChecklistValues = {
   q: 'патологічні зубці Q не виявлені',
 };
 
-function buildConclusion(values) {
-  const lines = checklistItems
+function formatNumber(value) {
+  if (value === '' || value === null || value === undefined) return '';
+  const number = Number(String(value).replace(',', '.'));
+  if (!Number.isFinite(number)) return '';
+  return String(Math.round(number));
+}
+
+function cellsToMs(cells, paperSpeed) {
+  const value = Number(String(cells || '').replace(',', '.'));
+  if (!Number.isFinite(value) || value <= 0) return null;
+  return Math.round(value * getSmallCellDurationMs(paperSpeed));
+}
+
+function buildAxisText(values) {
+  const { axisI, axisII, axisAvf } = values;
+
+  if (axisI === 'positive' && axisAvf === 'positive') {
+    if (axisII === 'isoelectric') {
+      return 'електрична вісь серця орієнтовно не відхилена; у II відведенні QRS ізоелектричний (R=S), оцінити разом з іншими відведеннями';
+    }
+    return 'електрична вісь серця орієнтовно не відхилена';
+  }
+
+  if (axisI === 'positive' && axisAvf === 'negative') {
+    return axisII === 'positive'
+      ? 'електрична вісь серця орієнтовно в межах норми або помірно відхилена вліво'
+      : 'електрична вісь серця орієнтовно відхилена вліво';
+  }
+
+  if (axisI === 'negative' && axisAvf === 'positive') {
+    return 'електрична вісь серця орієнтовно відхилена вправо';
+  }
+
+  if (axisI === 'negative' && axisAvf === 'negative') {
+    return 'електрична вісь серця орієнтовно різко відхилена';
+  }
+
+  return 'електрична вісь серця потребує уточнення за відведеннями кінцівок';
+}
+
+function buildConclusion(values, paperSpeed) {
+  const rate = formatNumber(values.rate);
+  const rhythm = values.rhythm === 'інше' ? values.rhythmOther.trim() : values.rhythm;
+  const pqMs = cellsToMs(values.pqCells, paperSpeed);
+  const qrsMs = cellsToMs(values.qrsCells, paperSpeed);
+  const lines = [
+    rate ? `ЧСС ${rate}/хв` : '',
+    rhythm ? `ритм ${rhythm}` : '',
+    buildAxisText(values),
+    pqMs ? `PQ ${pqMs} мс` : '',
+    qrsMs ? `QRS ${qrsMs} мс` : '',
+    values.qt?.trim(),
+    ...freeTextItems
     .map((item) => values[item.id]?.trim())
-    .filter(Boolean);
+    .filter(Boolean),
+  ].filter(Boolean);
 
   if (!lines.length) {
     return 'Заповніть пункти чек-листа, щоб сформувати короткий структурований висновок.';
@@ -56,9 +123,11 @@ export default function EcgChecklistModule() {
     heartRate: '',
     sex: 'male',
   });
-  const conclusion = useMemo(() => buildConclusion(values), [values]);
+  const conclusion = useMemo(() => buildConclusion(values, qtForm.paperSpeed), [values, qtForm.paperSpeed]);
   const qtMetricsInput = useMemo(() => buildQtMetricsInput(qtForm), [qtForm]);
   const qtMetrics = useMemo(() => calculateQtMetrics(qtMetricsInput), [qtMetricsInput]);
+  const pqMs = useMemo(() => cellsToMs(values.pqCells, qtForm.paperSpeed), [values.pqCells, qtForm.paperSpeed]);
+  const qrsMs = useMemo(() => cellsToMs(values.qrsCells, qtForm.paperSpeed), [values.qrsCells, qtForm.paperSpeed]);
 
   const update = (id, value) => setValues((current) => ({ ...current, [id]: value }));
   const resetToNormal = () => setValues(normalChecklistValues);
@@ -103,7 +172,111 @@ export default function EcgChecklistModule() {
           </span>
         </label>
 
-        {checklistItems.map((item) => (
+        <label className="block">
+          <span className="mb-1.5 block text-sm font-semibold text-slate-700">ЧСС</span>
+          <input
+            type="number"
+            min="0"
+            step="1"
+            value={values.rate}
+            onChange={(event) => update('rate', event.target.value)}
+            placeholder="76"
+            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm shadow-slate-100/60 transition-all duration-150 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+          />
+          <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">приблизна норма: 60–100/хв</span>
+        </label>
+
+        <label className="block">
+          <span className="mb-1.5 block text-sm font-semibold text-slate-700">Ритм</span>
+          <select value={values.rhythm} onChange={(event) => update('rhythm', event.target.value)} className={inputClass}>
+            {rhythmOptions.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+          <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">приблизна норма: синусовий, регулярний</span>
+        </label>
+
+        {values.rhythm === 'інше' ? (
+          <label className="block">
+            <span className="mb-1.5 block text-sm font-semibold text-slate-700">Ритм: уточнення</span>
+            <input
+              value={values.rhythmOther}
+              onChange={(event) => update('rhythmOther', event.target.value)}
+              placeholder="Наприклад: ектопічний передсердний ритм"
+              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm shadow-slate-100/60 transition-all duration-150 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+            />
+          </label>
+        ) : null}
+
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 md:col-span-2">
+          <span className="mb-2 block text-sm font-semibold text-slate-700">Електрична вісь: полярність QRS</span>
+          <div className="grid gap-3 md:grid-cols-3">
+            {[
+              ['axisI', 'I'],
+              ['axisII', 'II'],
+              ['axisAvf', 'aVF'],
+            ].map(([id, label]) => (
+              <label key={id} className="block">
+                <span className="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{label}</span>
+                <select value={values[id]} onChange={(event) => update(id, event.target.value)} className={inputClass}>
+                  {polarityOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </label>
+            ))}
+          </div>
+          <p className="mt-2 text-xs font-medium leading-snug text-slate-500">
+            Якщо R=S, оберіть “ізоелектричний”; програма сформує обережний орієнтовний висновок.
+          </p>
+        </div>
+
+        <label className="block">
+          <span className="mb-1.5 block text-sm font-semibold text-slate-700">PQ, маленьких клітинок</span>
+          <input
+            type="number"
+            min="0"
+            step="0.25"
+            value={values.pqCells}
+            onChange={(event) => update('pqCells', event.target.value)}
+            placeholder="4.5"
+            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm shadow-slate-100/60 transition-all duration-150 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+          />
+          <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
+            приблизна норма: 120–200 мс; зараз {pqMs ? `${pqMs} мс` : 'введіть кількість клітинок'}
+          </span>
+        </label>
+
+        <label className="block">
+          <span className="mb-1.5 block text-sm font-semibold text-slate-700">QRS, маленьких клітинок</span>
+          <input
+            type="number"
+            min="0"
+            step="0.25"
+            value={values.qrsCells}
+            onChange={(event) => update('qrsCells', event.target.value)}
+            placeholder="2.25"
+            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm shadow-slate-100/60 transition-all duration-150 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+          />
+          <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
+            приблизна норма: 60–110 мс; зараз {qrsMs ? `${qrsMs} мс` : 'введіть кількість клітинок'}
+          </span>
+        </label>
+
+        <label className="block md:col-span-2">
+          <span className="mb-1.5 block text-sm font-semibold text-slate-700">QT / QTc</span>
+          <input
+            value={values.qt || ''}
+            onChange={(event) => update('qt', event.target.value)}
+            placeholder="Наприклад: QTc 420 мс"
+            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm shadow-slate-100/60 transition-all duration-150 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+          />
+          <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
+            приблизна норма QTc: до 450 мс у чоловіків, до 460 мс у жінок
+          </span>
+        </label>
+
+        {freeTextItems.map((item) => (
           <label key={item.id} className="block">
             <span className="mb-1.5 block text-sm font-semibold text-slate-700">{item.label}</span>
             <input
