@@ -110,6 +110,60 @@ function DiabetesDetailsDropdown({ riskData, onChange }) {
   );
 }
 
+function SecondaryPreventionDropdown() {
+  const smartDataItems = [
+    'вік, стать, куріння',
+    'систолічний АТ',
+    'загальний холестерин і ЛПВЩ',
+    'креатинін / ШКФ',
+    'наявність ЦД',
+    'тип встановленого ССЗ: ІХС, інсульт / ТІА, захворювання периферичних артерій',
+    'час від першої серцево-судинної події',
+    'hsCRP за наявності',
+  ];
+
+  return (
+    <div className="rounded-md border border-blue-100 bg-blue-50/70 p-3 text-sm leading-6 text-slate-700">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">
+        Вторинна профілактика / SMART
+      </p>
+      <p className="mt-2">
+        При встановленому атеросклеротичному ССЗ SCORE2 не застосовується для первинної оцінки ризику.
+        Для кількісної оцінки залишкового ризику доцільно використовувати SMART Risk Score / SMART2.
+      </p>
+
+      <div className="mt-3 rounded-md border border-white bg-white/75 p-3">
+        <p className="font-semibold text-slate-900">Які дані зазвичай потрібні для SMART</p>
+        <ul className="mt-2 list-disc space-y-1 pl-5">
+          {smartDataItems.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+        <a
+          href="https://www.escardio.org/Education/ESC-Prevention-of-CVD-Programme/Risk-assessment/SMART-Risk-Score"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700"
+        >
+          Відкрити SMART Risk Score
+        </a>
+
+        <a
+          href="https://u-prevent.com/"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center justify-center rounded-md border border-blue-200 bg-white px-4 py-2 text-sm font-semibold text-blue-700 transition hover:bg-blue-50"
+        >
+          Відкрити U-Prevent
+        </a>
+      </div>
+    </div>
+  );
+}
+
 function SexCheckboxes({ value, onChange }) {
   return (
     <FormField label="Стать">
@@ -230,6 +284,8 @@ export default function Score2Tab() {
                 active={riskData.patientScenario === 'establishedASCVD'}
                 onClick={() => handleScenarioChange('establishedASCVD')}
               />
+
+              {riskData.patientScenario === 'establishedASCVD' && <SecondaryPreventionDropdown />}
             </div>
           </div>
 

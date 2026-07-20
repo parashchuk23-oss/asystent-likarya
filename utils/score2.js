@@ -456,7 +456,8 @@ export function calculateScore2Risk(data) {
       riskPercent: null,
       interpretation,
       ldlTarget: getLdlTarget(interpretation),
-      reason: 'Встановлене атеросклеротичне серцево-судинне захворювання.',
+      reason:
+        'Встановлене атеросклеротичне серцево-судинне захворювання: це сценарій вторинної профілактики. SCORE2 не застосовується; для кількісної оцінки залишкового ризику доцільно використовувати SMART Risk Score / SMART2.',
       recommendations: getLifestyleRecommendations(interpretation),
       patientInfo: cholesterolPatientInfo,
       ckdModifier,
