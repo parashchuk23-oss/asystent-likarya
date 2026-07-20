@@ -235,7 +235,7 @@ export default function EcgChecklistModule() {
         </button>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className="grid gap-3 lg:grid-cols-3">
         <label className="block">
           <span className="mb-1.5 block text-sm font-semibold text-slate-700">Швидкість плівки</span>
           <select
@@ -281,13 +281,13 @@ export default function EcgChecklistModule() {
           </span>
         </label>
 
-        <div className="rounded-lg border border-blue-100 bg-blue-50 p-3 md:col-span-2">
+        <div className="rounded-lg border border-blue-100 bg-blue-50 p-3 lg:col-span-3">
           <p className="text-sm font-bold text-blue-900">
             У висновку: {effectiveRate ? `ЧСС ${effectiveRate}/хв, ${getRateStatus(effectiveRate)}.` : 'введіть ЧСС або RR.'}
           </p>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 md:col-span-2">
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 lg:col-span-3">
           <span className="mb-2 block text-sm font-semibold text-slate-700">Ритм: ознаки на ЕКГ</span>
           <div className="grid gap-2 md:grid-cols-2">
             {rhythmSigns.map((sign) => (
@@ -316,7 +316,7 @@ export default function EcgChecklistModule() {
           </p>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 md:col-span-2">
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 lg:col-span-3">
           <span className="mb-2 block text-sm font-semibold text-slate-700">Електрична вісь: полярність QRS</span>
           <div className="grid gap-3 md:grid-cols-3">
             {[
