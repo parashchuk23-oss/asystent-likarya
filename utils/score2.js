@@ -113,6 +113,27 @@ const SCORE2_DIABETES_COEFFICIENTS = {
   },
 };
 
+const SMART_RISK_COEFFICIENTS = {
+  intercept: 2.099,
+  age: -0.085,
+  ageSquared: 0.001,
+  male: 0.156,
+  currentSmoking: 0.262,
+  diabetes: 0.223,
+  systolicBP: 0.004,
+  totalCholesterol: 0.185,
+  hdl: -0.359,
+  logHsCrp: 0.103,
+  egfr: -0.053,
+  egfrSquared: 0.0003,
+  yearsSinceFirstEvent: 0.024,
+  coronaryDisease: 0.143,
+  cerebrovascularDisease: 0.019,
+  peripheralArteryDisease: 0.218,
+  abdominalAorticAneurysm: 0.233,
+  baselineSurvival10Year: 0.8107,
+};
+
 function hasValue(value) {
   return value !== undefined && value !== null && String(value).trim() !== '';
 }
@@ -122,6 +143,13 @@ function parsePositiveNumber(value) {
 
   const parsed = Number(String(value).replace(',', '.'));
   return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+}
+
+function parseNonNegativeNumber(value) {
+  if (!hasValue(value)) return null;
+
+  const parsed = Number(String(value).replace(',', '.'));
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
 }
 
 function toMmolL(value, unit, conversionFactor) {
@@ -234,6 +262,27 @@ function getMissingScore2DiabetesFields(data) {
   if (!parsePositiveNumber(data.diabetesDiagnosisAge)) missing.push('вік встановлення ЦД');
   if (!toHba1cMmolMol(data.hba1c, data.hba1cUnit)) missing.push('HbA1c');
   if (!parsePositiveNumber(data.egfr)) missing.push('ШКФ');
+
+  return missing;
+}
+
+function getMissingSmartFields(data) {
+  const missing = getMissingScore2Fields(data);
+
+  if (!parsePositiveNumber(data.egfr)) missing.push('ШКФ');
+  if (!parsePositiveNumber(data.hsCrp)) missing.push('hsCRP');
+  if (parseNonNegativeNumber(data.yearsSinceFirstEvent) === null) missing.push('років від першої СС-події');
+  if (!hasValue(data.smartDiabetes)) missing.push('цукровий діабет');
+
+  const hasVascularBed =
+    isYes(data.smartCoronaryDisease) ||
+    isYes(data.smartCerebrovascularDisease) ||
+    isYes(data.smartPeripheralArteryDisease) ||
+    isYes(data.smartAbdominalAorticAneurysm);
+
+  if (!hasVascularBed) {
+    missing.push('тип встановленого ССЗ');
+  }
 
   return missing;
 }
@@ -443,22 +492,87 @@ function interpretScore2DiabetesRisk(riskPercent) {
   return 'дуже високий';
 }
 
+function calculateRawSmartRisk(data) {
+  const age = parsePositiveNumber(data.age);
+  const sex = normalizeSex(data.sex);
+  const smoking = isYes(data.smoking) ? 1 : 0;
+  const diabetes = isYes(data.smartDiabetes) ? 1 : 0;
+  const sbp = parsePositiveNumber(data.systolicBP);
+  const totalCholesterol = toMmolL(data.totalCholesterol, data.lipidsUnit, 38.67);
+  const hdl = toMmolL(data.hdl, data.lipidsUnit, 38.67);
+  const egfr = parsePositiveNumber(data.egfr);
+  const hsCrp = parsePositiveNumber(data.hsCrp);
+  const yearsSinceFirstEvent = parseNonNegativeNumber(data.yearsSinceFirstEvent);
+  const coefficients = SMART_RISK_COEFFICIENTS;
+
+  const linearPredictor =
+    coefficients.intercept +
+    coefficients.age * age +
+    coefficients.ageSquared * age * age +
+    coefficients.male * (sex === 'male' ? 1 : 0) +
+    coefficients.currentSmoking * smoking +
+    coefficients.diabetes * diabetes +
+    coefficients.systolicBP * sbp +
+    coefficients.totalCholesterol * totalCholesterol +
+    coefficients.hdl * hdl +
+    coefficients.logHsCrp * Math.log(hsCrp) +
+    coefficients.egfr * egfr +
+    coefficients.egfrSquared * egfr * egfr +
+    coefficients.yearsSinceFirstEvent * yearsSinceFirstEvent +
+    coefficients.coronaryDisease * (isYes(data.smartCoronaryDisease) ? 1 : 0) +
+    coefficients.cerebrovascularDisease * (isYes(data.smartCerebrovascularDisease) ? 1 : 0) +
+    coefficients.peripheralArteryDisease * (isYes(data.smartPeripheralArteryDisease) ? 1 : 0) +
+    coefficients.abdominalAorticAneurysm * (isYes(data.smartAbdominalAorticAneurysm) ? 1 : 0);
+
+  const risk = 1 - Math.pow(coefficients.baselineSurvival10Year, Math.exp(linearPredictor));
+  return Math.round(risk * 1000) / 10;
+}
+
+function interpretSmartRisk(riskPercent) {
+  if (riskPercent < 10) return 'помірний залишковий ризик';
+  if (riskPercent < 20) return 'високий залишковий ризик';
+  if (riskPercent < 30) return 'дуже високий залишковий ризик';
+  return 'екстремально високий залишковий ризик';
+}
+
 export function calculateScore2Risk(data) {
   const age = parsePositiveNumber(data.age);
   const patientScenario = normalizePatientScenario(data);
   const ckdModifier = getCkdCardiovascularRiskModifier(data);
 
   if (patientScenario === 'establishedASCVD') {
-    const interpretation = 'дуже високий';
+    const missingSmartFields = getMissingSmartFields(data);
+
+    if (missingSmartFields.length > 0) {
+      const interpretation = 'дуже високий';
+
+      return {
+        shouldCalculate: false,
+        riskPercent: null,
+        modelName: 'SMART Risk Score',
+        interpretation,
+        ldlTarget: getLdlTarget(interpretation),
+        reason:
+          'Встановлене атеросклеротичне серцево-судинне захворювання: це сценарій вторинної профілактики. Для локального розрахунку SMART Risk Score потрібно заповнити додаткові дані.',
+        recommendations: getLifestyleRecommendations(interpretation),
+        patientInfo: cholesterolPatientInfo,
+        ckdModifier,
+        missing: missingSmartFields,
+      };
+    }
+
+    const riskPercent = calculateRawSmartRisk(data);
+    const interpretation = interpretSmartRisk(riskPercent);
 
     return {
-      shouldCalculate: false,
-      riskPercent: null,
+      shouldCalculate: true,
+      modelName: 'SMART Risk Score',
+      riskPercent,
       interpretation,
-      ldlTarget: getLdlTarget(interpretation),
+      ldlTarget: getLdlTarget('дуже високий'),
       reason:
-        'Встановлене атеросклеротичне серцево-судинне захворювання: це сценарій вторинної профілактики. SCORE2 не застосовується; для кількісної оцінки залишкового ризику доцільно використовувати SMART Risk Score / SMART2.',
-      recommendations: getLifestyleRecommendations(interpretation),
+        'Розраховано за SMART Risk Score для пацієнта зі встановленим атеросклеротичним серцево-судинним захворюванням. SCORE2 у цьому сценарії не застосовується.',
+      recommendations: getLifestyleRecommendations('дуже високий'),
       patientInfo: cholesterolPatientInfo,
       ckdModifier,
       missing: [],

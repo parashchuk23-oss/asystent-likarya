@@ -15,6 +15,13 @@ const initialRiskData = {
   diabetesDiagnosisAge: '',
   hba1c: '',
   hba1cUnit: 'percent',
+  smartDiabetes: 'ні',
+  smartCoronaryDisease: 'так',
+  smartCerebrovascularDisease: 'ні',
+  smartPeripheralArteryDisease: 'ні',
+  smartAbdominalAorticAneurysm: 'ні',
+  yearsSinceFirstEvent: '',
+  hsCrp: '',
   age: '',
   sex: '',
   smoking: 'ні',
@@ -110,35 +117,87 @@ function DiabetesDetailsDropdown({ riskData, onChange }) {
   );
 }
 
-function SecondaryPreventionDropdown() {
-  const smartDataItems = [
-    'вік, стать, куріння',
-    'систолічний АТ',
-    'загальний холестерин і ЛПВЩ',
-    'креатинін / ШКФ',
-    'наявність ЦД',
-    'тип встановленого ССЗ: ІХС, інсульт / ТІА, захворювання периферичних артерій',
-    'час від першої серцево-судинної події',
-    'hsCRP за наявності',
-  ];
-
+function SecondaryPreventionDropdown({ riskData, onChange }) {
   return (
     <div className="rounded-md border border-blue-100 bg-blue-50/70 p-3 text-sm leading-6 text-slate-700">
       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">
         Вторинна профілактика / SMART
       </p>
       <p className="mt-2">
-        При встановленому атеросклеротичному ССЗ SCORE2 не застосовується для первинної оцінки ризику.
-        Для кількісної оцінки залишкового ризику доцільно використовувати SMART Risk Score / SMART2.
+        При встановленому атеросклеротичному ССЗ SCORE2 не застосовується. Нижче можна розрахувати
+        орієнтовний 10-річний залишковий ризик за SMART Risk Score.
       </p>
 
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <CheckboxField
+          label="Цукровий діабет"
+          checked={riskData.smartDiabetes === 'так'}
+          onChange={(checked) => onChange('smartDiabetes', checked ? 'так' : 'ні')}
+        />
+
+        <FormField label="Років від першої СС-події">
+          <input
+            type="number"
+            value={riskData.yearsSinceFirstEvent}
+            onChange={(event) => onChange('yearsSinceFirstEvent', event.target.value)}
+            className={inputClass}
+            placeholder="5"
+            min="0"
+            step="0.1"
+          />
+        </FormField>
+
+        <FormField label="ШКФ" hint="мл/хв/1,73 м²">
+          <input
+            type="number"
+            value={riskData.egfr}
+            onChange={(event) => onChange('egfr', event.target.value)}
+            className={inputClass}
+            placeholder="75"
+            min="1"
+          />
+        </FormField>
+
+        <FormField label="hsCRP" hint="мг/л">
+          <input
+            type="number"
+            value={riskData.hsCrp}
+            onChange={(event) => onChange('hsCrp', event.target.value)}
+            className={inputClass}
+            placeholder="2"
+            min="0.1"
+            step="0.1"
+          />
+        </FormField>
+      </div>
+
       <div className="mt-3 rounded-md border border-white bg-white/75 p-3">
-        <p className="font-semibold text-slate-900">Які дані зазвичай потрібні для SMART</p>
-        <ul className="mt-2 list-disc space-y-1 pl-5">
-          {smartDataItems.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
+        <p className="mb-2 font-semibold text-slate-900">Тип встановленого ССЗ</p>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <CheckboxField
+            label="ІХС / коронарне захворювання"
+            checked={riskData.smartCoronaryDisease === 'так'}
+            onChange={(checked) => onChange('smartCoronaryDisease', checked ? 'так' : 'ні')}
+          />
+
+          <CheckboxField
+            label="Інсульт / ТІА"
+            checked={riskData.smartCerebrovascularDisease === 'так'}
+            onChange={(checked) => onChange('smartCerebrovascularDisease', checked ? 'так' : 'ні')}
+          />
+
+          <CheckboxField
+            label="Периферичний атеросклероз"
+            checked={riskData.smartPeripheralArteryDisease === 'так'}
+            onChange={(checked) => onChange('smartPeripheralArteryDisease', checked ? 'так' : 'ні')}
+          />
+
+          <CheckboxField
+            label="Аневризма черевної аорти"
+            checked={riskData.smartAbdominalAorticAneurysm === 'так'}
+            onChange={(checked) => onChange('smartAbdominalAorticAneurysm', checked ? 'так' : 'ні')}
+          />
+        </div>
       </div>
 
       <div className="mt-3 flex flex-col gap-2 sm:flex-row">
@@ -160,6 +219,11 @@ function SecondaryPreventionDropdown() {
           Відкрити U-Prevent
         </a>
       </div>
+
+      <p className="mt-3 text-xs leading-5 text-slate-500">
+        SMART2 поки залишено як зовнішній інструмент через U-Prevent; локально реалізовано оригінальний SMART Risk
+        Score.
+      </p>
     </div>
   );
 }
@@ -285,7 +349,9 @@ export default function Score2Tab() {
                 onClick={() => handleScenarioChange('establishedASCVD')}
               />
 
-              {riskData.patientScenario === 'establishedASCVD' && <SecondaryPreventionDropdown />}
+              {riskData.patientScenario === 'establishedASCVD' && (
+                <SecondaryPreventionDropdown riskData={riskData} onChange={handleChange} />
+              )}
             </div>
           </div>
 
@@ -298,7 +364,7 @@ export default function Score2Tab() {
 
             {riskData.chronicKidneyDisease === 'так' && (
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                {riskData.patientScenario !== 'diabetes' && (
+                {riskData.patientScenario === 'primary' && (
                   <FormField label="ШКФ" hint="мл/хв/1,73 м²">
                     <input
                       type="number"
