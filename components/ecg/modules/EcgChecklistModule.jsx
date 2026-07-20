@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { buildQtMetricsInput, calculateQtMetrics, getSmallCellDurationMs } from '../../../utils/ecg/qtCalculations';
 import { inputClass, textareaClass } from '../../formStyles';
 import EcgDisclaimer from '../EcgDisclaimer';
@@ -41,7 +41,8 @@ const normalChecklistValues = {
   rrCells: '',
   rhythmType: 'sinus',
   rhythmRegularity: 'regular',
-  rhythmNote: '',
+  rhythmText: '',
+  rhythmTextEdited: false,
   axisI: 'positive',
   axisII: 'positive',
   axisAvf: 'positive',
@@ -88,42 +89,36 @@ function getEffectiveRate(values, paperSpeed) {
 }
 
 function buildRhythmText(values, rate) {
-  const note = values.rhythmNote?.trim();
-
   if (values.rhythmType === 'sinus') {
     if (rate && rate < 60) {
-      return note ? `Синусова брадикардія, ЧСС ${rate}/хв, ${note}` : `Синусова брадикардія, ЧСС ${rate}/хв`;
+      return `Синусова брадикардія, ЧСС ${rate}/хв`;
     }
     if (rate && rate > 100) {
-      return note ? `Синусова тахікардія, ЧСС ${rate}/хв, ${note}` : `Синусова тахікардія, ЧСС ${rate}/хв`;
+      return `Синусова тахікардія, ЧСС ${rate}/хв`;
     }
 
     const regularity = values.rhythmRegularity === 'irregular' ? 'нерегулярний' : 'регулярний';
-    return note
-      ? `Синусовий ритм, ${regularity}, ЧСС ${rate || '__'}/хв, ${note}`
-      : `Синусовий ритм, ${regularity}, ЧСС ${rate || '__'}/хв`;
+    return `Синусовий ритм, ${regularity}, ЧСС ${rate || '__'}/хв`;
   }
 
   if (values.rhythmType === 'af') {
-    return note ? `Фібриляція передсердь, ЧСС ${rate || '__'}/хв, ${note}` : `Фібриляція передсердь, ЧСС ${rate || '__'}/хв`;
+    return `Фібриляція передсердь, ЧСС ${rate || '__'}/хв`;
   }
 
   if (values.rhythmType === 'flutter') {
-    return note ? `Тріпотіння передсердь, ЧСС ${rate || '__'}/хв, ${note}` : `Тріпотіння передсердь, ЧСС ${rate || '__'}/хв`;
+    return `Тріпотіння передсердь, ЧСС ${rate || '__'}/хв`;
   }
 
   if (values.rhythmType === 'paced') {
-    return note ? `Ритм електрокардіостимулятора, ЧСС ${rate || '__'}/хв, ${note}` : `Ритм електрокардіостимулятора, ЧСС ${rate || '__'}/хв`;
+    return `Ритм електрокардіостимулятора, ЧСС ${rate || '__'}/хв`;
   }
 
   const rhythmLabel = rhythmOptions.find((option) => option.value === values.rhythmType)?.label || 'ритм потребує уточнення';
   if (values.rhythmType === 'other') {
-    return note ? `Ритм ${note}, ЧСС ${rate || '__'}/хв` : `Ритм потребує уточнення, ЧСС ${rate || '__'}/хв`;
+    return `Ритм потребує уточнення, ЧСС ${rate || '__'}/хв`;
   }
 
-  return note
-    ? `${rhythmLabel.charAt(0).toUpperCase()}${rhythmLabel.slice(1)} ритм, ЧСС ${rate || '__'}/хв, ${note}`
-    : `${rhythmLabel.charAt(0).toUpperCase()}${rhythmLabel.slice(1)} ритм, ЧСС ${rate || '__'}/хв`;
+  return `${rhythmLabel.charAt(0).toUpperCase()}${rhythmLabel.slice(1)} ритм, ЧСС ${rate || '__'}/хв`;
 }
 
 function buildAxisText(values) {
@@ -155,7 +150,7 @@ function buildAxisText(values) {
 
 function buildConclusion(values, paperSpeed) {
   const rate = getEffectiveRate(values, paperSpeed);
-  const rhythm = buildRhythmText(values, rate);
+  const rhythm = values.rhythmText?.trim() || buildRhythmText(values, rate);
   const pqMs = cellsToMs(values.pqCells, paperSpeed);
   const qrsMs = cellsToMs(values.qrsCells, paperSpeed);
   const lines = [
@@ -199,12 +194,24 @@ export default function EcgChecklistModule() {
   const rhythmText = useMemo(() => buildRhythmText(values, effectiveRate), [values, effectiveRate]);
 
   const update = (id, value) => setValues((current) => ({ ...current, [id]: value }));
+  const updateRhythmOutput = (value) => {
+    setValues((current) => ({ ...current, rhythmText: value, rhythmTextEdited: true }));
+  };
   const resetToNormal = () => setValues(normalChecklistValues);
   const updateQtForm = (field, value) => setQtForm((current) => ({ ...current, [field]: value }));
   const applyQtToChecklist = () => {
     if (!qtMetrics) return;
     update('qt', `QT ${qtMetrics.qt} мс, QTc Fridericia ${qtMetrics.qtcFridericia} мс (${qtMetrics.interpretation.label.toLowerCase()})`);
   };
+
+  useEffect(() => {
+    if (values.rhythmTextEdited && values.rhythmText.trim()) return;
+    setValues((current) => {
+      const nextText = buildRhythmText(current, effectiveRate);
+      if (current.rhythmText === nextText) return current;
+      return { ...current, rhythmText: nextText };
+    });
+  }, [effectiveRate, values.rhythmText, values.rhythmTextEdited, values.rhythmType, values.rhythmRegularity]);
 
   return (
     <EcgModuleShell
@@ -273,7 +280,7 @@ export default function EcgChecklistModule() {
 
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 lg:col-span-3">
           <span className="mb-2 block text-sm font-semibold text-slate-700">Ритм</span>
-          <div className="grid gap-3 lg:grid-cols-3">
+          <div className="grid gap-3 lg:grid-cols-2">
             <label className="block">
               <span className="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Основний ритм</span>
               <select value={values.rhythmType} onChange={(event) => update('rhythmType', event.target.value)} className={inputClass}>
@@ -290,22 +297,19 @@ export default function EcgChecklistModule() {
                 ))}
               </select>
             </label>
-            <label className="block">
-              <span className="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Уточнення</span>
-              <input
-                value={values.rhythmNote}
-                onChange={(event) => update('rhythmNote', event.target.value)}
-                placeholder="Наприклад: тахісистолічний варіант"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm shadow-slate-100/60 transition-all duration-150 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-              />
-            </label>
           </div>
           <p className="mt-2 text-xs font-medium leading-snug text-slate-500">
             Для синусового ритму програма сама формує синусову брадикардію або тахікардію за ЧСС.
           </p>
-          <p className="mt-3 rounded-md border border-blue-100 bg-white p-3 text-sm font-bold text-blue-900">
-            У висновку: {rhythmText}.
-          </p>
+          <label className="mt-3 block">
+            <span className="mb-1.5 block text-sm font-semibold text-slate-700">Текст у висновку</span>
+            <textarea
+              value={values.rhythmText || rhythmText}
+              onChange={(event) => updateRhythmOutput(event.target.value)}
+              rows={2}
+              className={`${textareaClass} bg-white`}
+            />
+          </label>
         </div>
 
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 lg:col-span-3">
