@@ -20,19 +20,20 @@ body {
     color: #0f172a;
   }
 
-  body * {
-    visibility: hidden;
+  body > :not(.questionnaire-print-area) {
+    display: none !important;
   }
 
-  .questionnaire-print-area,
-  .questionnaire-print-area * {
-    visibility: visible;
+  html,
+  body {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
   }
 
   .questionnaire-print-area {
     display: block !important;
-    position: absolute;
-    inset: 0 auto auto 0;
+    position: static !important;
     width: 100%;
     background: #ffffff;
     color: #0f172a;

@@ -1,5 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+
 function normalizeQuestions(questions, sharedOptions) {
   return questions.map((question, index) => {
     if (typeof question === 'string') {
@@ -43,8 +46,13 @@ export default function PrintableQuestionnaire({
   interpretationLabel = 'Інтерпретація',
 }) {
   const normalizedQuestions = normalizeQuestions(questions, options);
+  const [isMounted, setIsMounted] = useState(false);
 
-  return (
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const printMarkup = (
     <section className="questionnaire-print-area hidden">
       <div className="print-header">
         <p className="print-brand">Асистент лікаря</p>
@@ -87,4 +95,8 @@ export default function PrintableQuestionnaire({
       </p>
     </section>
   );
+
+  if (!isMounted) return null;
+
+  return createPortal(printMarkup, document.body);
 }
