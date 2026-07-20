@@ -66,6 +66,53 @@ const SCORE2_OP_COEFFICIENTS = {
   },
 };
 
+const SCORE2_DIABETES_COEFFICIENTS = {
+  male: {
+    age: 0.5368,
+    smoking: 0.4774,
+    sbp: 0.1322,
+    diabetes: 0.6457,
+    totalCholesterol: 0.1102,
+    hdl: -0.1087,
+    smokingAge: -0.0672,
+    sbpAge: -0.0268,
+    diabetesAgeInteraction: -0.0983,
+    totalCholesterolAge: -0.0181,
+    hdlAge: 0.0095,
+    diabetesDiagnosisAge: -0.0998,
+    hba1c: 0.0955,
+    egfr: -0.0591,
+    egfrSquared: 0.0058,
+    hba1cAge: -0.0134,
+    egfrAge: 0.0115,
+    baselineSurvival: 0.9605,
+    recalibrationScale1: 0.5836,
+    recalibrationScale2: 0.8294,
+  },
+  female: {
+    age: 0.6624,
+    smoking: 0.6139,
+    sbp: 0.1421,
+    diabetes: 0.8096,
+    totalCholesterol: 0.1127,
+    hdl: -0.1568,
+    smokingAge: -0.1122,
+    sbpAge: -0.0167,
+    diabetesAgeInteraction: -0.1272,
+    totalCholesterolAge: -0.02,
+    hdlAge: 0.0186,
+    diabetesDiagnosisAge: -0.118,
+    hba1c: 0.1173,
+    egfr: -0.064,
+    egfrSquared: 0.0062,
+    hba1cAge: -0.0196,
+    egfrAge: 0.0169,
+    baselineSurvival: 0.9776,
+    recalibrationScale1: 0.9412,
+    recalibrationScale2: 0.8329,
+  },
+};
+
 function hasValue(value) {
   return value !== undefined && value !== null && String(value).trim() !== '';
 }
@@ -82,6 +129,13 @@ function toMmolL(value, unit, conversionFactor) {
   if (parsed === null) return null;
 
   return unit === 'mgDl' ? parsed / conversionFactor : parsed;
+}
+
+function toHba1cMmolMol(value, unit) {
+  const parsed = parsePositiveNumber(value);
+  if (parsed === null) return null;
+
+  return unit === 'percent' ? 10.93 * parsed - 23.5 : parsed;
 }
 
 function isYes(value) {
@@ -174,6 +228,16 @@ function getMissingScore2Fields(data) {
   return missing;
 }
 
+function getMissingScore2DiabetesFields(data) {
+  const missing = getMissingScore2Fields(data);
+
+  if (!parsePositiveNumber(data.diabetesDiagnosisAge)) missing.push('вік встановлення ЦД');
+  if (!toHba1cMmolMol(data.hba1c, data.hba1cUnit)) missing.push('HbA1c');
+  if (!parsePositiveNumber(data.egfr)) missing.push('ШКФ');
+
+  return missing;
+}
+
 function getEgfrCategory(egfr) {
   if (egfr === null) return null;
   if (egfr >= 90) return 'G1';
@@ -194,7 +258,7 @@ function getAcrCategory(acr) {
 export function getCkdCardiovascularRiskModifier(data) {
   const egfr = parsePositiveNumber(data.egfr);
   const acr = parsePositiveNumber(data.acr);
-  const hasCkd = isYes(data.chronicKidneyDisease) || egfr !== null || acr !== null;
+  const hasCkd = isYes(data.chronicKidneyDisease) || (egfr !== null && egfr < 60) || (acr !== null && acr >= 30);
 
   if (!hasCkd) return null;
 
@@ -319,6 +383,66 @@ function calculateRawScore2OpRisk(data) {
   return Math.round(calibratedRisk * 1000) / 10;
 }
 
+function calculateRawScore2DiabetesRisk(data) {
+  const age = parsePositiveNumber(data.age);
+  const sex = normalizeSex(data.sex);
+  const smoking = isYes(data.smoking) ? 1 : 0;
+  const diabetes = 1;
+  const sbp = parsePositiveNumber(data.systolicBP);
+  const totalCholesterol = toMmolL(data.totalCholesterol, data.lipidsUnit, 38.67);
+  const hdl = toMmolL(data.hdl, data.lipidsUnit, 38.67);
+  const diabetesDiagnosisAge = parsePositiveNumber(data.diabetesDiagnosisAge);
+  const hba1c = toHba1cMmolMol(data.hba1c, data.hba1cUnit);
+  const egfr = parsePositiveNumber(data.egfr);
+  const coefficients = SCORE2_DIABETES_COEFFICIENTS[sex];
+
+  const centeredAge = (age - 60) / 5;
+  const centeredSbp = (sbp - 120) / 20;
+  const centeredTotalCholesterol = totalCholesterol - 6;
+  const centeredHdl = (hdl - 1.3) / 0.5;
+  const centeredDiabetesDiagnosisAge = (diabetesDiagnosisAge - 50) / 5;
+  const centeredHba1c = (hba1c - 31) / 9.34;
+  const centeredEgfr = (Math.log(egfr) - 4.5) / 0.15;
+
+  const linearPredictor =
+    coefficients.age * centeredAge +
+    coefficients.smoking * smoking +
+    coefficients.sbp * centeredSbp +
+    coefficients.diabetes * diabetes +
+    coefficients.totalCholesterol * centeredTotalCholesterol +
+    coefficients.hdl * centeredHdl +
+    coefficients.smokingAge * centeredAge * smoking +
+    coefficients.sbpAge * centeredAge * centeredSbp +
+    coefficients.diabetesAgeInteraction * centeredAge * diabetes +
+    coefficients.totalCholesterolAge * centeredAge * centeredTotalCholesterol +
+    coefficients.hdlAge * centeredAge * centeredHdl +
+    coefficients.diabetesDiagnosisAge * diabetes * centeredDiabetesDiagnosisAge +
+    coefficients.hba1c * centeredHba1c +
+    coefficients.egfr * centeredEgfr +
+    coefficients.egfrSquared * centeredEgfr * centeredEgfr +
+    coefficients.hba1cAge * centeredHba1c * centeredAge +
+    coefficients.egfrAge * centeredEgfr * centeredAge;
+
+  const uncalibratedRisk = 1 - Math.pow(coefficients.baselineSurvival, Math.exp(linearPredictor));
+  const calibratedRisk =
+    1 -
+    Math.exp(
+      -Math.exp(
+        coefficients.recalibrationScale1 +
+          coefficients.recalibrationScale2 * Math.log(-Math.log(1 - uncalibratedRisk))
+      )
+    );
+
+  return Math.round(calibratedRisk * 1000) / 10;
+}
+
+function interpretScore2DiabetesRisk(riskPercent) {
+  if (riskPercent < 5) return 'низький';
+  if (riskPercent < 10) return 'середній';
+  if (riskPercent < 20) return 'високий';
+  return 'дуже високий';
+}
+
 export function calculateScore2Risk(data) {
   const age = parsePositiveNumber(data.age);
   const patientScenario = normalizePatientScenario(data);
@@ -341,14 +465,88 @@ export function calculateScore2Risk(data) {
   }
 
   if (patientScenario === 'diabetes') {
+    if (ckdModifier?.level === 'veryHigh') {
+      const interpretation = ckdModifier.interpretation;
+
+      return {
+        shouldCalculate: false,
+        riskPercent: null,
+        interpretation,
+        ldlTarget: getLdlTarget(interpretation),
+        reason: `${ckdModifier.reason} ${ckdModifier.details.join(', ')}.`,
+        recommendations: getLifestyleRecommendations(interpretation),
+        patientInfo: cholesterolPatientInfo,
+        ckdModifier,
+        missing: [],
+      };
+    }
+
+    if (age !== null && age < 40) {
+      return {
+        shouldCalculate: false,
+        riskPercent: null,
+        interpretation: 'SCORE2-Diabetes не застосовується',
+        ldlTarget: null,
+        reason: 'SCORE2-Diabetes застосовується для пацієнтів із ЦД 2 типу віком 40-69 років.',
+        recommendations: [],
+        ckdModifier,
+        missing: [],
+      };
+    }
+
+    if (age !== null && age > 69) {
+      return {
+        shouldCalculate: false,
+        riskPercent: null,
+        interpretation: 'індивідуальна оцінка',
+        ldlTarget: null,
+        reason: 'SCORE2-Diabetes валідований для віку 40-69 років.',
+        recommendations: [],
+        ckdModifier,
+        missing: [],
+      };
+    }
+
+    const missingScore2DiabetesFields = getMissingScore2DiabetesFields(data);
+    if (missingScore2DiabetesFields.length > 0) {
+      return {
+        shouldCalculate: false,
+        riskPercent: null,
+        interpretation: 'недостатньо даних',
+        ldlTarget: null,
+        reason: 'Недостатньо даних для розрахунку SCORE2-Diabetes.',
+        recommendations: [],
+        ckdModifier,
+        missing: missingScore2DiabetesFields,
+      };
+    }
+
+    const diabetesDiagnosisAge = parsePositiveNumber(data.diabetesDiagnosisAge);
+    if (diabetesDiagnosisAge > age) {
+      return {
+        shouldCalculate: false,
+        riskPercent: null,
+        interpretation: 'перевірте дані',
+        ldlTarget: null,
+        reason: 'Вік встановлення ЦД не може бути більшим за поточний вік.',
+        recommendations: [],
+        ckdModifier,
+        missing: [],
+      };
+    }
+
+    const riskPercent = calculateRawScore2DiabetesRisk(data);
+    const interpretation = interpretScore2DiabetesRisk(riskPercent);
+
     return {
-      shouldCalculate: false,
-      riskPercent: null,
-      interpretation: 'окрема оцінка при цукровому діабеті',
-      ldlTarget: null,
+      shouldCalculate: true,
+      modelName: 'SCORE2-Diabetes',
+      riskPercent,
+      interpretation,
+      ldlTarget: getLdlTarget(interpretation),
       reason:
-        'Для пацієнтів із цукровим діабетом 2 типу потрібна окрема оцінка ризику. SCORE2-Diabetes варто додати окремим етапом.',
-      recommendations: getLifestyleRecommendations('високий'),
+        'Розраховано за SCORE2-Diabetes для пацієнта з ЦД 2 типу без встановленого атеросклеротичного ССЗ.',
+      recommendations: getLifestyleRecommendations(interpretation),
       patientInfo: cholesterolPatientInfo,
       ckdModifier,
       missing: [],

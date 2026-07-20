@@ -12,6 +12,9 @@ const initialRiskData = {
   chronicKidneyDisease: 'ні',
   egfr: '',
   acr: '',
+  diabetesDiagnosisAge: '',
+  hba1c: '',
+  hba1cUnit: 'percent',
   age: '',
   sex: '',
   smoking: 'ні',
@@ -157,7 +160,7 @@ export default function Score2Tab() {
 
               <ScenarioCard
                 title="Цукровий діабет 2 типу"
-                description="Потрібна окрема оцінка ризику. SCORE2-Diabetes додамо окремим етапом."
+                description="SCORE2-Diabetes для пацієнтів 40-69 років без встановленого ССЗ."
                 active={riskData.patientScenario === 'diabetes'}
                 onClick={() => handleScenarioChange('diabetes')}
               />
@@ -180,16 +183,18 @@ export default function Score2Tab() {
 
             {riskData.chronicKidneyDisease === 'так' && (
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <FormField label="ШКФ" hint="мл/хв/1,73 м²">
-                  <input
-                    type="number"
-                    value={riskData.egfr}
-                    onChange={(event) => handleChange('egfr', event.target.value)}
-                    className={inputClass}
-                    placeholder="75"
-                    min="1"
-                  />
-                </FormField>
+                {riskData.patientScenario !== 'diabetes' && (
+                  <FormField label="ШКФ" hint="мл/хв/1,73 м²">
+                    <input
+                      type="number"
+                      value={riskData.egfr}
+                      onChange={(event) => handleChange('egfr', event.target.value)}
+                      className={inputClass}
+                      placeholder="75"
+                      min="1"
+                    />
+                  </FormField>
+                )}
 
                 <FormField label="ACR" hint="мг/г">
                   <input
@@ -265,6 +270,59 @@ export default function Score2Tab() {
                 step="0.1"
               />
             </FormField>
+
+            {riskData.patientScenario === 'diabetes' && (
+              <div className="rounded-md border border-blue-100 bg-blue-50/60 p-3">
+                <p className="mb-3 text-sm font-semibold text-slate-800">Дані для SCORE2-Diabetes</p>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <FormField label="Вік встановлення ЦД">
+                    <input
+                      type="number"
+                      value={riskData.diabetesDiagnosisAge}
+                      onChange={(event) => handleChange('diabetesDiagnosisAge', event.target.value)}
+                      className={inputClass}
+                      placeholder="50"
+                      min="1"
+                    />
+                  </FormField>
+
+                  <FormField label="ШКФ" hint="мл/хв/1,73 м²">
+                    <input
+                      type="number"
+                      value={riskData.egfr}
+                      onChange={(event) => handleChange('egfr', event.target.value)}
+                      className={inputClass}
+                      placeholder="75"
+                      min="1"
+                    />
+                  </FormField>
+
+                  <FormField label="HbA1c">
+                    <input
+                      type="number"
+                      value={riskData.hba1c}
+                      onChange={(event) => handleChange('hba1c', event.target.value)}
+                      className={inputClass}
+                      placeholder="7.0"
+                      min="1"
+                      step="0.1"
+                    />
+                  </FormField>
+
+                  <FormField label="Одиниці HbA1c">
+                    <select
+                      value={riskData.hba1cUnit}
+                      onChange={(event) => handleChange('hba1cUnit', event.target.value)}
+                      className={inputClass}
+                    >
+                      <option value="percent">%</option>
+                      <option value="mmolMol">ммоль/моль</option>
+                    </select>
+                  </FormField>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -307,6 +365,12 @@ export default function Score2Tab() {
             <p>
               <span className="font-semibold">Причина:</span> {calculatedResult.reason}
             </p>
+
+            {calculatedResult.missing?.length > 0 && (
+              <p className="rounded-md border border-amber-100 bg-amber-50 px-3 py-2 text-sm text-slate-700">
+                <span className="font-semibold">Що ще заповнити:</span> {calculatedResult.missing.join(', ')}.
+              </p>
+            )}
 
             {calculatedResult.ckdModifier && (
               <div className="rounded-md border border-teal-100 bg-teal-50 px-3 py-2 text-sm text-slate-800">
