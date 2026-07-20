@@ -55,6 +55,89 @@ function ScenarioCard({ title, description, active, onClick }) {
   );
 }
 
+function DiabetesDetailsModal({ riskData, onChange, onClose }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-4 py-6">
+      <div className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-blue-100 bg-white p-5 shadow-xl shadow-slate-900/20">
+        <div className="mb-4 border-b border-blue-100 pb-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">SCORE2-Diabetes</p>
+          <h3 className="mt-1 text-lg font-semibold tracking-tight text-slate-950">
+            Дані для пацієнта з ЦД 2 типу
+          </h3>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Ці поля потрібні тільки для розрахунку SCORE2-Diabetes і не перевантажують основну форму.
+          </p>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <FormField label="Вік встановлення ЦД">
+            <input
+              type="number"
+              value={riskData.diabetesDiagnosisAge}
+              onChange={(event) => onChange('diabetesDiagnosisAge', event.target.value)}
+              className={inputClass}
+              placeholder="50"
+              min="1"
+            />
+          </FormField>
+
+          <FormField label="ШКФ" hint="мл/хв/1,73 м²">
+            <input
+              type="number"
+              value={riskData.egfr}
+              onChange={(event) => onChange('egfr', event.target.value)}
+              className={inputClass}
+              placeholder="75"
+              min="1"
+            />
+          </FormField>
+
+          <FormField label="HbA1c">
+            <input
+              type="number"
+              value={riskData.hba1c}
+              onChange={(event) => onChange('hba1c', event.target.value)}
+              className={inputClass}
+              placeholder="7.0"
+              min="1"
+              step="0.1"
+            />
+          </FormField>
+
+          <FormField label="Одиниці HbA1c">
+            <select
+              value={riskData.hba1cUnit}
+              onChange={(event) => onChange('hba1cUnit', event.target.value)}
+              className={inputClass}
+            >
+              <option value="percent">%</option>
+              <option value="mmolMol">ммоль/моль</option>
+            </select>
+          </FormField>
+        </div>
+
+        <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+          >
+            Закрити
+          </button>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
+          >
+            Зберегти дані
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SexCheckboxes({ value, onChange }) {
   return (
     <FormField label="Стать">
@@ -105,6 +188,7 @@ function canCalculateRisk(data) {
 export default function Score2Tab() {
   const [riskData, setRiskData] = useState(initialRiskData);
   const [calculatedResult, setCalculatedResult] = useState(null);
+  const [isDiabetesModalOpen, setIsDiabetesModalOpen] = useState(false);
   const isCalculateEnabled = canCalculateRisk(riskData);
   const primaryButtonClass =
     'w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none sm:w-auto';
@@ -127,6 +211,12 @@ export default function Score2Tab() {
       establishedASCVD: patientScenario === 'establishedASCVD' ? 'так' : 'ні',
     }));
     setCalculatedResult(null);
+
+    if (patientScenario === 'diabetes') {
+      setIsDiabetesModalOpen(true);
+    } else {
+      setIsDiabetesModalOpen(false);
+    }
   }
 
   function handleCalculate() {
@@ -137,10 +227,19 @@ export default function Score2Tab() {
   function handleClear() {
     setRiskData(initialRiskData);
     setCalculatedResult(null);
+    setIsDiabetesModalOpen(false);
   }
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1.38fr)_minmax(0,1fr)]">
+      {isDiabetesModalOpen && (
+        <DiabetesDetailsModal
+          riskData={riskData}
+          onChange={handleChange}
+          onClose={() => setIsDiabetesModalOpen(false)}
+        />
+      )}
+
       <section className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-200/60">
         <div className="mb-4 border-b border-blue-100 pb-3">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">SCORE2 / SCORE2-OP</p>
@@ -173,6 +272,33 @@ export default function Score2Tab() {
               />
             </div>
           </div>
+
+          {riskData.patientScenario === 'diabetes' && (
+            <div className="rounded-md border border-blue-100 bg-blue-50 px-3 py-3 text-sm text-slate-700">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="font-semibold text-slate-900">SCORE2-Diabetes</p>
+                  <p className="mt-1 leading-6">
+                    {riskData.diabetesDiagnosisAge || riskData.hba1c || riskData.egfr
+                      ? `ЦД з ${riskData.diabetesDiagnosisAge || '—'} років; HbA1c ${
+                          riskData.hba1c || '—'
+                        } ${riskData.hba1cUnit === 'percent' ? '%' : 'ммоль/моль'}; ШКФ ${
+                          riskData.egfr || '—'
+                        } мл/хв/1,73 м².`
+                      : 'Дані для SCORE2-Diabetes ще не заповнені.'}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsDiabetesModalOpen(true)}
+                  className="shrink-0 rounded-md border border-blue-200 bg-white px-3 py-2 text-sm font-semibold text-blue-700 transition hover:bg-blue-50"
+                >
+                  Змінити дані
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
             <CheckboxField
@@ -271,58 +397,6 @@ export default function Score2Tab() {
               />
             </FormField>
 
-            {riskData.patientScenario === 'diabetes' && (
-              <div className="rounded-md border border-blue-100 bg-blue-50/60 p-3">
-                <p className="mb-3 text-sm font-semibold text-slate-800">Дані для SCORE2-Diabetes</p>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <FormField label="Вік встановлення ЦД">
-                    <input
-                      type="number"
-                      value={riskData.diabetesDiagnosisAge}
-                      onChange={(event) => handleChange('diabetesDiagnosisAge', event.target.value)}
-                      className={inputClass}
-                      placeholder="50"
-                      min="1"
-                    />
-                  </FormField>
-
-                  <FormField label="ШКФ" hint="мл/хв/1,73 м²">
-                    <input
-                      type="number"
-                      value={riskData.egfr}
-                      onChange={(event) => handleChange('egfr', event.target.value)}
-                      className={inputClass}
-                      placeholder="75"
-                      min="1"
-                    />
-                  </FormField>
-
-                  <FormField label="HbA1c">
-                    <input
-                      type="number"
-                      value={riskData.hba1c}
-                      onChange={(event) => handleChange('hba1c', event.target.value)}
-                      className={inputClass}
-                      placeholder="7.0"
-                      min="1"
-                      step="0.1"
-                    />
-                  </FormField>
-
-                  <FormField label="Одиниці HbA1c">
-                    <select
-                      value={riskData.hba1cUnit}
-                      onChange={(event) => handleChange('hba1cUnit', event.target.value)}
-                      className={inputClass}
-                    >
-                      <option value="percent">%</option>
-                      <option value="mmolMol">ммоль/моль</option>
-                    </select>
-                  </FormField>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
