@@ -6,10 +6,12 @@ import FormField from './FormField';
 import { inputClass } from './formStyles';
 
 const initialRiskData = {
+  patientScenario: 'primary',
   diabetes: 'ні',
   establishedASCVD: 'ні',
   chronicKidneyDisease: 'ні',
   egfr: '',
+  acr: '',
   age: '',
   sex: '',
   smoking: 'ні',
@@ -30,6 +32,23 @@ function CheckboxField({ label, checked, onChange }) {
       />
       <span>{label}</span>
     </label>
+  );
+}
+
+function ScenarioCard({ title, description, active, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-md border px-3 py-3 text-left transition ${
+        active
+          ? 'border-blue-300 bg-blue-50 shadow-sm shadow-blue-100'
+          : 'border-slate-200 bg-white hover:border-blue-200 hover:bg-blue-50'
+      }`}
+    >
+      <span className="block text-sm font-semibold text-slate-950">{title}</span>
+      <span className="mt-1 block text-xs leading-5 text-slate-600">{description}</span>
+    </button>
   );
 }
 
@@ -62,24 +81,13 @@ function hasPositiveNumber(value) {
   return Number.isFinite(parsed) && parsed > 0;
 }
 
-function hasRequiredStopFactors(data) {
-  return hasValue(data.diabetes) && hasValue(data.establishedASCVD) && hasValue(data.chronicKidneyDisease);
-}
-
-function hasStopFactorResult(data) {
-  const egfr = Number(String(data.egfr).replace(',', '.'));
-
-  return (
-    data.diabetes === 'так' ||
-    data.establishedASCVD === 'так' ||
-    data.chronicKidneyDisease === 'так' ||
-    (Number.isFinite(egfr) && egfr > 0 && egfr < 60)
-  );
+function hasCkdData(data) {
+  return data.chronicKidneyDisease === 'так' && (hasPositiveNumber(data.egfr) || hasPositiveNumber(data.acr));
 }
 
 function canCalculateRisk(data) {
-  if (!hasRequiredStopFactors(data)) return false;
-  if (hasStopFactorResult(data)) return true;
+  if (data.patientScenario === 'diabetes' || data.patientScenario === 'establishedASCVD') return true;
+  if (hasCkdData(data)) return true;
 
   return (
     hasPositiveNumber(data.age) &&
@@ -108,6 +116,16 @@ export default function Score2Tab() {
     setCalculatedResult(null);
   }
 
+  function handleScenarioChange(patientScenario) {
+    setRiskData((current) => ({
+      ...current,
+      patientScenario,
+      diabetes: patientScenario === 'diabetes' ? 'так' : 'ні',
+      establishedASCVD: patientScenario === 'establishedASCVD' ? 'так' : 'ні',
+    }));
+    setCalculatedResult(null);
+  }
+
   function handleCalculate() {
     if (!isCalculateEnabled) return;
     setCalculatedResult(calculateScore2Risk(riskData));
@@ -127,34 +145,66 @@ export default function Score2Tab() {
         </div>
 
         <div className="space-y-3">
-          <CheckboxField
-            label="Цукровий діабет"
-            checked={riskData.diabetes === 'так'}
-            onChange={(checked) => handleChange('diabetes', checked ? 'так' : 'ні')}
-          />
+          <div>
+            <p className="mb-2 text-sm font-semibold text-slate-800">Клінічний сценарій</p>
+            <div className="grid gap-2">
+              <ScenarioCard
+                title="Первинна профілактика"
+                description="Немає встановленого атеросклеротичного ССЗ або ЦД."
+                active={riskData.patientScenario === 'primary'}
+                onClick={() => handleScenarioChange('primary')}
+              />
 
-          <CheckboxField
-            label="Встановлене атеросклеротичне захворювання"
-            checked={riskData.establishedASCVD === 'так'}
-            onChange={(checked) => handleChange('establishedASCVD', checked ? 'так' : 'ні')}
-          />
+              <ScenarioCard
+                title="Цукровий діабет 2 типу"
+                description="Потрібна окрема оцінка ризику. SCORE2-Diabetes додамо окремим етапом."
+                active={riskData.patientScenario === 'diabetes'}
+                onClick={() => handleScenarioChange('diabetes')}
+              />
 
-          <CheckboxField
-            label="Хронічна хвороба нирок"
-            checked={riskData.chronicKidneyDisease === 'так'}
-            onChange={(checked) => handleChange('chronicKidneyDisease', checked ? 'так' : 'ні')}
-          />
+              <ScenarioCard
+                title="Встановлене ССЗ"
+                description="ІХС, інфаркт, інсульт, ТІА або атеросклероз периферичних артерій."
+                active={riskData.patientScenario === 'establishedASCVD'}
+                onClick={() => handleScenarioChange('establishedASCVD')}
+              />
+            </div>
+          </div>
 
-          <FormField label="ШКФ" hint="якщо відома">
-            <input
-              type="number"
-              value={riskData.egfr}
-              onChange={(event) => handleChange('egfr', event.target.value)}
-              className={inputClass}
-              placeholder="75"
-              min="1"
+          <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
+            <CheckboxField
+              label="Є ХХН / відома знижена ШКФ або альбумінурія"
+              checked={riskData.chronicKidneyDisease === 'так'}
+              onChange={(checked) => handleChange('chronicKidneyDisease', checked ? 'так' : 'ні')}
             />
-          </FormField>
+
+            {riskData.chronicKidneyDisease === 'так' && (
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <FormField label="ШКФ" hint="мл/хв/1,73 м²">
+                  <input
+                    type="number"
+                    value={riskData.egfr}
+                    onChange={(event) => handleChange('egfr', event.target.value)}
+                    className={inputClass}
+                    placeholder="75"
+                    min="1"
+                  />
+                </FormField>
+
+                <FormField label="ACR" hint="мг/г">
+                  <input
+                    type="number"
+                    value={riskData.acr}
+                    onChange={(event) => handleChange('acr', event.target.value)}
+                    className={inputClass}
+                    placeholder="20"
+                    min="0"
+                    step="0.1"
+                  />
+                </FormField>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="mt-5 border-t border-slate-100 pt-4">
@@ -257,6 +307,16 @@ export default function Score2Tab() {
             <p>
               <span className="font-semibold">Причина:</span> {calculatedResult.reason}
             </p>
+
+            {calculatedResult.ckdModifier && (
+              <div className="rounded-md border border-teal-100 bg-teal-50 px-3 py-2 text-sm text-slate-800">
+                <p className="font-semibold text-teal-800">ХХН / ACR як модифікатор ризику</p>
+                <p className="mt-1">{calculatedResult.ckdModifier.reason}</p>
+                {calculatedResult.ckdModifier.details.length > 0 && (
+                  <p className="mt-1 text-slate-600">{calculatedResult.ckdModifier.details.join(', ')}.</p>
+                )}
+              </div>
+            )}
 
             {calculatedResult.ldlTarget && (
               <p>

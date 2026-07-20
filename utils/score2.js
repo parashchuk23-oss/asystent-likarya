@@ -92,6 +92,14 @@ function isNo(value) {
   return value === 'ні';
 }
 
+function normalizePatientScenario(data) {
+  if (data.patientScenario === 'diabetes') return 'diabetes';
+  if (data.patientScenario === 'establishedASCVD') return 'establishedASCVD';
+  if (isYes(data.diabetes)) return 'diabetes';
+  if (isYes(data.establishedASCVD)) return 'establishedASCVD';
+  return 'primary';
+}
+
 function normalizeSex(sex) {
   if (sex === 'чоловік') return 'male';
   if (sex === 'жінка') return 'female';
@@ -164,6 +172,71 @@ function getMissingScore2Fields(data) {
   if (!parsePositiveNumber(data.hdl)) missing.push('ЛПВЩ');
 
   return missing;
+}
+
+function getEgfrCategory(egfr) {
+  if (egfr === null) return null;
+  if (egfr >= 90) return 'G1';
+  if (egfr >= 60) return 'G2';
+  if (egfr >= 45) return 'G3a';
+  if (egfr >= 30) return 'G3b';
+  if (egfr >= 15) return 'G4';
+  return 'G5';
+}
+
+function getAcrCategory(acr) {
+  if (acr === null) return null;
+  if (acr < 30) return 'A1';
+  if (acr <= 300) return 'A2';
+  return 'A3';
+}
+
+export function getCkdCardiovascularRiskModifier(data) {
+  const egfr = parsePositiveNumber(data.egfr);
+  const acr = parsePositiveNumber(data.acr);
+  const hasCkd = isYes(data.chronicKidneyDisease) || egfr !== null || acr !== null;
+
+  if (!hasCkd) return null;
+
+  const egfrCategory = getEgfrCategory(egfr);
+  const acrCategory = getAcrCategory(acr);
+  const details = [];
+
+  if (egfr !== null) details.push(`ШКФ ${egfr} мл/хв/1,73 м² (${egfrCategory})`);
+  if (acr !== null) details.push(`ACR ${acr} мг/г (${acrCategory})`);
+
+  const hasAlbuminuria = acr !== null && acr >= 30;
+  const hasSevereAlbuminuria = acr !== null && acr > 300;
+
+  let level = 'modifier';
+  let interpretation = 'ХХН як модифікатор ризику';
+  let reason =
+    'Є дані за ХХН або альбумінурію. Це варто врахувати разом із SCORE2 та загальною клінічною картиною.';
+
+  if ((egfr !== null && egfr < 30) || (egfr !== null && egfr >= 30 && egfr < 45 && hasAlbuminuria)) {
+    level = 'veryHigh';
+    interpretation = 'дуже високий';
+    reason = 'ХХН відповідає критеріям дуже високого серцево-судинного ризику.';
+  } else if (
+    (egfr !== null && egfr >= 30 && egfr < 45) ||
+    (egfr !== null && egfr >= 45 && egfr < 60 && hasAlbuminuria) ||
+    (egfr !== null && egfr >= 60 && hasSevereAlbuminuria)
+  ) {
+    level = 'high';
+    interpretation = 'високий';
+    reason = 'ХХН або альбумінурія відповідає критеріям високого серцево-судинного ризику.';
+  }
+
+  return {
+    level,
+    interpretation,
+    reason,
+    egfr,
+    acr,
+    egfrCategory,
+    acrCategory,
+    details,
+  };
 }
 
 function calculateRawScore2Risk(data) {
@@ -248,14 +321,10 @@ function calculateRawScore2OpRisk(data) {
 
 export function calculateScore2Risk(data) {
   const age = parsePositiveNumber(data.age);
-  const egfr = parsePositiveNumber(data.egfr);
-  const missingStopFactors = [];
+  const patientScenario = normalizePatientScenario(data);
+  const ckdModifier = getCkdCardiovascularRiskModifier(data);
 
-  if (!hasValue(data.diabetes)) missingStopFactors.push('цукровий діабет');
-  if (!hasValue(data.establishedASCVD)) missingStopFactors.push('встановлене атеросклеротичне захворювання');
-  if (!hasValue(data.chronicKidneyDisease)) missingStopFactors.push('хронічна хвороба нирок');
-
-  if (isYes(data.establishedASCVD)) {
+  if (patientScenario === 'establishedASCVD') {
     const interpretation = 'дуже високий';
 
     return {
@@ -266,62 +335,39 @@ export function calculateScore2Risk(data) {
       reason: 'Встановлене атеросклеротичне серцево-судинне захворювання.',
       recommendations: getLifestyleRecommendations(interpretation),
       patientInfo: cholesterolPatientInfo,
+      ckdModifier,
       missing: [],
     };
   }
 
-  if (isYes(data.diabetes)) {
+  if (patientScenario === 'diabetes') {
     return {
       shouldCalculate: false,
       riskPercent: null,
       interpretation: 'окрема оцінка при цукровому діабеті',
       ldlTarget: null,
-      reason: 'Для пацієнтів із цукровим діабетом потрібна окрема оцінка кардіоваскулярного ризику.',
+      reason:
+        'Для пацієнтів із цукровим діабетом 2 типу потрібна окрема оцінка ризику. SCORE2-Diabetes варто додати окремим етапом.',
       recommendations: getLifestyleRecommendations('високий'),
       patientInfo: cholesterolPatientInfo,
+      ckdModifier,
       missing: [],
     };
   }
 
-  if (isYes(data.chronicKidneyDisease) || (egfr !== null && egfr < 30)) {
-    const interpretation = 'дуже високий';
+  if (ckdModifier?.level === 'veryHigh' || ckdModifier?.level === 'high') {
+    const interpretation = ckdModifier.interpretation;
 
     return {
       shouldCalculate: false,
       riskPercent: null,
       interpretation,
       ldlTarget: getLdlTarget(interpretation),
-      reason: egfr !== null && egfr < 30 ? `ШКФ ${egfr} мл/хв/1,73 м².` : 'Хронічна хвороба нирок.',
+      reason: `${ckdModifier.reason} ${ckdModifier.details.join(', ')}.`,
       recommendations: getLifestyleRecommendations(interpretation),
       patientInfo: cholesterolPatientInfo,
+      ckdModifier,
       missing: [],
-    };
-  }
-
-  if (egfr !== null && egfr < 60) {
-    const interpretation = 'високий';
-
-    return {
-      shouldCalculate: false,
-      riskPercent: null,
-      interpretation,
-      ldlTarget: getLdlTarget(interpretation),
-      reason: `Знижена ШКФ ${egfr} мл/хв/1,73 м².`,
-      recommendations: getLifestyleRecommendations(interpretation),
-      patientInfo: cholesterolPatientInfo,
-      missing: [],
-    };
-  }
-
-  if (missingStopFactors.length > 0) {
-    return {
-      shouldCalculate: false,
-      riskPercent: null,
-      interpretation: 'недостатньо даних',
-      ldlTarget: null,
-      reason: 'Спочатку потрібно уточнити стоп-фактори.',
-      recommendations: [],
-      missing: missingStopFactors,
     };
   }
 
@@ -333,6 +379,7 @@ export function calculateScore2Risk(data) {
       ldlTarget: null,
       reason: 'SCORE2 застосовується для віку 40-69 років.',
       recommendations: [],
+      ckdModifier,
       missing: [],
     };
   }
@@ -346,6 +393,7 @@ export function calculateScore2Risk(data) {
       ldlTarget: null,
       reason: 'SCORE2-OP застосовується для віку 70-89 років.',
       recommendations: [],
+      ckdModifier,
       missing: [],
     };
   }
@@ -359,6 +407,7 @@ export function calculateScore2Risk(data) {
       ldlTarget: null,
       reason: 'Недостатньо даних для розрахунку SCORE2.',
       recommendations: [],
+      ckdModifier,
       missing: missingScore2Fields,
     };
   }
@@ -373,9 +422,13 @@ export function calculateScore2Risk(data) {
     riskPercent,
     interpretation,
     ldlTarget: getLdlTarget(interpretation),
-    reason: `Розраховано за ${modelName} для первинної профілактики.`,
+    reason:
+      ckdModifier?.level === 'modifier'
+        ? `Розраховано за ${modelName} для первинної профілактики. ХХН/ACR враховуйте як додатковий модифікатор ризику.`
+        : `Розраховано за ${modelName} для первинної профілактики.`,
     recommendations: getLifestyleRecommendations(interpretation),
     patientInfo: cholesterolPatientInfo,
+    ckdModifier,
     missing: [],
   };
 }
