@@ -220,10 +220,15 @@ function SecondaryPreventionDropdown({ riskData, onChange }) {
         </a>
       </div>
 
-      <p className="mt-3 text-xs leading-5 text-slate-500">
-        SMART2 поки залишено як зовнішній інструмент через U-Prevent; локально реалізовано оригінальний SMART Risk
-        Score.
-      </p>
+      <div className="mt-3 rounded-md border border-amber-100 bg-amber-50 px-3 py-2 text-xs leading-5 text-slate-700">
+        <p>
+          Локальний розрахунок є довідковою реалізацією SMART Risk Score за опублікованою моделлю
+          Dorresteijn et al., Heart 2013. Це не офіційний калькулятор ESC або U-Prevent.
+        </p>
+        <p className="mt-1">
+          Для альтернативної зовнішньої оцінки можна скористатися U-Prevent.
+        </p>
+      </div>
     </div>
   );
 }
@@ -494,6 +499,19 @@ export default function Score2Tab() {
             <p>
               <span className="font-semibold">Причина:</span> {calculatedResult.reason}
             </p>
+
+            {calculatedResult.modelName === 'SMART Risk Score' && (
+              <div className="rounded-md border border-amber-100 bg-amber-50 px-3 py-2 text-sm leading-6 text-slate-700">
+                <p className="font-semibold text-slate-900">Дисклеймер SMART Risk Score</p>
+                <p>
+                  Це довідкова локальна реалізація за опублікованою моделлю Dorresteijn et al., Heart 2013.
+                  Вона не є офіційним калькулятором ESC або U-Prevent.
+                </p>
+                <p className="mt-1">
+                  Джерело: Dorresteijn JAN et al. Heart. 2013;99:866-872.
+                </p>
+              </div>
+            )}
 
             {calculatedResult.missing?.length > 0 && (
               <p className="rounded-md border border-amber-100 bg-amber-50 px-3 py-2 text-sm text-slate-700">
