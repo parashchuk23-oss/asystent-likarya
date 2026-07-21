@@ -31,9 +31,11 @@ const initialRiskData = {
   lipidsUnit: 'mmolL',
 };
 
-function CheckboxField({ label, checked, onChange }) {
+function CheckboxField({ label, checked, onChange, className = '' }) {
   return (
-    <label className="flex cursor-pointer items-start gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50">
+    <label
+      className={`flex cursor-pointer items-start gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 ${className}`}
+    >
       <input
         type="checkbox"
         checked={checked}
@@ -133,9 +135,10 @@ function SecondaryPreventionDropdown({ riskData, onChange }) {
           label="Цукровий діабет"
           checked={riskData.smartDiabetes === 'так'}
           onChange={(checked) => onChange('smartDiabetes', checked ? 'так' : 'ні')}
+          className="min-h-[4.75rem] items-center"
         />
 
-        <FormField label="Років від першої СС-події">
+        <FormField label="Років від першої СС-події" className="mb-0">
           <input
             type="number"
             value={riskData.yearsSinceFirstEvent}
@@ -147,7 +150,7 @@ function SecondaryPreventionDropdown({ riskData, onChange }) {
           />
         </FormField>
 
-        <FormField label="ШКФ" hint="мл/хв/1,73 м²">
+        <FormField label="ШКФ" hint="мл/хв/1,73 м²" className="mb-0">
           <input
             type="number"
             value={riskData.egfr}
@@ -158,7 +161,7 @@ function SecondaryPreventionDropdown({ riskData, onChange }) {
           />
         </FormField>
 
-        <FormField label="hsCRP" hint="мг/л">
+        <FormField label="hsCRP" hint="мг/л" className="mb-0">
           <input
             type="number"
             value={riskData.hsCrp}
