@@ -13,8 +13,8 @@ import WellsDimerCalculator from './calculators/WellsDimerCalculator';
 const calculators = [
   {
     id: 'score2',
-    title: 'SCORE2',
-    description: 'SCORE2 / SCORE2-OP',
+    title: 'Кардіоваскулярний ризик',
+    description: 'SCORE2 / SCORE2-OP · SCORE2-Diabetes · SMART Risk Score',
     component: <Score2Tab />,
   },
   {
