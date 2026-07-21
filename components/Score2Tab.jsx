@@ -320,13 +320,6 @@ export default function Score2Tab() {
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1.38fr)_minmax(0,1fr)]">
       <section className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-200/60">
-        <div className="mb-4 border-b border-blue-100 pb-3">
-          <h2 className="text-base font-semibold tracking-tight text-slate-950">Кардіоваскулярний ризик</h2>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">
-            SCORE2 / SCORE2-OP · SCORE2-Diabetes · SMART Risk Score
-          </p>
-        </div>
-
         <div className="space-y-3">
           <div>
             <p className="mb-2 text-sm font-semibold text-slate-800">Клінічний сценарій</p>
