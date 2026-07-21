@@ -458,7 +458,7 @@ export default function Score2Tab() {
             <div className="grid gap-2">
               <ScenarioCard
                 title="Первинна профілактика"
-                description="Немає встановленого атеросклеротичного ССЗ або ЦД."
+                description="SCORE2 / SCORE2-OP для пацієнтів без встановленого атеросклеротичного ССЗ і без цукрового діабету."
                 active={riskData.patientScenario === 'primary'}
                 onClick={() => handleScenarioChange('primary')}
               />
@@ -478,7 +478,7 @@ export default function Score2Tab() {
 
               <ScenarioCard
                 title="Цукровий діабет 2 типу"
-                description="SCORE2-Diabetes для пацієнтів 40-69 років без встановленого ССЗ."
+                description="SCORE2-Diabetes для пацієнтів 40-69 років із ЦД 2 типу без встановленого ССЗ."
                 active={riskData.patientScenario === 'diabetes'}
                 onClick={() => handleScenarioChange('diabetes')}
               />
@@ -498,7 +498,7 @@ export default function Score2Tab() {
 
               <ScenarioCard
                 title="Встановлене ССЗ"
-                description="ІХС, інфаркт, інсульт, ТІА або атеросклероз периферичних артерій."
+                description="SMART Risk Score для пацієнтів з ІХС, інфарктом, інсультом, ТІА або атеросклерозом периферичних артерій."
                 active={riskData.patientScenario === 'establishedASCVD'}
                 onClick={() => handleScenarioChange('establishedASCVD')}
               />
