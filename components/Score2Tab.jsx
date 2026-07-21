@@ -6,7 +6,7 @@ import FormField from './FormField';
 import { inputClass } from './formStyles';
 
 const initialRiskData = {
-  patientScenario: 'primary',
+  patientScenario: '',
   diabetes: 'ні',
   establishedASCVD: 'ні',
   chronicKidneyDisease: 'ні',
@@ -253,6 +253,136 @@ function SexCheckboxes({ value, onChange }) {
   );
 }
 
+function ScenarioCalculatorPanel({
+  scenario,
+  riskData,
+  onChange,
+  onCalculate,
+  onClear,
+  isCalculateEnabled,
+  primaryButtonClass,
+  secondaryButtonClass,
+}) {
+  return (
+    <div className="rounded-md border border-blue-100 bg-blue-50/40 p-3">
+      <div className="space-y-3">
+        {scenario === 'diabetes' && <DiabetesDetailsDropdown riskData={riskData} onChange={onChange} />}
+        {scenario === 'establishedASCVD' && (
+          <SecondaryPreventionDropdown riskData={riskData} onChange={onChange} />
+        )}
+
+        <div className="rounded-md border border-slate-200 bg-white p-3">
+          <CheckboxField
+            label="Є ХХН / відома знижена ШКФ або альбумінурія"
+            checked={riskData.chronicKidneyDisease === 'так'}
+            onChange={(checked) => onChange('chronicKidneyDisease', checked ? 'так' : 'ні')}
+          />
+
+          {riskData.chronicKidneyDisease === 'так' && (
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              {scenario === 'primary' && (
+                <FormField label="ШКФ" hint="мл/хв/1,73 м²">
+                  <input
+                    type="number"
+                    value={riskData.egfr}
+                    onChange={(event) => onChange('egfr', event.target.value)}
+                    className={inputClass}
+                    placeholder="75"
+                    min="1"
+                  />
+                </FormField>
+              )}
+
+              <FormField label="ACR" hint="мг/г">
+                <input
+                  type="number"
+                  value={riskData.acr}
+                  onChange={(event) => onChange('acr', event.target.value)}
+                  className={inputClass}
+                  placeholder="20"
+                  min="0"
+                  step="0.1"
+                />
+              </FormField>
+            </div>
+          )}
+        </div>
+
+        <div className="grid gap-4 border-t border-blue-100 pt-4">
+          <FormField label="Вік">
+            <input
+              type="number"
+              value={riskData.age}
+              onChange={(event) => onChange('age', event.target.value)}
+              className={inputClass}
+              placeholder="55"
+              min="1"
+            />
+          </FormField>
+
+          <SexCheckboxes value={riskData.sex} onChange={(value) => onChange('sex', value)} />
+
+          <CheckboxField
+            label="Куріння"
+            checked={riskData.smoking === 'так'}
+            onChange={(checked) => onChange('smoking', checked ? 'так' : 'ні')}
+          />
+
+          <FormField label="Систолічний АТ" hint="мм рт.ст.">
+            <input
+              type="number"
+              value={riskData.systolicBP}
+              onChange={(event) => onChange('systolicBP', event.target.value)}
+              className={inputClass}
+              placeholder="140"
+              min="50"
+            />
+          </FormField>
+
+          <FormField label="Загальний холестерин">
+            <input
+              type="number"
+              value={riskData.totalCholesterol}
+              onChange={(event) => onChange('totalCholesterol', event.target.value)}
+              className={inputClass}
+              placeholder="5.2"
+              min="0"
+              step="0.1"
+            />
+          </FormField>
+
+          <FormField label="ЛПВЩ">
+            <input
+              type="number"
+              value={riskData.hdl}
+              onChange={(event) => onChange('hdl', event.target.value)}
+              className={inputClass}
+              placeholder="1.2"
+              min="0"
+              step="0.1"
+            />
+          </FormField>
+        </div>
+
+        <div className="flex flex-col gap-3 border-t border-blue-100 pt-4 sm:flex-row">
+          <button
+            type="button"
+            onClick={onCalculate}
+            disabled={!isCalculateEnabled}
+            className={primaryButtonClass}
+          >
+            Розрахувати
+          </button>
+
+          <button type="button" onClick={onClear} className={secondaryButtonClass}>
+            Очистити
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function hasValue(value) {
   return value !== undefined && value !== null && String(value).trim() !== '';
 }
@@ -267,6 +397,7 @@ function hasCkdData(data) {
 }
 
 function canCalculateRisk(data) {
+  if (!data.patientScenario) return false;
   if (data.patientScenario === 'diabetes' || data.patientScenario === 'establishedASCVD') return true;
   if (hasCkdData(data)) return true;
 
@@ -300,9 +431,10 @@ export default function Score2Tab() {
   function handleScenarioChange(patientScenario) {
     setRiskData((current) => ({
       ...current,
-      patientScenario,
-      diabetes: patientScenario === 'diabetes' ? 'так' : 'ні',
-      establishedASCVD: patientScenario === 'establishedASCVD' ? 'так' : 'ні',
+      patientScenario: current.patientScenario === patientScenario ? '' : patientScenario,
+      diabetes: current.patientScenario !== patientScenario && patientScenario === 'diabetes' ? 'так' : 'ні',
+      establishedASCVD:
+        current.patientScenario !== patientScenario && patientScenario === 'establishedASCVD' ? 'так' : 'ні',
     }));
     setCalculatedResult(null);
   }
@@ -331,6 +463,19 @@ export default function Score2Tab() {
                 onClick={() => handleScenarioChange('primary')}
               />
 
+              {riskData.patientScenario === 'primary' && (
+                <ScenarioCalculatorPanel
+                  scenario="primary"
+                  riskData={riskData}
+                  onChange={handleChange}
+                  onCalculate={handleCalculate}
+                  onClear={handleClear}
+                  isCalculateEnabled={isCalculateEnabled}
+                  primaryButtonClass={primaryButtonClass}
+                  secondaryButtonClass={secondaryButtonClass}
+                />
+              )}
+
               <ScenarioCard
                 title="Цукровий діабет 2 типу"
                 description="SCORE2-Diabetes для пацієнтів 40-69 років без встановленого ССЗ."
@@ -339,7 +484,16 @@ export default function Score2Tab() {
               />
 
               {riskData.patientScenario === 'diabetes' && (
-                <DiabetesDetailsDropdown riskData={riskData} onChange={handleChange} />
+                <ScenarioCalculatorPanel
+                  scenario="diabetes"
+                  riskData={riskData}
+                  onChange={handleChange}
+                  onCalculate={handleCalculate}
+                  onClear={handleClear}
+                  isCalculateEnabled={isCalculateEnabled}
+                  primaryButtonClass={primaryButtonClass}
+                  secondaryButtonClass={secondaryButtonClass}
+                />
               )}
 
               <ScenarioCard
@@ -350,124 +504,19 @@ export default function Score2Tab() {
               />
 
               {riskData.patientScenario === 'establishedASCVD' && (
-                <SecondaryPreventionDropdown riskData={riskData} onChange={handleChange} />
+                <ScenarioCalculatorPanel
+                  scenario="establishedASCVD"
+                  riskData={riskData}
+                  onChange={handleChange}
+                  onCalculate={handleCalculate}
+                  onClear={handleClear}
+                  isCalculateEnabled={isCalculateEnabled}
+                  primaryButtonClass={primaryButtonClass}
+                  secondaryButtonClass={secondaryButtonClass}
+                />
               )}
             </div>
           </div>
-
-          <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
-            <CheckboxField
-              label="Є ХХН / відома знижена ШКФ або альбумінурія"
-              checked={riskData.chronicKidneyDisease === 'так'}
-              onChange={(checked) => handleChange('chronicKidneyDisease', checked ? 'так' : 'ні')}
-            />
-
-            {riskData.chronicKidneyDisease === 'так' && (
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                {riskData.patientScenario === 'primary' && (
-                  <FormField label="ШКФ" hint="мл/хв/1,73 м²">
-                    <input
-                      type="number"
-                      value={riskData.egfr}
-                      onChange={(event) => handleChange('egfr', event.target.value)}
-                      className={inputClass}
-                      placeholder="75"
-                      min="1"
-                    />
-                  </FormField>
-                )}
-
-                <FormField label="ACR" hint="мг/г">
-                  <input
-                    type="number"
-                    value={riskData.acr}
-                    onChange={(event) => handleChange('acr', event.target.value)}
-                    className={inputClass}
-                    placeholder="20"
-                    min="0"
-                    step="0.1"
-                  />
-                </FormField>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-5 border-t border-slate-100 pt-4">
-          <div className="space-y-4">
-            <FormField label="Вік">
-              <input
-                type="number"
-                value={riskData.age}
-                onChange={(event) => handleChange('age', event.target.value)}
-                className={inputClass}
-                placeholder="55"
-                min="1"
-              />
-            </FormField>
-
-            <SexCheckboxes
-              value={riskData.sex}
-              onChange={(value) => handleChange('sex', value)}
-            />
-
-            <CheckboxField
-              label="Куріння"
-              checked={riskData.smoking === 'так'}
-              onChange={(checked) => handleChange('smoking', checked ? 'так' : 'ні')}
-            />
-
-            <FormField label="Систолічний АТ" hint="мм рт.ст.">
-              <input
-                type="number"
-                value={riskData.systolicBP}
-                onChange={(event) => handleChange('systolicBP', event.target.value)}
-                className={inputClass}
-                placeholder="140"
-                min="50"
-              />
-            </FormField>
-
-            <FormField label="Загальний холестерин">
-              <input
-                type="number"
-                value={riskData.totalCholesterol}
-                onChange={(event) => handleChange('totalCholesterol', event.target.value)}
-                className={inputClass}
-                placeholder="5.2"
-                min="0"
-                step="0.1"
-              />
-            </FormField>
-
-            <FormField label="ЛПВЩ">
-              <input
-                type="number"
-                value={riskData.hdl}
-                onChange={(event) => handleChange('hdl', event.target.value)}
-                className={inputClass}
-                placeholder="1.2"
-                min="0"
-                step="0.1"
-              />
-            </FormField>
-
-          </div>
-        </div>
-
-        <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-5 sm:flex-row">
-          <button
-            type="button"
-            onClick={handleCalculate}
-            disabled={!isCalculateEnabled}
-            className={primaryButtonClass}
-          >
-            Розрахувати
-          </button>
-
-          <button type="button" onClick={handleClear} className={secondaryButtonClass}>
-            Очистити
-          </button>
         </div>
       </section>
 
