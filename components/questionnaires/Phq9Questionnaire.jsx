@@ -28,6 +28,35 @@ const initialAnswers = questions.reduce((answers, _question, index) => {
   return answers;
 }, {});
 
+function VerticalOptionList({ name, selectedValue, onChange }) {
+  return (
+    <div className="mt-3 space-y-2">
+      {options.map((option) => {
+        const isSelected = selectedValue === option.value;
+
+        return (
+          <label
+            key={option.value}
+            className={`flex w-fit cursor-pointer items-center gap-2 text-base font-medium leading-6 transition ${
+              isSelected ? 'text-blue-800' : 'text-slate-600 hover:text-blue-700'
+            }`}
+          >
+            <input
+              type="radio"
+              name={name}
+              value={option.value}
+              checked={isSelected}
+              onChange={(event) => onChange(event.target.value)}
+              className="h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500"
+            />
+            <span>{option.label}</span>
+          </label>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Phq9Questionnaire({ showIntro = true }) {
   const [answers, setAnswers] = useState(initialAnswers);
   const [result, setResult] = useState(null);
@@ -67,22 +96,14 @@ export default function Phq9Questionnaire({ showIntro = true }) {
       <div className="space-y-4">
         {questions.map((question, index) => (
           <div key={question} className="rounded-md border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-100/60">
-            <p className="text-sm font-semibold text-slate-900">{question}</p>
-            <div className="mt-3 grid gap-2 sm:grid-cols-2">
-              {options.map((option) => (
-                <label key={option.value} className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
-                  <input
-                    type="radio"
-                    name={`phq9-q${index}`}
-                    value={option.value}
-                    checked={answers[`q${index}`] === option.value}
-                    onChange={(event) => handleChange(`q${index}`, event.target.value)}
-                    className="h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  {option.label}
-                </label>
-              ))}
-            </div>
+            <p className="text-base font-semibold leading-6 text-slate-900">
+              {index + 1}. {question}
+            </p>
+            <VerticalOptionList
+              name={`phq9-q${index}`}
+              selectedValue={answers[`q${index}`]}
+              onChange={(value) => handleChange(`q${index}`, value)}
+            />
           </div>
         ))}
       </div>

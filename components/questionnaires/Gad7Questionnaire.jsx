@@ -57,6 +57,37 @@ function buildCopyText(result, functioningImpact) {
   );
 }
 
+function VerticalOptionList({ name, options: optionItems, selectedValue, onChange }) {
+  return (
+    <div className="mt-3 space-y-2">
+      {optionItems.map((option) => {
+        const isSelected = selectedValue === option.value || selectedValue === option;
+        const value = option.value ?? option;
+        const label = option.label ?? option;
+
+        return (
+          <label
+            key={value}
+            className={`flex w-fit cursor-pointer items-center gap-2 text-base font-medium leading-6 transition ${
+              isSelected ? 'text-blue-800' : 'text-slate-600 hover:text-blue-700'
+            }`}
+          >
+            <input
+              type="radio"
+              name={name}
+              value={value}
+              checked={isSelected}
+              onChange={(event) => onChange(event.target.value)}
+              className="h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500"
+            />
+            <span>{label}</span>
+          </label>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Gad7Questionnaire({ showIntro = true }) {
   const [answers, setAnswers] = useState(initialAnswers);
   const [functioningImpact, setFunctioningImpact] = useState('');
@@ -150,33 +181,15 @@ export default function Gad7Questionnaire({ showIntro = true }) {
                 isMissing ? 'border-amber-300 ring-1 ring-amber-100' : 'border-slate-200/80'
               }`}
             >
-              <p className="text-sm font-semibold text-slate-900">{question}</p>
-              <div className="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-4">
-                {options.map((option) => {
-                  const isSelected = answers[questionKey] === option.value;
-
-                  return (
-                    <label
-                      key={option.value}
-                      className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm transition ${
-                        isSelected
-                          ? 'border-blue-500 bg-blue-50 text-blue-900'
-                          : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-blue-200 hover:bg-blue-50'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name={`gad7-q${index}`}
-                        value={option.value}
-                        checked={isSelected}
-                        onChange={(event) => handleChange(questionKey, event.target.value)}
-                        className="h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500"
-                      />
-                      {option.label}
-                    </label>
-                  );
-                })}
-              </div>
+              <p className="text-base font-semibold leading-6 text-slate-900">
+                {index + 1}. {question}
+              </p>
+              <VerticalOptionList
+                name={`gad7-q${index}`}
+                options={options}
+                selectedValue={answers[questionKey]}
+                onChange={(value) => handleChange(questionKey, value)}
+              />
             </div>
           );
         })}
@@ -186,32 +199,12 @@ export default function Gad7Questionnaire({ showIntro = true }) {
         <p className="text-sm font-semibold text-slate-900">
           Якщо ви позначили будь-які з цих проблем, наскільки сильно вони ускладнювали Вам роботу, побут або спілкування з іншими людьми?
         </p>
-        <div className="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-4">
-          {functioningOptions.map((option) => {
-            const isSelected = functioningImpact === option;
-
-            return (
-              <label
-                key={option}
-                className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm transition ${
-                  isSelected
-                    ? 'border-blue-500 bg-blue-50 text-blue-900'
-                    : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-blue-200 hover:bg-blue-50'
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="gad7-functioning"
-                  value={option}
-                  checked={isSelected}
-                  onChange={(event) => handleFunctioningChange(event.target.value)}
-                  className="h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500"
-                />
-                {option}
-              </label>
-            );
-          })}
-        </div>
+        <VerticalOptionList
+          name="gad7-functioning"
+          options={functioningOptions}
+          selectedValue={functioningImpact}
+          onChange={handleFunctioningChange}
+        />
       </div>
 
       <div className="flex flex-col gap-3 border-t border-slate-100 pt-5 sm:flex-row">
