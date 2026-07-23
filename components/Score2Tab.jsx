@@ -47,6 +47,20 @@ function CheckboxField({ label, checked, onChange, className = '' }) {
   );
 }
 
+function InlineCheckboxField({ label, checked, onChange }) {
+  return (
+    <div className="mb-0">
+      <div className="mb-1.5 min-h-[1.25rem]" aria-hidden="true" />
+      <CheckboxField
+        label={label}
+        checked={checked}
+        onChange={onChange}
+        className="min-h-[2.625rem] items-center py-2.5"
+      />
+    </div>
+  );
+}
+
 function ScenarioCard({ title, description, active, onClick }) {
   return (
     <button
@@ -131,11 +145,10 @@ function SecondaryPreventionDropdown({ riskData, onChange }) {
       </p>
 
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
-        <CheckboxField
+        <InlineCheckboxField
           label="Цукровий діабет"
           checked={riskData.smartDiabetes === 'так'}
           onChange={(checked) => onChange('smartDiabetes', checked ? 'так' : 'ні')}
-          className="min-h-[4.75rem] items-center"
         />
 
         <FormField label="Років від першої СС-події" className="mb-0">
