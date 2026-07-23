@@ -42,6 +42,8 @@ export default function PrintableQuestionnaire({
   instruction,
   questions,
   options,
+  answers,
+  result,
   scoreLabel = 'Сума балів',
   interpretationLabel = 'Інтерпретація',
 }) {
@@ -51,6 +53,14 @@ export default function PrintableQuestionnaire({
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  function isOptionSelected(question, option) {
+    if (!answers) return false;
+    return Number(answers[question.key]) === Number(option.value);
+  }
+
+  const hasPrintedScore = result?.score !== undefined && result?.score !== null;
+  const printedInterpretation = result?.category || result?.interpretation || '';
 
   const printMarkup = (
     <section className="questionnaire-print-area hidden">
@@ -72,21 +82,29 @@ export default function PrintableQuestionnaire({
           <li key={question.key} className="print-question">
             <p>{question.text}</p>
             <div className="print-options">
-              {question.options.map((option) => (
-                <span key={`${question.key}-${option.label}`} className="print-option">
-                  <span className="print-checkbox" aria-hidden="true" />
-                  <span>{option.label}</span>
-                  <span className="print-points">({option.value})</span>
-                </span>
-              ))}
+              {question.options.map((option) => {
+                const isSelected = isOptionSelected(question, option);
+
+                return (
+                  <span key={`${question.key}-${option.label}`} className="print-option">
+                    <span className={`print-checkbox ${isSelected ? 'print-checkbox-selected' : ''}`} aria-hidden="true">
+                      {isSelected ? '✓' : ''}
+                    </span>
+                    <span className={isSelected ? 'print-selected-option' : ''}>{option.label}</span>
+                    <span className="print-points">({option.value})</span>
+                  </span>
+                );
+              })}
             </div>
           </li>
         ))}
       </ol>
 
       <div className="print-result-grid">
-        <div>{scoreLabel}: ____________________</div>
-        <div>{interpretationLabel}: ________________________________________________</div>
+        <div>{scoreLabel}: {hasPrintedScore ? result.score : '____________________'}</div>
+        <div>
+          {interpretationLabel}: {printedInterpretation || '________________________________________________'}
+        </div>
       </div>
 
       <p className="print-disclaimer">

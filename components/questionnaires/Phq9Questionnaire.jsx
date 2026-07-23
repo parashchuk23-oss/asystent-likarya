@@ -239,6 +239,8 @@ export default function Phq9Questionnaire({ showIntro = true }) {
         instruction="За останні 2 тижні як часто вас турбували такі проблеми?"
         questions={questions}
         options={options}
+        answers={answers}
+        result={result}
       />
     </div>
   );

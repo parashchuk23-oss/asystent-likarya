@@ -333,6 +333,8 @@ export default function FindriscQuestionnaire({ showIntro = true }) {
         title="FINDRISC"
         instruction="Оберіть один варіант відповіді в кожному пункті."
         questions={questions}
+        answers={answers}
+        result={result}
       />
     </div>
   );

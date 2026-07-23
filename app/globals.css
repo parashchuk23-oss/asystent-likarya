@@ -105,10 +105,23 @@ body {
   }
 
   .print-checkbox {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 10px;
     height: 10px;
     border: 1px solid #334155;
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .print-checkbox-selected {
+    border-color: #0f172a;
+  }
+
+  .print-selected-option {
+    font-weight: 700;
   }
 
   .print-points {
