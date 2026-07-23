@@ -28,6 +28,23 @@ const initialAnswers = questions.reduce((answers, _question, index) => {
   return answers;
 }, {});
 
+const additionalAssessmentItems = [
+  'GAD-7 — супутні симптоми тривоги.',
+  'Ризик самоушкодження або суїцидальні думки, особливо при позитивній відповіді на 9-те питання.',
+  'Сон, апетит, втома, концентрація та вплив симптомів на повсякденне функціонування.',
+  'Вживання алкоголю або психоактивних речовин.',
+  'Соматичні причини симптомів: анемія, гіпотиреоз, дефіцит вітаміну B12, хронічний біль, побічні ефекти ліків.',
+  'Психосоціальні фактори, стрес, втрати, травматичні події та рівень підтримки.',
+];
+
+function buildCopyText(result) {
+  return (
+    `За шкалою PHQ-9 отримано ${result.score} із 27 балів, що відповідає ${result.categoryForCopy} депресивним симптомам. ` +
+    `${result.hasSelfHarmAnswer ? 'На 9-те питання отримано позитивну відповідь, потрібна окрема оцінка безпеки пацієнта. ' : ''}` +
+    'Результат має скринінговий характер і потребує інтерпретації з урахуванням клінічної картини.'
+  );
+}
+
 function VerticalOptionList({ name, selectedValue, onChange }) {
   return (
     <div className="mt-3 space-y-2">
@@ -60,6 +77,7 @@ function VerticalOptionList({ name, selectedValue, onChange }) {
 export default function Phq9Questionnaire({ showIntro = true }) {
   const [answers, setAnswers] = useState(initialAnswers);
   const [result, setResult] = useState(null);
+  const [copyStatus, setCopyStatus] = useState('');
 
   function handleChange(questionKey, value) {
     setAnswers((current) => ({
@@ -67,15 +85,29 @@ export default function Phq9Questionnaire({ showIntro = true }) {
       [questionKey]: Number(value),
     }));
     setResult(null);
+    setCopyStatus('');
   }
 
   function handleCalculate() {
     setResult(calculatePhq9(answers));
+    setCopyStatus('');
   }
 
   function handleClear() {
     setAnswers(initialAnswers);
     setResult(null);
+    setCopyStatus('');
+  }
+
+  async function handleCopyResult() {
+    if (!result) return;
+
+    try {
+      await navigator.clipboard.writeText(buildCopyText(result));
+      setCopyStatus('Результат скопійовано.');
+    } catch {
+      setCopyStatus('Не вдалося скопіювати автоматично. Виділіть текст вручну.');
+    }
   }
 
   return (
@@ -129,13 +161,78 @@ export default function Phq9Questionnaire({ showIntro = true }) {
       </div>
 
       <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
-        <p className="text-slate-600">Сума балів</p>
-        <p className="text-3xl font-semibold text-blue-800">{result?.score ?? '—'}</p>
+        <p className="text-slate-600">Результат</p>
+        <p className="mt-1 text-3xl font-semibold text-blue-800">
+          {result ? `PHQ-9: ${result.score} із 27 балів` : '—'}
+        </p>
         <p className="mt-2">
-          <span className="font-semibold">Інтерпретація:</span>{' '}
-          {result?.interpretation || 'Натисніть “Розрахувати” після заповнення опитувальника.'}
+          <span className="font-semibold">Категорія:</span>{' '}
+          {result?.category || 'Натисніть “Розрахувати” після заповнення опитувальника.'}
+        </p>
+        {result ? (
+          <>
+            <p className="mt-2 leading-6">{result.interpretation}</p>
+            {result.hasSelfHarmAnswer ? (
+              <div className="mt-4 rounded-md border border-red-200 bg-red-50 p-3 text-red-900">
+                <p className="font-semibold">Окрема увага до 9-го питання</p>
+                <p className="mt-1 leading-6">
+                  Позитивна відповідь на питання про смерть або самоушкодження потребує окремої
+                  своєчасної оцінки безпеки пацієнта та клінічного контексту.
+                </p>
+              </div>
+            ) : null}
+            <div className="mt-4 rounded-md border border-blue-200 bg-white/70 p-3">
+              <p className="font-semibold">Наступний клінічний крок</p>
+              <p className="mt-1 leading-6">{result.nextStep}</p>
+            </div>
+          </>
+        ) : null}
+      </div>
+
+      {result ? (
+        <div className="rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-700">
+          <p className="font-semibold text-slate-950">Текст для медичної документації</p>
+          <p className="mt-2 leading-6">{buildCopyText(result)}</p>
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
+            <button
+              type="button"
+              onClick={handleCopyResult}
+              className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
+            >
+              Скопіювати результат
+            </button>
+            {copyStatus ? <span className="text-sm text-slate-600">{copyStatus}</span> : null}
+          </div>
+        </div>
+      ) : null}
+
+      <div className="rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-700">
+        <p className="font-semibold text-slate-950">Що варто оцінити додатково</p>
+        <ul className="mt-3 list-disc space-y-1.5 pl-5 leading-6">
+          {additionalAssessmentItems.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="rounded-md border border-slate-200 bg-white p-4 text-xs leading-5 text-slate-600">
+        <p className="font-semibold text-slate-800">Джерело</p>
+        <p className="mt-2">
+          PHQ-9 є частиною Patient Health Questionnaire і використовується як скринінговий
+          інструмент для оцінки вираженості депресивних симптомів.
+        </p>
+        <p className="mt-2">
+          Kroenke K, Spitzer RL, Williams JBW. The PHQ-9: Validity of a Brief Depression Severity
+          Measure. Journal of General Internal Medicine. 2001;16(9):606-613.
         </p>
       </div>
+
+      <p className="rounded-md border border-slate-200 bg-white p-4 text-xs leading-5 text-slate-600">
+        PHQ-9 є скринінговим інструментом для оцінки вираженості депресивних симптомів.
+        Результат не є самостійною підставою для встановлення діагнозу або призначення лікування.
+        Остаточна оцінка здійснюється лікарем з урахуванням анамнезу, клінічного стану,
+        функціонування пацієнта та оцінки безпеки.
+      </p>
 
       <PrintableQuestionnaire
         title="PHQ-9"
