@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { calculatePhq9 } from '../../utils/calculations';
+import PatientRecommendationsSection from '../recommendations/PatientRecommendationsSection';
 import PrintableQuestionnaire, { PrintQuestionnaireButton } from './PrintableQuestionnaire';
 
 const questions = [
@@ -188,6 +189,13 @@ export default function Phq9Questionnaire({ showIntro = true }) {
           </>
         ) : null}
       </div>
+
+      {result ? (
+        <PatientRecommendationsSection
+          questionnaire="PHQ-9"
+          showSafetyAlert={result.hasSelfHarmAnswer}
+        />
+      ) : null}
 
       {result ? (
         <div className="rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-700">

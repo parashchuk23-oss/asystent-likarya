@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { calculateGad7 } from '../../utils/calculations';
+import PatientRecommendationsSection from '../recommendations/PatientRecommendationsSection';
 import PrintableQuestionnaire, { PrintQuestionnaireButton } from './PrintableQuestionnaire';
 
 const questions = [
@@ -253,6 +254,8 @@ export default function Gad7Questionnaire({ showIntro = true }) {
           </>
         ) : null}
       </div>
+
+      {result ? <PatientRecommendationsSection questionnaire="GAD-7" /> : null}
 
       {result ? (
         <div className="rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-700">
