@@ -6,6 +6,7 @@ import { aceInhibitors } from '../data/drugs/aceInhibitors';
 import { calciumChannelBlockers } from '../data/drugs/calciumChannelBlockers';
 import { thiazideDiuretics } from '../data/drugs/thiazideDiuretics';
 import { betaBlockers } from '../data/drugs/betaBlockers';
+import AvailableMedicinesModule from './available-medicines/AvailableMedicinesModule';
 import DrugClassSection from './pharmacology/DrugClassSection';
 
 const disclaimer =
@@ -199,6 +200,7 @@ function drugMatchesQuery(drug, query) {
 export default function PharmacologyTab() {
   const [query, setQuery] = useState('');
   const [openClass, setOpenClass] = useState('arb');
+  const [activeSection, setActiveSection] = useState('guide');
 
   const resultCount = useMemo(
     () =>
@@ -226,70 +228,101 @@ export default function PharmacologyTab() {
     <div>
       <header className="border-b border-slate-200 pb-5">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">
-          Практичний довідник
+          Практичний довідник лікаря
         </p>
         <h2 className="mt-1 text-xl font-semibold text-slate-950">Препарати</h2>
         <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
           Швидке порівняння клінічно важливих відмінностей препаратів без дублювання повної
           інструкції.
         </p>
+        <div className="mt-5 flex flex-wrap gap-2">
+          {[
+            { id: 'guide', label: 'Практичний довідник' },
+            { id: 'available', label: 'Доступні ліки' },
+          ].map((section) => (
+            <button
+              key={section.id}
+              type="button"
+              onClick={() => setActiveSection(section.id)}
+              className={`rounded-md border px-4 py-2 text-sm font-semibold transition ${
+                activeSection === section.id
+                  ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm'
+                  : 'border-slate-200 bg-white text-slate-600 hover:border-blue-200 hover:bg-blue-50/60 hover:text-blue-700'
+              }`}
+            >
+              {section.label}
+            </button>
+          ))}
+        </div>
       </header>
 
-      <section className="mt-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Категорія</p>
-        <h3 className="mt-1 text-lg font-semibold text-slate-950">Антигіпертензивні препарати</h3>
+      {activeSection === 'available' ? (
+        <div className="mt-6">
+          <AvailableMedicinesModule />
+        </div>
+      ) : (
+        <>
+          <section className="mt-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+              Категорія
+            </p>
+            <h3 className="mt-1 text-lg font-semibold text-slate-950">
+              Антигіпертензивні препарати
+            </h3>
 
-        <label className="mt-5 block max-w-2xl">
-          <span className="mb-2 block text-sm font-semibold text-slate-800">
-            Пошук серед усіх препаратів
-          </span>
-          <input
-            type="search"
-            value={query}
-            onChange={handleQueryChange}
-            placeholder="МНН, українська або торгова назва"
-            className="w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-          />
-        </label>
+            <label className="mt-5 block max-w-2xl">
+              <span className="mb-2 block text-sm font-semibold text-slate-800">
+                Пошук серед усіх препаратів
+              </span>
+              <input
+                type="search"
+                value={query}
+                onChange={handleQueryChange}
+                placeholder="МНН, українська або торгова назва"
+                className="w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </label>
 
-        {query.trim() ? (
-          <p className="mt-3 text-sm text-slate-500">
-            {resultCount
-              ? `Знайдено препаратів: ${resultCount}`
-              : 'За цим запитом препаратів не знайдено.'}
+            {query.trim() ? (
+              <p className="mt-3 text-sm text-slate-500">
+                {resultCount
+                  ? `Знайдено препаратів: ${resultCount}`
+                  : 'За цим запитом препаратів не знайдено.'}
+              </p>
+            ) : null}
+          </section>
+
+          <div className="mt-6 space-y-3">
+            {drugClasses.map((drugClass) => (
+              <DrugClassSection
+                key={drugClass.id}
+                classId={drugClass.id}
+                eyebrow={drugClass.eyebrow}
+                title={drugClass.title}
+                description={drugClass.description}
+                drugs={drugClass.drugs}
+                query={query}
+                isOpen={openClass === drugClass.id}
+                onToggle={() =>
+                  setOpenClass((current) => (current === drugClass.id ? null : drugClass.id))
+                }
+              >
+                <ClinicalClassNotes classId={drugClass.id} />
+              </DrugClassSection>
+            ))}
+          </div>
+
+          <aside className="mt-8 border-l-4 border-amber-400 bg-amber-50 px-4 py-3 text-sm leading-6 text-slate-700">
+            {disclaimer}
+          </aside>
+
+          <p className="mt-5 border-t border-slate-200 pt-4 text-xs leading-5 text-slate-500">
+            БРА / сартани, ІАПФ, блокатори кальцієвих каналів, діуретики та бета-блокатори
+            застосовуються за відповідними показаннями. Вибір класу й препарату залежить від
+            клінічної ситуації, переносимості, функції нирок, електролітів та супутньої терапії.
           </p>
-        ) : null}
-      </section>
-
-      <div className="mt-6 space-y-3">
-        {drugClasses.map((drugClass) => (
-          <DrugClassSection
-            key={drugClass.id}
-            classId={drugClass.id}
-            eyebrow={drugClass.eyebrow}
-            title={drugClass.title}
-            description={drugClass.description}
-            drugs={drugClass.drugs}
-            query={query}
-            isOpen={openClass === drugClass.id}
-            onToggle={() =>
-              setOpenClass((current) => (current === drugClass.id ? null : drugClass.id))
-            }
-          >
-            <ClinicalClassNotes classId={drugClass.id} />
-          </DrugClassSection>
-        ))}
-      </div>
-
-      <aside className="mt-8 border-l-4 border-amber-400 bg-amber-50 px-4 py-3 text-sm leading-6 text-slate-700">
-        {disclaimer}
-      </aside>
-
-      <p className="mt-5 border-t border-slate-200 pt-4 text-xs leading-5 text-slate-500">
-        БРА / сартани, ІАПФ, блокатори кальцієвих каналів, діуретики та бета-блокатори застосовуються за
-        відповідними показаннями. Вибір класу й препарату залежить від клінічної ситуації,
-        переносимості, функції нирок, електролітів та супутньої терапії.
-      </p>
+        </>
+      )}
     </div>
   );
 }
