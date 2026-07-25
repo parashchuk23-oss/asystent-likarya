@@ -168,6 +168,7 @@ function CheckboxCard({ factor, checked, onChange }) {
 export default function AfAnticoagulationCalculator() {
   const [formData, setFormData] = useState(initialFormData);
   const [result, setResult] = useState(null);
+  const [copyStatus, setCopyStatus] = useState('');
   const canCalculate = hasPositiveNumber(formData.age) && Boolean(formData.sex);
 
   function handleChange(field, value) {
@@ -176,16 +177,32 @@ export default function AfAnticoagulationCalculator() {
       [field]: value,
     }));
     setResult(null);
+    setCopyStatus('');
   }
 
   function handleCalculate() {
     if (!canCalculate) return;
     setResult(calculateAfAnticoagulationAssessment(formData));
+    setCopyStatus('');
   }
 
   function handleClear() {
     setFormData(initialFormData);
     setResult(null);
+    setCopyStatus('');
+  }
+
+  async function handleCopyResult() {
+    if (!result) return;
+
+    const text = `CHA₂DS₂-VASc ${result.cha2ds2Vasc.score}, HAS-BLED ${result.hasBled.score}`;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyStatus('Результат скопійовано.');
+    } catch {
+      setCopyStatus('Не вдалося скопіювати автоматично. Виділіть текст вручну.');
+    }
   }
 
   return (
@@ -268,6 +285,22 @@ export default function AfAnticoagulationCalculator() {
 
       {result ? (
         <div className="mt-5 space-y-4">
+          <section className="rounded-md border border-blue-100 bg-blue-50 p-4 text-sm text-slate-800">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="font-semibold text-slate-950">
+                CHA₂DS₂-VASc {result.cha2ds2Vasc.score}, HAS-BLED {result.hasBled.score}
+              </p>
+              <button
+                type="button"
+                onClick={handleCopyResult}
+                className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
+              >
+                Скопіювати результат
+              </button>
+            </div>
+            {copyStatus ? <p className="mt-2 text-sm text-slate-600">{copyStatus}</p> : null}
+          </section>
+
           <div className="grid gap-4 lg:grid-cols-2">
             <RiskCard
               title="CHA₂DS₂-VASc"
