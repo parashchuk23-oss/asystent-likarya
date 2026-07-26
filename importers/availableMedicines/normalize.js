@@ -5,7 +5,7 @@ function cleanText(value) {
 }
 
 function normalizeName(value) {
-  const text = cleanText(value);
+  const text = cleanText(value).replace(/\*+/g, '').trim();
   if (!text) return '';
   return text;
 }

@@ -1,16 +1,17 @@
 {
   "title": "Доступні ліки",
-  "version": "20260726T130559",
-  "importedAt": "2026-07-26T13:05:59.722Z",
+  "version": "20260726T204402",
+  "importedAt": "2026-07-26T20:44:02.595Z",
   "validAsOf": "2026-07-26",
-  "sourceName": "Офіційний набір відкритих даних МОЗ України",
-  "sourceUrl": "https://data.gov.ua/api/3/action/package_show?id=perelik_lik_zasoby_reimburs_moz",
-  "resolvedExcelUrl": "https://data.gov.ua/dataset/21a6930e-4346-461c-8d80-abeb6f9c0ae2/resource/20cc80e6-f4b4-493d-97b1-48cea0129cfb/download/perelik-lz-serpen-2025.xlsx",
-  "totalMedicines": 686,
-  "totalManufacturers": 152,
-  "totalActiveIngredients": 89,
-  "freeMedicines": 267,
-  "paidMedicines": 419,
+  "sourceName": "Офіційний PDF-перелік НСЗУ",
+  "sourceUrl": "https://backend.nszu.gov.ua/storage/application/26/07/17/frQ9Y5u4749wdh2MgAlOVpCal9fJtf9utTFWmCku.pdf",
+  "resolvedExcelUrl": "https://backend.nszu.gov.ua/storage/application/26/07/17/frQ9Y5u4749wdh2MgAlOVpCal9fJtf9utTFWmCku.pdf",
+  "sourceType": "pdf",
+  "totalMedicines": 1010,
+  "totalManufacturers": 310,
+  "totalActiveIngredients": 208,
+  "freeMedicines": 457,
+  "paidMedicines": 553,
   "validationErrors": 0,
-  "validationWarnings": 25
+  "validationWarnings": 15
 }

@@ -7,4 +7,5 @@ out
 npm-debug.log*
 .vercel
 tmp/availableMedicines/*.xlsx
+tmp/availableMedicines/*.pdf
 tmp/availableMedicines/report.txt

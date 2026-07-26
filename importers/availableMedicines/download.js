@@ -12,6 +12,10 @@ function isExcelUrl(url) {
   return /\.(xlsx|xls)(\?|#|$)/i.test(url);
 }
 
+function isPdfUrl(url) {
+  return /\.pdf(\?|#|$)/i.test(url);
+}
+
 function isJsonApiUrl(url) {
   return /\/api\/3\/action\/package_show/i.test(url);
 }
@@ -88,6 +92,7 @@ async function fetchBuffer(url) {
 }
 
 async function resolveExcelSource(sourceUrl) {
+  if (isPdfUrl(sourceUrl)) return sourceUrl;
   if (isExcelUrl(sourceUrl)) return sourceUrl;
   if (isJsonApiUrl(sourceUrl)) return findExcelUrlFromDataGovApi(sourceUrl);
 
@@ -99,14 +104,17 @@ async function resolveExcelSource(sourceUrl) {
 async function downloadExcel({ sourceUrl = DEFAULT_SOURCE_URL, outputPath = paths.downloadedExcel } = {}) {
   const resolvedExcelUrl = await resolveExcelSource(sourceUrl);
   const excel = await fetchBuffer(resolvedExcelUrl);
+  const sourceType = isPdfUrl(resolvedExcelUrl) ? 'pdf' : 'excel';
+  const finalOutputPath = sourceType === 'pdf' ? paths.downloadedPdf : outputPath;
 
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, excel.buffer);
+  fs.mkdirSync(path.dirname(finalOutputPath), { recursive: true });
+  fs.writeFileSync(finalOutputPath, excel.buffer);
 
   return {
     sourceUrl,
     resolvedExcelUrl,
-    outputPath,
+    outputPath: finalOutputPath,
+    sourceType,
     sizeBytes: excel.buffer.length,
     contentType: excel.contentType,
   };

@@ -20,7 +20,7 @@ function writeJson(filePath, data) {
   fs.writeFileSync(filePath, `${JSON.stringify(data, null, 2)}\n`);
 }
 
-function createMetadata({ sourceUrl, resolvedExcelUrl, records, validation, version }) {
+function createMetadata({ sourceUrl, resolvedExcelUrl, sourceType, records, validation, version }) {
   const manufacturers = new Set(records.map((record) => record.manufacturer).filter(Boolean));
   const activeIngredients = new Set(records.map((record) => record.activeIngredient).filter(Boolean));
 
@@ -29,9 +29,13 @@ function createMetadata({ sourceUrl, resolvedExcelUrl, records, validation, vers
     version,
     importedAt: new Date().toISOString(),
     validAsOf: new Date().toISOString().slice(0, 10),
-    sourceName: 'Офіційний набір відкритих даних МОЗ України',
+    sourceName:
+      sourceType === 'pdf'
+        ? 'Офіційний PDF-перелік НСЗУ'
+        : 'Офіційний набір відкритих даних МОЗ України',
     sourceUrl,
     resolvedExcelUrl,
+    sourceType,
     totalMedicines: records.length,
     totalManufacturers: manufacturers.size,
     totalActiveIngredients: activeIngredients.size,
@@ -42,12 +46,21 @@ function createMetadata({ sourceUrl, resolvedExcelUrl, records, validation, vers
   };
 }
 
-function generateJson({ records, sourceUrl, resolvedExcelUrl, validation, outputJson = paths.outputJson, metadataJson = paths.metadataJson }) {
+function generateJson({
+  records,
+  sourceUrl,
+  resolvedExcelUrl,
+  sourceType,
+  validation,
+  outputJson = paths.outputJson,
+  metadataJson = paths.metadataJson,
+}) {
   const outputRecords = sortForOutput(records);
   const version = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15);
   const metadata = createMetadata({
     sourceUrl,
     resolvedExcelUrl,
+    sourceType,
     records: outputRecords,
     validation,
     version,

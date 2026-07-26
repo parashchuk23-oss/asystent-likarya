@@ -3,6 +3,7 @@ const path = require('path');
 const { paths } = require('./config');
 const { downloadExcel, getSourceFromCli } = require('./download');
 const { parseExcel } = require('./parseExcel');
+const { parsePdf } = require('./parsePdf');
 const { normalizeRecords } = require('./normalize');
 const { validateMedicines } = require('./validate');
 const { readPreviousMedicines, compareMedicines } = require('./compare');
@@ -15,14 +16,18 @@ function copyLocalExcel(localFile, outputPath) {
     throw new Error(`Локальний Excel-файл не знайдено: ${sourcePath}`);
   }
 
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.copyFileSync(sourcePath, outputPath);
+  const sourceType = sourcePath.toLocaleLowerCase().endsWith('.pdf') ? 'pdf' : 'excel';
+  const finalOutputPath = sourceType === 'pdf' ? paths.downloadedPdf : outputPath;
+
+  fs.mkdirSync(path.dirname(finalOutputPath), { recursive: true });
+  fs.copyFileSync(sourcePath, finalOutputPath);
 
   return {
     sourceUrl: sourcePath,
     resolvedExcelUrl: '',
-    outputPath,
-    sizeBytes: fs.statSync(outputPath).size,
+    outputPath: finalOutputPath,
+    sourceType,
+    sizeBytes: fs.statSync(finalOutputPath).size,
     contentType: 'local-file',
   };
 }
@@ -35,7 +40,10 @@ async function updateMedicines() {
     : await downloadExcel({ sourceUrl, outputPath: paths.downloadedExcel });
 
   const previousRecords = readPreviousMedicines(paths.outputJson);
-  const parseInfo = parseExcel(paths.downloadedExcel);
+  const parseInfo =
+    downloadInfo.sourceType === 'pdf'
+      ? parsePdf(downloadInfo.outputPath)
+      : parseExcel(downloadInfo.outputPath);
   const normalizedRecords = normalizeRecords(parseInfo.records);
   const validation = validateMedicines(normalizedRecords);
   const comparison = compareMedicines(previousRecords, normalizedRecords);
@@ -43,6 +51,7 @@ async function updateMedicines() {
     records: normalizedRecords,
     sourceUrl: downloadInfo.sourceUrl,
     resolvedExcelUrl: downloadInfo.resolvedExcelUrl,
+    sourceType: downloadInfo.sourceType,
     validation,
   });
 
