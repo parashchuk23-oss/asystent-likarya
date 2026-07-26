@@ -43,9 +43,9 @@ Google Search Console verification додано через Next.js metadata API 
 
 Google Analytics 4 підключено через офіційний компонент `GoogleAnalytics` з `@next/third-parties/google`.
 
-Measurement ID береться зі змінної середовища `NEXT_PUBLIC_GA_MEASUREMENT_ID` і не хардкодиться в коді. Аналітика рендериться тільки у production-збірці.
+Measurement ID береться зі змінної середовища `NEXT_PUBLIC_GA_MEASUREMENT_ID` і не хардкодиться в коді. Аналітика рендериться тільки у production-збірці, якщо значення відповідає формату GA4 `G-...`.
 
-Інтеграцію GA4 перевірено: production environment Vercel містить `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `npm run build` проходить успішно, а production HTML містить Google tag після збірки.
+Інтеграцію GA4 перевірено: production environment Vercel містить `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `npm run build` проходить успішно, а локальний production HTML після збірки містить Google tag. Якщо на домені немає запитів до Google Analytics, потрібно перевірити, чи production deployment був перебудований після додавання або зміни env-змінної.
 
 ## Sitemap
 
