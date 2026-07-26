@@ -6,3 +6,5 @@ node_modules
 out
 npm-debug.log*
 .vercel
+tmp/availableMedicines/*.xlsx
+tmp/availableMedicines/report.txt

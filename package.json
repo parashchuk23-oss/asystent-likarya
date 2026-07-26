@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "update-medicines": "node importers/availableMedicines/updateMedicines.js"
   },
   "dependencies": {
     "@next/third-parties": "^16.2.9",
@@ -16,6 +17,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.4",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "xlsx": "^0.18.5"
   }
 }

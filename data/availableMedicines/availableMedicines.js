@@ -1,9 +1,6 @@
-export const availableMedicinesMetadata = {
-  title: 'Доступні ліки',
-  validAsOf: '',
-  sourceName: 'Офіційний перелік програми реімбурсації',
-  sourceUrl: '',
-  version: '1.0',
-};
+import availableMedicinesJson from './availableMedicines.json';
+import availableMedicinesMetadataJson from './metadata.json';
 
-export const availableMedicines = [];
+export const availableMedicinesMetadata = availableMedicinesMetadataJson;
+
+export const availableMedicines = availableMedicinesJson;
