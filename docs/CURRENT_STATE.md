@@ -49,6 +49,10 @@ Measurement ID береться зі змінної середовища `NEXT_P
 
 Інтеграцію GA4 перевірено: production environment Vercel містить `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `npm run build` проходить успішно, а локальний production HTML після збірки містить Google tag. Якщо на домені немає запитів до Google Analytics, потрібно перевірити, чи production deployment був перебудований після додавання або зміни env-змінної.
 
+## Монетизація
+
+Створено `MONETIZATION_PLAN.md` як стратегічний план Free / Pro, реєстрації, підписки, сторінок `/pricing`, `/login`, `/profile`, `/privacy`, `/terms`, `/refund` і поетапної реалізації без зберігання персональних даних пацієнтів. Оплату, авторизацію та базу даних не впроваджено.
+
 ## Sitemap
 
 Sitemap реалізовано через App Router:
