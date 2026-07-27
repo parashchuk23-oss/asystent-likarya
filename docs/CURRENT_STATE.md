@@ -25,6 +25,8 @@
 
 Після ручного деплою production alias було прив'язано до актуального deployment.
 
+Для всіх майбутніх публікацій діє обов'язкова пам'ятка `docs/DEPLOYMENT_CHECKLIST.md`: після `git push origin main` потрібно перевіряти Vercel deployment і production alias `asystent-likarya.vercel.app`. Якщо alias дивиться на старий deployment, його потрібно переприв'язати до найновішого production deployment через Vercel CLI.
+
 ## GitHub
 
 Код зберігається у репозиторії:
