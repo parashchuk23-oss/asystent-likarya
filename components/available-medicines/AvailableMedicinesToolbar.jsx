@@ -48,7 +48,7 @@ export default function AvailableMedicinesToolbar({
             onChange={(event) => onSortModeChange(event.target.value)}
             className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-950 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           >
-            <option value={MEDICINE_SORTS.default}>Спочатку без доплати</option>
+            <option value={MEDICINE_SORTS.default}>За діючою речовиною</option>
             <option value={MEDICINE_SORTS.copaymentAsc}>Від найменшої доплати</option>
             <option value={MEDICINE_SORTS.copaymentDesc}>Від найбільшої доплати</option>
             <option value={MEDICINE_SORTS.activeIngredient}>За діючою речовиною</option>

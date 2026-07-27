@@ -88,6 +88,10 @@ function compareCopayment(first, second, direction = 'asc') {
 
 export function sortMedicines(medicines, sortMode) {
   return [...medicines].sort((first, second) => {
+    if (sortMode === MEDICINE_SORTS.default) {
+      return compareText(first.activeIngredient, second.activeIngredient) || compareText(first.tradeName, second.tradeName);
+    }
+
     if (sortMode === MEDICINE_SORTS.copaymentAsc) {
       return compareCopayment(first, second, 'asc') || compareText(first.tradeName, second.tradeName);
     }
@@ -104,7 +108,7 @@ export function sortMedicines(medicines, sortMode) {
       return compareText(first.tradeName, second.tradeName) || compareText(first.activeIngredient, second.activeIngredient);
     }
 
-    return compareCopayment(first, second, 'asc') || compareText(first.tradeName, second.tradeName);
+    return compareText(first.activeIngredient, second.activeIngredient) || compareText(first.tradeName, second.tradeName);
   });
 }
 
