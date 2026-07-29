@@ -239,8 +239,8 @@ export default function EcgChecklistModule() {
 
       <div className="space-y-3">
         <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-          <h4 className="text-sm font-bold text-slate-950">1. Швидкість плівки</h4>
-          <div className="mt-3 max-w-md">
+          <h4 className="text-sm font-bold text-slate-950">1. Швидкість плівки та ЧСС</h4>
+          <div className="mt-3 grid gap-3 lg:grid-cols-3">
             <label className="block">
               <span className="mb-1.5 block text-sm font-semibold text-slate-700">Швидкість</span>
               <select
@@ -255,12 +255,7 @@ export default function EcgChecklistModule() {
                 1 маленька клітинка = {getSmallCellDurationMs(qtForm.paperSpeed)} мс
               </span>
             </label>
-          </div>
-        </section>
 
-        <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-          <h4 className="text-sm font-bold text-slate-950">2. ЧСС</h4>
-          <div className="mt-3 grid gap-3 lg:grid-cols-2">
             <label className="block">
               <span className="mb-1.5 block text-sm font-semibold text-slate-700">ЧСС</span>
               <input
@@ -294,7 +289,7 @@ export default function EcgChecklistModule() {
         </section>
 
         <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-          <h4 className="text-sm font-bold text-slate-950">3. Ритм</h4>
+          <h4 className="text-sm font-bold text-slate-950">2. Ритм</h4>
           <div className="mt-3 grid gap-3 lg:grid-cols-2">
             <label className="block">
               <span className="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Основний ритм</span>
@@ -328,7 +323,7 @@ export default function EcgChecklistModule() {
         </section>
 
         <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-          <h4 className="text-sm font-bold text-slate-950">4. Електрична вісь</h4>
+          <h4 className="text-sm font-bold text-slate-950">3. Електрична вісь</h4>
           <div className="mt-3 grid gap-3 md:grid-cols-3">
             {[
               ['axisI', 'I'],
@@ -351,7 +346,7 @@ export default function EcgChecklistModule() {
         </section>
 
         <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-          <h4 className="text-sm font-bold text-slate-950">5. Інтервал PQ</h4>
+          <h4 className="text-sm font-bold text-slate-950">4. Інтервал PQ</h4>
           <div className="mt-3 max-w-md">
             <label className="block">
               <span className="mb-1.5 block text-sm font-semibold text-slate-700">PQ, мс</span>
@@ -372,7 +367,7 @@ export default function EcgChecklistModule() {
         </section>
 
         <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-          <h4 className="text-sm font-bold text-slate-950">6. Комплекс QRS</h4>
+          <h4 className="text-sm font-bold text-slate-950">5. Комплекс QRS</h4>
           <div className="mt-3 max-w-md">
             <label className="block">
               <span className="mb-1.5 block text-sm font-semibold text-slate-700">QRS, мс</span>
@@ -395,7 +390,7 @@ export default function EcgChecklistModule() {
         <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h4 className="text-sm font-bold text-slate-950">7. QT / QTc</h4>
+            <h4 className="text-sm font-bold text-slate-950">6. QT / QTc</h4>
             <p className="mt-1 text-sm leading-relaxed text-slate-600">
               QTc Fridericia використовується як основний результат для висновку. Bazett, Framingham і Hodges показуються довідково.
             </p>
@@ -482,7 +477,7 @@ export default function EcgChecklistModule() {
         </section>
 
         <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-          <h4 className="text-sm font-bold text-slate-950">8. Морфологія, ST-T та патологічні Q</h4>
+          <h4 className="text-sm font-bold text-slate-950">7. Морфологія, ST-T та патологічні Q</h4>
           <div className="mt-3 grid gap-3 lg:grid-cols-2">
             {freeTextItems.map((item) => (
               <label key={item.id} className="block">
