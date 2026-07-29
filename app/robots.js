@@ -4,6 +4,6 @@ export default function robots() {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://asystent-likarya.vercel.app/sitemap.xml',
+    sitemap: 'https://www.asystentlikarya.com.ua/sitemap.xml',
   };
 }

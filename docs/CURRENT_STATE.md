@@ -1,6 +1,6 @@
 # Поточний стан
 
-Дата оновлення: 2026-07-16
+Дата оновлення: 2026-07-29
 
 ## Проєкт
 
@@ -21,11 +21,11 @@
 
 Основний домен:
 
-* https://asystent-likarya.vercel.app
+* https://www.asystentlikarya.com.ua
 
 Після ручного деплою production alias було прив'язано до актуального deployment.
 
-Для всіх майбутніх публікацій діє обов'язкова пам'ятка `docs/DEPLOYMENT_CHECKLIST.md`: після `git push origin main` потрібно перевіряти Vercel deployment і production alias `asystent-likarya.vercel.app`. Якщо alias дивиться на старий deployment, його потрібно переприв'язати до найновішого production deployment через Vercel CLI.
+Для всіх майбутніх публікацій діє обов'язкова пам'ятка `docs/DEPLOYMENT_CHECKLIST.md`: після `git push origin main` потрібно перевіряти Vercel deployment і production alias `www.asystentlikarya.com.ua`. Якщо alias дивиться на старий deployment, його потрібно переприв'язати до найновішого production deployment через Vercel CLI.
 
 ## GitHub
 
@@ -58,7 +58,7 @@ Measurement ID береться зі змінної середовища `NEXT_P
 Sitemap реалізовано через App Router:
 
 * `app/sitemap.js`
-* URL: https://asystent-likarya.vercel.app/sitemap.xml
+* URL: https://www.asystentlikarya.com.ua/sitemap.xml
 
 Sitemap містить головну сторінку та окремі SEO-сторінки популярних інструментів.
 
@@ -67,7 +67,7 @@ Sitemap містить головну сторінку та окремі SEO-с�
 Robots.txt реалізовано через App Router:
 
 * `app/robots.js`
-* URL: https://asystent-likarya.vercel.app/robots.txt
+* URL: https://www.asystentlikarya.com.ua/robots.txt
 
 Індексація сайту дозволена.
 

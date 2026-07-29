@@ -6,7 +6,7 @@ export const metadata = {
   description:
     'FINDRISC українською для орієнтовної оцінки ризику розвитку цукрового діабету 2 типу за клінічними факторами.',
   alternates: {
-    canonical: 'https://asystent-likarya.vercel.app/findrisk',
+    canonical: 'https://www.asystentlikarya.com.ua/findrisk',
   },
 };
 

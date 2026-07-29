@@ -6,7 +6,7 @@ export const metadata = {
   description:
     'Розрахунок ШКФ за CKD-EPI 2021, кліренсу креатиніну Cockcroft-Gault, категорій альбумінурії та ризику KDIGO.',
   alternates: {
-    canonical: 'https://asystent-likarya.vercel.app/egfr',
+    canonical: 'https://www.asystentlikarya.com.ua/egfr',
   },
 };
 

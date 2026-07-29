@@ -6,7 +6,7 @@
 
 Production-домен:
 
-* `https://asystent-likarya.vercel.app`
+* `https://www.asystentlikarya.com.ua`
 
 GitHub:
 
@@ -41,13 +41,13 @@ npx vercel ls cardio-assistant-online
 4. Перевірити, куди дивиться основний домен:
 
 ```bash
-npx vercel inspect https://asystent-likarya.vercel.app
+npx vercel inspect https://www.asystentlikarya.com.ua
 ```
 
-5. Якщо `asystent-likarya.vercel.app` дивиться на старий deployment, переприв'язати alias до нового production deployment:
+5. Якщо `www.asystentlikarya.com.ua` дивиться на старий deployment, переприв'язати alias до нового production deployment:
 
 ```bash
-npx vercel alias set https://NEW_DEPLOYMENT_URL asystent-likarya.vercel.app
+npx vercel alias set https://NEW_DEPLOYMENT_URL www.asystentlikarya.com.ua
 ```
 
 ## Google Analytics
@@ -79,7 +79,7 @@ ID не хардкодити в коді. Він має братися тіль�
 Перевірити production HTML:
 
 ```bash
-curl -L -s https://asystent-likarya.vercel.app | grep -ao "G-GB076YVKX1\\|googletagmanager\\|google-analytics\\|GoogleAnalytics"
+curl -L -s https://www.asystentlikarya.com.ua | grep -ao "G-GB076YVKX1\\|googletagmanager\\|google-analytics\\|GoogleAnalytics"
 ```
 
 Очікувано мають з'явитися:
@@ -90,7 +90,7 @@ curl -L -s https://asystent-likarya.vercel.app | grep -ao "G-GB076YVKX1\\|google
 
 У браузері:
 
-1. Відкрити `https://asystent-likarya.vercel.app`.
+1. Відкрити `https://www.asystentlikarya.com.ua`.
 2. Відкрити Chrome DevTools.
 3. Перейти у вкладку `Network`.
 4. У фільтрі написати `google`.

@@ -23,8 +23,8 @@
 1. Запустити `npm run build`.
 2. Якщо build успішний, зробити commit і `git push origin main`, якщо користувач не просив інакше.
 3. Після push перевірити Vercel deployment.
-4. Перевірити, що `https://asystent-likarya.vercel.app` дивиться на найновіший production deployment.
-5. Якщо alias дивиться на старий deployment, переприв'язати його через Vercel CLI.
+4. Перевірити, що `https://www.asystentlikarya.com.ua` дивиться на найновіший production deployment.
+5. Якщо production-домен дивиться на старий deployment, переприв'язати його через Vercel CLI.
 6. Для змін, пов'язаних із Google Analytics, перевірити production HTML і Network-запити до `googletagmanager.com` та `google-analytics.com`.
 
 ## Заборони без прямого запиту

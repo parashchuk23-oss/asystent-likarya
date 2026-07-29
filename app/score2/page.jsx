@@ -6,7 +6,7 @@ export const metadata = {
   description:
     'Оцінка 10-річного ризику фатальних і нефатальних серцево-судинних подій за SCORE2 та SCORE2-OP.',
   alternates: {
-    canonical: 'https://asystent-likarya.vercel.app/score2',
+    canonical: 'https://www.asystentlikarya.com.ua/score2',
   },
 };
 

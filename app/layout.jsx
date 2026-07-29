@@ -7,8 +7,25 @@ function getGaMeasurementId() {
 }
 
 export const metadata = {
+  metadataBase: new URL('https://www.asystentlikarya.com.ua'),
   title: 'Асистент лікаря',
   description: 'Веб-інструменти для медичних працівників: калькулятори, опитувальники та асистент лікаря.',
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'Асистент лікаря',
+    description: 'Веб-інструменти для медичних працівників: калькулятори, опитувальники та асистент лікаря.',
+    url: '/',
+    siteName: 'Асистент лікаря',
+    locale: 'uk_UA',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Асистент лікаря',
+    description: 'Веб-інструменти для медичних працівників: калькулятори, опитувальники та асистент лікаря.',
+  },
   icons: {
     icon: [
       { url: '/brand/favicon-v3-16.png', sizes: '16x16', type: 'image/png' },

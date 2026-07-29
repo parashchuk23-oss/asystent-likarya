@@ -1,5 +1,5 @@
 export default function sitemap() {
-  const baseUrl = 'https://asystent-likarya.vercel.app';
+  const baseUrl = 'https://www.asystentlikarya.com.ua';
   const lastModified = new Date();
 
   return [

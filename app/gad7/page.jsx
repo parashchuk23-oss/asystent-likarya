@@ -6,7 +6,7 @@ export const metadata = {
   description:
     'GAD-7 українською для оцінки вираженості симптомів тривоги протягом останніх двох тижнів.',
   alternates: {
-    canonical: 'https://asystent-likarya.vercel.app/gad7',
+    canonical: 'https://www.asystentlikarya.com.ua/gad7',
   },
 };
 

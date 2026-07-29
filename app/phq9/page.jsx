@@ -6,7 +6,7 @@ export const metadata = {
   description:
     'PHQ-9 українською для скринінгової оцінки вираженості депресивних симптомів за останні два тижні.',
   alternates: {
-    canonical: 'https://asystent-likarya.vercel.app/phq9',
+    canonical: 'https://www.asystentlikarya.com.ua/phq9',
   },
 };
 

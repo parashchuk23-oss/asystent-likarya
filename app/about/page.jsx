@@ -5,7 +5,7 @@ export const metadata = {
   description:
     'Про Асистент лікаря — цифровий робочий простір із клінічними калькуляторами, опитувальниками та інструментами для медичних працівників.',
   alternates: {
-    canonical: 'https://asystent-likarya.vercel.app/about',
+    canonical: 'https://www.asystentlikarya.com.ua/about',
   },
 };
 
