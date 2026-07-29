@@ -237,55 +237,65 @@ export default function EcgChecklistModule() {
         </button>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-3">
-        <label className="block">
-          <span className="mb-1.5 block text-sm font-semibold text-slate-700">Швидкість плівки</span>
-          <select
-            value={qtForm.paperSpeed}
-            onChange={(event) => updateQtForm('paperSpeed', event.target.value)}
-            className={inputClass}
-          >
-            <option value="25">25 мм/с</option>
-            <option value="50">50 мм/с</option>
-          </select>
-          <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
-            1 маленька клітинка = {getSmallCellDurationMs(qtForm.paperSpeed)} мс
-          </span>
-        </label>
+      <div className="space-y-3">
+        <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <h4 className="text-sm font-bold text-slate-950">1. Швидкість плівки</h4>
+          <div className="mt-3 max-w-md">
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-slate-700">Швидкість</span>
+              <select
+                value={qtForm.paperSpeed}
+                onChange={(event) => updateQtForm('paperSpeed', event.target.value)}
+                className={inputClass}
+              >
+                <option value="25">25 мм/с</option>
+                <option value="50">50 мм/с</option>
+              </select>
+              <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
+                1 маленька клітинка = {getSmallCellDurationMs(qtForm.paperSpeed)} мс
+              </span>
+            </label>
+          </div>
+        </section>
 
-        <label className="block">
-          <span className="mb-1.5 block text-sm font-semibold text-slate-700">ЧСС</span>
-          <input
-            type="number"
-            min="0"
-            step="1"
-            value={values.rate}
-            onChange={(event) => update('rate', event.target.value)}
-            placeholder="76"
-            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm shadow-slate-100/60 transition-all duration-150 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-          />
-          <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">приблизна норма: 60–100/хв</span>
-        </label>
+        <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <h4 className="text-sm font-bold text-slate-950">2. ЧСС</h4>
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-slate-700">ЧСС</span>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                value={values.rate}
+                onChange={(event) => update('rate', event.target.value)}
+                placeholder="76"
+                className={inputClass}
+              />
+              <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">приблизна норма: 60–100/хв</span>
+            </label>
 
-        <label className="block">
-          <span className="mb-1.5 block text-sm font-semibold text-slate-700">RR, маленьких клітинок</span>
-          <input
-            type="number"
-            min="0"
-            step="0.25"
-            value={values.rrCells}
-            onChange={(event) => update('rrCells', event.target.value)}
-            placeholder="Наприклад: 20"
-            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm shadow-slate-100/60 transition-all duration-150 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-          />
-          <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
-            якщо RR заповнено, ЧСС буде розрахована автоматично{calculatedRate ? `: ${calculatedRate}/хв` : ''}
-          </span>
-        </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-slate-700">RR, маленьких клітинок</span>
+              <input
+                type="number"
+                min="0"
+                step="0.25"
+                value={values.rrCells}
+                onChange={(event) => update('rrCells', event.target.value)}
+                placeholder="Наприклад: 20"
+                className={inputClass}
+              />
+              <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
+                якщо RR заповнено, ЧСС буде розрахована автоматично{calculatedRate ? `: ${calculatedRate}/хв` : ''}
+              </span>
+            </label>
+          </div>
+        </section>
 
-        <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 lg:col-span-3">
-          <span className="mb-2 block text-sm font-semibold text-slate-700">Ритм</span>
-          <div className="grid gap-3 lg:grid-cols-2">
+        <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <h4 className="text-sm font-bold text-slate-950">3. Ритм</h4>
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
             <label className="block">
               <span className="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Основний ритм</span>
               <select value={values.rhythmType} onChange={(event) => update('rhythmType', event.target.value)} className={inputClass}>
@@ -315,18 +325,18 @@ export default function EcgChecklistModule() {
               className={`${textareaClass} bg-white`}
             />
           </label>
-        </div>
+        </section>
 
-        <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 lg:col-span-3">
-          <span className="mb-2 block text-sm font-semibold text-slate-700">Електрична вісь: полярність QRS</span>
-          <div className="grid gap-3 md:grid-cols-3">
+        <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <h4 className="text-sm font-bold text-slate-950">4. Електрична вісь</h4>
+          <div className="mt-3 grid gap-3 md:grid-cols-3">
             {[
               ['axisI', 'I'],
               ['axisII', 'II'],
               ['axisAvf', 'aVF'],
             ].map(([id, label]) => (
               <label key={id} className="block">
-                <span className="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{label}</span>
+                <span className="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em] text-slate-500">QRS у {label}</span>
                 <select value={values[id]} onChange={(event) => update(id, event.target.value)} className={inputClass}>
                   {polarityOptions.map((option) => (
                     <option key={option.value} value={option.value}>{option.label}</option>
@@ -338,58 +348,54 @@ export default function EcgChecklistModule() {
           <p className="mt-2 text-xs font-medium leading-snug text-slate-500">
             Якщо R=S, оберіть “ізоелектричний”; програма сформує обережний орієнтовний висновок.
           </p>
-        </div>
+        </section>
 
-        <label className="block">
-          <span className="mb-1.5 block text-sm font-semibold text-slate-700">PQ, мс</span>
-          <input
-            type="number"
-            min="0"
-            step="1"
-            value={values.pqMs}
-            onChange={(event) => update('pqMs', event.target.value)}
-            placeholder="180"
-            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm shadow-slate-100/60 transition-all duration-150 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-          />
-          <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
-            приблизна норма: 120–200 мс
-          </span>
-        </label>
+        <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <h4 className="text-sm font-bold text-slate-950">5. Інтервал PQ</h4>
+          <div className="mt-3 max-w-md">
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-slate-700">PQ, мс</span>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                value={values.pqMs}
+                onChange={(event) => update('pqMs', event.target.value)}
+                placeholder="180"
+                className={inputClass}
+              />
+              <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
+                приблизна норма: 120–200 мс
+              </span>
+            </label>
+          </div>
+        </section>
 
-        <label className="block">
-          <span className="mb-1.5 block text-sm font-semibold text-slate-700">QRS, мс</span>
-          <input
-            type="number"
-            min="0"
-            step="1"
-            value={values.qrsMs}
-            onChange={(event) => update('qrsMs', event.target.value)}
-            placeholder="90"
-            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm shadow-slate-100/60 transition-all duration-150 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-          />
-          <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
-            приблизна норма: 60–110 мс
-          </span>
-        </label>
+        <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <h4 className="text-sm font-bold text-slate-950">6. Комплекс QRS</h4>
+          <div className="mt-3 max-w-md">
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-slate-700">QRS, мс</span>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                value={values.qrsMs}
+                onChange={(event) => update('qrsMs', event.target.value)}
+                placeholder="90"
+                className={inputClass}
+              />
+              <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
+                приблизна норма: 60–110 мс
+              </span>
+            </label>
+          </div>
+        </section>
 
-        {freeTextItems.map((item) => (
-          <label key={item.id} className="block">
-            <span className="mb-1.5 block text-sm font-semibold text-slate-700">{item.label}</span>
-            <input
-              value={values[item.id] || ''}
-              onChange={(event) => update(item.id, event.target.value)}
-              placeholder={item.placeholder}
-              className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm shadow-slate-100/60 transition-all duration-150 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-            />
-            <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">{item.norm}</span>
-          </label>
-        ))}
-      </div>
-
-      <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h4 className="font-bold text-slate-950">QT / QTc</h4>
+            <h4 className="text-sm font-bold text-slate-950">7. QT / QTc</h4>
             <p className="mt-1 text-sm leading-relaxed text-slate-600">
               QTc Fridericia використовується як основний результат для висновку. Bazett, Framingham і Hodges показуються довідково.
             </p>
@@ -473,6 +479,25 @@ export default function EcgChecklistModule() {
             </div>
           </div>
         ) : null}
+        </section>
+
+        <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <h4 className="text-sm font-bold text-slate-950">8. Морфологія, ST-T та патологічні Q</h4>
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
+            {freeTextItems.map((item) => (
+              <label key={item.id} className="block">
+                <span className="mb-1.5 block text-sm font-semibold text-slate-700">{item.label}</span>
+                <input
+                  value={values[item.id] || ''}
+                  onChange={(event) => update(item.id, event.target.value)}
+                  placeholder={item.placeholder}
+                  className={inputClass}
+                />
+                <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">{item.norm}</span>
+              </label>
+            ))}
+          </div>
+        </section>
       </div>
 
       <div className="rounded-lg border border-blue-100 bg-blue-50 p-4">
