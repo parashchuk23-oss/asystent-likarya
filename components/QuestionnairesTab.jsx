@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AuditCQuestionnaire from './questionnaires/AuditCQuestionnaire';
 import EpworthQuestionnaire from './questionnaires/EpworthQuestionnaire';
 import FagerstromQuestionnaire from './questionnaires/FagerstromQuestionnaire';
@@ -56,8 +56,22 @@ const questionnaires = [
 
 export default function QuestionnairesTab() {
   const [openId, setOpenId] = useState(null);
+  const buttonRefs = useRef({});
+  const pendingScrollIdRef = useRef(null);
+
+  useEffect(() => {
+    if (!openId || pendingScrollIdRef.current !== openId) return;
+
+    pendingScrollIdRef.current = null;
+    window.requestAnimationFrame(() => {
+      buttonRefs.current[openId]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [openId]);
 
   function toggleQuestionnaire(id) {
+    if (openId !== id) {
+      pendingScrollIdRef.current = id;
+    }
     setOpenId((current) => (current === id ? null : id));
   }
 
@@ -74,9 +88,12 @@ export default function QuestionnairesTab() {
             }`}
           >
             <button
+              ref={(element) => {
+                buttonRefs.current[questionnaire.id] = element;
+              }}
               type="button"
               onClick={() => toggleQuestionnaire(questionnaire.id)}
-              className="flex w-full items-center justify-between gap-4 rounded-lg p-5 text-left transition hover:bg-blue-50/50"
+              className="scroll-mt-4 flex w-full items-center justify-between gap-4 rounded-lg p-5 text-left transition hover:bg-blue-50/50"
             >
               <span>
                 <span className="block text-base font-semibold tracking-tight text-slate-950">
