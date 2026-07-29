@@ -9,6 +9,14 @@ function sentence(parts) {
   return text ? `${text}.` : '';
 }
 
+function commaSentence(parts) {
+  const text = compact(parts).reduce((result, part) => {
+    if (!result) return part;
+    return `${result}${result.endsWith(':') ? ' ' : ', '}${part}`;
+  }, '');
+  return text ? `${text}.` : '';
+}
+
 function formatMm(value) {
   return value ? `${value} мм` : '';
 }
@@ -33,33 +41,33 @@ function generateKidney(name, kidney) {
     : renalOptionLabel('kidneyPosition', kidney.position);
 
   return [
-    sentence([
+    commaSentence([
       `${name} нирка`,
       position,
-      kidney.length && kidney.width ? `розміри ${kidney.length} x ${kidney.width} мм,` : '',
+      kidney.length && kidney.width ? `розміри ${kidney.length} x ${kidney.width} мм` : '',
       kidneySizeStatus(kidney),
     ]),
-    sentence([
-      `Контури ${renalOptionLabel('contours', kidney.contours)},`,
+    commaSentence([
+      `Контури ${renalOptionLabel('contours', kidney.contours)}`,
       renalOptionLabel('contourClarity', kidney.contourClarity),
     ]),
-    sentence([
+    commaSentence([
       `Корково-мозкова диференціація ${renalOptionLabel('corticomedullary', kidney.corticomedullary)}`,
       kidney.parenchyma ? `товщина шару паренхіми в середньому сегменті ${formatMm(kidney.parenchyma)}` : '',
     ]),
-    sentence([
+    commaSentence([
       `Нирковий синус ${renalOptionLabel('sinusEchogenicity', kidney.sinusEchogenicity)}`,
       `судинний малюнок ${renalOptionLabel('vascularPattern', kidney.vascularPattern)}`,
     ]),
-    sentence([
+    commaSentence([
       `Чашечки, лоханка ${renalOptionLabel('collectingSystem', kidney.collectingSystem)}`,
       kidney.collectingSystem === 'dilated' && kidney.collectingSystemDetails ? kidney.collectingSystemDetails : '',
     ]),
-    sentence([
+    commaSentence([
       `Додаткові утворення ${renalOptionLabel('findingStatus', kidney.lesionsStatus)}`,
       kidney.lesionsStatus === 'present' ? kidney.lesionsDetails : '',
     ]),
-    sentence([
+    commaSentence([
       `Конкременти ${renalOptionLabel('findingStatus', kidney.stonesStatus)}`,
       kidney.stonesStatus === 'present' ? kidney.stonesDetails : '',
     ]),
@@ -70,7 +78,7 @@ function generateKidney(name, kidney) {
 }
 
 function generateAdrenal(name, adrenal) {
-  return sentence([
+  return commaSentence([
     `${name} наднирник`,
     renalOptionLabel('adrenalStatus', adrenal.status),
     adrenal.status === 'changed' ? adrenal.details : '',
@@ -78,7 +86,7 @@ function generateAdrenal(name, adrenal) {
 }
 
 function generateUreters(ureters) {
-  return sentence([
+  return commaSentence([
     'Сечоводи',
     renalOptionLabel('uretersStatus', ureters.status),
     ureters.status === 'dilated' ? ureters.details : '',
@@ -86,7 +94,7 @@ function generateUreters(ureters) {
 }
 
 function generateRenalArteries(arteries) {
-  return sentence([
+  return commaSentence([
     renalOptionLabel('arteryStenosis', arteries.stenosis),
     arteries.stenosis === 'yes' ? arteries.details : '',
   ]);
@@ -94,21 +102,21 @@ function generateRenalArteries(arteries) {
 
 function generateBladder(bladder) {
   return [
-    sentence([
+    commaSentence([
       'Сечовий міхур:',
       bladder.volume ? `об'єм ${formatMl(bladder.volume)}` : '',
       `стінки ${renalOptionLabel('bladderWall', bladder.wallStatus)}`,
       bladder.wallThickness ? `до ${formatMm(bladder.wallThickness)}` : '',
     ]),
-    sentence([
+    commaSentence([
       `Вміст ${renalOptionLabel('bladderContent', bladder.content)}`,
       bladder.content === 'heterogeneous' ? `за рахунок ${bladder.contentDetails}` : '',
     ]),
-    sentence([
+    commaSentence([
       `Патологічні утворення, конкременти ${renalOptionLabel('findingStatus', bladder.pathologyStatus)}`,
       bladder.pathologyStatus === 'present' ? bladder.pathologyDetails : '',
     ]),
-    sentence([
+    commaSentence([
       `Вічка сечоводів ${renalOptionLabel('uretericOrifices', bladder.uretericOrifices)}`,
       bladder.residualVolume ? `об'єм залишкової сечі ${formatMl(bladder.residualVolume)}` : '',
     ]),

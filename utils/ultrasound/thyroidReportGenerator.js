@@ -11,6 +11,14 @@ function sentence(parts) {
   return text ? `${text}.` : '';
 }
 
+function commaSentence(parts) {
+  const text = compact(parts).reduce((result, part) => {
+    if (!result) return part;
+    return `${result}${result.endsWith(':') ? ' ' : ', '}${part}`;
+  }, '');
+  return text ? `${text}.` : '';
+}
+
 function listLabels(group, values = [], otherText = '') {
   const labels = values
     .map((value) => (value === 'other' ? otherText : optionLabel(group, value)))
@@ -54,8 +62,8 @@ function generateGeneralText(data) {
       ? data.general.shapeOther
       : optionLabel('shape', data.general.shape);
 
-  return sentence([
-    `Щитоподібна залоза ${optionLabel('surgeryStatus', data.general.surgeryStatus)},`,
+  return commaSentence([
+    `Щитоподібна залоза ${optionLabel('surgeryStatus', data.general.surgeryStatus)}`,
     optionLabel('location', data.general.location),
     shape ? `Форма ${shape}` : '',
   ]);
@@ -97,8 +105,8 @@ function generateMeasurementsText(data) {
 }
 
 function generateAppearanceText(data) {
-  return sentence([
-    `Контури ${optionLabel('contour', data.appearance.contour)},`,
+  return commaSentence([
+    `Контури ${optionLabel('contour', data.appearance.contour)}`,
     optionLabel('clarity', data.appearance.clarity),
     `Капсула ${optionLabel('capsule', data.appearance.capsule)}`,
     `Ехогенність ${optionLabel('echogenicity', data.appearance.echogenicity)}`,
@@ -117,7 +125,7 @@ function generateParenchymaText(data) {
     data.parenchyma.fibroticSize ? `фіброзні ділянки до ${data.parenchyma.fibroticSize} мм` : '',
   ]).join(', ');
 
-  return sentence([`Паренхіма ${structure}`, features ? `(${features})` : '', sizes]);
+  return commaSentence([`Паренхіма ${structure}`, features ? `(${features})` : '', sizes]);
 }
 
 function generateNoduleText(nodule, index) {
@@ -126,10 +134,11 @@ function generateNoduleText(nodule, index) {
   const inclusions = listLabels('noduleInclusions', nodule.inclusions, nodule.inclusionOther);
   const dimensions = formatDimensions(nodule.dimensions);
 
-  return sentence([
+  return commaSentence([
     `${index + 1}. ${location}, візуалізується`,
-    `${compact([optionLabel('noduleType', nodule.type), optionLabel('noduleEchogenicity', nodule.echogenicity)]).join(', ')},`,
-    `вузлове утворення, ${optionLabel('noduleShape', nodule.shape)} ${optionLabel('noduleOrientation', nodule.orientation)},`.trim(),
+    compact([optionLabel('noduleType', nodule.type), optionLabel('noduleEchogenicity', nodule.echogenicity)]).join(', '),
+    'вузлове утворення',
+    `${optionLabel('noduleShape', nodule.shape)} ${optionLabel('noduleOrientation', nodule.orientation)}`.trim(),
     contour,
     optionLabel('noduleStructure', nodule.structure),
     inclusions,
@@ -214,7 +223,7 @@ function generateLymphText(data) {
     return 'Регіонарні лімфатичні вузли не збільшені.';
   }
 
-  return sentence([
+  return commaSentence([
     `Регіонарні лімфатичні вузли ${lymph.status === 'enlarged' ? 'збільшені' : 'не збільшені'}`,
     details,
   ]);

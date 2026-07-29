@@ -19,6 +19,14 @@ function sentence(parts) {
   return text ? `${text}.` : '';
 }
 
+function commaSentence(parts) {
+  const text = compact(parts).reduce((result, part) => {
+    if (!result) return part;
+    return `${result}${result.endsWith(':') ? ' ' : ', '}${part}`;
+  }, '');
+  return text ? `${text}.` : '';
+}
+
 function list(items) {
   return compact(items).join(', ');
 }
@@ -42,18 +50,18 @@ function generateLiver(data) {
     : '';
 
   return [
-    sentence([
+    commaSentence([
       'Печінка:',
       dimensions || 'розміри без явного збільшення',
       isLiverEnlarged(liver) ? 'збільшена' : 'розміри не збільшені',
     ]),
-    sentence([
+    commaSentence([
       `Контури ${abdomenOptionLabel('contours', liver.contours)}`,
       `ехогенність ${abdomenOptionLabel('echogenicity', liver.echogenicity)}`,
       `структура ${abdomenOptionLabel('structure', liver.structure)}`,
       changes ? `(${changes})` : '',
     ]),
-    sentence([
+    commaSentence([
       liver.portalVein ? `Портальна вена ${formatMm(liver.portalVein)}` : '',
       liver.portalVein ? (isPortalVeinDilated(liver.portalVein) ? 'розширена' : 'не розширена') : '',
       `Печінкові вени ${liver.hepaticVeins === 'dilated' ? 'розширені' : 'не розширені'}`,
@@ -63,7 +71,7 @@ function generateLiver(data) {
 }
 
 function generateStoneText(stone, index) {
-  return sentence([
+  return commaSentence([
     `${index + 1}. Конкремент`,
     stone.size ? `розміром ${formatMm(stone.size)}` : '',
     stone.shadow === 'yes' ? 'з акустичною тінню' : 'без чіткої акустичної тіні',
@@ -72,7 +80,7 @@ function generateStoneText(stone, index) {
 }
 
 function generatePolypText(polyp, index) {
-  return sentence([
+  return commaSentence([
     `${index + 1}. Пристінкове утворення / поліп`,
     polyp.size ? `розміром ${formatMm(polyp.size)}` : '',
     polyp.localization ? `локалізація: ${polyp.localization}` : '',
@@ -85,13 +93,13 @@ function generateGallbladder(data) {
   const polypText = gb.polyps.map(generatePolypText).join('\n');
 
   return [
-    sentence([
+    commaSentence([
       'Жовчний міхур:',
       `форма ${abdomenOptionLabel('gallbladderShape', gb.shape)}`,
       `перегин: ${abdomenOptionLabel('gallbladderInflection', gb.inflection)}`,
       formatDimensions(gb.length, gb.width) ? `розміри ${formatDimensions(gb.length, gb.width)}` : '',
     ]),
-    sentence([
+    commaSentence([
       gb.wall ? `Стінка ${formatMm(gb.wall)}` : '',
       gb.wall ? (isGallbladderWallThickened(gb.wall) ? 'потовщена' : 'не потовщена') : '',
       `вміст ${abdomenOptionLabel('gallbladderContent', gb.content)}`,
@@ -103,7 +111,7 @@ function generateGallbladder(data) {
 
 function generateCommonBileDuct(data) {
   const cbd = data.commonBileDuct;
-  return sentence([
+  return commaSentence([
     'Холедох:',
     cbd.diameter ? `діаметр ${formatMm(cbd.diameter)}` : '',
     cbd.diameter ? (isCommonBileDuctDilated(cbd.diameter) ? 'розширений' : 'не розширений') : '',
@@ -112,7 +120,7 @@ function generateCommonBileDuct(data) {
 }
 
 function generateLesionText(item, index) {
-  return sentence([
+  return commaSentence([
     `${index + 1}. Утворення`,
     item.localization ? `локалізація: ${item.localization}` : '',
     formatDimensions(item.length, item.width) ? `розміром ${formatDimensions(item.length, item.width)}` : '',
@@ -130,14 +138,14 @@ function generatePancreas(data) {
   const lesions = pancreas.lesions.map(generateLesionText).join('\n');
 
   return [
-    sentence([
+    commaSentence([
       'Підшлункова залоза:',
       dimensions,
       `контури ${abdomenOptionLabel('contours', pancreas.contours)}`,
       `ехогенність ${abdomenOptionLabel('echogenicity', pancreas.echogenicity)}`,
       `структура ${abdomenOptionLabel('structure', pancreas.structure)}`,
     ]),
-    sentence([
+    commaSentence([
       pancreas.wirsung ? `Вірсунгова протока ${formatMm(pancreas.wirsung)}` : '',
       pancreas.wirsung ? (isPancreaticDuctDilated(pancreas.wirsung) ? 'розширена' : 'не розширена') : '',
       `парапанкреатична клітковина ${pancreas.peripancreaticTissue}`,
@@ -150,7 +158,7 @@ function generateSpleen(data) {
   const spleen = data.spleen;
   const lesions = spleen.lesions.map(generateLesionText).join('\n');
   return [
-    sentence([
+    commaSentence([
       'Селезінка:',
       formatDimensions(spleen.length, spleen.width) ? `розміри ${formatDimensions(spleen.length, spleen.width)}` : 'розміри без явного збільшення',
       isSpleenEnlarged(spleen) ? 'збільшена' : 'не збільшена',
@@ -176,7 +184,7 @@ function generateOther(data) {
         ? `збільшені${data.lymphNodes.size ? `, розміри ${data.lymphNodes.size}` : ''}${data.lymphNodes.localization ? `, локалізація: ${data.lymphNodes.localization}` : ''}`
         : 'не збільшені',
     ]),
-    data.hollowOrgans.text ? sentence(['Порожнисті органи:', data.hollowOrgans.text]) : '',
+    data.hollowOrgans.text ? commaSentence(['Порожнисті органи:', data.hollowOrgans.text]) : '',
   ].filter(Boolean).join('\n');
 }
 
