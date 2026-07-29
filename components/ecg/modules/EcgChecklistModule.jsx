@@ -1,7 +1,12 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { buildQtMetricsInput, calculateQtMetrics, getSmallCellDurationMs } from '../../../utils/ecg/qtCalculations';
+import {
+  buildQtMetricsInput,
+  calculateQtMetrics,
+  getQtClinicalNextSteps,
+  getSmallCellDurationMs,
+} from '../../../utils/ecg/qtCalculations';
 import { inputClass, textareaClass } from '../../formStyles';
 import EcgDisclaimer from '../EcgDisclaimer';
 import EcgModuleShell from '../EcgModuleShell';
@@ -48,7 +53,6 @@ const normalChecklistValues = {
   axisAvf: 'positive',
   pqMs: '180',
   qrsMs: '90',
-  qt: 'QTc 420 мс',
   blocks: 'ознак порушення провідності не виявлено',
   hypertrophy: 'ЕКГ-критерії гіпертрофії камер серця не виконуються',
   st: 'сегмент ST без значущої елевації або депресії',
@@ -148,17 +152,23 @@ function buildAxisText(values) {
   return 'електрична вісь серця потребує уточнення за відведеннями кінцівок';
 }
 
-function buildConclusion(values, paperSpeed) {
+function buildQtConclusionText(qtMetrics) {
+  if (!qtMetrics) return '';
+  return `QT ${qtMetrics.qt} мс, QTc Fridericia ${qtMetrics.qtcFridericia} мс`;
+}
+
+function buildConclusion(values, paperSpeed, qtMetrics) {
   const rate = getEffectiveRate(values, paperSpeed);
   const rhythm = values.rhythmText?.trim() || buildRhythmText(values, rate);
   const pqMs = formatNumber(values.pqMs);
   const qrsMs = formatNumber(values.qrsMs);
+  const qtText = buildQtConclusionText(qtMetrics);
   const lines = [
     rhythm,
     buildAxisText(values),
     pqMs ? `PQ ${pqMs} мс` : '',
     qrsMs ? `QRS ${qrsMs} мс` : '',
-    values.qt?.trim(),
+    qtText,
     ...freeTextItems
     .map((item) => values[item.id]?.trim())
     .filter(Boolean),
@@ -181,9 +191,10 @@ export default function EcgChecklistModule() {
     heartRate: '',
     sex: 'male',
   });
-  const conclusion = useMemo(() => buildConclusion(values, qtForm.paperSpeed), [values, qtForm.paperSpeed]);
   const qtMetricsInput = useMemo(() => buildQtMetricsInput(qtForm), [qtForm]);
   const qtMetrics = useMemo(() => calculateQtMetrics(qtMetricsInput), [qtMetricsInput]);
+  const conclusion = useMemo(() => buildConclusion(values, qtForm.paperSpeed, qtMetrics), [values, qtForm.paperSpeed, qtMetrics]);
+  const qtNextSteps = useMemo(() => getQtClinicalNextSteps(qtMetrics), [qtMetrics]);
   const calculatedRate = useMemo(
     () => calculateRateFromRrCells(values.rrCells, qtForm.paperSpeed),
     [values.rrCells, qtForm.paperSpeed],
@@ -197,10 +208,6 @@ export default function EcgChecklistModule() {
   };
   const resetToNormal = () => setValues(normalChecklistValues);
   const updateQtForm = (field, value) => setQtForm((current) => ({ ...current, [field]: value }));
-  const applyQtToChecklist = () => {
-    if (!qtMetrics) return;
-    update('qt', `QT ${qtMetrics.qt} мс, QTc Fridericia ${qtMetrics.qtcFridericia} мс (${qtMetrics.interpretation.label.toLowerCase()})`);
-  };
 
   useEffect(() => {
     if (values.rhythmTextEdited && values.rhythmText.trim()) return;
@@ -365,19 +372,6 @@ export default function EcgChecklistModule() {
           </span>
         </label>
 
-        <label className="block md:col-span-2">
-          <span className="mb-1.5 block text-sm font-semibold text-slate-700">QT / QTc</span>
-          <input
-            value={values.qt || ''}
-            onChange={(event) => update('qt', event.target.value)}
-            placeholder="Наприклад: QTc 420 мс"
-            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm shadow-slate-100/60 transition-all duration-150 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-          />
-          <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
-            приблизна норма QTc: до 450 мс у чоловіків, до 460 мс у жінок
-          </span>
-        </label>
-
         {freeTextItems.map((item) => (
           <label key={item.id} className="block">
             <span className="mb-1.5 block text-sm font-semibold text-slate-700">{item.label}</span>
@@ -395,19 +389,11 @@ export default function EcgChecklistModule() {
       <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h4 className="font-bold text-slate-950">QT / QTc: розрахунок у мілісекундах</h4>
+            <h4 className="font-bold text-slate-950">QT / QTc</h4>
             <p className="mt-1 text-sm leading-relaxed text-slate-600">
-              Введіть QT і RR у мілісекундах. Якщо потрібно, можна перемкнутися на маленькі клітинки.
+              QTc Fridericia використовується як основний результат для висновку. Bazett, Framingham і Hodges показуються довідково.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={applyQtToChecklist}
-            disabled={!qtMetrics}
-            className="rounded-md bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-slate-300"
-          >
-            Внести в QT/QTc
-          </button>
         </div>
 
         <div className="mt-3 grid gap-3 md:grid-cols-3 xl:grid-cols-5">
@@ -452,14 +438,41 @@ export default function EcgChecklistModule() {
           <div className="rounded-md border border-blue-100 bg-white p-3">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-700">Результат</p>
             {qtMetrics ? (
-              <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-900">
-                QT {qtMetrics.qt} мс, RR {Math.round(qtMetrics.rr * 1000)} мс, QTcF {qtMetrics.qtcFridericia} мс
-              </p>
+              <div className="mt-2 space-y-1">
+                <p className="text-sm font-semibold leading-relaxed text-slate-900">
+                  QTc Fridericia {qtMetrics.qtcFridericia} мс
+                </p>
+                <p className="text-xs leading-relaxed text-slate-500">
+                  QT {qtMetrics.qt} мс, RR {Math.round(qtMetrics.rr * 1000)} мс
+                </p>
+              </div>
             ) : (
               <p className="mt-2 text-sm text-slate-500">Введіть QT і RR.</p>
             )}
           </div>
         </div>
+
+        {qtMetrics ? (
+          <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+            <div className="rounded-md border border-slate-200 bg-white p-3">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Інші формули</p>
+              <div className="mt-2 grid gap-2 sm:grid-cols-3">
+                <p className="rounded-md bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">Bazett {qtMetrics.qtcBazett} мс</p>
+                <p className="rounded-md bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">Framingham {qtMetrics.qtcFramingham} мс</p>
+                <p className="rounded-md bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">Hodges {qtMetrics.qtcHodges} мс</p>
+              </div>
+            </div>
+            <div className="rounded-md border border-blue-100 bg-blue-50 p-3">
+              <p className="text-sm font-bold text-blue-950">{qtMetrics.interpretation.label}</p>
+              <p className="mt-1 text-sm leading-relaxed text-blue-900">{qtMetrics.interpretation.text}</p>
+              <ul className="mt-2 space-y-1 text-sm text-blue-900">
+                {qtNextSteps.map((step) => (
+                  <li key={step}>• {step}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ) : null}
       </div>
 
       <div className="rounded-lg border border-blue-100 bg-blue-50 p-4">

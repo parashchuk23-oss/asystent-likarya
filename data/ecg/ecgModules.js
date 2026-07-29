@@ -6,12 +6,6 @@ export const ecgModules = [
     status: 'ready',
   },
   {
-    id: 'qt',
-    title: 'Інтервали: QT / QTc',
-    description: 'QTc Bazett, Fridericia, Framingham і Hodges.',
-    status: 'ready',
-  },
-  {
     id: 'axis',
     title: 'Електрична вісь',
     description: 'Орієнтовна оцінка осі за полярністю QRS.',

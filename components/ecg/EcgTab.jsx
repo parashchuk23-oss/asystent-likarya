@@ -6,11 +6,9 @@ import EcgSidebar from './EcgSidebar';
 import AxisModule from './modules/AxisModule';
 import ComingSoonEcgModule from './modules/ComingSoonEcgModule';
 import EcgChecklistModule from './modules/EcgChecklistModule';
-import QtQtcModule from './modules/QtQtcModule';
 
 function renderModule(activeModule) {
   if (activeModule.id === 'checklist') return <EcgChecklistModule />;
-  if (activeModule.id === 'qt') return <QtQtcModule />;
   if (activeModule.id === 'axis') return <AxisModule />;
   return <ComingSoonEcgModule module={activeModule} />;
 }
