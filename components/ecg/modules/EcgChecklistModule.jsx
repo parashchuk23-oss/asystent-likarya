@@ -46,8 +46,8 @@ const normalChecklistValues = {
   axisI: 'positive',
   axisII: 'positive',
   axisAvf: 'positive',
-  pqCells: '4.5',
-  qrsCells: '2.25',
+  pqMs: '180',
+  qrsMs: '90',
   qt: 'QTc 420 мс',
   blocks: 'ознак порушення провідності не виявлено',
   hypertrophy: 'ЕКГ-критерії гіпертрофії камер серця не виконуються',
@@ -151,8 +151,8 @@ function buildAxisText(values) {
 function buildConclusion(values, paperSpeed) {
   const rate = getEffectiveRate(values, paperSpeed);
   const rhythm = values.rhythmText?.trim() || buildRhythmText(values, rate);
-  const pqMs = cellsToMs(values.pqCells, paperSpeed);
-  const qrsMs = cellsToMs(values.qrsCells, paperSpeed);
+  const pqMs = formatNumber(values.pqMs);
+  const qrsMs = formatNumber(values.qrsMs);
   const lines = [
     rhythm,
     buildAxisText(values),
@@ -174,18 +174,16 @@ function buildConclusion(values, paperSpeed) {
 export default function EcgChecklistModule() {
   const [values, setValues] = useState(normalChecklistValues);
   const [qtForm, setQtForm] = useState({
-    inputMode: 'cells',
+    inputMode: 'ms',
     paperSpeed: '25',
-    qt: '10.5',
-    rr: '19.75',
+    qt: '420',
+    rr: '790',
     heartRate: '',
     sex: 'male',
   });
   const conclusion = useMemo(() => buildConclusion(values, qtForm.paperSpeed), [values, qtForm.paperSpeed]);
   const qtMetricsInput = useMemo(() => buildQtMetricsInput(qtForm), [qtForm]);
   const qtMetrics = useMemo(() => calculateQtMetrics(qtMetricsInput), [qtMetricsInput]);
-  const pqMs = useMemo(() => cellsToMs(values.pqCells, qtForm.paperSpeed), [values.pqCells, qtForm.paperSpeed]);
-  const qrsMs = useMemo(() => cellsToMs(values.qrsCells, qtForm.paperSpeed), [values.qrsCells, qtForm.paperSpeed]);
   const calculatedRate = useMemo(
     () => calculateRateFromRrCells(values.rrCells, qtForm.paperSpeed),
     [values.rrCells, qtForm.paperSpeed],
@@ -336,34 +334,34 @@ export default function EcgChecklistModule() {
         </div>
 
         <label className="block">
-          <span className="mb-1.5 block text-sm font-semibold text-slate-700">PQ, маленьких клітинок</span>
+          <span className="mb-1.5 block text-sm font-semibold text-slate-700">PQ, мс</span>
           <input
             type="number"
             min="0"
-            step="0.25"
-            value={values.pqCells}
-            onChange={(event) => update('pqCells', event.target.value)}
-            placeholder="4.5"
+            step="1"
+            value={values.pqMs}
+            onChange={(event) => update('pqMs', event.target.value)}
+            placeholder="180"
             className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm shadow-slate-100/60 transition-all duration-150 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
           />
           <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
-            приблизна норма: 120–200 мс; зараз {pqMs ? `${pqMs} мс` : 'введіть кількість клітинок'}
+            приблизна норма: 120–200 мс
           </span>
         </label>
 
         <label className="block">
-          <span className="mb-1.5 block text-sm font-semibold text-slate-700">QRS, маленьких клітинок</span>
+          <span className="mb-1.5 block text-sm font-semibold text-slate-700">QRS, мс</span>
           <input
             type="number"
             min="0"
-            step="0.25"
-            value={values.qrsCells}
-            onChange={(event) => update('qrsCells', event.target.value)}
-            placeholder="2.25"
+            step="1"
+            value={values.qrsMs}
+            onChange={(event) => update('qrsMs', event.target.value)}
+            placeholder="90"
             className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm shadow-slate-100/60 transition-all duration-150 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
           />
           <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
-            приблизна норма: 60–110 мс; зараз {qrsMs ? `${qrsMs} мс` : 'введіть кількість клітинок'}
+            приблизна норма: 60–110 мс
           </span>
         </label>
 
@@ -397,9 +395,9 @@ export default function EcgChecklistModule() {
       <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h4 className="font-bold text-slate-950">QT / QTc: розрахунок із клітинок</h4>
+            <h4 className="font-bold text-slate-950">QT / QTc: розрахунок у мілісекундах</h4>
             <p className="mt-1 text-sm leading-relaxed text-slate-600">
-              Введіть QT і RR у мілісекундах або в маленьких клітинках. При 25 мм/с одна маленька клітинка = 40 мс, при 50 мм/с = 20 мс.
+              Введіть QT і RR у мілісекундах. Якщо потрібно, можна перемкнутися на маленькі клітинки.
             </p>
           </div>
           <button
