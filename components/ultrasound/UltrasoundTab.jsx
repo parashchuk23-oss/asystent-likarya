@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import AbdomenUltrasoundModule from './abdomen/AbdomenUltrasoundModule';
+import RenalUltrasoundModule from './renal/RenalUltrasoundModule';
 import ThyroidUltrasoundModule from './ThyroidUltrasoundModule';
 
 const ultrasoundModules = [
@@ -18,6 +19,13 @@ const ultrasoundModules = [
     title: 'Органи черевної порожнини',
     description:
       'Конструктор протоколу УЗД ОЧП з оглядовою частиною, ехографічним висновком, рекомендаціями та текстом для копіювання.',
+  },
+  {
+    id: 'renal',
+    label: 'Нирки',
+    title: 'Нирки та сечовидільна система',
+    description:
+      'Конструктор протоколу УЗД нирок, наднирників, сечоводів і сечового міхура з автоматичним текстом для копіювання.',
   },
 ];
 
@@ -53,7 +61,13 @@ export default function UltrasoundTab() {
           </div>
         </div>
         <div className="p-4 sm:p-5">
-          {activeModuleId === 'abdomen' ? <AbdomenUltrasoundModule /> : <ThyroidUltrasoundModule />}
+          {activeModuleId === 'abdomen' ? (
+            <AbdomenUltrasoundModule />
+          ) : activeModuleId === 'renal' ? (
+            <RenalUltrasoundModule />
+          ) : (
+            <ThyroidUltrasoundModule />
+          )}
         </div>
       </article>
     </div>
