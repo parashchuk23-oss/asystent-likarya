@@ -1,5 +1,27 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+
 export default function AccordionSection({ id, title, subtitle, isOpen, onToggle, children }) {
   const panelId = `${id}-panel`;
+  const buttonRef = useRef(null);
+  const shouldScrollAfterToggleRef = useRef(false);
+
+  useEffect(() => {
+    if (!isOpen || !shouldScrollAfterToggleRef.current) return;
+
+    shouldScrollAfterToggleRef.current = false;
+    window.requestAnimationFrame(() => {
+      buttonRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [isOpen]);
+
+  const handleToggle = () => {
+    if (!isOpen) {
+      shouldScrollAfterToggleRef.current = true;
+    }
+    onToggle();
+  };
 
   return (
     <article
@@ -10,11 +32,12 @@ export default function AccordionSection({ id, title, subtitle, isOpen, onToggle
       }`}
     >
       <button
+        ref={buttonRef}
         type="button"
-        onClick={onToggle}
+        onClick={handleToggle}
         aria-expanded={isOpen}
         aria-controls={panelId}
-        className="flex w-full items-center justify-between gap-4 p-4 text-left sm:p-5"
+        className="scroll-mt-4 flex w-full items-center justify-between gap-4 p-4 text-left sm:p-5"
       >
         <span className="min-w-0">
           <span className="block text-base font-semibold text-slate-950">{title}</span>
