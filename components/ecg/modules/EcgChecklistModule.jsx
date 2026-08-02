@@ -33,6 +33,23 @@ const polarityOptions = [
   { value: 'isoelectric', label: 'R=S / ізоелектричний' },
 ];
 
+const pqClarificationOptions = {
+  short: [
+    { value: 'wpw', label: 'WPW' },
+    { value: 'lowAtrialOrJunctional', label: 'нижньопередсердний або AV-вузловий ритм' },
+    { value: 'fastAvConduction', label: 'варіант швидкого AV-проведення' },
+  ],
+  long: [
+    { value: 'avBlockI', label: 'AV-блокада I ступеня' },
+    { value: 'mobitzI', label: 'AV-блокада II ступеня, Mobitz I' },
+    { value: 'mobitzII', label: 'AV-блокада II ступеня, Mobitz II' },
+    { value: 'twoToOne', label: 'AV-блокада 2:1' },
+    { value: 'highGrade', label: 'AV-блокада високого ступеня' },
+    { value: 'avBlockIII', label: 'AV-блокада III ступеня' },
+    { value: 'other', label: 'інше / потребує уточнення' },
+  ],
+};
+
 const freeTextItems = [
   { id: 'blocks', label: 'Блокади', placeholder: 'Наприклад: ознак блокад немає', norm: 'приблизна норма: ознак порушення провідності немає' },
   { id: 'hypertrophy', label: 'Гіпертрофія', placeholder: 'Наприклад: критерії ГЛШ не виконуються', norm: 'приблизна норма: ЕКГ-критерії гіпертрофії не виконуються' },
@@ -52,6 +69,7 @@ const normalChecklistValues = {
   axisII: 'positive',
   axisAvf: 'positive',
   pqMs: '180',
+  pqClarification: '',
   qrsMs: '90',
   blocks: 'ознак порушення провідності не виявлено',
   hypertrophy: 'ЕКГ-критерії гіпертрофії камер серця не виконуються',
@@ -84,6 +102,19 @@ function getRateStatus(rate) {
   if (rate < 60) return 'брадикардія';
   if (rate > 100) return 'тахікардія';
   return '';
+}
+
+function getPqStatus(pqMs) {
+  const value = Number(formatNumber(pqMs));
+  if (!value) return { type: '', label: 'введіть PQ для інтерпретації' };
+  if (value < 120) return { type: 'short', label: 'Інтерпретація: вкорочений PQ' };
+  if (value > 200) return { type: 'long', label: 'Інтерпретація: подовжений PQ' };
+  return { type: 'normal', label: 'Інтерпретація: PQ у межах норми' };
+}
+
+function getPqClarificationLabel(type, value) {
+  if (!type || !value) return '';
+  return pqClarificationOptions[type]?.find((option) => option.value === value)?.label || '';
 }
 
 function getEffectiveRate(values, paperSpeed) {
@@ -161,12 +192,19 @@ function buildConclusion(values, paperSpeed, qtMetrics) {
   const rate = getEffectiveRate(values, paperSpeed);
   const rhythm = values.rhythmText?.trim() || buildRhythmText(values, rate);
   const pqMs = formatNumber(values.pqMs);
+  const pqStatus = getPqStatus(values.pqMs);
+  const pqClarification = getPqClarificationLabel(pqStatus.type, values.pqClarification);
+  const pqText = pqMs
+    ? [`PQ ${pqMs} мс`, pqStatus.type === 'short' ? 'вкорочений' : '', pqStatus.type === 'long' ? 'подовжений' : '', pqClarification]
+      .filter(Boolean)
+      .join(', ')
+    : '';
   const qrsMs = formatNumber(values.qrsMs);
   const qtText = buildQtConclusionText(qtMetrics);
   const lines = [
     rhythm,
     buildAxisText(values),
-    pqMs ? `PQ ${pqMs} мс` : '',
+    pqText,
     qrsMs ? `QRS ${qrsMs} мс` : '',
     qtText,
     ...freeTextItems
@@ -201,6 +239,8 @@ export default function EcgChecklistModule() {
   );
   const effectiveRate = calculatedRate || Number(formatNumber(values.rate)) || null;
   const rhythmText = useMemo(() => buildRhythmText(values, effectiveRate), [values, effectiveRate]);
+  const pqStatus = useMemo(() => getPqStatus(values.pqMs), [values.pqMs]);
+  const visiblePqClarificationOptions = pqClarificationOptions[pqStatus.type] || [];
 
   const update = (id, value) => setValues((current) => ({ ...current, [id]: value }));
   const updateRhythmOutput = (value) => {
@@ -360,9 +400,24 @@ export default function EcgChecklistModule() {
                 className={inputClass}
               />
               <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
-                приблизна норма: 120–200 мс
+                {pqStatus.label}; приблизна норма: 120–200 мс
               </span>
             </label>
+            {visiblePqClarificationOptions.length > 0 ? (
+              <label className="mt-3 block">
+                <span className="mb-1.5 block text-sm font-semibold text-slate-700">Уточнення PQ</span>
+                <select
+                  value={values.pqClarification}
+                  onChange={(event) => update('pqClarification', event.target.value)}
+                  className={inputClass}
+                >
+                  <option value="">оберіть, якщо потрібно</option>
+                  {visiblePqClarificationOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
           </div>
         </section>
 
