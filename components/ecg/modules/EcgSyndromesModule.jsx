@@ -126,6 +126,7 @@ export default function EcgSyndromesModule() {
       <div className="space-y-4">
         {filteredSyndromes.map((syndrome) => {
           const isOpen = openId === syndrome.id;
+          const isCompactImage = syndrome.id === 'brugada';
 
           return (
             <article
@@ -154,16 +155,26 @@ export default function EcgSyndromesModule() {
 
             {isOpen ? (
               <div className="border-t border-slate-100 p-5">
-                <div className="grid gap-4 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-                  <div>
-                    <EcgImageBlock syndrome={syndrome} />
-                  </div>
+                {isCompactImage ? (
+                  <div className="grid gap-4 xl:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)]">
+                    <div>
+                      <EcgImageBlock syndrome={syndrome} />
+                    </div>
 
-                  <div className="grid gap-3">
-                    <ListBlock title="ЕКГ-критерії" items={syndrome.criteria} />
-                    <ListBlock title="Клінічне значення" items={syndrome.clinicalSignificance} tone="blue" />
+                    <div className="grid gap-3">
+                      <ListBlock title="ЕКГ-критерії" items={syndrome.criteria} />
+                      <ListBlock title="Клінічне значення" items={syndrome.clinicalSignificance} tone="blue" />
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <>
+                    <EcgImageBlock syndrome={syndrome} />
+                    <div className="mt-4 grid gap-3 lg:grid-cols-2">
+                      <ListBlock title="ЕКГ-критерії" items={syndrome.criteria} />
+                      <ListBlock title="Клінічне значення" items={syndrome.clinicalSignificance} tone="blue" />
+                    </div>
+                  </>
+                )}
 
                 <div className="mt-4 grid gap-3 lg:grid-cols-3">
                   <ListBlock title="Диференційний ряд" items={syndrome.differential} />
