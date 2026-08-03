@@ -89,6 +89,39 @@ const qrsClarificationDescriptions = {
   hyperkalemia: 'Гіперкаліємія може спричиняти розширення QRS, високі загострені T, зменшення або зникнення P та брадиаритмії. Оцінити калій, ШКФ, препарати та клінічний стан.',
 };
 
+const qtFormulaOptions = [
+  { value: 'fridericia', label: 'Fridericia', metric: 'qtcFridericia' },
+  { value: 'bazett', label: 'Bazett', metric: 'qtcBazett' },
+  { value: 'framingham', label: 'Framingham', metric: 'qtcFramingham' },
+  { value: 'hodges', label: 'Hodges', metric: 'qtcHodges' },
+];
+
+const qtCauseOptions = {
+  prolonged: [
+    { value: 'medication', label: 'медикаментозне подовження QT' },
+    { value: 'electrolytes', label: 'гіпокаліємія / гіпомагніємія' },
+    { value: 'longQtSyndrome', label: 'вроджений Long QT syndrome' },
+    { value: 'ischemia', label: 'ішемія / гострий коронарний синдром' },
+    { value: 'structuralHeartDisease', label: 'структурне захворювання серця' },
+  ],
+  short: [
+    { value: 'hypercalcemia', label: 'гіперкальціємія' },
+    { value: 'digitalis', label: 'дигіталісний ефект' },
+    { value: 'shortQtSyndrome', label: 'вроджений Short QT syndrome' },
+  ],
+};
+
+const qtCauseDescriptions = {
+  medication: 'Часті групи: антиаритмічні препарати (аміодарон, соталол, хінідин, прокаїнамід), макроліди (азитроміцин, кларитроміцин, еритроміцин), фторхінолони (левофлоксацин, моксифлоксацин), антипсихотики (галоперидол, кветіапін, рисперидон, зипразидон), антидепресанти (циталопрам, есциталопрам, трициклічні антидепресанти), протиблювотні (ондансетрон, домперидон), азоли (флуконазол, вориконазол), метадон.',
+  electrolytes: 'Низький калій або магній може подовжувати реполяризацію і підвищувати аритмічний ризик. Доцільно оцінити електроліти, ШКФ, діуретики та втрати рідини.',
+  longQtSyndrome: 'Вроджений Long QT syndrome найчастіше описують як LQT1, LQT2 або LQT3. Підказки: сімейний анамнез раптової смерті, синкопе, провокація навантаженням, емоціями, звуком або сном.',
+  ischemia: 'Ішемія або гострий коронарний синдром можуть змінювати реполяризацію. QTc потрібно трактувати разом із симптомами, ST-T, тропонінами та динамікою ЕКГ.',
+  structuralHeartDisease: 'Структурне захворювання серця може підвищувати аритмічний ризик навіть при помірному подовженні QTc. Варто оцінити ЕхоКГ, анамнез СН, ІХС і попередні ЕКГ.',
+  hypercalcemia: 'Гіперкальціємія класично скорочує QT за рахунок вкорочення ST-сегмента. Перевірити кальцій, альбумін і клінічний контекст.',
+  digitalis: 'Дигіталісний ефект може супроводжуватися характерними ST-T змінами і відносним скороченням QT. Важливо відрізняти терапевтичний ефект від токсичності.',
+  shortQtSyndrome: 'Вроджений Short QT syndrome трапляється рідко. Підказки: дуже короткий QTc, сімейний анамнез раптової смерті, синкопе або фібриляція передсердь у молодому віці.',
+};
+
 const freeTextItems = [
   { id: 'blocks', label: 'Блокади', placeholder: 'Наприклад: ознак блокад немає', norm: 'приблизна норма: ознак порушення провідності немає' },
   { id: 'hypertrophy', label: 'Гіпертрофія', placeholder: 'Наприклад: критерії ГЛШ не виконуються', norm: 'приблизна норма: ЕКГ-критерії гіпертрофії не виконуються' },
@@ -170,6 +203,71 @@ function getQrsClarificationLabel(value) {
   return qrsClarificationOptions.find((option) => option.value === value)?.label || '';
 }
 
+function getQtFormulaOption(value) {
+  return qtFormulaOptions.find((option) => option.value === value) || qtFormulaOptions[0];
+}
+
+function getSelectedQtc(qtMetrics, formula) {
+  if (!qtMetrics) return null;
+  return qtMetrics[getQtFormulaOption(formula).metric] || null;
+}
+
+function getQtInterpretation(qtc, sex) {
+  if (!qtc) return null;
+
+  if (qtc < 350) {
+    return {
+      status: 'short',
+      label: 'Короткий QTc',
+      conclusionLabel: 'короткий',
+      toneClass: 'border-amber-100 bg-amber-50 text-amber-950',
+      text: 'QTc виглядає коротким. Доцільно перевірити вимірювання, електроліти та клінічний контекст.',
+    };
+  }
+
+  const prolongedThreshold = sex === 'female' ? 470 : 450;
+
+  if (qtc >= 500) {
+    return {
+      status: 'markedlyProlonged',
+      label: 'Значно подовжений QTc',
+      conclusionLabel: 'значно подовжений',
+      toneClass: 'border-red-100 bg-red-50 text-red-950',
+      text: 'QTc ≥500 мс асоціюється з підвищеним ризиком шлуночкових аритмій. Потрібна клінічна оцінка причин і ризиків.',
+    };
+  }
+
+  if (qtc > prolongedThreshold) {
+    return {
+      status: 'prolonged',
+      label: 'Подовжений QTc',
+      conclusionLabel: 'подовжений',
+      toneClass: 'border-amber-100 bg-amber-50 text-amber-950',
+      text: 'QTc перевищує орієнтовну межу для статі. Варто оцінити ліки, електроліти, ЧСС і супутні стани.',
+    };
+  }
+
+  return {
+    status: 'normal',
+    label: 'QTc у межах орієнтовної норми',
+    conclusionLabel: '',
+    toneClass: 'border-emerald-100 bg-emerald-50 text-emerald-950',
+    text: 'QTc не виглядає подовженим за обраними орієнтирами. Інтерпретувати разом із клінікою та якістю вимірювання.',
+  };
+}
+
+function getQtCauseGroup(status) {
+  if (status === 'short') return 'short';
+  if (status === 'prolonged' || status === 'markedlyProlonged') return 'prolonged';
+  return '';
+}
+
+function getQtCauseLabel(status, value) {
+  const group = getQtCauseGroup(status);
+  if (!group || !value) return '';
+  return qtCauseOptions[group]?.find((option) => option.value === value)?.label || '';
+}
+
 function getEffectiveRate(values, paperSpeed) {
   const manualRate = formatNumber(values.rate);
   const calculatedRate = calculateRateFromRrCells(values.rrCells, paperSpeed);
@@ -236,12 +334,20 @@ function buildAxisText(values) {
   return 'електрична вісь серця потребує уточнення за відведеннями кінцівок';
 }
 
-function buildQtConclusionText(qtMetrics) {
+function buildQtConclusionText(qtMetrics, qtFormula, qtInterpretation, qtCause) {
   if (!qtMetrics) return '';
-  return `QT ${qtMetrics.qt} мс, QTc Fridericia ${qtMetrics.qtcFridericia} мс`;
+  const formulaOption = getQtFormulaOption(qtFormula);
+  const qtcValue = qtMetrics[formulaOption.metric];
+  const causeLabel = getQtCauseLabel(qtInterpretation?.status, qtCause);
+  return [
+    `QT ${qtMetrics.qt} мс`,
+    `QTc ${formulaOption.label} ${qtcValue} мс`,
+    qtInterpretation?.conclusionLabel || '',
+    causeLabel ? `можлива причина: ${causeLabel}` : '',
+  ].filter(Boolean).join(', ');
 }
 
-function buildConclusion(values, paperSpeed, qtMetrics) {
+function buildConclusion(values, paperSpeed, qtMetrics, qtFormula, qtInterpretation, qtCause) {
   const rate = getEffectiveRate(values, paperSpeed);
   const rhythm = values.rhythmText?.trim() || buildRhythmText(values, rate);
   const pqMs = formatNumber(values.pqMs);
@@ -260,7 +366,7 @@ function buildConclusion(values, paperSpeed, qtMetrics) {
       .filter(Boolean)
       .join(', ')
     : '';
-  const qtText = buildQtConclusionText(qtMetrics);
+  const qtText = buildQtConclusionText(qtMetrics, qtFormula, qtInterpretation, qtCause);
   const lines = [
     rhythm,
     buildAxisText(values),
@@ -282,22 +388,47 @@ function buildConclusion(values, paperSpeed, qtMetrics) {
 export default function EcgChecklistModule() {
   const [values, setValues] = useState(normalChecklistValues);
   const [qtForm, setQtForm] = useState({
-    inputMode: 'ms',
     paperSpeed: '25',
     qt: '420',
-    rr: '790',
-    heartRate: '',
     sex: 'male',
+    formula: 'fridericia',
+    cause: '',
   });
-  const qtMetricsInput = useMemo(() => buildQtMetricsInput(qtForm), [qtForm]);
-  const qtMetrics = useMemo(() => calculateQtMetrics(qtMetricsInput), [qtMetricsInput]);
-  const conclusion = useMemo(() => buildConclusion(values, qtForm.paperSpeed, qtMetrics), [values, qtForm.paperSpeed, qtMetrics]);
-  const qtNextSteps = useMemo(() => getQtClinicalNextSteps(qtMetrics), [qtMetrics]);
   const calculatedRate = useMemo(
     () => calculateRateFromRrCells(values.rrCells, qtForm.paperSpeed),
     [values.rrCells, qtForm.paperSpeed],
   );
   const effectiveRate = calculatedRate || Number(formatNumber(values.rate)) || null;
+  const qtRrMs = useMemo(() => {
+    const rrFromCells = cellsToMs(values.rrCells, qtForm.paperSpeed);
+    if (rrFromCells) return rrFromCells;
+    if (effectiveRate) return Math.round(60000 / effectiveRate);
+    return null;
+  }, [values.rrCells, qtForm.paperSpeed, effectiveRate]);
+  const qtMetricsInput = useMemo(() => buildQtMetricsInput({
+    inputMode: 'ms',
+    paperSpeed: qtForm.paperSpeed,
+    qt: qtForm.qt,
+    rr: qtRrMs ? String(qtRrMs) : '',
+    heartRate: '',
+    sex: qtForm.sex,
+  }), [qtForm.paperSpeed, qtForm.qt, qtForm.sex, qtRrMs]);
+  const qtMetrics = useMemo(() => calculateQtMetrics(qtMetricsInput), [qtMetricsInput]);
+  const selectedQtc = useMemo(() => getSelectedQtc(qtMetrics, qtForm.formula), [qtMetrics, qtForm.formula]);
+  const qtInterpretation = useMemo(() => getQtInterpretation(selectedQtc, qtForm.sex), [selectedQtc, qtForm.sex]);
+  const conclusion = useMemo(
+    () => buildConclusion(values, qtForm.paperSpeed, qtMetrics, qtForm.formula, qtInterpretation, qtForm.cause),
+    [values, qtForm.paperSpeed, qtMetrics, qtForm.formula, qtInterpretation, qtForm.cause],
+  );
+  const qtNextSteps = useMemo(() => {
+    if (!qtMetrics || !qtInterpretation) return [];
+    return getQtClinicalNextSteps({ ...qtMetrics, interpretation: qtInterpretation });
+  }, [qtMetrics, qtInterpretation]);
+  const qtCauseGroup = getQtCauseGroup(qtInterpretation?.status);
+  const visibleQtCauseOptions = qtCauseGroup ? qtCauseOptions[qtCauseGroup] : [];
+  const qtCauseDescription = visibleQtCauseOptions.some((option) => option.value === qtForm.cause)
+    ? qtCauseDescriptions[qtForm.cause]
+    : '';
   const rhythmText = useMemo(() => buildRhythmText(values, effectiveRate), [values, effectiveRate]);
   const pqStatus = useMemo(() => getPqStatus(values.pqMs), [values.pqMs]);
   const visiblePqClarificationOptions = pqClarificationOptions[pqStatus.type] || [];
@@ -532,92 +663,111 @@ export default function EcgChecklistModule() {
         </section>
 
         <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h4 className="text-sm font-bold text-slate-950">6. QT / QTc</h4>
-            <p className="mt-1 text-sm leading-relaxed text-slate-600">
-              QTc Fridericia використовується як основний результат для висновку. Bazett, Framingham і Hodges показуються довідково.
-            </p>
-          </div>
-        </div>
+          <h4 className="text-sm font-bold text-slate-950">6. QT / QTc</h4>
+          <p className="mt-1 text-sm leading-relaxed text-slate-600">
+            RR для QTc береться з верхнього блоку: з RR у клітинках або з введеної ЧСС.
+          </p>
 
-        <div className="mt-3 grid gap-3 md:grid-cols-3 xl:grid-cols-5">
-          <label>
-            <span className="mb-1.5 block text-sm font-semibold text-slate-700">Спосіб</span>
-            <select value={qtForm.inputMode} onChange={(event) => updateQtForm('inputMode', event.target.value)} className={inputClass}>
-              <option value="cells">маленькі клітинки</option>
-              <option value="ms">мілісекунди</option>
-            </select>
-          </label>
-          <label>
-            <span className="mb-1.5 block text-sm font-semibold text-slate-700">QT</span>
-            <input
-              type="number"
-              min="0"
-              step="0.25"
-              value={qtForm.qt}
-              onChange={(event) => updateQtForm('qt', event.target.value)}
-              className={inputClass}
-            />
-            <span className="mt-1 block text-xs font-medium text-slate-500">{qtForm.inputMode === 'cells' ? 'маленьких клітинок' : 'мс'}</span>
-          </label>
-          <label>
-            <span className="mb-1.5 block text-sm font-semibold text-slate-700">RR</span>
-            <input
-              type="number"
-              min="0"
-              step="0.25"
-              value={qtForm.rr}
-              onChange={(event) => updateQtForm('rr', event.target.value)}
-              className={inputClass}
-            />
-            <span className="mt-1 block text-xs font-medium text-slate-500">{qtForm.inputMode === 'cells' ? 'маленьких клітинок' : 'мс'}</span>
-          </label>
-          <label>
-            <span className="mb-1.5 block text-sm font-semibold text-slate-700">Стать</span>
-            <select value={qtForm.sex} onChange={(event) => updateQtForm('sex', event.target.value)} className={inputClass}>
-              <option value="male">чоловік</option>
-              <option value="female">жінка</option>
-            </select>
-          </label>
-          <div className="rounded-md border border-blue-100 bg-white p-3">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-700">Результат</p>
-            {qtMetrics ? (
-              <div className="mt-2 space-y-1">
-                <p className="text-sm font-semibold leading-relaxed text-slate-900">
-                  QTc Fridericia {qtMetrics.qtcFridericia} мс
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-slate-700">QT, мс</span>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                value={qtForm.qt}
+                onChange={(event) => updateQtForm('qt', event.target.value)}
+                className={inputClass}
+              />
+              <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
+                RR для розрахунку: {qtRrMs ? `${qtRrMs} мс` : 'введіть ЧСС або RR у клітинках вище'}
+              </span>
+            </label>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-semibold text-slate-700">Стать</span>
+                <select value={qtForm.sex} onChange={(event) => updateQtForm('sex', event.target.value)} className={inputClass}>
+                  <option value="male">чоловік</option>
+                  <option value="female">жінка</option>
+                </select>
+                <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
+                  межа: чоловіки до 450 мс, жінки до 470 мс
+                </span>
+              </label>
+
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-semibold text-slate-700">Формула QTc</span>
+                <select value={qtForm.formula} onChange={(event) => updateQtForm('formula', event.target.value)} className={inputClass}>
+                  {qtFormulaOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+                <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
+                  обрана формула потрапляє у висновок
+                </span>
+              </label>
+            </div>
+          </div>
+
+          {qtMetrics ? (
+            <div className="mt-3 grid gap-3 lg:grid-cols-2">
+              <div className="rounded-md border border-blue-100 bg-white p-3">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-700">Результат</p>
+                <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-900">
+                  QTc {getQtFormulaOption(qtForm.formula).label} {selectedQtc} мс
                 </p>
-                <p className="text-xs leading-relaxed text-slate-500">
+                <p className="mt-1 text-xs leading-relaxed text-slate-500">
                   QT {qtMetrics.qt} мс, RR {Math.round(qtMetrics.rr * 1000)} мс
                 </p>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {qtFormulaOptions
+                    .filter((option) => option.value !== qtForm.formula)
+                    .map((option) => (
+                      <p key={option.value} className="rounded-md bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700">
+                        {option.label} {qtMetrics[option.metric]} мс
+                      </p>
+                    ))}
+                </div>
               </div>
-            ) : (
-              <p className="mt-2 text-sm text-slate-500">Введіть QT і RR.</p>
-            )}
-          </div>
-        </div>
 
-        {qtMetrics ? (
-          <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-            <div className="rounded-md border border-slate-200 bg-white p-3">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Інші формули</p>
-              <div className="mt-2 grid gap-2 sm:grid-cols-3">
-                <p className="rounded-md bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">Bazett {qtMetrics.qtcBazett} мс</p>
-                <p className="rounded-md bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">Framingham {qtMetrics.qtcFramingham} мс</p>
-                <p className="rounded-md bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">Hodges {qtMetrics.qtcHodges} мс</p>
+              <div className={`rounded-md border p-3 ${qtInterpretation?.toneClass || 'border-slate-200 bg-white text-slate-900'}`}>
+                <p className="text-sm font-bold">{qtInterpretation?.label}</p>
+                <p className="mt-1 text-sm leading-relaxed">{qtInterpretation?.text}</p>
+                <ul className="mt-2 space-y-1 text-sm">
+                  {qtNextSteps.map((step) => (
+                    <li key={step}>• {step}</li>
+                  ))}
+                </ul>
               </div>
+
+              {visibleQtCauseOptions.length > 0 ? (
+                <label className="block">
+                  <span className="mb-1.5 block text-sm font-semibold text-slate-700">Можлива причина / контекст</span>
+                  <select
+                    value={visibleQtCauseOptions.some((option) => option.value === qtForm.cause) ? qtForm.cause : ''}
+                    onChange={(event) => updateQtForm('cause', event.target.value)}
+                    className={inputClass}
+                  >
+                    <option value="">оберіть, якщо потрібно</option>
+                    {visibleQtCauseOptions.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </label>
+              ) : null}
+
+              {qtCauseDescription ? (
+                <div className="rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-medium leading-relaxed text-blue-900 lg:col-span-2">
+                  {qtCauseDescription}
+                </div>
+              ) : null}
             </div>
-            <div className="rounded-md border border-blue-100 bg-blue-50 p-3">
-              <p className="text-sm font-bold text-blue-950">{qtMetrics.interpretation.label}</p>
-              <p className="mt-1 text-sm leading-relaxed text-blue-900">{qtMetrics.interpretation.text}</p>
-              <ul className="mt-2 space-y-1 text-sm text-blue-900">
-                {qtNextSteps.map((step) => (
-                  <li key={step}>• {step}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        ) : null}
+          ) : (
+            <p className="mt-3 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-500">
+              Введіть QT і ЧСС або RR у клітинках у верхньому блоці.
+            </p>
+          )}
         </section>
 
         <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
