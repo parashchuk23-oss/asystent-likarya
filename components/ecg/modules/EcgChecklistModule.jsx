@@ -36,7 +36,8 @@ const polarityOptions = [
 const pqClarificationOptions = {
   short: [
     { value: 'wpw', label: 'WPW' },
-    { value: 'lowAtrialOrJunctional', label: 'нижньопередсердний або AV-вузловий ритм' },
+    { value: 'lowAtrial', label: 'нижньопередсердний ритм' },
+    { value: 'junctional', label: 'AV-вузловий ритм' },
     { value: 'fastAvConduction', label: 'варіант швидкого AV-проведення' },
   ],
   long: [
@@ -44,10 +45,26 @@ const pqClarificationOptions = {
     { value: 'mobitzI', label: 'AV-блокада II ступеня, Mobitz I' },
     { value: 'mobitzII', label: 'AV-блокада II ступеня, Mobitz II' },
     { value: 'twoToOne', label: 'AV-блокада 2:1' },
-    { value: 'highGrade', label: 'AV-блокада високого ступеня' },
+    { value: 'threeToOne', label: 'AV-блокада високого ступеня 3:1' },
+    { value: 'fourToOne', label: 'AV-блокада високого ступеня 4:1' },
     { value: 'avBlockIII', label: 'AV-блокада III ступеня' },
     { value: 'other', label: 'інше / потребує уточнення' },
   ],
+};
+
+const pqClarificationDescriptions = {
+  wpw: 'Короткий PQ у поєднанні з delta-хвилею та розширенням QRS може відповідати передчасному збудженню шлуночків. Оцінюйте форму початку QRS, ширину комплексу та клінічний контекст.',
+  lowAtrial: 'Імпульс може виходити з нижніх відділів передсердь, тому шлях до AV-вузла коротший. Часто варто подивитися полярність P у II, III та aVF.',
+  junctional: 'Імпульс формується в ділянці AV-вузла. P може бути відсутній, зливатися з QRS або розташовуватися після QRS; якщо P перед QRS, PQ часто короткий.',
+  fastAvConduction: 'Короткий PQ без delta-хвилі та без розширення QRS може бути варіантом швидкого AV-проведення. Це краще трактувати обережно, не як самостійний діагноз.',
+  avBlockI: 'PQ понад 200 мс, але кожен зубець P проводиться до QRS. Проведення сповільнене, випадіння комплексів немає; можливий вплив ваготонії або препаратів, що сповільнюють AV-провідність.',
+  mobitzI: 'PQ поступово подовжується, після чого один QRS випадає. Часто це рівень AV-вузла; може бути при ваготонії, у спортсменів, під час сну або на фоні бета-блокаторів, верапамілу, дилтіазему чи дигоксину.',
+  mobitzII: 'PQ залишається стабільним, але QRS раптово випадає. Частіше це порушення нижче AV-вузла, на рівні пучка Гіса або ніжок; клінічно важливіше через ризик прогресування.',
+  twoToOne: 'Кожен другий зубець P не проводиться до шлуночків. Часто неможливо точно відрізнити Mobitz I від Mobitz II, бо немає послідовності PQ для оцінки динаміки.',
+  threeToOne: 'До шлуночків проводиться кожен третій передсердний імпульс. Це AV-блокада високого ступеня; важливо оцінити ЧСС, симптоми, ширину QRS і клінічний контекст.',
+  fourToOne: 'До шлуночків проводиться кожен четвертий передсердний імпульс. Це виражена AV-блокада високого ступеня; особливо важливі брадикардія, синкопе та ширина QRS.',
+  avBlockIII: 'Передсердя і шлуночки працюють незалежно: P не має стабільного зв’язку з QRS. Це повна AV-блокада з AV-дисоціацією.',
+  other: 'Використовуйте, якщо картина не вкладається в типові варіанти або потребує ручного уточнення у висновку.',
 };
 
 const freeTextItems = [
@@ -241,6 +258,7 @@ export default function EcgChecklistModule() {
   const rhythmText = useMemo(() => buildRhythmText(values, effectiveRate), [values, effectiveRate]);
   const pqStatus = useMemo(() => getPqStatus(values.pqMs), [values.pqMs]);
   const visiblePqClarificationOptions = pqClarificationOptions[pqStatus.type] || [];
+  const pqClarificationDescription = pqClarificationDescriptions[values.pqClarification] || '';
 
   const update = (id, value) => setValues((current) => ({ ...current, [id]: value }));
   const updateRhythmOutput = (value) => {
@@ -404,19 +422,26 @@ export default function EcgChecklistModule() {
               </span>
             </label>
             {visiblePqClarificationOptions.length > 0 ? (
-              <label className="mt-3 block">
-                <span className="mb-1.5 block text-sm font-semibold text-slate-700">Уточнення PQ</span>
-                <select
-                  value={values.pqClarification}
-                  onChange={(event) => update('pqClarification', event.target.value)}
-                  className={inputClass}
-                >
-                  <option value="">оберіть, якщо потрібно</option>
-                  {visiblePqClarificationOptions.map((option) => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
-                  ))}
-                </select>
-              </label>
+              <div className="mt-3 space-y-2">
+                <label className="block">
+                  <span className="mb-1.5 block text-sm font-semibold text-slate-700">Уточнення PQ</span>
+                  <select
+                    value={values.pqClarification}
+                    onChange={(event) => update('pqClarification', event.target.value)}
+                    className={inputClass}
+                  >
+                    <option value="">оберіть, якщо потрібно</option>
+                    {visiblePqClarificationOptions.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </label>
+                {pqClarificationDescription ? (
+                  <div className="rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-medium leading-relaxed text-blue-900">
+                    {pqClarificationDescription}
+                  </div>
+                ) : null}
+              </div>
             ) : null}
           </div>
         </section>
