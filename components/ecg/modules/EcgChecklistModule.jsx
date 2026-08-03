@@ -405,7 +405,7 @@ export default function EcgChecklistModule() {
 
         <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
           <h4 className="text-sm font-bold text-slate-950">4. Інтервал PQ</h4>
-          <div className="mt-3 max-w-md">
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
             <label className="block">
               <span className="mb-1.5 block text-sm font-semibold text-slate-700">PQ, мс</span>
               <input
@@ -422,25 +422,23 @@ export default function EcgChecklistModule() {
               </span>
             </label>
             {visiblePqClarificationOptions.length > 0 ? (
-              <div className="mt-3 space-y-2">
-                <label className="block">
-                  <span className="mb-1.5 block text-sm font-semibold text-slate-700">Уточнення PQ</span>
-                  <select
-                    value={values.pqClarification}
-                    onChange={(event) => update('pqClarification', event.target.value)}
-                    className={inputClass}
-                  >
-                    <option value="">оберіть, якщо потрібно</option>
-                    {visiblePqClarificationOptions.map((option) => (
-                      <option key={option.value} value={option.value}>{option.label}</option>
-                    ))}
-                  </select>
-                </label>
-                {pqClarificationDescription ? (
-                  <div className="rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-medium leading-relaxed text-blue-900">
-                    {pqClarificationDescription}
-                  </div>
-                ) : null}
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-semibold text-slate-700">Уточнення PQ</span>
+                <select
+                  value={values.pqClarification}
+                  onChange={(event) => update('pqClarification', event.target.value)}
+                  className={inputClass}
+                >
+                  <option value="">оберіть, якщо потрібно</option>
+                  {visiblePqClarificationOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
+            {pqClarificationDescription ? (
+              <div className="rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-medium leading-relaxed text-blue-900 lg:col-span-2">
+                {pqClarificationDescription}
               </div>
             ) : null}
           </div>
