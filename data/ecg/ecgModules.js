@@ -39,6 +39,6 @@ export const ecgModules = [
     id: 'syndromes',
     title: 'ЕКГ синдроми',
     description: 'WPW, Brugada, Wellens, de Winter та інші чек-листи.',
-    status: 'soon',
+    status: 'ready',
   },
 ];

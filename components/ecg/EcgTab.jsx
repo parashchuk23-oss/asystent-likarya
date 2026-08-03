@@ -6,10 +6,12 @@ import EcgSidebar from './EcgSidebar';
 import AxisModule from './modules/AxisModule';
 import ComingSoonEcgModule from './modules/ComingSoonEcgModule';
 import EcgChecklistModule from './modules/EcgChecklistModule';
+import EcgSyndromesModule from './modules/EcgSyndromesModule';
 
 function renderModule(activeModule) {
   if (activeModule.id === 'checklist') return <EcgChecklistModule />;
   if (activeModule.id === 'axis') return <AxisModule />;
+  if (activeModule.id === 'syndromes') return <EcgSyndromesModule />;
   return <ComingSoonEcgModule module={activeModule} />;
 }
 
