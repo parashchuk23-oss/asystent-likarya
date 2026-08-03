@@ -67,6 +67,28 @@ const pqClarificationDescriptions = {
   other: 'Використовуйте, якщо картина не вкладається в типові варіанти або потребує ручного уточнення у висновку.',
 };
 
+const qrsClarificationOptions = [
+  { value: 'incompleteRbbb', label: 'неповна блокада правої ніжки пучка Гіса' },
+  { value: 'rbbb', label: 'блокада правої ніжки пучка Гіса' },
+  { value: 'lbbb', label: 'блокада лівої ніжки пучка Гіса' },
+  { value: 'ivcd', label: 'неспецифічне порушення внутрішньошлуночкової провідності' },
+  { value: 'ventricularRhythm', label: 'ритм шлуночкового походження' },
+  { value: 'pacedRhythm', label: 'ритм електрокардіостимулятора' },
+  { value: 'wpw', label: 'WPW / передчасне збудження' },
+  { value: 'hyperkalemia', label: 'розглянути гіперкаліємію / метаболічну причину' },
+];
+
+const qrsClarificationDescriptions = {
+  incompleteRbbb: 'Зазвичай QRS <120 мс, часто rsR′ / rSR′ у V1–V2. Може бути варіантом норми, але оцінюється разом із клінікою, правими відділами серця та попередніми ЕКГ.',
+  rbbb: 'Зазвичай QRS ≥120 мс, rSR′ / широкий R′ у V1–V2 та широкий S у I, V5–V6. Важливо оцінити, чи блокада нова, чи є симптоми, ішемія, ТЕЛА, перевантаження правих відділів або структурне захворювання серця.',
+  lbbb: 'Зазвичай QRS ≥120 мс, широкий або зазубрений R у I, aVL, V5–V6, глибокий S або QS у V1. Нова БЛНПГ потребує уважної клінічної оцінки, особливо при болю в грудях або підозрі на гострий коронарний синдром.',
+  ivcd: 'QRS розширений, але картина не відповідає типовим критеріям блокади правої або лівої ніжки. Варто оцінити попередні ЕКГ, структурне захворювання серця, електроліти, ішемію та медикаменти.',
+  ventricularRhythm: 'Широкі комплекси QRS можуть бути при шлуночковому ритмі або шлуночковій тахікардії. Особливо важливо оцінити регулярність, ЧСС, AV-дисоціацію, захоплені або зливні комплекси, гемодинаміку та клінічний стан.',
+  pacedRhythm: 'При шлуночковій стимуляції QRS зазвичай широкий і має морфологію, подібну до блокади ніжки. Потрібно оцінити стимуляційні спайки, захоплення шлуночків, регулярність стимуляції та відповідність режиму ЕКС.',
+  wpw: 'Для WPW характерні короткий PQ, delta-хвиля та розширений QRS. Якщо є тільки широкий QRS без короткого PQ або delta-хвилі, краще не писати WPW автоматично.',
+  hyperkalemia: 'Гіперкаліємія може спричиняти розширення QRS, високі загострені T, зменшення або зникнення P та брадиаритмії. Оцінити калій, ШКФ, препарати та клінічний стан.',
+};
+
 const freeTextItems = [
   { id: 'blocks', label: 'Блокади', placeholder: 'Наприклад: ознак блокад немає', norm: 'приблизна норма: ознак порушення провідності немає' },
   { id: 'hypertrophy', label: 'Гіпертрофія', placeholder: 'Наприклад: критерії ГЛШ не виконуються', norm: 'приблизна норма: ЕКГ-критерії гіпертрофії не виконуються' },
@@ -88,6 +110,7 @@ const normalChecklistValues = {
   pqMs: '180',
   pqClarification: '',
   qrsMs: '90',
+  qrsClarification: '',
   blocks: 'ознак порушення провідності не виявлено',
   hypertrophy: 'ЕКГ-критерії гіпертрофії камер серця не виконуються',
   st: 'сегмент ST без значущої елевації або депресії',
@@ -129,9 +152,22 @@ function getPqStatus(pqMs) {
   return { type: 'normal', label: 'Інтерпретація: PQ у межах норми' };
 }
 
+function getQrsStatus(qrsMs) {
+  const value = Number(formatNumber(qrsMs));
+  if (!value) return { type: '', label: 'введіть QRS для інтерпретації' };
+  if (value < 60) return { type: 'short', label: 'Інтерпретація: вузький QRS / перевірити коректність виміру' };
+  if (value > 110) return { type: 'wide', label: 'Інтерпретація: розширений QRS' };
+  return { type: 'normal', label: 'Інтерпретація: QRS у межах норми' };
+}
+
 function getPqClarificationLabel(type, value) {
   if (!type || !value) return '';
   return pqClarificationOptions[type]?.find((option) => option.value === value)?.label || '';
+}
+
+function getQrsClarificationLabel(value) {
+  if (!value) return '';
+  return qrsClarificationOptions.find((option) => option.value === value)?.label || '';
 }
 
 function getEffectiveRate(values, paperSpeed) {
@@ -217,12 +253,19 @@ function buildConclusion(values, paperSpeed, qtMetrics) {
       .join(', ')
     : '';
   const qrsMs = formatNumber(values.qrsMs);
+  const qrsStatus = getQrsStatus(values.qrsMs);
+  const qrsClarification = qrsStatus.type === 'wide' ? getQrsClarificationLabel(values.qrsClarification) : '';
+  const qrsText = qrsMs
+    ? [`QRS ${qrsMs} мс`, qrsStatus.type === 'wide' ? 'розширений' : '', qrsClarification]
+      .filter(Boolean)
+      .join(', ')
+    : '';
   const qtText = buildQtConclusionText(qtMetrics);
   const lines = [
     rhythm,
     buildAxisText(values),
     pqText,
-    qrsMs ? `QRS ${qrsMs} мс` : '',
+    qrsText,
     qtText,
     ...freeTextItems
     .map((item) => values[item.id]?.trim())
@@ -259,6 +302,9 @@ export default function EcgChecklistModule() {
   const pqStatus = useMemo(() => getPqStatus(values.pqMs), [values.pqMs]);
   const visiblePqClarificationOptions = pqClarificationOptions[pqStatus.type] || [];
   const pqClarificationDescription = pqClarificationDescriptions[values.pqClarification] || '';
+  const qrsStatus = useMemo(() => getQrsStatus(values.qrsMs), [values.qrsMs]);
+  const showQrsClarification = qrsStatus.type === 'wide';
+  const qrsClarificationDescription = qrsClarificationDescriptions[values.qrsClarification] || '';
 
   const update = (id, value) => setValues((current) => ({ ...current, [id]: value }));
   const updateRhythmOutput = (value) => {
@@ -446,7 +492,7 @@ export default function EcgChecklistModule() {
 
         <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
           <h4 className="text-sm font-bold text-slate-950">5. Комплекс QRS</h4>
-          <div className="mt-3 max-w-md">
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
             <label className="block">
               <span className="mb-1.5 block text-sm font-semibold text-slate-700">QRS, мс</span>
               <input
@@ -459,9 +505,29 @@ export default function EcgChecklistModule() {
                 className={inputClass}
               />
               <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
-                приблизна норма: 60–110 мс
+                {qrsStatus.label}; приблизна норма: 60–110 мс
               </span>
             </label>
+            {showQrsClarification ? (
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-semibold text-slate-700">Уточнення QRS</span>
+                <select
+                  value={values.qrsClarification}
+                  onChange={(event) => update('qrsClarification', event.target.value)}
+                  className={inputClass}
+                >
+                  <option value="">оберіть, якщо потрібно</option>
+                  {qrsClarificationOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
+            {showQrsClarification && qrsClarificationDescription ? (
+              <div className="rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-medium leading-relaxed text-blue-900 lg:col-span-2">
+                {qrsClarificationDescription}
+              </div>
+            ) : null}
           </div>
         </section>
 
