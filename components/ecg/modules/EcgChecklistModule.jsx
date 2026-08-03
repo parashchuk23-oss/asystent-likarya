@@ -122,12 +122,60 @@ const qtCauseDescriptions = {
   shortQtSyndrome: 'Вроджений Short QT syndrome трапляється рідко. Підказки: дуже короткий QTc, сімейний анамнез раптової смерті, синкопе або фібриляція передсердь у молодому віці.',
 };
 
+const leadOptions = [
+  { value: 'inferior', label: 'II, III, aVF' },
+  { value: 'septal', label: 'V1–V2' },
+  { value: 'anterior', label: 'V1–V4' },
+  { value: 'anterolateral', label: 'V2–V6' },
+  { value: 'lateral', label: 'I, aVL, V5–V6' },
+  { value: 'posterior', label: 'V7–V9' },
+  { value: 'rightVentricle', label: 'V3R–V4R' },
+  { value: 'diffuse', label: 'багато відведень / дифузно' },
+];
+
+const stOptions = [
+  { value: 'normal', label: 'без значущих змін' },
+  { value: 'elevation', label: 'елевація ST' },
+  { value: 'depression', label: 'депресія ST' },
+  { value: 'nonspecific', label: 'неспецифічні зміни ST' },
+];
+
+const stDescriptions = {
+  normal: 'Нормальний стартовий варіант: немає значущої елевації або депресії ST.',
+  elevation: 'Елевацію ST потрібно оцінювати разом із клінікою, динамікою ЕКГ, тропонінами та критеріями STEMI.',
+  depression: 'Депресія ST може відповідати ішемії, перевантаженню, дигіталісному ефекту або вторинним змінам реполяризації.',
+  nonspecific: 'Неспецифічні зміни ST краще описувати обережно, особливо якщо немає типової клініки або динаміки.',
+};
+
+const tWaveOptions = [
+  { value: 'normal', label: 'без гострих ішемічних змін' },
+  { value: 'inversion', label: 'інверсія T' },
+  { value: 'peaked', label: 'високі загострені T' },
+  { value: 'flattened', label: 'згладжені T' },
+  { value: 'biphasic', label: 'двофазні T' },
+];
+
+const tWaveDescriptions = {
+  normal: 'Нормальний стартовий варіант: зубці T без гострих ішемічних змін.',
+  inversion: 'Інверсію T оцінюйте за локалізацією, симетричністю, глибиною та динамікою, особливо при болю в грудях.',
+  peaked: 'Високі загострені T можуть бути ранньою ішемічною зміною або ознакою гіперкаліємії. Варто співставити з калієм і клінікою.',
+  flattened: 'Згладжені T часто неспецифічні; можливі електролітні, медикаментозні або ішемічні причини.',
+  biphasic: 'Двофазні T у передніх відведеннях можуть бути клінічно важливими, зокрема при підозрі на Wellens-патерн.',
+};
+
+const qWaveOptions = [
+  { value: 'absent', label: 'не виявлені' },
+  { value: 'present', label: 'наявні' },
+];
+
+const qWaveDescriptions = {
+  absent: 'Нормальний стартовий варіант: патологічні зубці Q не виявлені.',
+  present: 'Патологічні Q можуть відповідати перенесеному інфаркту або іншій структурній причині. Оцінюйте разом з анамнезом, ЕхоКГ і попередніми ЕКГ.',
+};
+
 const freeTextItems = [
   { id: 'blocks', label: 'Блокади', placeholder: 'Наприклад: ознак блокад немає', norm: 'приблизна норма: ознак порушення провідності немає' },
   { id: 'hypertrophy', label: 'Гіпертрофія', placeholder: 'Наприклад: критерії ГЛШ не виконуються', norm: 'приблизна норма: ЕКГ-критерії гіпертрофії не виконуються' },
-  { id: 'st', label: 'ST', placeholder: 'Наприклад: без значущих змін', norm: 'приблизна норма: без значущої елевації або депресії' },
-  { id: 't', label: 'T', placeholder: 'Наприклад: без гострих ішемічних змін', norm: 'приблизна норма: без гострих ішемічних змін' },
-  { id: 'q', label: 'Патологічні Q', placeholder: 'Наприклад: не виявлені', norm: 'приблизна норма: патологічні Q не виявлені' },
 ];
 
 const normalChecklistValues = {
@@ -144,11 +192,14 @@ const normalChecklistValues = {
   pqClarification: '',
   qrsMs: '90',
   qrsClarification: '',
+  stStatus: 'normal',
+  stLeads: '',
+  tWaveStatus: 'normal',
+  tWaveLeads: '',
+  qWaveStatus: 'absent',
+  qWaveLeads: '',
   blocks: 'ознак порушення провідності не виявлено',
   hypertrophy: 'ЕКГ-критерії гіпертрофії камер серця не виконуються',
-  st: 'сегмент ST без значущої елевації або депресії',
-  t: 'зубці T без гострих ішемічних змін',
-  q: 'патологічні зубці Q не виявлені',
 };
 
 function formatNumber(value) {
@@ -268,6 +319,54 @@ function getQtCauseLabel(status, value) {
   return qtCauseOptions[group]?.find((option) => option.value === value)?.label || '';
 }
 
+function getLeadLabel(value) {
+  if (!value) return '';
+  return leadOptions.find((option) => option.value === value)?.label || '';
+}
+
+function getLeadPhrase(value) {
+  const label = getLeadLabel(value);
+  if (!label) return '';
+  if (value === 'diffuse') return ' у багатьох відведеннях / дифузно';
+  return ` у відведеннях ${label}`;
+}
+
+function buildStText(values) {
+  if (values.stStatus === 'elevation') {
+    return `елевація сегмента ST${getLeadPhrase(values.stLeads)}`;
+  }
+  if (values.stStatus === 'depression') {
+    return `депресія сегмента ST${getLeadPhrase(values.stLeads)}`;
+  }
+  if (values.stStatus === 'nonspecific') {
+    return `неспецифічні зміни сегмента ST${getLeadPhrase(values.stLeads)}`;
+  }
+  return 'сегмент ST без значущої елевації або депресії';
+}
+
+function buildTWaveText(values) {
+  if (values.tWaveStatus === 'inversion') {
+    return `інверсія зубців T${getLeadPhrase(values.tWaveLeads)}`;
+  }
+  if (values.tWaveStatus === 'peaked') {
+    return `високі загострені зубці T${getLeadPhrase(values.tWaveLeads)}`;
+  }
+  if (values.tWaveStatus === 'flattened') {
+    return `згладжені зубці T${getLeadPhrase(values.tWaveLeads)}`;
+  }
+  if (values.tWaveStatus === 'biphasic') {
+    return `двофазні зубці T${getLeadPhrase(values.tWaveLeads)}`;
+  }
+  return 'зубці T без гострих ішемічних змін';
+}
+
+function buildQWaveText(values) {
+  if (values.qWaveStatus === 'present') {
+    return `патологічні зубці Q${getLeadPhrase(values.qWaveLeads)}`;
+  }
+  return 'патологічні зубці Q не виявлені';
+}
+
 function getEffectiveRate(values, paperSpeed) {
   const manualRate = formatNumber(values.rate);
   const calculatedRate = calculateRateFromRrCells(values.rrCells, paperSpeed);
@@ -373,6 +472,9 @@ function buildConclusion(values, paperSpeed, qtMetrics, qtFormula, qtInterpretat
     pqText,
     qrsText,
     qtText,
+    buildStText(values),
+    buildTWaveText(values),
+    buildQWaveText(values),
     ...freeTextItems
     .map((item) => values[item.id]?.trim())
     .filter(Boolean),
@@ -436,6 +538,12 @@ export default function EcgChecklistModule() {
   const qrsStatus = useMemo(() => getQrsStatus(values.qrsMs), [values.qrsMs]);
   const showQrsClarification = qrsStatus.type === 'wide';
   const qrsClarificationDescription = qrsClarificationDescriptions[values.qrsClarification] || '';
+  const showStLeads = values.stStatus !== 'normal';
+  const showTWaveLeads = values.tWaveStatus !== 'normal';
+  const showQWaveLeads = values.qWaveStatus === 'present';
+  const stDescription = stDescriptions[values.stStatus] || '';
+  const tWaveDescription = tWaveDescriptions[values.tWaveStatus] || '';
+  const qWaveDescription = qWaveDescriptions[values.qWaveStatus] || '';
 
   const update = (id, value) => setValues((current) => ({ ...current, [id]: value }));
   const updateRhythmOutput = (value) => {
@@ -771,7 +879,112 @@ export default function EcgChecklistModule() {
         </section>
 
         <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-          <h4 className="text-sm font-bold text-slate-950">7. Морфологія, ST-T та патологічні Q</h4>
+          <h4 className="text-sm font-bold text-slate-950">7. Сегмент ST</h4>
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-slate-700">Оцінка ST</span>
+              <select value={values.stStatus} onChange={(event) => update('stStatus', event.target.value)} className={inputClass}>
+                {stOptions.map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+              <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
+                приблизна норма: без значущої елевації або депресії
+              </span>
+            </label>
+
+            {showStLeads ? (
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-semibold text-slate-700">Відведення</span>
+                <select value={values.stLeads} onChange={(event) => update('stLeads', event.target.value)} className={inputClass}>
+                  <option value="">оберіть відведення</option>
+                  {leadOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
+
+            {stDescription ? (
+              <div className="rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-medium leading-relaxed text-blue-900 lg:col-span-2">
+                {stDescription}
+              </div>
+            ) : null}
+          </div>
+        </section>
+
+        <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <h4 className="text-sm font-bold text-slate-950">8. Зубець T</h4>
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-slate-700">Оцінка T</span>
+              <select value={values.tWaveStatus} onChange={(event) => update('tWaveStatus', event.target.value)} className={inputClass}>
+                {tWaveOptions.map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+              <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
+                приблизна норма: без гострих ішемічних змін
+              </span>
+            </label>
+
+            {showTWaveLeads ? (
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-semibold text-slate-700">Відведення</span>
+                <select value={values.tWaveLeads} onChange={(event) => update('tWaveLeads', event.target.value)} className={inputClass}>
+                  <option value="">оберіть відведення</option>
+                  {leadOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
+
+            {tWaveDescription ? (
+              <div className="rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-medium leading-relaxed text-blue-900 lg:col-span-2">
+                {tWaveDescription}
+              </div>
+            ) : null}
+          </div>
+        </section>
+
+        <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <h4 className="text-sm font-bold text-slate-950">9. Патологічні Q</h4>
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-slate-700">Оцінка Q</span>
+              <select value={values.qWaveStatus} onChange={(event) => update('qWaveStatus', event.target.value)} className={inputClass}>
+                {qWaveOptions.map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+              <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
+                приблизна норма: патологічні Q не виявлені
+              </span>
+            </label>
+
+            {showQWaveLeads ? (
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-semibold text-slate-700">Відведення</span>
+                <select value={values.qWaveLeads} onChange={(event) => update('qWaveLeads', event.target.value)} className={inputClass}>
+                  <option value="">оберіть відведення</option>
+                  {leadOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
+
+            {qWaveDescription ? (
+              <div className="rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-medium leading-relaxed text-blue-900 lg:col-span-2">
+                {qWaveDescription}
+              </div>
+            ) : null}
+          </div>
+        </section>
+
+        <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <h4 className="text-sm font-bold text-slate-950">10. Провідність і гіпертрофія</h4>
           <div className="mt-3 grid gap-3 lg:grid-cols-2">
             {freeTextItems.map((item) => (
               <label key={item.id} className="block">
