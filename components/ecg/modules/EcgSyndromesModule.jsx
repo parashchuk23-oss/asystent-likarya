@@ -1,11 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ecgSyndromes } from '../../../data/ecg/ecgSyndromes';
 import EcgDisclaimer from '../EcgDisclaimer';
 import EcgModuleShell from '../EcgModuleShell';
-
-const cardBaseClass = 'rounded-lg border border-slate-200 bg-white p-4';
 
 function ListBlock({ title, items, tone = 'slate' }) {
   const toneClasses = {
@@ -73,17 +71,33 @@ export default function EcgSyndromesModule() {
     [],
   );
   const [activeCategory, setActiveCategory] = useState('Усі');
-  const [activeId, setActiveId] = useState(ecgSyndromes[0]?.id || '');
+  const [openId, setOpenId] = useState(null);
+  const buttonRefs = useRef({});
+  const pendingScrollIdRef = useRef(null);
   const filteredSyndromes = useMemo(
     () => ecgSyndromes.filter((syndrome) => activeCategory === 'Усі' || syndrome.category === activeCategory),
     [activeCategory],
   );
-  const activeSyndrome = ecgSyndromes.find((syndrome) => syndrome.id === activeId) || filteredSyndromes[0] || ecgSyndromes[0];
+
+  useEffect(() => {
+    if (!openId || pendingScrollIdRef.current !== openId) return;
+
+    pendingScrollIdRef.current = null;
+    window.requestAnimationFrame(() => {
+      buttonRefs.current[openId]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [openId]);
 
   const chooseCategory = (category) => {
     setActiveCategory(category);
-    const first = ecgSyndromes.find((syndrome) => category === 'Усі' || syndrome.category === category);
-    if (first) setActiveId(first.id);
+    setOpenId(null);
+  };
+
+  const toggleSyndrome = (id) => {
+    if (openId !== id) {
+      pendingScrollIdRef.current = id;
+    }
+    setOpenId((current) => (current === id ? null : id));
   };
 
   return (
@@ -109,66 +123,75 @@ export default function EcgSyndromesModule() {
         ))}
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[320px_minmax(0,1fr)]">
-        <div className="space-y-2">
-          {filteredSyndromes.map((syndrome) => (
-            <button
+      <div className="space-y-4">
+        {filteredSyndromes.map((syndrome) => {
+          const isOpen = openId === syndrome.id;
+
+          return (
+            <article
               key={syndrome.id}
-              type="button"
-              onClick={() => setActiveId(syndrome.id)}
-              className={`w-full rounded-lg border p-4 text-left transition ${
-                activeSyndrome.id === syndrome.id
-                  ? 'border-teal-300 bg-teal-50 shadow-sm'
-                  : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
+              className={`rounded-lg border bg-white shadow-sm shadow-slate-200/60 transition ${
+                isOpen ? 'border-teal-200 ring-1 ring-teal-100' : 'border-slate-200/80'
               }`}
             >
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">{syndrome.category}</p>
-              <h4 className="mt-2 text-base font-bold text-slate-950">{syndrome.title}</h4>
-              <p className="mt-1 text-sm leading-relaxed text-slate-600">{syndrome.summary}</p>
+            <button
+              ref={(element) => {
+                buttonRefs.current[syndrome.id] = element;
+              }}
+              type="button"
+              onClick={() => toggleSyndrome(syndrome.id)}
+              className="scroll-mt-4 flex w-full items-center justify-between gap-4 rounded-lg p-5 text-left transition hover:bg-teal-50/50"
+            >
+              <span>
+                <span className="block text-xs font-bold uppercase tracking-[0.18em] text-teal-700">{syndrome.category}</span>
+                <span className="mt-2 block text-base font-bold tracking-tight text-slate-950">{syndrome.title}</span>
+                <span className="mt-1 block text-sm leading-relaxed text-slate-500">{syndrome.summary}</span>
+              </span>
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-xl font-semibold text-blue-700">
+                {isOpen ? '−' : '+'}
+              </span>
             </button>
-          ))}
-        </div>
 
-        <section className={cardBaseClass}>
-          <div className="grid gap-4 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{activeSyndrome.category}</p>
-              <h3 className="mt-2 text-2xl font-bold text-slate-950">{activeSyndrome.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600">{activeSyndrome.summary}</p>
-              <div className="mt-4">
-                <EcgImageBlock syndrome={activeSyndrome} />
+            {isOpen ? (
+              <div className="border-t border-slate-100 p-5">
+                <div className="grid gap-4 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+                  <div>
+                    <EcgImageBlock syndrome={syndrome} />
+                  </div>
+
+                  <div className="grid gap-3">
+                    <ListBlock title="ЕКГ-критерії" items={syndrome.criteria} />
+                    <ListBlock title="Клінічне значення" items={syndrome.clinicalSignificance} tone="blue" />
+                  </div>
+                </div>
+
+                <div className="mt-4 grid gap-3 lg:grid-cols-3">
+                  <ListBlock title="Диференційний ряд" items={syndrome.differential} />
+                  <ListBlock title="Наступний крок" items={syndrome.nextSteps} tone="blue" />
+                  <ListBlock title="Коли діяти негайно" items={syndrome.urgent} tone="red" />
+                </div>
+
+                <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+                  <h4 className="text-sm font-bold text-slate-950">Джерела</h4>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {syndrome.sources.map((source) => (
+                      <a
+                        key={source.url}
+                        href={source.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-blue-700 hover:border-blue-200 hover:bg-blue-50"
+                      >
+                        {source.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div className="grid gap-3">
-              <ListBlock title="ЕКГ-критерії" items={activeSyndrome.criteria} />
-              <ListBlock title="Клінічне значення" items={activeSyndrome.clinicalSignificance} tone="blue" />
-            </div>
-          </div>
-
-          <div className="mt-4 grid gap-3 lg:grid-cols-3">
-            <ListBlock title="Диференційний ряд" items={activeSyndrome.differential} />
-            <ListBlock title="Наступний крок" items={activeSyndrome.nextSteps} tone="blue" />
-            <ListBlock title="Коли діяти негайно" items={activeSyndrome.urgent} tone="red" />
-          </div>
-
-          <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
-            <h4 className="text-sm font-bold text-slate-950">Джерела</h4>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {activeSyndrome.sources.map((source) => (
-                <a
-                  key={source.url}
-                  href={source.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-blue-700 hover:border-blue-200 hover:bg-blue-50"
-                >
-                  {source.label}
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
+            ) : null}
+          </article>
+          );
+        })}
       </div>
 
       <p className="rounded-lg border border-amber-100 bg-amber-50 p-4 text-sm leading-relaxed text-amber-900">

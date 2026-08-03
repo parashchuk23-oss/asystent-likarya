@@ -5,7 +5,7 @@ export const ecgSyndromes = [
     category: 'STEMI-еквіваленти',
     summary: 'Патерн гострої оклюзії LAD без класичної елевації ST у грудних відведеннях.',
     image: {
-      src: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/DeWinterECG.jpg',
+      src: 'https://commons.wikimedia.org/wiki/Special:FilePath/DeWinterECG.jpg',
       alt: 'Приклад ЕКГ-патерну de Winter',
       attribution: 'EM Vilela, MD / NCBI Bookshelf / Wikimedia Commons, CC BY 4.0',
       sourceUrl: 'https://commons.wikimedia.org/wiki/File:DeWinterECG.jpg',
@@ -41,6 +41,13 @@ export const ecgSyndromes = [
     title: 'Wellens',
     category: 'Критична LAD',
     summary: 'Патерн реперфузії / критичного стенозу LAD, часто при мінімальних симптомах або після зникнення болю.',
+    image: {
+      src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Wellens%27_Warning.png',
+      alt: 'Приклад ЕКГ-патерну Wellens',
+      attribution: 'Jer5150 / Wikimedia Commons, CC BY-SA 3.0',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Wellens%27_Warning.png',
+      licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0/',
+    },
     criteria: [
       'Глибокі симетричні або двофазні T у V2–V3, можуть поширюватися на V1–V6.',
       'Відсутність значної елевації ST.',
@@ -68,6 +75,13 @@ export const ecgSyndromes = [
     title: 'Brugada pattern',
     category: 'Каналопатії',
     summary: 'Патерн у правих грудних відведеннях, який може бути пов’язаний із ризиком шлуночкових аритмій.',
+    image: {
+      src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Brugada_syndrome_ECGs.jpg',
+      alt: 'Приклад ЕКГ-патерну Brugada',
+      attribution: 'PeaBrainC / Wikimedia Commons, CC BY-SA 4.0',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Brugada_syndrome_ECGs.jpg',
+      licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+    },
     criteria: [
       'Тип 1: coved ST elevation ≥2 мм у V1–V3 з негативним T.',
       'Тип 2: saddleback-подібна елевація ST у V1–V3.',
@@ -95,6 +109,13 @@ export const ecgSyndromes = [
     title: 'WPW',
     category: 'Передчасне збудження',
     summary: 'Ознаки додаткового AV-шляху з передчасним збудженням шлуночків.',
+    image: {
+      src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Wolff-Parkinson-White_syndrome_12_lead_EKG.png',
+      alt: 'Приклад ЕКГ при WPW',
+      attribution: 'Ksheka / Wikimedia Commons, CC BY-SA 3.0',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Wolff-Parkinson-White_syndrome_12_lead_EKG.png',
+      licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0/',
+    },
     criteria: [
       'Короткий PR / PQ <120 мс.',
       'Delta-хвиля на початку QRS.',
@@ -122,6 +143,13 @@ export const ecgSyndromes = [
     title: 'Гіперкаліємія',
     category: 'Електроліти',
     summary: 'ЕКГ-патерн, який може швидко прогресувати від високих T до широкого QRS і небезпечних аритмій.',
+    image: {
+      src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Hyperkalemia_ECG.jpg',
+      alt: 'Приклад ЕКГ при гіперкаліємії',
+      attribution: 'Michael-Joseph F. Agbayani and Eddieson Gonzales / Wikimedia Commons, CC BY 4.0',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Hyperkalemia_ECG.jpg',
+      licenseUrl: 'https://creativecommons.org/licenses/by/4.0/',
+    },
     criteria: [
       'Високі вузькі загострені T, часто дифузно.',
       'Подовження PR / PQ і зменшення амплітуди P.',
@@ -149,6 +177,13 @@ export const ecgSyndromes = [
     title: 'Перикардит',
     category: 'ST elevation mimics',
     summary: 'Дифузні ST-T зміни, які можуть імітувати STEMI, але мають іншу логіку розподілу.',
+    image: {
+      src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Acute_pericarditis.jpg',
+      alt: 'Приклад ЕКГ при гострому перикардиті',
+      attribution: 'James Heilman, MD / Wikimedia Commons, CC BY-SA 4.0',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Acute_pericarditis.jpg',
+      licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+    },
     criteria: [
       'Дифузна увігнута елевація ST у багатьох відведеннях.',
       'PR depression, особливо в нижніх і латеральних відведеннях.',
@@ -176,6 +211,13 @@ export const ecgSyndromes = [
     title: 'Задній інфаркт',
     category: 'STEMI-еквіваленти',
     summary: 'Задня стінка часто проявляється дзеркальними змінами у V1–V3, тому може бути пропущена.',
+    image: {
+      src: 'https://commons.wikimedia.org/wiki/Special:FilePath/Flipped_Posterior_STEMI_ECG.png',
+      alt: 'Приклад заднього STEMI з дзеркальним відображенням',
+      attribution: 'Algreary / Wikimedia Commons, CC BY-SA 4.0',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Flipped_Posterior_STEMI_ECG.png',
+      licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+    },
     criteria: [
       'Горизонтальна депресія ST у V1–V3.',
       'Високий R у V1–V3 як дзеркальний еквівалент Q.',
