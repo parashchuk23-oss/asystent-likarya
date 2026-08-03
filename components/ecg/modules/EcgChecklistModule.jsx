@@ -367,6 +367,12 @@ function buildQWaveText(values) {
   return 'патологічні зубці Q не виявлені';
 }
 
+function capitalizeSentence(text) {
+  const trimmed = text?.trim();
+  if (!trimmed) return '';
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+}
+
 function getEffectiveRate(values, paperSpeed) {
   const manualRate = formatNumber(values.rate);
   const calculatedRate = calculateRateFromRrCells(values.rrCells, paperSpeed);
@@ -478,7 +484,7 @@ function buildConclusion(values, paperSpeed, qtMetrics, qtFormula, qtInterpretat
     ...freeTextItems
     .map((item) => values[item.id]?.trim())
     .filter(Boolean),
-  ].filter(Boolean);
+  ].filter(Boolean).map(capitalizeSentence);
 
   if (!lines.length) {
     return 'Заповніть пункти чек-листа, щоб сформувати короткий структурований висновок.';
