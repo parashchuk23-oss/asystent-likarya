@@ -565,6 +565,7 @@ export default function EcgChecklistModule() {
     formula: 'fridericia',
     cause: '',
   });
+  const [showChamberOverloadDetails, setShowChamberOverloadDetails] = useState(false);
   const calculatedRate = useMemo(
     () => calculateRateFromRrCells(values.rrCells, qtForm.paperSpeed),
     [values.rrCells, qtForm.paperSpeed],
@@ -614,6 +615,11 @@ export default function EcgChecklistModule() {
   const tWaveDescription = tWaveDescriptions[values.tWaveStatus] || '';
   const qWaveDescription = qWaveDescriptions[values.qWaveStatus] || '';
   const hypertrophyCriteria = useMemo(() => getHypertrophyCriteria(values, qtForm.sex), [values, qtForm.sex]);
+  const chamberOverloadSignsCount = [
+    values.rightHeartOverloadSigns,
+    values.leftAtrialOverloadSigns,
+    values.rightAtrialOverloadSigns,
+  ].reduce((total, list) => total + (Array.isArray(list) ? list.length : 0), 0);
 
   const update = (id, value) => setValues((current) => ({ ...current, [id]: value }));
   const toggleArrayValue = (id, value) => {
@@ -1151,29 +1157,48 @@ export default function EcgChecklistModule() {
               </div>
             </div>
 
-            <div className="mt-3 grid gap-3 lg:grid-cols-3">
-              {[
-                ['rightHeartOverloadSigns', 'Праві відділи', rightHeartOverloadOptions],
-                ['leftAtrialOverloadSigns', 'Ліве передсердя', leftAtrialOverloadOptions],
-                ['rightAtrialOverloadSigns', 'Праве передсердя', rightAtrialOverloadOptions],
-              ].map(([id, title, options]) => (
-                <div key={id} className="rounded-md border border-slate-200 bg-slate-50 p-3">
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{title}</p>
-                  <div className="mt-2 space-y-2">
-                    {options.map((option) => (
-                      <label key={option.value} className="flex min-h-[48px] items-center gap-3 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700">
-                        <input
-                          type="checkbox"
-                          checked={Array.isArray(values[id]) && values[id].includes(option.value)}
-                          onChange={() => toggleArrayValue(id, option.value)}
-                          className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span>{option.label}</span>
-                      </label>
-                    ))}
-                  </div>
+            <div className="mt-3 rounded-md border border-slate-200 bg-slate-50">
+              <button
+                type="button"
+                onClick={() => setShowChamberOverloadDetails((current) => !current)}
+                className="flex w-full items-center justify-between gap-3 px-3 py-3 text-left"
+              >
+                <span>
+                  <span className="block text-sm font-bold text-slate-900">Додаткові ознаки перевантаження камер</span>
+                  <span className="mt-0.5 block text-xs font-medium text-slate-500">
+                    Праві відділи, ліве передсердя, праве передсердя
+                    {chamberOverloadSignsCount ? `; вибрано: ${chamberOverloadSignsCount}` : ''}
+                  </span>
+                </span>
+                <span className="text-lg font-bold text-teal-700">{showChamberOverloadDetails ? '−' : '+'}</span>
+              </button>
+
+              {showChamberOverloadDetails ? (
+                <div className="grid gap-3 border-t border-slate-200 p-3 lg:grid-cols-3">
+                  {[
+                    ['rightHeartOverloadSigns', 'Праві відділи', rightHeartOverloadOptions],
+                    ['leftAtrialOverloadSigns', 'Ліве передсердя', leftAtrialOverloadOptions],
+                    ['rightAtrialOverloadSigns', 'Праве передсердя', rightAtrialOverloadOptions],
+                  ].map(([id, title, options]) => (
+                    <div key={id} className="rounded-md border border-slate-200 bg-white p-3">
+                      <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{title}</p>
+                      <div className="mt-2 space-y-2">
+                        {options.map((option) => (
+                          <label key={option.value} className="flex min-h-[48px] items-center gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">
+                            <input
+                              type="checkbox"
+                              checked={Array.isArray(values[id]) && values[id].includes(option.value)}
+                              onChange={() => toggleArrayValue(id, option.value)}
+                              className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                            />
+                            <span>{option.label}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              ) : null}
             </div>
           </div>
         </section>
