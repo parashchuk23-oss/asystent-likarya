@@ -173,11 +173,6 @@ const qWaveDescriptions = {
   present: 'Патологічні Q можуть відповідати перенесеному інфаркту або іншій структурній причині. Оцінюйте разом з анамнезом, ЕхоКГ і попередніми ЕКГ.',
 };
 
-const freeTextItems = [
-  { id: 'blocks', label: 'Блокади', placeholder: 'Наприклад: ознак блокад немає', norm: 'приблизна норма: ознак порушення провідності немає' },
-  { id: 'hypertrophy', label: 'Гіпертрофія', placeholder: 'Наприклад: критерії ГЛШ не виконуються', norm: 'приблизна норма: ЕКГ-критерії гіпертрофії не виконуються' },
-];
-
 const normalChecklistValues = {
   rate: '76',
   rrCells: '',
@@ -198,8 +193,14 @@ const normalChecklistValues = {
   tWaveLeads: '',
   qWaveStatus: 'absent',
   qWaveLeads: '',
-  blocks: 'ознак порушення провідності не виявлено',
-  hypertrophy: 'ЕКГ-критерії гіпертрофії камер серця не виконуються',
+  hypertrophySex: 'male',
+  sv1Mm: '',
+  rv5v6Mm: '',
+  ravlMm: '',
+  sv3Mm: '',
+  rightHeartOverload: false,
+  leftAtrialOverload: false,
+  rightAtrialOverload: false,
 };
 
 function formatNumber(value) {
@@ -207,6 +208,12 @@ function formatNumber(value) {
   const number = Number(String(value).replace(',', '.'));
   if (!Number.isFinite(number)) return '';
   return String(Math.round(number));
+}
+
+function parsePositiveNumber(value) {
+  if (value === '' || value === null || value === undefined) return null;
+  const number = Number(String(value).replace(',', '.'));
+  return Number.isFinite(number) && number > 0 ? number : null;
 }
 
 function cellsToMs(cells, paperSpeed) {
@@ -367,6 +374,48 @@ function buildQWaveText(values) {
   return 'патологічні зубці Q не виявлені';
 }
 
+function getHypertrophyCriteria(values) {
+  const sv1 = parsePositiveNumber(values.sv1Mm);
+  const rv5v6 = parsePositiveNumber(values.rv5v6Mm);
+  const ravl = parsePositiveNumber(values.ravlMm);
+  const sv3 = parsePositiveNumber(values.sv3Mm);
+  const sokolowSum = sv1 !== null && rv5v6 !== null ? sv1 + rv5v6 : null;
+  const cornellSum = ravl !== null && sv3 !== null ? ravl + sv3 : null;
+  const cornellThreshold = values.hypertrophySex === 'female' ? 20 : 28;
+
+  return {
+    sokolowSum,
+    cornellSum,
+    sokolowPositive: sokolowSum !== null && sokolowSum >= 35,
+    cornellPositive: cornellSum !== null && cornellSum > cornellThreshold,
+    cornellThreshold,
+  };
+}
+
+function buildHypertrophyTexts(values) {
+  const criteria = getHypertrophyCriteria(values);
+  const lvhCriteria = [
+    criteria.sokolowPositive ? 'Соколов-Лайон' : '',
+    criteria.cornellPositive ? 'Корнелльський вольтаж' : '',
+  ].filter(Boolean);
+  const lines = [];
+
+  if (lvhCriteria.length) {
+    lines.push(`ЕКГ відповідає критеріям гіпертрофії лівого шлуночка (${lvhCriteria.join(', ')})`);
+  }
+  if (values.rightHeartOverload) {
+    lines.push('ЕКГ-ознаки перевантаження правих відділів');
+  }
+  if (values.leftAtrialOverload) {
+    lines.push('ЕКГ-ознаки перевантаження лівого передсердя');
+  }
+  if (values.rightAtrialOverload) {
+    lines.push('ЕКГ-ознаки перевантаження правого передсердя');
+  }
+
+  return lines;
+}
+
 function capitalizeSentence(text) {
   const trimmed = text?.trim();
   if (!trimmed) return '';
@@ -481,9 +530,7 @@ function buildConclusion(values, paperSpeed, qtMetrics, qtFormula, qtInterpretat
     buildStText(values),
     buildTWaveText(values),
     buildQWaveText(values),
-    ...freeTextItems
-    .map((item) => values[item.id]?.trim())
-    .filter(Boolean),
+    ...buildHypertrophyTexts(values),
   ].filter(Boolean).map(capitalizeSentence);
 
   if (!lines.length) {
@@ -550,6 +597,7 @@ export default function EcgChecklistModule() {
   const stDescription = stDescriptions[values.stStatus] || '';
   const tWaveDescription = tWaveDescriptions[values.tWaveStatus] || '';
   const qWaveDescription = qWaveDescriptions[values.qWaveStatus] || '';
+  const hypertrophyCriteria = useMemo(() => getHypertrophyCriteria(values), [values]);
 
   const update = (id, value) => setValues((current) => ({ ...current, [id]: value }));
   const updateRhythmOutput = (value) => {
@@ -990,20 +1038,108 @@ export default function EcgChecklistModule() {
         </section>
 
         <section className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-          <h4 className="text-sm font-bold text-slate-950">10. Провідність і гіпертрофія</h4>
-          <div className="mt-3 grid gap-3 lg:grid-cols-2">
-            {freeTextItems.map((item) => (
-              <label key={item.id} className="block">
-                <span className="mb-1.5 block text-sm font-semibold text-slate-700">{item.label}</span>
-                <input
-                  value={values[item.id] || ''}
-                  onChange={(event) => update(item.id, event.target.value)}
-                  placeholder={item.placeholder}
-                  className={inputClass}
-                />
-                <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">{item.norm}</span>
+          <h4 className="text-sm font-bold text-slate-950">10. Ознаки гіпертрофії / перевантаження камер</h4>
+          <p className="mt-1 text-sm leading-relaxed text-slate-600">
+            У нормі цей блок нічого не додає до висновку. Якщо критерії виконуються, програма вкаже їх у дужках.
+          </p>
+
+          <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3">
+            <div className="grid gap-3 lg:grid-cols-2">
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-semibold text-slate-700">Стать для Корнелльського критерію</span>
+                <select value={values.hypertrophySex} onChange={(event) => update('hypertrophySex', event.target.value)} className={inputClass}>
+                  <option value="male">чоловік</option>
+                  <option value="female">жінка</option>
+                </select>
               </label>
-            ))}
+              <div className="rounded-md border border-slate-100 bg-slate-50 px-3 py-2 text-xs font-medium leading-relaxed text-slate-600">
+                Соколов-Лайон: S V1 + R V5/V6 ≥35 мм. Корнелльський вольтаж: R aVL + S V3 &gt;28 мм у чоловіків або &gt;20 мм у жінок.
+              </div>
+            </div>
+
+            <div className="mt-3 grid gap-3 lg:grid-cols-2">
+              <div className="rounded-md border border-slate-100 bg-slate-50 p-3">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Соколов-Лайон</p>
+                <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-1.5 block text-sm font-semibold text-slate-700">S V1, мм</span>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.5"
+                      value={values.sv1Mm}
+                      onChange={(event) => update('sv1Mm', event.target.value)}
+                      className={inputClass}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="mb-1.5 block text-sm font-semibold text-slate-700">R V5/V6, мм</span>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.5"
+                      value={values.rv5v6Mm}
+                      onChange={(event) => update('rv5v6Mm', event.target.value)}
+                      className={inputClass}
+                    />
+                  </label>
+                </div>
+                <p className={`mt-2 text-sm font-semibold ${hypertrophyCriteria.sokolowPositive ? 'text-blue-800' : 'text-slate-500'}`}>
+                  Сума: {hypertrophyCriteria.sokolowSum !== null ? `${hypertrophyCriteria.sokolowSum} мм` : '—'}
+                  {hypertrophyCriteria.sokolowPositive ? ' — критерій виконується' : ''}
+                </p>
+              </div>
+
+              <div className="rounded-md border border-slate-100 bg-slate-50 p-3">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Корнелльський вольтаж</p>
+                <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-1.5 block text-sm font-semibold text-slate-700">R aVL, мм</span>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.5"
+                      value={values.ravlMm}
+                      onChange={(event) => update('ravlMm', event.target.value)}
+                      className={inputClass}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="mb-1.5 block text-sm font-semibold text-slate-700">S V3, мм</span>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.5"
+                      value={values.sv3Mm}
+                      onChange={(event) => update('sv3Mm', event.target.value)}
+                      className={inputClass}
+                    />
+                  </label>
+                </div>
+                <p className={`mt-2 text-sm font-semibold ${hypertrophyCriteria.cornellPositive ? 'text-blue-800' : 'text-slate-500'}`}>
+                  Сума: {hypertrophyCriteria.cornellSum !== null ? `${hypertrophyCriteria.cornellSum} мм` : '—'}
+                  {hypertrophyCriteria.cornellPositive ? ' — критерій виконується' : `; поріг: >${hypertrophyCriteria.cornellThreshold} мм`}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 grid gap-2 lg:grid-cols-3">
+              {[
+                ['rightHeartOverload', 'ЕКГ-ознаки перевантаження правих відділів'],
+                ['leftAtrialOverload', 'ЕКГ-ознаки перевантаження лівого передсердя'],
+                ['rightAtrialOverload', 'ЕКГ-ознаки перевантаження правого передсердя'],
+              ].map(([id, label]) => (
+                <label key={id} className="flex min-h-[56px] items-center gap-3 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(values[id])}
+                    onChange={(event) => update(id, event.target.checked)}
+                    className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
           </div>
         </section>
       </div>
