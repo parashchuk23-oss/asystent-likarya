@@ -193,7 +193,6 @@ const normalChecklistValues = {
   tWaveLeads: '',
   qWaveStatus: 'absent',
   qWaveLeads: '',
-  hypertrophySex: 'male',
   sv1Mm: '',
   rv5v6Mm: '',
   ravlMm: '',
@@ -374,14 +373,14 @@ function buildQWaveText(values) {
   return 'патологічні зубці Q не виявлені';
 }
 
-function getHypertrophyCriteria(values) {
+function getHypertrophyCriteria(values, sex) {
   const sv1 = parsePositiveNumber(values.sv1Mm);
   const rv5v6 = parsePositiveNumber(values.rv5v6Mm);
   const ravl = parsePositiveNumber(values.ravlMm);
   const sv3 = parsePositiveNumber(values.sv3Mm);
   const sokolowSum = sv1 !== null && rv5v6 !== null ? sv1 + rv5v6 : null;
   const cornellSum = ravl !== null && sv3 !== null ? ravl + sv3 : null;
-  const cornellThreshold = values.hypertrophySex === 'female' ? 20 : 28;
+  const cornellThreshold = sex === 'female' ? 20 : 28;
 
   return {
     sokolowSum,
@@ -392,8 +391,8 @@ function getHypertrophyCriteria(values) {
   };
 }
 
-function buildHypertrophyTexts(values) {
-  const criteria = getHypertrophyCriteria(values);
+function buildHypertrophyTexts(values, sex) {
+  const criteria = getHypertrophyCriteria(values, sex);
   const lvhCriteria = [
     criteria.sokolowPositive ? 'Соколов-Лайон' : '',
     criteria.cornellPositive ? 'Корнелльський вольтаж' : '',
@@ -501,7 +500,7 @@ function buildQtConclusionText(qtMetrics, qtFormula, qtInterpretation, qtCause) 
   ].filter(Boolean).join(', ');
 }
 
-function buildConclusion(values, paperSpeed, qtMetrics, qtFormula, qtInterpretation, qtCause) {
+function buildConclusion(values, paperSpeed, qtMetrics, qtFormula, qtInterpretation, qtCause, sex) {
   const rate = getEffectiveRate(values, paperSpeed);
   const rhythm = values.rhythmText?.trim() || buildRhythmText(values, rate);
   const pqMs = formatNumber(values.pqMs);
@@ -530,7 +529,7 @@ function buildConclusion(values, paperSpeed, qtMetrics, qtFormula, qtInterpretat
     buildStText(values),
     buildTWaveText(values),
     buildQWaveText(values),
-    ...buildHypertrophyTexts(values),
+    ...buildHypertrophyTexts(values, sex),
   ].filter(Boolean).map(capitalizeSentence);
 
   if (!lines.length) {
@@ -572,8 +571,8 @@ export default function EcgChecklistModule() {
   const selectedQtc = useMemo(() => getSelectedQtc(qtMetrics, qtForm.formula), [qtMetrics, qtForm.formula]);
   const qtInterpretation = useMemo(() => getQtInterpretation(selectedQtc, qtForm.sex), [selectedQtc, qtForm.sex]);
   const conclusion = useMemo(
-    () => buildConclusion(values, qtForm.paperSpeed, qtMetrics, qtForm.formula, qtInterpretation, qtForm.cause),
-    [values, qtForm.paperSpeed, qtMetrics, qtForm.formula, qtInterpretation, qtForm.cause],
+    () => buildConclusion(values, qtForm.paperSpeed, qtMetrics, qtForm.formula, qtInterpretation, qtForm.cause, qtForm.sex),
+    [values, qtForm.paperSpeed, qtMetrics, qtForm.formula, qtInterpretation, qtForm.cause, qtForm.sex],
   );
   const qtNextSteps = useMemo(() => {
     if (!qtMetrics || !qtInterpretation) return [];
@@ -597,7 +596,7 @@ export default function EcgChecklistModule() {
   const stDescription = stDescriptions[values.stStatus] || '';
   const tWaveDescription = tWaveDescriptions[values.tWaveStatus] || '';
   const qWaveDescription = qWaveDescriptions[values.qWaveStatus] || '';
-  const hypertrophyCriteria = useMemo(() => getHypertrophyCriteria(values), [values]);
+  const hypertrophyCriteria = useMemo(() => getHypertrophyCriteria(values, qtForm.sex), [values, qtForm.sex]);
 
   const update = (id, value) => setValues((current) => ({ ...current, [id]: value }));
   const updateRhythmOutput = (value) => {
@@ -1047,10 +1046,13 @@ export default function EcgChecklistModule() {
             <div className="grid gap-3 lg:grid-cols-2">
               <label className="block">
                 <span className="mb-1.5 block text-sm font-semibold text-slate-700">Стать для Корнелльського критерію</span>
-                <select value={values.hypertrophySex} onChange={(event) => update('hypertrophySex', event.target.value)} className={inputClass}>
+                <select value={qtForm.sex} onChange={(event) => updateQtForm('sex', event.target.value)} className={inputClass}>
                   <option value="male">чоловік</option>
                   <option value="female">жінка</option>
                 </select>
+                <span className="mt-1 block text-xs font-medium leading-snug text-slate-500">
+                  синхронізовано з блоком QT / QTc
+                </span>
               </label>
               <div className="rounded-md border border-slate-100 bg-slate-50 px-3 py-2 text-xs font-medium leading-relaxed text-slate-600">
                 Соколов-Лайон: S V1 + R V5/V6 ≥35 мм. Корнелльський вольтаж: R aVL + S V3 &gt;28 мм у чоловіків або &gt;20 мм у жінок.
