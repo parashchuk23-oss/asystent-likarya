@@ -173,6 +173,23 @@ const qWaveDescriptions = {
   present: 'Патологічні Q можуть відповідати перенесеному інфаркту або іншій структурній причині. Оцінюйте разом з анамнезом, ЕхоКГ і попередніми ЕКГ.',
 };
 
+const rightHeartOverloadOptions = [
+  { value: 'dominantRV1', label: 'Домінантний R у V1' },
+  { value: 'rightAxisDeviation', label: 'Відхилення ЕВС вправо' },
+  { value: 'deepSV5V6', label: 'Глибокі S у V5–V6' },
+  { value: 'rightPrecordialStrain', label: 'ST-T зміни у V1–V3 за типом перевантаження' },
+];
+
+const leftAtrialOverloadOptions = [
+  { value: 'wideNotchedPII', label: 'P у II розширений / двогорбий' },
+  { value: 'terminalNegativePV1', label: 'Виражена негативна термінальна фаза P у V1' },
+];
+
+const rightAtrialOverloadOptions = [
+  { value: 'tallPeakedPInferior', label: 'Високий загострений P у II, III, aVF' },
+  { value: 'pPulmonale', label: 'P pulmonale' },
+];
+
 const normalChecklistValues = {
   rate: '76',
   rrCells: '',
@@ -197,9 +214,9 @@ const normalChecklistValues = {
   rv5v6Mm: '',
   ravlMm: '',
   sv3Mm: '',
-  rightHeartOverload: false,
-  leftAtrialOverload: false,
-  rightAtrialOverload: false,
+  rightHeartOverloadSigns: [],
+  leftAtrialOverloadSigns: [],
+  rightAtrialOverloadSigns: [],
 };
 
 function formatNumber(value) {
@@ -402,13 +419,13 @@ function buildHypertrophyTexts(values, sex) {
   if (lvhCriteria.length) {
     lines.push(`ЕКГ відповідає критеріям гіпертрофії лівого шлуночка (${lvhCriteria.join(', ')})`);
   }
-  if (values.rightHeartOverload) {
+  if (values.rightHeartOverloadSigns?.length) {
     lines.push('ЕКГ-ознаки перевантаження правих відділів');
   }
-  if (values.leftAtrialOverload) {
+  if (values.leftAtrialOverloadSigns?.length) {
     lines.push('ЕКГ-ознаки перевантаження лівого передсердя');
   }
-  if (values.rightAtrialOverload) {
+  if (values.rightAtrialOverloadSigns?.length) {
     lines.push('ЕКГ-ознаки перевантаження правого передсердя');
   }
 
@@ -599,6 +616,15 @@ export default function EcgChecklistModule() {
   const hypertrophyCriteria = useMemo(() => getHypertrophyCriteria(values, qtForm.sex), [values, qtForm.sex]);
 
   const update = (id, value) => setValues((current) => ({ ...current, [id]: value }));
+  const toggleArrayValue = (id, value) => {
+    setValues((current) => {
+      const list = Array.isArray(current[id]) ? current[id] : [];
+      const nextList = list.includes(value)
+        ? list.filter((item) => item !== value)
+        : [...list, value];
+      return { ...current, [id]: nextList };
+    });
+  };
   const updateRhythmOutput = (value) => {
     setValues((current) => ({ ...current, rhythmText: value, rhythmTextEdited: true }));
   };
@@ -1125,21 +1151,28 @@ export default function EcgChecklistModule() {
               </div>
             </div>
 
-            <div className="mt-3 grid gap-2 lg:grid-cols-3">
+            <div className="mt-3 grid gap-3 lg:grid-cols-3">
               {[
-                ['rightHeartOverload', 'ЕКГ-ознаки перевантаження правих відділів'],
-                ['leftAtrialOverload', 'ЕКГ-ознаки перевантаження лівого передсердя'],
-                ['rightAtrialOverload', 'ЕКГ-ознаки перевантаження правого передсердя'],
-              ].map(([id, label]) => (
-                <label key={id} className="flex min-h-[56px] items-center gap-3 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700">
-                  <input
-                    type="checkbox"
-                    checked={Boolean(values[id])}
-                    onChange={(event) => update(id, event.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <span>{label}</span>
-                </label>
+                ['rightHeartOverloadSigns', 'Праві відділи', rightHeartOverloadOptions],
+                ['leftAtrialOverloadSigns', 'Ліве передсердя', leftAtrialOverloadOptions],
+                ['rightAtrialOverloadSigns', 'Праве передсердя', rightAtrialOverloadOptions],
+              ].map(([id, title, options]) => (
+                <div key={id} className="rounded-md border border-slate-200 bg-slate-50 p-3">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{title}</p>
+                  <div className="mt-2 space-y-2">
+                    {options.map((option) => (
+                      <label key={option.value} className="flex min-h-[48px] items-center gap-3 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700">
+                        <input
+                          type="checkbox"
+                          checked={Array.isArray(values[id]) && values[id].includes(option.value)}
+                          onChange={() => toggleArrayValue(id, option.value)}
+                          className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span>{option.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           </div>
