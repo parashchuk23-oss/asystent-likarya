@@ -237,36 +237,34 @@ export default function EcgSyndromesModule() {
       <EcgDisclaimer />
       {selectedImageSyndrome?.image ? (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 p-3 sm:p-6"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 p-2"
           role="dialog"
           aria-modal="true"
           aria-label={`Перегляд зображення: ${selectedImageSyndrome.title}`}
           onClick={() => setSelectedImageSyndrome(null)}
         >
           <div
-            className="flex max-h-full w-full max-w-7xl flex-col overflow-hidden rounded-lg border border-white/10 bg-white shadow-2xl"
+            className="relative flex h-full w-full items-center justify-center"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-4 py-3">
+            <div className="absolute left-3 right-3 top-3 z-10 flex items-start justify-between gap-3 rounded-lg bg-slate-950/80 p-3 text-white backdrop-blur">
               <div>
-                <p className="text-sm font-bold text-slate-950">{selectedImageSyndrome.title}</p>
-                <p className="mt-1 text-xs leading-relaxed text-slate-500">{selectedImageSyndrome.image.attribution}</p>
+                <p className="text-sm font-bold">{selectedImageSyndrome.title}</p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-300">{selectedImageSyndrome.image.attribution}</p>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedImageSyndrome(null)}
-                className="rounded-md border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                className="rounded-md border border-white/20 bg-white/10 px-3 py-2 text-sm font-bold text-white transition hover:bg-white/20"
               >
                 Закрити
               </button>
             </div>
-            <div className="min-h-0 flex-1 overflow-auto bg-slate-100 p-3">
-              <img
-                src={selectedImageSyndrome.image.src}
-                alt={selectedImageSyndrome.image.alt}
-                className="mx-auto max-h-[82vh] w-auto max-w-full bg-white object-contain"
-              />
-            </div>
+            <img
+              src={selectedImageSyndrome.image.src}
+              alt={selectedImageSyndrome.image.alt}
+              className="max-h-[96vh] max-w-[98vw] bg-white object-contain"
+            />
           </div>
         </div>
       ) : null}
