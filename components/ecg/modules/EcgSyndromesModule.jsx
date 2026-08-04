@@ -28,7 +28,7 @@ function ListBlock({ title, items, tone = 'slate' }) {
   );
 }
 
-function EcgImageBlock({ syndrome }) {
+function EcgImageBlock({ syndrome, onOpenImage }) {
   if (!syndrome.image) {
     return (
       <div className="flex min-h-[220px] items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 p-4 text-center">
@@ -44,12 +44,19 @@ function EcgImageBlock({ syndrome }) {
 
   return (
     <figure className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-      <img
-        src={syndrome.image.src}
-        alt={syndrome.image.alt}
-        className="h-auto w-full bg-white object-contain"
-        loading="lazy"
-      />
+      <button
+        type="button"
+        onClick={() => onOpenImage(syndrome)}
+        className="group block w-full bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        aria-label={`Відкрити зображення на весь екран: ${syndrome.title}`}
+      >
+        <img
+          src={syndrome.image.src}
+          alt={syndrome.image.alt}
+          className="h-auto w-full bg-white object-contain transition group-hover:opacity-95"
+          loading="lazy"
+        />
+      </button>
       <figcaption className="space-y-1 border-t border-slate-200 p-3 text-xs leading-relaxed text-slate-600">
         <p>{syndrome.image.attribution}</p>
         <div className="flex flex-wrap gap-x-3 gap-y-1">
@@ -72,6 +79,7 @@ export default function EcgSyndromesModule() {
   );
   const [activeCategory, setActiveCategory] = useState('Усі');
   const [openId, setOpenId] = useState(null);
+  const [selectedImageSyndrome, setSelectedImageSyndrome] = useState(null);
   const buttonRefs = useRef({});
   const pendingScrollIdRef = useRef(null);
   const filteredSyndromes = useMemo(
@@ -87,6 +95,24 @@ export default function EcgSyndromesModule() {
       buttonRefs.current[openId]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }, [openId]);
+
+  useEffect(() => {
+    if (!selectedImageSyndrome) return undefined;
+
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') {
+        setSelectedImageSyndrome(null);
+      }
+    };
+
+    document.addEventListener('keydown', closeOnEscape);
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape);
+      document.body.style.overflow = '';
+    };
+  }, [selectedImageSyndrome]);
 
   const chooseCategory = (category) => {
     setActiveCategory(category);
@@ -158,7 +184,7 @@ export default function EcgSyndromesModule() {
                 {isCompactImage ? (
                   <div className="grid gap-4 xl:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)]">
                     <div>
-                      <EcgImageBlock syndrome={syndrome} />
+                      <EcgImageBlock syndrome={syndrome} onOpenImage={setSelectedImageSyndrome} />
                     </div>
 
                     <div className="grid gap-3">
@@ -168,7 +194,7 @@ export default function EcgSyndromesModule() {
                   </div>
                 ) : (
                   <>
-                    <EcgImageBlock syndrome={syndrome} />
+                    <EcgImageBlock syndrome={syndrome} onOpenImage={setSelectedImageSyndrome} />
                     <div className="mt-4 grid gap-3 lg:grid-cols-2">
                       <ListBlock title="ЕКГ-критерії" items={syndrome.criteria} />
                       <ListBlock title="Клінічне значення" items={syndrome.clinicalSignificance} tone="blue" />
@@ -209,6 +235,41 @@ export default function EcgSyndromesModule() {
         Зображення додаються тільки після перевірки ліцензії. Якщо безпечного зображення немає, картка працює як текстовий клінічний довідник із посиланням на навчальне джерело.
       </p>
       <EcgDisclaimer />
+      {selectedImageSyndrome?.image ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 p-3 sm:p-6"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Перегляд зображення: ${selectedImageSyndrome.title}`}
+          onClick={() => setSelectedImageSyndrome(null)}
+        >
+          <div
+            className="flex max-h-full w-full max-w-7xl flex-col overflow-hidden rounded-lg border border-white/10 bg-white shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-4 py-3">
+              <div>
+                <p className="text-sm font-bold text-slate-950">{selectedImageSyndrome.title}</p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-500">{selectedImageSyndrome.image.attribution}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedImageSyndrome(null)}
+                className="rounded-md border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+              >
+                Закрити
+              </button>
+            </div>
+            <div className="min-h-0 flex-1 overflow-auto bg-slate-100 p-3">
+              <img
+                src={selectedImageSyndrome.image.src}
+                alt={selectedImageSyndrome.image.alt}
+                className="mx-auto max-h-[82vh] w-auto max-w-full bg-white object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
     </EcgModuleShell>
   );
 }
