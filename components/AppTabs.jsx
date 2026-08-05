@@ -4,6 +4,7 @@ import { useState } from 'react';
 import CalculatorsTab from './CalculatorsTab';
 import CardioAssistantTab from './CardioAssistantTab';
 import DiseasesTab from './DiseasesTab';
+import DocumentsTab from './DocumentsTab';
 import EcgTab from './ecg/EcgTab';
 import HomeTab from './HomeTab';
 import PharmacologyTab from './PharmacologyTab';
@@ -51,6 +52,11 @@ const tabs = [
     label: 'Хвороби',
     description: 'Діагнози та рекомендації для копіювання',
   },
+  {
+    id: 'documents',
+    label: 'Документи',
+    description: 'Накази, стандарти, критерії госпіталізації та шаблони для копіювання',
+  },
 ];
 
 export default function AppTabs() {
@@ -91,6 +97,7 @@ export default function AppTabs() {
         {activeTab === 'ecg' && <EcgTab />}
         {activeTab === 'drugs' && <PharmacologyTab />}
         {activeTab === 'diseases' && <DiseasesTab />}
+        {activeTab === 'documents' && <DocumentsTab />}
       </div>
     </section>
   );

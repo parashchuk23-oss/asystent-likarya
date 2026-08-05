@@ -1,0 +1,194 @@
+[
+  {
+    "id": "general-principles",
+    "title": "Загальні положення та принципи застосування",
+    "pdfSection": "I",
+    "pages": "3–7",
+    "appSection": "Як застосовувати критерії",
+    "status": "reference"
+  },
+  {
+    "id": "hospital-interventions",
+    "title": "Втручання, що проводяться в умовах стаціонару",
+    "pdfSection": "II",
+    "pages": "8–10",
+    "appSection": "Втручання в умовах стаціонару",
+    "status": "reference"
+  },
+  {
+    "id": "life-threatening-indicators",
+    "title": "Деякі загрозливі для життя показники",
+    "pdfSection": "III",
+    "pages": "10–15",
+    "appSection": "Загрозливі показники",
+    "status": "structured"
+  },
+  {
+    "id": "cardiopulmonary-decompensation",
+    "title": "Кардіопульмональні декомпенсації",
+    "pdfSection": "IV.1",
+    "pages": "15–18",
+    "appSection": "Кардіопульмональні декомпенсації",
+    "status": "structured"
+  },
+  {
+    "id": "severe-infections",
+    "title": "Тяжкі інфекції, сепсис і септичний шок",
+    "pdfSection": "IV.2",
+    "pages": "18–19",
+    "appSection": "Тяжкі інфекції",
+    "status": "structured"
+  },
+  {
+    "id": "skin-mucosal-hypersensitivity",
+    "title": "Тяжкі шкірно-слизові реакції гіперчутливості",
+    "pdfSection": "IV.3",
+    "pages": "19–20",
+    "appSection": "Дерматологічні ургентні стани",
+    "status": "planned"
+  },
+  {
+    "id": "surgery-trauma-frostbite",
+    "title": "Гострі хірургічні стани, травма, відмороження",
+    "pdfSection": "IV.4",
+    "pages": "20–22",
+    "appSection": "Хірургія і травма",
+    "status": "planned"
+  },
+  {
+    "id": "urology-emergencies",
+    "title": "Урологічні ургентні стани",
+    "pdfSection": "IV.5",
+    "pages": "22",
+    "appSection": "Урологія",
+    "status": "planned"
+  },
+  {
+    "id": "ent-emergencies",
+    "title": "Отоларингологічні ургентні стани",
+    "pdfSection": "IV.6",
+    "pages": "22",
+    "appSection": "ЛОР",
+    "status": "planned"
+  },
+  {
+    "id": "ophthalmology-emergencies",
+    "title": "Офтальмологічні ургентні стани",
+    "pdfSection": "IV.7",
+    "pages": "22–23",
+    "appSection": "Офтальмологія",
+    "status": "planned"
+  },
+  {
+    "id": "toxicology",
+    "title": "Отруєння та токсикологічні стани",
+    "pdfSection": "IV.8",
+    "pages": "23",
+    "appSection": "Токсикологія",
+    "status": "planned"
+  },
+  {
+    "id": "neurology-emergencies",
+    "title": "Неврологічні ургентні стани",
+    "pdfSection": "IV.9",
+    "pages": "23–31",
+    "appSection": "Неврологія",
+    "status": "planned"
+  },
+  {
+    "id": "oncohematology-transplant",
+    "title": "Онкогематологічні та післятрансплантаційні ургентні стани",
+    "pdfSection": "IV.10",
+    "pages": "31",
+    "appSection": "Онкогематологія",
+    "status": "planned"
+  },
+  {
+    "id": "metabolic-endocrine",
+    "title": "Метаболічні та ендокринні ургентні стани",
+    "pdfSection": "IV.11",
+    "pages": "31–33",
+    "appSection": "Ендокринологія",
+    "status": "planned"
+  },
+  {
+    "id": "renal-hepatic-decompensation",
+    "title": "Гострі ниркові та печінкові декомпенсації",
+    "pdfSection": "IV.12",
+    "pages": "33",
+    "appSection": "Нефрологія / гепатологія",
+    "status": "planned"
+  },
+  {
+    "id": "vascular-emergencies",
+    "title": "Судинні ургентні стани",
+    "pdfSection": "IV.13",
+    "pages": "33",
+    "appSection": "Судинні стани",
+    "status": "planned"
+  },
+  {
+    "id": "immunology-rheumatology",
+    "title": "Імунологічні та ревматологічні ургентні стани",
+    "pdfSection": "IV.14",
+    "pages": "33–35",
+    "appSection": "Імунологія / ревматологія",
+    "status": "planned"
+  },
+  {
+    "id": "obstetrics",
+    "title": "Акушерські стани",
+    "pdfSection": "IV.15",
+    "pages": "35–37",
+    "appSection": "Акушерство",
+    "status": "planned"
+  },
+  {
+    "id": "gynecology",
+    "title": "Гінекологічні стани",
+    "pdfSection": "IV.16",
+    "pages": "37–39",
+    "appSection": "Гінекологія",
+    "status": "planned"
+  },
+  {
+    "id": "mental-health",
+    "title": "Розлади психіки та поведінки",
+    "pdfSection": "IV.17",
+    "pages": "39–43",
+    "appSection": "Психічне здоров’я",
+    "status": "planned"
+  },
+  {
+    "id": "dangerous-infections",
+    "title": "Особливо небезпечні та небезпечні інфекційні хвороби",
+    "pdfSection": "IV.18",
+    "pages": "43–44",
+    "appSection": "Інфекційні хвороби",
+    "status": "planned"
+  },
+  {
+    "id": "palliative-care",
+    "title": "Паліативна допомога",
+    "pdfSection": "IV.19",
+    "pages": "44–45",
+    "appSection": "Паліативна допомога",
+    "status": "planned"
+  },
+  {
+    "id": "rehabilitation-care",
+    "title": "Реабілітаційна допомога",
+    "pdfSection": "IV.20",
+    "pages": "45",
+    "appSection": "Реабілітація",
+    "status": "planned"
+  },
+  {
+    "id": "social-indications",
+    "title": "Соціальні показання до госпіталізації",
+    "pdfSection": "V",
+    "pages": "45–47",
+    "appSection": "Соціальні показання",
+    "status": "planned"
+  }
+]
