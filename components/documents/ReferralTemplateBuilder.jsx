@@ -13,7 +13,7 @@ export default function ReferralTemplateBuilder({ criterionBlock, selectedCriter
 
   const referralText = useMemo(() => {
     const selectedText = selectedCriteria.length
-      ? selectedCriteria.map((criterion) => `- ${criterion}`).join('\n')
+      ? selectedCriteria.map((criterion) => `- ${criterionBlock.name}. ${criterion}`).join('\n')
       : 'критерії не позначені лікарем';
 
     return [
