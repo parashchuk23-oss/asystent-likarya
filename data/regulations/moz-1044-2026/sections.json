@@ -45,7 +45,7 @@
     "pdfSection": "IV.3",
     "pages": "19–20",
     "appSection": "Дерматологічні ургентні стани",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "surgery-trauma-frostbite",
@@ -53,7 +53,7 @@
     "pdfSection": "IV.4",
     "pages": "20–22",
     "appSection": "Хірургія і травма",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "urology-emergencies",
@@ -61,7 +61,7 @@
     "pdfSection": "IV.5",
     "pages": "22",
     "appSection": "Урологія",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "ent-emergencies",
@@ -69,7 +69,7 @@
     "pdfSection": "IV.6",
     "pages": "22",
     "appSection": "ЛОР",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "ophthalmology-emergencies",
@@ -77,7 +77,7 @@
     "pdfSection": "IV.7",
     "pages": "22–23",
     "appSection": "Офтальмологія",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "toxicology",
@@ -85,7 +85,7 @@
     "pdfSection": "IV.8",
     "pages": "23",
     "appSection": "Токсикологія",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "neurology-emergencies",
@@ -93,7 +93,7 @@
     "pdfSection": "IV.9",
     "pages": "23–31",
     "appSection": "Неврологія",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "oncohematology-transplant",
@@ -101,7 +101,7 @@
     "pdfSection": "IV.10",
     "pages": "31",
     "appSection": "Онкогематологія",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "metabolic-endocrine",
@@ -109,7 +109,7 @@
     "pdfSection": "IV.11",
     "pages": "31–33",
     "appSection": "Ендокринологія",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "renal-hepatic-decompensation",
@@ -117,7 +117,7 @@
     "pdfSection": "IV.12",
     "pages": "33",
     "appSection": "Нефрологія / гепатологія",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "vascular-emergencies",
@@ -125,7 +125,7 @@
     "pdfSection": "IV.13",
     "pages": "33",
     "appSection": "Судинні стани",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "immunology-rheumatology",
@@ -133,7 +133,7 @@
     "pdfSection": "IV.14",
     "pages": "33–35",
     "appSection": "Імунологія / ревматологія",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "obstetrics",
@@ -141,7 +141,7 @@
     "pdfSection": "IV.15",
     "pages": "35–37",
     "appSection": "Акушерство",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "gynecology",
@@ -149,7 +149,7 @@
     "pdfSection": "IV.16",
     "pages": "37–39",
     "appSection": "Гінекологія",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "mental-health",
@@ -157,7 +157,7 @@
     "pdfSection": "IV.17",
     "pages": "39–43",
     "appSection": "Психічне здоров’я",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "dangerous-infections",
@@ -165,7 +165,7 @@
     "pdfSection": "IV.18",
     "pages": "43–44",
     "appSection": "Інфекційні хвороби",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "palliative-care",
@@ -173,7 +173,7 @@
     "pdfSection": "IV.19",
     "pages": "44–45",
     "appSection": "Паліативна допомога",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "rehabilitation-care",
@@ -181,7 +181,7 @@
     "pdfSection": "IV.20",
     "pages": "45",
     "appSection": "Реабілітація",
-    "status": "planned"
+    "status": "structured"
   },
   {
     "id": "social-indications",
@@ -189,6 +189,6 @@
     "pdfSection": "V",
     "pages": "45–47",
     "appSection": "Соціальні показання",
-    "status": "planned"
+    "status": "structured"
   }
 ]

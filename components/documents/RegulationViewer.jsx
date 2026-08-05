@@ -98,41 +98,24 @@ export default function RegulationViewer({ regulation }) {
           </p>
         </section>
 
-        <div id="life-threatening-indicators" className="scroll-mt-24 space-y-4">
-          <div className="rounded-lg border border-teal-200 bg-teal-50/50 p-4">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">Розділ III</p>
-            <h3 className="mt-1 text-xl font-bold text-slate-950">Загрозливі показники</h3>
-          </div>
-          {filteredCriteria
-            .filter((block) => block.sectionId === 'life-threatening-indicators')
-            .map((block) => (
-              <RegulationSection key={block.id} block={block} />
-            ))}
-        </div>
+        {regulation.sections
+          .filter((section) => section.status === 'structured')
+          .map((section) => {
+            const sectionCriteria = filteredCriteria.filter((block) => block.sectionId === section.id);
+            if (sectionCriteria.length === 0) return null;
 
-        <div id="cardiopulmonary-decompensation" className="scroll-mt-24 space-y-4">
-          <div className="rounded-lg border border-teal-200 bg-teal-50/50 p-4">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">Розділ IV.1</p>
-            <h3 className="mt-1 text-xl font-bold text-slate-950">Кардіопульмональні декомпенсації</h3>
-          </div>
-          {filteredCriteria
-            .filter((block) => block.sectionId === 'cardiopulmonary-decompensation')
-            .map((block) => (
-              <RegulationSection key={block.id} block={block} />
-            ))}
-        </div>
-
-        <div id="severe-infections" className="scroll-mt-24 space-y-4">
-          <div className="rounded-lg border border-teal-200 bg-teal-50/50 p-4">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">Розділ IV.2</p>
-            <h3 className="mt-1 text-xl font-bold text-slate-950">Тяжкі інфекції, сепсис і септичний шок</h3>
-          </div>
-          {filteredCriteria
-            .filter((block) => block.sectionId === 'severe-infections')
-            .map((block) => (
-              <RegulationSection key={block.id} block={block} />
-            ))}
-        </div>
+            return (
+              <div key={section.id} id={section.id} className="scroll-mt-24 space-y-4">
+                <div className="rounded-lg border border-teal-200 bg-teal-50/50 p-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">Розділ {section.pdfSection}</p>
+                  <h3 className="mt-1 text-xl font-bold text-slate-950">{section.title}</h3>
+                </div>
+                {sectionCriteria.map((block) => (
+                  <RegulationSection key={block.id} block={block} />
+                ))}
+              </div>
+            );
+          })}
 
         {filteredCriteria.length === 0 && (
           <div className="rounded-lg border border-slate-200 bg-white p-6 text-center text-sm font-semibold text-slate-500">
@@ -140,11 +123,11 @@ export default function RegulationViewer({ regulation }) {
           </div>
         )}
 
-        <section id="social-indications" className="scroll-mt-24 rounded-lg border border-slate-200 bg-white p-4">
-          <h3 className="text-lg font-bold text-slate-950">Наступні розділи</h3>
+        <section className="rounded-lg border border-slate-200 bg-white p-4">
+          <h3 className="text-lg font-bold text-slate-950">Джерело</h3>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Решта клінічних груп, соціальні показання, паліативна і реабілітаційна допомога внесені у зміст і будуть
-            структуровані наступними етапами з цього ж PDF.
+            Критерії структуровано з офіційного PDF наказу МОЗ України №{regulation.number}. Текст у модулі скорочено
+            до практичних пунктів для вибору лікарем; за потреби звіряйте формулювання з оригінальним документом.
           </p>
         </section>
       </div>
