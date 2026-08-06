@@ -3,12 +3,14 @@ import { examinationStatusMap } from '../../data/examination/statusRegistry';
 import GeneralStatusForm from './statuses/GeneralStatusForm';
 import CardiovascularStatusForm from './statuses/CardiovascularStatusForm';
 import RespiratoryStatusForm from './statuses/RespiratoryStatusForm';
+import NeurologicalStatusForm from './statuses/NeurologicalStatusForm';
 import CustomStatusForm from './statuses/CustomStatusForm';
 
 const statusForms = {
   general: GeneralStatusForm,
   cardiovascular: CardiovascularStatusForm,
   respiratory: RespiratoryStatusForm,
+  neurological: NeurologicalStatusForm,
   custom: CustomStatusForm,
 };
 

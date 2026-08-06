@@ -21,6 +21,13 @@ export const implementedExaminationStatuses = [
     modes: ['short', 'standard'],
   },
   {
+    id: 'neurological',
+    title: 'Неврологічний статус',
+    description: 'Свідомість, орієнтація, мова, черепні нерви, сила, чутливість, координація.',
+    defaultMode: 'standard',
+    modes: ['short', 'standard', 'expanded'],
+  },
+  {
     id: 'custom',
     title: 'Інший / довільний статус',
     description: 'Вільний текст без автоматичної інтерпретації.',
@@ -30,11 +37,6 @@ export const implementedExaminationStatuses = [
 ];
 
 export const plannedExaminationStatuses = [
-  {
-    id: 'neurological',
-    title: 'Неврологічний статус',
-    description: 'Буде додано окремим клінічним шаблоном.',
-  },
   {
     id: 'orthopedic',
     title: 'Ортопедичний статус',

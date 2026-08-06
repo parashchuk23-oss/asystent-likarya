@@ -8,8 +8,8 @@ export const examinationPresets = [
   {
     id: 'neurological-complaint',
     title: 'Неврологічна скарга',
-    description: 'Поки додає загальний статус; неврологічний шаблон буде окремим етапом.',
-    statusIds: ['general'],
+    description: 'Загальний і неврологічний статус.',
+    statusIds: ['general', 'neurological'],
   },
   {
     id: 'joint-or-back-pain',
@@ -21,6 +21,6 @@ export const examinationPresets = [
     id: 'child-preventive',
     title: 'Профілактичний огляд дитини',
     description: 'Поки додає загальний статус; дитячий шаблон буде окремим етапом.',
-    statusIds: ['general', 'cardiovascular', 'respiratory'],
+    statusIds: ['general', 'cardiovascular', 'respiratory', 'neurological'],
   },
 ];

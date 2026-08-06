@@ -55,6 +55,26 @@ function buildRespiratoryStatus(formData) {
   return [buildSentence('аускультація легень', formData.lungAuscultation)].filter(hasValue);
 }
 
+function buildNeurologicalStatus(formData, mode) {
+  const rows = [
+    joinParts([
+      formData.neuroConsciousness,
+      formData.neuroOrientation,
+      formData.neuroSpeech,
+    ]),
+    mode !== 'short' && buildSentence('зіниці', formData.neuroPupils),
+    mode !== 'short' && buildSentence('черепні нерви', formData.neuroCranialNerves),
+    buildSentence('рухова сфера', formData.neuroMotorStrength),
+    mode !== 'short' && buildSentence('чутливість', formData.neuroSensory),
+    mode !== 'short' && buildSentence('координація', formData.neuroCoordination),
+    buildSentence('менінгеальні знаки', formData.neuroMeningealSigns),
+    mode === 'expanded' && buildSentence('патологічні рефлекси', formData.neuroPathologicalReflexes),
+    mode === 'expanded' && buildSentence('хода', formData.neuroGait),
+  ];
+
+  return rows.filter(hasValue);
+}
+
 function buildCustomStatus(formData) {
   if (!hasValue(formData.customText)) return [];
 
@@ -66,6 +86,7 @@ const statusBuilders = {
   general: buildGeneralStatus,
   cardiovascular: buildCardiovascularStatus,
   respiratory: buildRespiratoryStatus,
+  neurological: buildNeurologicalStatus,
   custom: buildCustomStatus,
 };
 

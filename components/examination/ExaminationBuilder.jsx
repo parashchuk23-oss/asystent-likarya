@@ -29,6 +29,19 @@ const statusFieldMap = {
   ],
   cardiovascular: ['bloodPressure', 'heartRate', 'heartAuscultation', 'edema'],
   respiratory: ['lungAuscultation'],
+  neurological: [
+    'neuroConsciousness',
+    'neuroOrientation',
+    'neuroSpeech',
+    'neuroPupils',
+    'neuroCranialNerves',
+    'neuroMotorStrength',
+    'neuroSensory',
+    'neuroCoordination',
+    'neuroMeningealSigns',
+    'neuroPathologicalReflexes',
+    'neuroGait',
+  ],
   custom: ['customTitle', 'customText'],
 };
 
