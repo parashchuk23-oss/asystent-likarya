@@ -44,7 +44,11 @@ function buildObjectiveStatus(formData) {
   return objectiveRows.filter(hasValue).join('. ');
 }
 
-export function buildDoctorConclusion(formData) {
+export function buildDoctorConclusion(formData, options = {}) {
+  const objectiveStatus = hasValue(options.objectiveStatusText)
+    ? String(options.objectiveStatusText).trim()
+    : buildObjectiveStatus(formData);
+
   const passport = [
     formData.visitDate && `Дата прийому: ${formData.visitDate}`,
     formData.birthDate && `Дата народження: ${formData.birthDate}`,
@@ -59,7 +63,7 @@ export function buildDoctorConclusion(formData) {
     '',
     `Скарги: ${valueOrEmpty(formData.complaints)}`,
     '',
-    `Об'єктивно: ${buildObjectiveStatus(formData)}`,
+    `Об'єктивно: ${objectiveStatus}`,
     '',
     `Діагноз: ${valueOrEmpty(formData.diagnosis)}`,
     '',

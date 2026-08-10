@@ -13,6 +13,7 @@ export default function PatientForm({
   onClearConclusion,
   openSection,
   onToggleSection,
+  objectiveStatusContent,
 }) {
   return (
     <form className="space-y-3">
@@ -105,7 +106,7 @@ export default function PatientForm({
         isOpen={openSection === 'objective-status'}
         onToggle={() => onToggleSection('objective-status')}
       >
-        <ObjectiveStatusSection formData={formData} onChange={onChange} />
+        {objectiveStatusContent || <ObjectiveStatusSection formData={formData} onChange={onChange} />}
       </AccordionSection>
 
       <AccordionSection

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { defaultExaminationData } from '../../data/examination/defaultExaminationData';
 import { examinationStatusMap } from '../../data/examination/statusRegistry';
 import { buildExaminationText, calculateBmi } from '../../utils/examination/buildExaminationText';
@@ -61,14 +61,43 @@ function reorderItems(items, fromIndex, toIndex) {
   return next;
 }
 
-export default function ExaminationBuilder() {
+export default function ExaminationBuilder({
+  formData: controlledFormData,
+  onChange: controlledOnChange,
+  onObjectiveTextChange,
+  showIntro = true,
+}) {
   const [selectedStatuses, setSelectedStatuses] = useState(defaultSelectedStatuses);
   const [statusModes, setStatusModes] = useState(getInitialModes(defaultSelectedStatuses));
   const [openStatus, setOpenStatus] = useState('general');
-  const [formData, setFormData] = useState(defaultExaminationData);
+  const [internalFormData, setInternalFormData] = useState(defaultExaminationData);
+  const formData = controlledFormData || internalFormData;
+
+  const objectiveText = useMemo(
+    () => buildExaminationText(selectedStatuses, formData, statusModes),
+    [selectedStatuses, formData, statusModes],
+  );
+
+  useEffect(() => {
+    onObjectiveTextChange?.(objectiveText);
+  }, [objectiveText, onObjectiveTextChange]);
 
   function handleChange(field, value) {
-    setFormData((current) => {
+    if (controlledOnChange) {
+      controlledOnChange(field, value);
+
+      if (field === 'height' || field === 'weight') {
+        const next = {
+          ...formData,
+          [field]: value,
+        };
+        controlledOnChange('bmi', calculateBmi(next.height, next.weight));
+      }
+
+      return;
+    }
+
+    setInternalFormData((current) => {
       const next = {
         ...current,
         [field]: value,
@@ -127,7 +156,14 @@ export default function ExaminationBuilder() {
   function handleFillNormal(statusId) {
     const fields = statusFieldMap[statusId] || [];
 
-    setFormData((current) => {
+    if (controlledOnChange) {
+      fields.forEach((field) => {
+        controlledOnChange(field, defaultExaminationData[field] ?? '');
+      });
+      return;
+    }
+
+    setInternalFormData((current) => {
       const next = { ...current };
       fields.forEach((field) => {
         next[field] = defaultExaminationData[field] ?? '';
@@ -139,7 +175,14 @@ export default function ExaminationBuilder() {
   function handleClearStatus(statusId) {
     const fields = statusFieldMap[statusId] || [];
 
-    setFormData((current) => {
+    if (controlledOnChange) {
+      fields.forEach((field) => {
+        controlledOnChange(field, field === 'customTitle' ? 'Додатковий статус' : '');
+      });
+      return;
+    }
+
+    setInternalFormData((current) => {
       const next = { ...current };
       fields.forEach((field) => {
         next[field] = field === 'customTitle' ? 'Додатковий статус' : '';
@@ -150,13 +193,15 @@ export default function ExaminationBuilder() {
 
   return (
     <div className="space-y-4">
-      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm shadow-slate-200/60">
-        <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">Конструктор огляду</p>
-        <h2 className="mt-1 text-xl font-semibold tracking-tight text-slate-950">Огляд пацієнта</h2>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-          Оберіть потрібні клінічні статуси та сформуйте структурований опис огляду.
-        </p>
-      </section>
+      {showIntro ? (
+        <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm shadow-slate-200/60">
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">Конструктор огляду</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-slate-950">Огляд пацієнта</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+            Оберіть потрібні клінічні статуси та сформуйте структурований опис огляду.
+          </p>
+        </section>
+      ) : null}
 
       <PresetBar onApplyPreset={handleApplyPreset} />
       <StatusPicker selectedStatuses={selectedStatuses} onAddStatus={handleAddStatus} />
