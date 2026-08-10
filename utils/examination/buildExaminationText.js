@@ -27,7 +27,7 @@ function buildSentence(label, value) {
   return `${label}: ${trimEndingPunctuation(value)}`;
 }
 
-function buildGeneralStatus(formData, mode) {
+function buildGeneralStatus(formData) {
   const generalCondition = joinParts([
     formData.generalCondition && `загальний стан: ${formData.generalCondition}`,
     formData.generalConditionNote,
@@ -35,20 +35,26 @@ function buildGeneralStatus(formData, mode) {
 
   const rows = [
     generalCondition,
+    formData.consciousness,
+    formData.patientPosition,
     buildSentence('шкірні покриви', formData.skinCondition),
-    mode !== 'short' && buildSentence('тип будови тіла', formData.bodyType),
-    mode !== 'short' && buildSentence('лімфатичні вузли', formData.lymphNodes),
-    mode === 'expanded' && buildSentence('щитоподібна залоза', formData.thyroid),
-    mode === 'expanded' && buildSentence('ротова порожнина', formData.oralCavity),
+    formData.mucousMembranes,
+    buildSentence('периферичні набряки', formData.peripheralEdema),
+    buildSentence('лімфатичні вузли', formData.lymphNodes),
+    buildSentence('щитоподібна залоза', formData.thyroid),
+    buildSentence('ротова порожнина', formData.oralCavity),
+    buildSentence('тип будови тіла', formData.bodyType),
     joinParts([
       formData.height && `зріст: ${formData.height} см`,
       formData.weight && `маса тіла: ${formData.weight} кг`,
       formData.bmi && `ІМТ: ${formData.bmi} кг/м²`,
     ]),
     formData.abdomen,
-    mode === 'expanded' && buildSentence('дефекація', formData.defecation),
-    mode === 'expanded' && buildSentence('сечовипускання', formData.urination),
-    mode === 'expanded' && buildSentence('симптом поколочування по попереку', formData.cvsSymptom),
+    formData.liver,
+    formData.spleen,
+    buildSentence('дефекація', formData.defecation),
+    buildSentence('сечовипускання', formData.urination),
+    formData.cvsSymptom,
   ];
 
   return rows.filter(hasValue);

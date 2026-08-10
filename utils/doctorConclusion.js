@@ -34,7 +34,11 @@ function buildObjectiveStatus(formData) {
 
   const objectiveRows = [
     generalCondition,
+    formData.consciousness,
+    formData.patientPosition,
     formData.skinCondition && `шкірні покриви: ${formData.skinCondition}`,
+    formData.mucousMembranes,
+    formData.peripheralEdema && `периферичні набряки: ${formData.peripheralEdema}`,
     formData.bodyType && `тип будови тіла: ${formData.bodyType}`,
     formData.lymphNodes && `лімфатичні вузли: ${formData.lymphNodes}`,
     formData.thyroid && `щитоподібна залоза: ${formData.thyroid}`,
@@ -51,9 +55,11 @@ function buildObjectiveStatus(formData) {
     formData.heartAuscultation && `аускультація серця: ${formData.heartAuscultation}`,
     formData.lungAuscultation && `аускультація легень: ${formData.lungAuscultation}`,
     formData.abdomen,
+    formData.liver,
+    formData.spleen,
     formData.defecation && `дефекація: ${formData.defecation}`,
     formData.urination && `сечовипускання: ${formData.urination}`,
-    formData.cvsSymptom && `симптом поколочування по попереку: ${formData.cvsSymptom}`,
+    formData.cvsSymptom,
     formData.edema && `набряки: ${formData.edema}`,
   ];
 
