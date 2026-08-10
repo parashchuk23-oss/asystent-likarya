@@ -20,13 +20,6 @@ function getInitialModes(statusIds) {
   );
 }
 
-function reorderItems(items, fromIndex, toIndex) {
-  const next = [...items];
-  const [item] = next.splice(fromIndex, 1);
-  next.splice(toIndex, 0, item);
-  return next;
-}
-
 export default function ExaminationBuilder({
   formData: controlledFormData,
   onChange: controlledOnChange,
@@ -107,19 +100,6 @@ export default function ExaminationBuilder({
     });
   }
 
-  function handleRemoveStatus(statusId) {
-    setSelectedStatuses((current) => current.filter((item) => item !== statusId));
-    setOpenStatuses((current) => current.filter((item) => item !== statusId));
-  }
-
-  function handleMoveStatus(fromIndex, direction) {
-    const toIndex = direction === 'up' ? fromIndex - 1 : fromIndex + 1;
-
-    if (toIndex < 0 || toIndex >= selectedStatuses.length) return;
-
-    setSelectedStatuses((current) => reorderItems(current, fromIndex, toIndex));
-  }
-
   return (
     <div className="space-y-4">
       {showIntro ? (
@@ -136,12 +116,10 @@ export default function ExaminationBuilder({
 
       <div className="space-y-3">
         {selectedStatuses.length ? (
-          selectedStatuses.map((statusId, index) => (
+          selectedStatuses.map((statusId) => (
             <SelectedStatusCard
               key={statusId}
               statusId={statusId}
-              index={index}
-              total={selectedStatuses.length}
               isOpen={openStatuses.includes(statusId)}
               mode={statusModes[statusId] || 'standard'}
               formData={formData}
@@ -153,9 +131,6 @@ export default function ExaminationBuilder({
                 )
               }
               onChange={handleChange}
-              onRemove={handleRemoveStatus}
-              onMoveUp={(currentIndex) => handleMoveStatus(currentIndex, 'up')}
-              onMoveDown={(currentIndex) => handleMoveStatus(currentIndex, 'down')}
             />
           ))
         ) : (
