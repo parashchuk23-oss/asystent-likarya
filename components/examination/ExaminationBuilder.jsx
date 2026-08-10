@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { defaultExaminationData } from '../../data/examination/defaultExaminationData';
 import { examinationStatusMap } from '../../data/examination/statusRegistry';
 import { buildExaminationText, calculateBmi } from '../../utils/examination/buildExaminationText';
-import PresetBar from './PresetBar';
 import SelectedStatusCard from './SelectedStatusCard';
 import StatusPicker from './StatusPicker';
 
@@ -127,12 +126,6 @@ export default function ExaminationBuilder({
     setOpenStatus(statusId);
   }
 
-  function handleApplyPreset(preset) {
-    setSelectedStatuses(preset.statusIds);
-    setStatusModes(getInitialModes(preset.statusIds));
-    setOpenStatus(preset.statusIds[0] || null);
-  }
-
   function handleRemoveStatus(statusId) {
     setSelectedStatuses((current) => current.filter((item) => item !== statusId));
     setOpenStatus((current) => (current === statusId ? null : current));
@@ -203,7 +196,6 @@ export default function ExaminationBuilder({
         </section>
       ) : null}
 
-      <PresetBar onApplyPreset={handleApplyPreset} />
       <StatusPicker selectedStatuses={selectedStatuses} onAddStatus={handleAddStatus} />
 
       <div className="space-y-3">
