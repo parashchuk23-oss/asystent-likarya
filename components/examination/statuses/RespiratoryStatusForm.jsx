@@ -1,15 +1,25 @@
-import FormField from '../../FormField';
-import { textareaClass } from '../../formStyles';
+import { PresetField } from './StatusPresetFields';
+
+const lungAuscultationOptions = [
+  'Дихання везикулярне, проводиться з обох боків. Хрипи не вислуховуються.',
+  'Дихання жорстке, проводиться з обох боків. Хрипи не вислуховуються.',
+  'Дихання ослаблене з обох боків. Хрипи не вислуховуються.',
+  'Дихання ослаблене справа. Хрипи не вислуховуються.',
+  'Дихання ослаблене зліва. Хрипи не вислуховуються.',
+  'Дихання везикулярне. Сухі хрипи вислуховуються.',
+  'Дихання везикулярне. Вологі хрипи вислуховуються.',
+  'Дихання ослаблене в нижніх відділах. Вологі хрипи вислуховуються.',
+];
 
 export default function RespiratoryStatusForm({ formData, onChange }) {
   return (
-    <FormField label="Аускультація легень" hint="дихання, хрипи">
-      <textarea
-        value={formData.lungAuscultation}
-        onChange={(event) => onChange('lungAuscultation', event.target.value)}
-        rows={3}
-        className={textareaClass}
-      />
-    </FormField>
+    <PresetField
+      label="Аускультація легень"
+      hint="дихання, хрипи"
+      value={formData.lungAuscultation}
+      options={lungAuscultationOptions}
+      onChange={(value) => onChange('lungAuscultation', value)}
+      placeholder="Наприклад: дихання ослаблене справа в нижніх відділах, крепітація"
+    />
   );
 }

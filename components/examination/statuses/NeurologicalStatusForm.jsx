@@ -1,132 +1,167 @@
-import FormField from '../../FormField';
-import { inputClass } from '../../formStyles';
+import { PresetField } from './StatusPresetFields';
+
+const neuroOptions = {
+  consciousness: ['свідомість ясна', 'оглушення', 'сопор', 'кома', 'свідомість сплутана'],
+  orientation: [
+    'орієнтований у місці, часі та власній особі',
+    'дезорієнтований у часі',
+    'дезорієнтований у місці',
+    'дезорієнтований у власній особі',
+  ],
+  speech: ['мова збережена', 'дизартрія', 'афазія', 'мова сповільнена', 'мовний контакт утруднений'],
+  pupils: [
+    'зіниці рівні, реакція на світло збережена',
+    'зіниці рівні, реакція на світло знижена',
+    'анізокорія',
+    'фотореакція відсутня',
+  ],
+  cranialNerves: [
+    'без грубої вогнищевої симптоматики',
+    'асиметрія обличчя',
+    'згладжена носогубна складка справа',
+    'згладжена носогубна складка зліва',
+    'девіація язика',
+  ],
+  motor: [
+    'сила в кінцівках збережена',
+    'зниження сили у правій руці',
+    'зниження сили у лівій руці',
+    'зниження сили у правій нозі',
+    'зниження сили у лівій нозі',
+    'правобічний геміпарез',
+    'лівобічний геміпарез',
+  ],
+  sensory: [
+    'чутливість без грубих порушень',
+    'гіпестезія справа',
+    'гіпестезія зліва',
+    'парестезії у верхніх кінцівках',
+    'парестезії у нижніх кінцівках',
+  ],
+  coordination: [
+    'координаційні проби виконує задовільно',
+    'пальце-носова проба з інтенційним тремором',
+    'пальце-носова проба виконується неточно справа',
+    'пальце-носова проба виконується неточно зліва',
+    'поза Ромберга нестійка',
+  ],
+  meningeal: [
+    'менінгеальні знаки негативні',
+    'ригідність потиличних м’язів',
+    'симптом Керніга позитивний',
+    'симптоми подразнення мозкових оболонок',
+  ],
+  pathologicalReflexes: [
+    'патологічні рефлекси не викликаються',
+    'симптом Бабінського справа',
+    'симптом Бабінського зліва',
+    'двобічний симптом Бабінського',
+  ],
+  gait: ['хода без грубих порушень', 'хода нестійка', 'атаксична хода', 'паретична хода', 'самостійно не ходить'],
+};
 
 export default function NeurologicalStatusForm({ formData, onChange, mode }) {
   return (
     <div className="space-y-1">
       <div className="grid gap-3 md:grid-cols-3">
-        <FormField label="Свідомість">
-          <input
-            type="text"
-            value={formData.neuroConsciousness}
-            onChange={(event) => onChange('neuroConsciousness', event.target.value)}
-            className={inputClass}
-          />
-        </FormField>
+        <PresetField
+          label="Свідомість"
+          value={formData.neuroConsciousness}
+          options={neuroOptions.consciousness}
+          onChange={(value) => onChange('neuroConsciousness', value)}
+        />
 
-        <FormField label="Орієнтація">
-          <input
-            type="text"
-            value={formData.neuroOrientation}
-            onChange={(event) => onChange('neuroOrientation', event.target.value)}
-            className={inputClass}
-          />
-        </FormField>
+        <PresetField
+          label="Орієнтація"
+          value={formData.neuroOrientation}
+          options={neuroOptions.orientation}
+          onChange={(value) => onChange('neuroOrientation', value)}
+        />
 
-        <FormField label="Мова">
-          <input
-            type="text"
-            value={formData.neuroSpeech}
-            onChange={(event) => onChange('neuroSpeech', event.target.value)}
-            className={inputClass}
-          />
-        </FormField>
+        <PresetField
+          label="Мова"
+          value={formData.neuroSpeech}
+          options={neuroOptions.speech}
+          onChange={(value) => onChange('neuroSpeech', value)}
+        />
       </div>
 
       {mode !== 'short' ? (
         <div className="grid gap-3 md:grid-cols-2">
-          <FormField label="Зіниці">
-            <input
-              type="text"
-              value={formData.neuroPupils}
-              onChange={(event) => onChange('neuroPupils', event.target.value)}
-              className={inputClass}
-            />
-          </FormField>
+          <PresetField
+            label="Зіниці"
+            value={formData.neuroPupils}
+            options={neuroOptions.pupils}
+            onChange={(value) => onChange('neuroPupils', value)}
+          />
 
-          <FormField label="Черепні нерви">
-            <input
-              type="text"
-              value={formData.neuroCranialNerves}
-              onChange={(event) => onChange('neuroCranialNerves', event.target.value)}
-              className={inputClass}
-            />
-          </FormField>
+          <PresetField
+            label="Черепні нерви"
+            value={formData.neuroCranialNerves}
+            options={neuroOptions.cranialNerves}
+            onChange={(value) => onChange('neuroCranialNerves', value)}
+          />
         </div>
       ) : null}
 
       <div className="grid gap-3 md:grid-cols-2">
-        <FormField label="Рухова сфера">
-          <input
-            type="text"
-            value={formData.neuroMotorStrength}
-            onChange={(event) => onChange('neuroMotorStrength', event.target.value)}
-            className={inputClass}
-          />
-        </FormField>
+        <PresetField
+          label="Рухова сфера"
+          value={formData.neuroMotorStrength}
+          options={neuroOptions.motor}
+          onChange={(value) => onChange('neuroMotorStrength', value)}
+        />
 
         {mode !== 'short' ? (
-          <FormField label="Чутливість">
-            <input
-              type="text"
-              value={formData.neuroSensory}
-              onChange={(event) => onChange('neuroSensory', event.target.value)}
-              className={inputClass}
-            />
-          </FormField>
+          <PresetField
+            label="Чутливість"
+            value={formData.neuroSensory}
+            options={neuroOptions.sensory}
+            onChange={(value) => onChange('neuroSensory', value)}
+          />
         ) : null}
       </div>
 
       {mode !== 'short' ? (
         <div className="grid gap-3 md:grid-cols-2">
-          <FormField label="Координація">
-            <input
-              type="text"
-              value={formData.neuroCoordination}
-              onChange={(event) => onChange('neuroCoordination', event.target.value)}
-              className={inputClass}
-            />
-          </FormField>
+          <PresetField
+            label="Координація"
+            value={formData.neuroCoordination}
+            options={neuroOptions.coordination}
+            onChange={(value) => onChange('neuroCoordination', value)}
+          />
 
-          <FormField label="Менінгеальні знаки">
-            <input
-              type="text"
-              value={formData.neuroMeningealSigns}
-              onChange={(event) => onChange('neuroMeningealSigns', event.target.value)}
-              className={inputClass}
-            />
-          </FormField>
+          <PresetField
+            label="Менінгеальні знаки"
+            value={formData.neuroMeningealSigns}
+            options={neuroOptions.meningeal}
+            onChange={(value) => onChange('neuroMeningealSigns', value)}
+          />
         </div>
       ) : (
-        <FormField label="Менінгеальні знаки">
-          <input
-            type="text"
-            value={formData.neuroMeningealSigns}
-            onChange={(event) => onChange('neuroMeningealSigns', event.target.value)}
-            className={inputClass}
-          />
-        </FormField>
+        <PresetField
+          label="Менінгеальні знаки"
+          value={formData.neuroMeningealSigns}
+          options={neuroOptions.meningeal}
+          onChange={(value) => onChange('neuroMeningealSigns', value)}
+        />
       )}
 
       {mode === 'expanded' ? (
         <div className="grid gap-3 md:grid-cols-2">
-          <FormField label="Патологічні рефлекси">
-            <input
-              type="text"
-              value={formData.neuroPathologicalReflexes}
-              onChange={(event) => onChange('neuroPathologicalReflexes', event.target.value)}
-              className={inputClass}
-            />
-          </FormField>
+          <PresetField
+            label="Патологічні рефлекси"
+            value={formData.neuroPathologicalReflexes}
+            options={neuroOptions.pathologicalReflexes}
+            onChange={(value) => onChange('neuroPathologicalReflexes', value)}
+          />
 
-          <FormField label="Хода">
-            <input
-              type="text"
-              value={formData.neuroGait}
-              onChange={(event) => onChange('neuroGait', event.target.value)}
-              className={inputClass}
-            />
-          </FormField>
+          <PresetField
+            label="Хода"
+            value={formData.neuroGait}
+            options={neuroOptions.gait}
+            onChange={(value) => onChange('neuroGait', value)}
+          />
         </div>
       ) : null}
     </div>

@@ -1,5 +1,26 @@
 import FormField from '../../FormField';
-import { inputClass, textareaClass } from '../../formStyles';
+import { inputClass } from '../../formStyles';
+import { PresetField } from './StatusPresetFields';
+
+const heartAuscultationOptions = [
+  'Тони серця ритмічні, звучні. Шуми не вислуховуються.',
+  'Тони серця ритмічні, приглушені. Шуми не вислуховуються.',
+  'Тони серця аритмічні. Шуми не вислуховуються.',
+  'Тони серця ритмічні. Систолічний шум вислуховується.',
+  'Тони серця ритмічні. Діастолічний шум вислуховується.',
+  'Тони серця аритмічні. Систолічний шум вислуховується.',
+];
+
+const edemaOptions = [
+  '',
+  'не виявлені',
+  'пастозність стоп',
+  'пастозність гомілок',
+  'набряки стоп',
+  'набряки гомілок',
+  'набряки нижніх кінцівок',
+  'генералізовані набряки',
+];
 
 export default function CardiovascularStatusForm({ formData, onChange, mode }) {
   return (
@@ -29,25 +50,23 @@ export default function CardiovascularStatusForm({ formData, onChange, mode }) {
         </FormField>
       </div>
 
-      <FormField label="Аускультація серця" hint="тони, шуми">
-        <textarea
-          value={formData.heartAuscultation}
-          onChange={(event) => onChange('heartAuscultation', event.target.value)}
-          rows={3}
-          className={textareaClass}
-        />
-      </FormField>
+      <PresetField
+        label="Аускультація серця"
+        hint="тони, шуми"
+        value={formData.heartAuscultation}
+        options={heartAuscultationOptions}
+        onChange={(value) => onChange('heartAuscultation', value)}
+        placeholder="Наприклад: тони серця аритмічні, систолічний шум на верхівці"
+      />
 
       {mode !== 'short' ? (
-        <FormField label="Набряки">
-          <input
-            type="text"
-            value={formData.edema}
-            onChange={(event) => onChange('edema', event.target.value)}
-            placeholder="не виявлені"
-            className={inputClass}
-          />
-        </FormField>
+        <PresetField
+          label="Набряки"
+          value={formData.edema}
+          options={edemaOptions}
+          onChange={(value) => onChange('edema', value)}
+          placeholder="Наприклад: набряки гомілок до середньої третини"
+        />
       ) : null}
     </div>
   );
