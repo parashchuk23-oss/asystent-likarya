@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { defaultExaminationData } from '../../data/examination/defaultExaminationData';
 import { examinationStatusMap } from '../../data/examination/statusRegistry';
 import { buildExaminationText, calculateBmi } from '../../utils/examination/buildExaminationText';
+import FormField from '../FormField';
+import { textareaClass } from '../formStyles';
 import SelectedStatusCard from './SelectedStatusCard';
 import StatusPicker from './StatusPicker';
 
@@ -70,6 +72,7 @@ export default function ExaminationBuilder({
   const [statusModes, setStatusModes] = useState(getInitialModes(defaultSelectedStatuses));
   const [openStatus, setOpenStatus] = useState('general');
   const [internalFormData, setInternalFormData] = useState(defaultExaminationData);
+  const [finalStatusText, setFinalStatusText] = useState('');
   const formData = controlledFormData || internalFormData;
 
   const objectiveText = useMemo(
@@ -78,8 +81,14 @@ export default function ExaminationBuilder({
   );
 
   useEffect(() => {
+    setFinalStatusText(objectiveText);
     onObjectiveTextChange?.(objectiveText);
   }, [objectiveText, onObjectiveTextChange]);
+
+  function handleFinalStatusTextChange(value) {
+    setFinalStatusText(value);
+    onObjectiveTextChange?.(value);
+  }
 
   function handleChange(field, value) {
     if (controlledOnChange) {
@@ -231,6 +240,18 @@ export default function ExaminationBuilder({
           </div>
         )}
       </div>
+
+      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm shadow-slate-200/60">
+        <FormField label="Текст статусу">
+          <textarea
+            value={finalStatusText}
+            onChange={(event) => handleFinalStatusTextChange(event.target.value)}
+            placeholder="Поле автоматично заповнюється після вибору статусів. За потреби лікар може відредагувати текст вручну."
+            rows={7}
+            className={textareaClass}
+          />
+        </FormField>
+      </section>
     </div>
   );
 }

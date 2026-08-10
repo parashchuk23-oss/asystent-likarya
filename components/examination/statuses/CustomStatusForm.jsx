@@ -1,5 +1,5 @@
 import FormField from '../../FormField';
-import { inputClass, textareaClass } from '../../formStyles';
+import { inputClass } from '../../formStyles';
 
 export default function CustomStatusForm({ formData, onChange }) {
   return (
@@ -14,15 +14,9 @@ export default function CustomStatusForm({ formData, onChange }) {
         />
       </FormField>
 
-      <FormField label="Текст статусу">
-        <textarea
-          value={formData.customText}
-          onChange={(event) => onChange('customText', event.target.value)}
-          placeholder="Введіть довільний опис без автоматичної інтерпретації."
-          rows={5}
-          className={textareaClass}
-        />
-      </FormField>
+      <p className="rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-sm leading-6 text-slate-600">
+        Довільний опис редагується у загальному полі “Текст статусу” під усіма обраними статусами.
+      </p>
     </div>
   );
 }
