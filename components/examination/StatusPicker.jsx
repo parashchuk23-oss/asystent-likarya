@@ -3,7 +3,7 @@ import {
   plannedExaminationStatuses,
 } from '../../data/examination/statusRegistry';
 
-export default function StatusPicker({ selectedStatuses, onAddStatus }) {
+export default function StatusPicker({ selectedStatuses, onToggleStatus }) {
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm shadow-slate-200/60">
       <div className="mb-3">
@@ -19,8 +19,7 @@ export default function StatusPicker({ selectedStatuses, onAddStatus }) {
             <button
               key={status.id}
               type="button"
-              onClick={() => onAddStatus(status.id)}
-              disabled={isSelected}
+              onClick={() => onToggleStatus(status.id)}
               className={`rounded-md border px-3 py-3 text-left transition ${
                 isSelected
                   ? 'border-teal-200 bg-teal-50 text-teal-800'

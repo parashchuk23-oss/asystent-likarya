@@ -110,11 +110,13 @@ export default function ExaminationBuilder({
     });
   }
 
-  function handleAddStatus(statusId) {
+  function handleToggleStatus(statusId) {
     if (!examinationStatusMap[statusId]) return;
 
     setSelectedStatuses((current) => {
-      if (current.includes(statusId)) return current;
+      if (current.includes(statusId)) {
+        return current.filter((item) => item !== statusId);
+      }
       return [...current, statusId];
     });
 
@@ -123,7 +125,7 @@ export default function ExaminationBuilder({
       [statusId]: examinationStatusMap[statusId]?.defaultMode || 'standard',
     }));
 
-    setOpenStatus(statusId);
+    setOpenStatus((current) => (current === statusId ? null : statusId));
   }
 
   function handleRemoveStatus(statusId) {
@@ -196,7 +198,7 @@ export default function ExaminationBuilder({
         </section>
       ) : null}
 
-      <StatusPicker selectedStatuses={selectedStatuses} onAddStatus={handleAddStatus} />
+      <StatusPicker selectedStatuses={selectedStatuses} onToggleStatus={handleToggleStatus} />
 
       <div className="space-y-3">
         {selectedStatuses.length ? (
