@@ -50,11 +50,13 @@ export default function PatientForm({
           <label className="text-sm">
             <span className="mb-1 block text-slate-600">Вік</span>
             <input
-              type="text"
-              value={formData.age ? `${formData.age} р.` : ''}
-              readOnly
-              placeholder="Розраховується автоматично"
-              className={`${inputClass} bg-slate-50 text-slate-600`}
+              type="number"
+              value={formData.age}
+              onChange={(event) => onChange('age', event.target.value)}
+              placeholder="Розраховується автоматично або введіть вручну"
+              min="0"
+              max="130"
+              className={inputClass}
             />
           </label>
 
