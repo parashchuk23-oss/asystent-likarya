@@ -11,41 +11,6 @@ import StatusPicker from './StatusPicker';
 
 const defaultSelectedStatuses = ['general', 'cardiovascular', 'respiratory'];
 
-const statusFieldMap = {
-  general: [
-    'generalCondition',
-    'generalConditionNote',
-    'skinCondition',
-    'bodyType',
-    'lymphNodes',
-    'thyroid',
-    'oralCavity',
-    'height',
-    'weight',
-    'bmi',
-    'abdomen',
-    'defecation',
-    'urination',
-    'cvsSymptom',
-  ],
-  cardiovascular: ['bloodPressure', 'heartRate', 'heartAuscultation', 'edema'],
-  respiratory: ['lungAuscultation'],
-  neurological: [
-    'neuroConsciousness',
-    'neuroOrientation',
-    'neuroSpeech',
-    'neuroPupils',
-    'neuroCranialNerves',
-    'neuroMotorStrength',
-    'neuroSensory',
-    'neuroCoordination',
-    'neuroMeningealSigns',
-    'neuroPathologicalReflexes',
-    'neuroGait',
-  ],
-  custom: ['customTitle', 'customText'],
-};
-
 function getInitialModes(statusIds) {
   return Object.fromEntries(
     statusIds.map((statusId) => [
@@ -70,7 +35,7 @@ export default function ExaminationBuilder({
 }) {
   const [selectedStatuses, setSelectedStatuses] = useState(defaultSelectedStatuses);
   const [statusModes, setStatusModes] = useState(getInitialModes(defaultSelectedStatuses));
-  const [openStatus, setOpenStatus] = useState('general');
+  const [openStatuses, setOpenStatuses] = useState(defaultSelectedStatuses);
   const [internalFormData, setInternalFormData] = useState(defaultExaminationData);
   const [finalStatusText, setFinalStatusText] = useState('');
   const formData = controlledFormData || internalFormData;
@@ -134,12 +99,17 @@ export default function ExaminationBuilder({
       [statusId]: examinationStatusMap[statusId]?.defaultMode || 'standard',
     }));
 
-    setOpenStatus((current) => (current === statusId ? null : statusId));
+    setOpenStatuses((current) => {
+      if (current.includes(statusId)) {
+        return current.filter((item) => item !== statusId);
+      }
+      return [...current, statusId];
+    });
   }
 
   function handleRemoveStatus(statusId) {
     setSelectedStatuses((current) => current.filter((item) => item !== statusId));
-    setOpenStatus((current) => (current === statusId ? null : current));
+    setOpenStatuses((current) => current.filter((item) => item !== statusId));
   }
 
   function handleMoveStatus(fromIndex, direction) {
@@ -148,51 +118,6 @@ export default function ExaminationBuilder({
     if (toIndex < 0 || toIndex >= selectedStatuses.length) return;
 
     setSelectedStatuses((current) => reorderItems(current, fromIndex, toIndex));
-  }
-
-  function handleModeChange(statusId, mode) {
-    setStatusModes((current) => ({
-      ...current,
-      [statusId]: mode,
-    }));
-  }
-
-  function handleFillNormal(statusId) {
-    const fields = statusFieldMap[statusId] || [];
-
-    if (controlledOnChange) {
-      fields.forEach((field) => {
-        controlledOnChange(field, defaultExaminationData[field] ?? '');
-      });
-      return;
-    }
-
-    setInternalFormData((current) => {
-      const next = { ...current };
-      fields.forEach((field) => {
-        next[field] = defaultExaminationData[field] ?? '';
-      });
-      return next;
-    });
-  }
-
-  function handleClearStatus(statusId) {
-    const fields = statusFieldMap[statusId] || [];
-
-    if (controlledOnChange) {
-      fields.forEach((field) => {
-        controlledOnChange(field, field === 'customTitle' ? 'Додатковий статус' : '');
-      });
-      return;
-    }
-
-    setInternalFormData((current) => {
-      const next = { ...current };
-      fields.forEach((field) => {
-        next[field] = field === 'customTitle' ? 'Додатковий статус' : '';
-      });
-      return next;
-    });
   }
 
   return (
@@ -217,20 +142,20 @@ export default function ExaminationBuilder({
               statusId={statusId}
               index={index}
               total={selectedStatuses.length}
-              isOpen={openStatus === statusId}
+              isOpen={openStatuses.includes(statusId)}
               mode={statusModes[statusId] || 'standard'}
-              statusText={buildExaminationText([statusId], formData, {
-                [statusId]: statusModes[statusId] || 'standard',
-              })}
               formData={formData}
-              onToggle={() => setOpenStatus(openStatus === statusId ? null : statusId)}
+              onToggle={() =>
+                setOpenStatuses((current) =>
+                  current.includes(statusId)
+                    ? current.filter((item) => item !== statusId)
+                    : [...current, statusId],
+                )
+              }
               onChange={handleChange}
-              onModeChange={handleModeChange}
               onRemove={handleRemoveStatus}
               onMoveUp={(currentIndex) => handleMoveStatus(currentIndex, 'up')}
               onMoveDown={(currentIndex) => handleMoveStatus(currentIndex, 'down')}
-              onFillNormal={handleFillNormal}
-              onClearStatus={handleClearStatus}
             />
           ))
         ) : (

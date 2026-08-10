@@ -3,7 +3,7 @@ export const implementedExaminationStatuses = [
     id: 'general',
     title: 'Загальний соматичний статус',
     description: 'Загальний стан, шкіра, антропометрія, живіт, сечовидільна система.',
-    defaultMode: 'standard',
+    defaultMode: 'expanded',
     modes: ['short', 'standard', 'expanded'],
   },
   {
@@ -24,7 +24,7 @@ export const implementedExaminationStatuses = [
     id: 'neurological',
     title: 'Неврологічний статус',
     description: 'Свідомість, орієнтація, мова, черепні нерви, сила, чутливість, координація.',
-    defaultMode: 'standard',
+    defaultMode: 'expanded',
     modes: ['short', 'standard', 'expanded'],
   },
   {
