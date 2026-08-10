@@ -1,5 +1,46 @@
+import { useEffect, useState } from 'react';
 import FormField from '../../FormField';
 import { inputClass } from '../../formStyles';
+
+const manualValue = '__manual__';
+
+const generalConditionOptions = ['задовільний', 'відносно задовільний', 'середньої тяжкості', 'тяжкий'];
+
+const presets = {
+  consciousness: ['свідомість ясна', 'свідомість сплутана', 'оглушення', 'сопор', 'кома'],
+  patientPosition: ['положення активне', 'положення пасивне', 'положення вимушене', 'ортопное'],
+  skinCondition: ['чисті, блідо-рожеві', 'бліді', 'гіперемовані', 'ціанотичні', 'жовтяничні', 'висип не виявлено'],
+  mucousMembranes: ['видимі слизові рожеві, вологі', 'видимі слизові бліді', 'видимі слизові сухі', 'видимі слизові ціанотичні'],
+  peripheralEdema: [
+    '',
+    'периферичні набряки не виявлені',
+    'пастозність гомілок',
+    'набряки стоп',
+    'набряки гомілок',
+    'набряки нижніх кінцівок',
+    'генералізовані набряки',
+  ],
+  lymphNodes: ['не збільшені', 'збільшені шийні', 'збільшені підщелепні', 'збільшені пахвові', 'збільшені пахвинні'],
+  thyroid: [
+    'не збільшена, безболісна при пальпації',
+    'збільшена',
+    'пальпаторно вузлові утворення',
+    'болісна при пальпації',
+  ],
+  oralCavity: ['зів рожевий, мигдалики чисті', 'зів гіперемований', 'слизова ротової порожнини суха', 'язик вологий'],
+  bodyType: ['нормостенічний', 'астенічний', 'гіперстенічний'],
+  abdomen: ["живіт м'який, безболісний", "живіт м'який, болючий", 'живіт здутий', 'живіт напружений'],
+  liver: ['печінка не збільшена', 'печінка збільшена', 'край печінки пальпується біля краю реберної дуги'],
+  spleen: ['селезінка не пальпується', 'селезінка пальпується', 'селезінка збільшена'],
+  defecation: ['без особливостей', 'закрепи', 'діарея', 'нестійкі випорожнення'],
+  urination: ['без особливостей', 'часте сечовипускання', 'болісне сечовипускання', 'ніктурія'],
+  cvsSymptom: [
+    'симптом поколочування негативний з обох боків',
+    'симптом поколочування позитивний справа',
+    'симптом поколочування позитивний зліва',
+    'симптом поколочування позитивний з обох боків',
+  ],
+};
 
 function RadioPills({ name, value, options, onChange }) {
   return (
@@ -28,15 +69,64 @@ function RadioPills({ name, value, options, onChange }) {
   );
 }
 
-function TextInput({ value, onChange, placeholder }) {
+function PresetField({ label, value, options, onChange, placeholder = 'Власний опис' }) {
+  const [isManual, setIsManual] = useState(!options.includes(value));
+  const selectValue = isManual ? manualValue : value;
+
+  useEffect(() => {
+    if (!options.includes(value)) {
+      setIsManual(true);
+    }
+  }, [options, value]);
+
   return (
-    <input
-      type="text"
-      value={value}
-      onChange={(event) => onChange(event.target.value)}
-      placeholder={placeholder}
-      className={inputClass}
-    />
+    <FormField label={label} className="mb-0">
+      <select
+        value={selectValue}
+        onChange={(event) => {
+          if (event.target.value === manualValue) {
+            setIsManual(true);
+          } else {
+            setIsManual(false);
+            onChange(event.target.value);
+          }
+        }}
+        className={inputClass}
+      >
+        {options.map((option) => (
+          <option key={option || 'empty'} value={option}>
+            {option || 'не вносити в текст'}
+          </option>
+        ))}
+        <option value={manualValue}>Власний текст</option>
+      </select>
+
+      {selectValue === manualValue ? (
+        <input
+          type="text"
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder={placeholder}
+          className={`${inputClass} mt-2`}
+        />
+      ) : null}
+    </FormField>
+  );
+}
+
+function NumberField({ label, hint, value, onChange, placeholder, min, max }) {
+  return (
+    <FormField label={label} hint={hint} className="mb-0">
+      <input
+        type="number"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
+        min={min}
+        max={max}
+        className={inputClass}
+      />
+    </FormField>
   );
 }
 
@@ -49,16 +139,18 @@ export default function GeneralStatusForm({ formData, onChange }) {
             <RadioPills
               name="generalCondition"
               value={formData.generalCondition}
-              options={['задовільний', 'відносно задовільний', 'середньої тяжкості', 'тяжкий']}
+              options={generalConditionOptions}
               onChange={(value) => onChange('generalCondition', value)}
             />
           </FormField>
 
           <FormField label="Додатково до стану" className="mb-0">
-            <TextInput
+            <input
+              type="text"
               value={formData.generalConditionNote}
-              onChange={(value) => onChange('generalConditionNote', value)}
+              onChange={(event) => onChange('generalConditionNote', event.target.value)}
               placeholder="Наприклад: за рахунок больового синдрому"
+              className={inputClass}
             />
           </FormField>
         </div>
@@ -69,19 +161,19 @@ export default function GeneralStatusForm({ formData, onChange }) {
           Свідомість і положення
         </p>
         <div className="grid gap-3 md:grid-cols-2">
-          <FormField label="Свідомість" className="mb-0">
-            <TextInput
-              value={formData.consciousness}
-              onChange={(value) => onChange('consciousness', value)}
-            />
-          </FormField>
+          <PresetField
+            label="Свідомість"
+            value={formData.consciousness}
+            options={presets.consciousness}
+            onChange={(value) => onChange('consciousness', value)}
+          />
 
-          <FormField label="Положення" className="mb-0">
-            <TextInput
-              value={formData.patientPosition}
-              onChange={(value) => onChange('patientPosition', value)}
-            />
-          </FormField>
+          <PresetField
+            label="Положення"
+            value={formData.patientPosition}
+            options={presets.patientPosition}
+            onChange={(value) => onChange('patientPosition', value)}
+          />
         </div>
       </section>
 
@@ -90,27 +182,27 @@ export default function GeneralStatusForm({ formData, onChange }) {
           Шкіра, слизові, набряки
         </p>
         <div className="grid gap-3 md:grid-cols-3">
-          <FormField label="Шкірні покриви" className="mb-0">
-            <TextInput
-              value={formData.skinCondition}
-              onChange={(value) => onChange('skinCondition', value)}
-            />
-          </FormField>
+          <PresetField
+            label="Шкірні покриви"
+            value={formData.skinCondition}
+            options={presets.skinCondition}
+            onChange={(value) => onChange('skinCondition', value)}
+          />
 
-          <FormField label="Видимі слизові" className="mb-0">
-            <TextInput
-              value={formData.mucousMembranes}
-              onChange={(value) => onChange('mucousMembranes', value)}
-            />
-          </FormField>
+          <PresetField
+            label="Видимі слизові"
+            value={formData.mucousMembranes}
+            options={presets.mucousMembranes}
+            onChange={(value) => onChange('mucousMembranes', value)}
+          />
 
-          <FormField label="Периферичні набряки" className="mb-0">
-            <TextInput
-              value={formData.peripheralEdema}
-              onChange={(value) => onChange('peripheralEdema', value)}
-              placeholder="Наприклад: не виявлені"
-            />
-          </FormField>
+          <PresetField
+            label="Периферичні набряки"
+            value={formData.peripheralEdema}
+            options={presets.peripheralEdema}
+            onChange={(value) => onChange('peripheralEdema', value)}
+            placeholder="Наприклад: пастозність стоп"
+          />
         </div>
       </section>
 
@@ -118,20 +210,27 @@ export default function GeneralStatusForm({ formData, onChange }) {
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-teal-700">
           Лімфатичні вузли і щитоподібна залоза
         </p>
-        <div className="grid gap-3 md:grid-cols-2">
-          <FormField label="Лімфатичні вузли" className="mb-0">
-            <TextInput
-              value={formData.lymphNodes}
-              onChange={(value) => onChange('lymphNodes', value)}
-            />
-          </FormField>
+        <div className="grid gap-3 md:grid-cols-3">
+          <PresetField
+            label="Лімфатичні вузли"
+            value={formData.lymphNodes}
+            options={presets.lymphNodes}
+            onChange={(value) => onChange('lymphNodes', value)}
+          />
 
-          <FormField label="Щитоподібна залоза" className="mb-0">
-            <TextInput
-              value={formData.thyroid}
-              onChange={(value) => onChange('thyroid', value)}
-            />
-          </FormField>
+          <PresetField
+            label="Щитоподібна залоза"
+            value={formData.thyroid}
+            options={presets.thyroid}
+            onChange={(value) => onChange('thyroid', value)}
+          />
+
+          <PresetField
+            label="Ротова порожнина"
+            value={formData.oralCavity}
+            options={presets.oralCavity}
+            onChange={(value) => onChange('oralCavity', value)}
+          />
         </div>
       </section>
 
@@ -140,41 +239,32 @@ export default function GeneralStatusForm({ formData, onChange }) {
           Антропометрія
         </p>
         <div className="grid gap-3 md:grid-cols-4">
-          <FormField label="Тип будови тіла" className="mb-0">
-            <select
-              value={formData.bodyType}
-              onChange={(event) => onChange('bodyType', event.target.value)}
-              className={inputClass}
-            >
-              <option value="нормостенічний">нормостенічний</option>
-              <option value="астенічний">астенічний</option>
-              <option value="гіперстенічний">гіперстенічний</option>
-            </select>
-          </FormField>
+          <PresetField
+            label="Тип будови тіла"
+            value={formData.bodyType}
+            options={presets.bodyType}
+            onChange={(value) => onChange('bodyType', value)}
+          />
 
-          <FormField label="Зріст" hint="см" className="mb-0">
-            <input
-              type="number"
-              value={formData.height}
-              onChange={(event) => onChange('height', event.target.value)}
-              placeholder="170"
-              min="100"
-              max="250"
-              className={inputClass}
-            />
-          </FormField>
+          <NumberField
+            label="Зріст"
+            hint="см"
+            value={formData.height}
+            onChange={(value) => onChange('height', value)}
+            placeholder="170"
+            min="100"
+            max="250"
+          />
 
-          <FormField label="Маса тіла" hint="кг" className="mb-0">
-            <input
-              type="number"
-              value={formData.weight}
-              onChange={(event) => onChange('weight', event.target.value)}
-              placeholder="75"
-              min="20"
-              max="300"
-              className={inputClass}
-            />
-          </FormField>
+          <NumberField
+            label="Маса тіла"
+            hint="кг"
+            value={formData.weight}
+            onChange={(value) => onChange('weight', value)}
+            placeholder="75"
+            min="20"
+            max="300"
+          />
 
           <FormField label="ІМТ" hint="кг/м²" className="mb-0">
             <input
@@ -193,26 +283,26 @@ export default function GeneralStatusForm({ formData, onChange }) {
           Живіт
         </p>
         <div className="grid gap-3 md:grid-cols-3">
-          <FormField label="Живіт" className="mb-0">
-            <TextInput
-              value={formData.abdomen}
-              onChange={(value) => onChange('abdomen', value)}
-            />
-          </FormField>
+          <PresetField
+            label="Живіт"
+            value={formData.abdomen}
+            options={presets.abdomen}
+            onChange={(value) => onChange('abdomen', value)}
+          />
 
-          <FormField label="Печінка" className="mb-0">
-            <TextInput
-              value={formData.liver}
-              onChange={(value) => onChange('liver', value)}
-            />
-          </FormField>
+          <PresetField
+            label="Печінка"
+            value={formData.liver}
+            options={presets.liver}
+            onChange={(value) => onChange('liver', value)}
+          />
 
-          <FormField label="Селезінка" className="mb-0">
-            <TextInput
-              value={formData.spleen}
-              onChange={(value) => onChange('spleen', value)}
-            />
-          </FormField>
+          <PresetField
+            label="Селезінка"
+            value={formData.spleen}
+            options={presets.spleen}
+            onChange={(value) => onChange('spleen', value)}
+          />
         </div>
       </section>
 
@@ -221,26 +311,26 @@ export default function GeneralStatusForm({ formData, onChange }) {
           Фізіологічні відправлення
         </p>
         <div className="grid gap-3 md:grid-cols-3">
-          <FormField label="Дефекація" className="mb-0">
-            <TextInput
-              value={formData.defecation}
-              onChange={(value) => onChange('defecation', value)}
-            />
-          </FormField>
+          <PresetField
+            label="Дефекація"
+            value={formData.defecation}
+            options={presets.defecation}
+            onChange={(value) => onChange('defecation', value)}
+          />
 
-          <FormField label="Сечовипускання" className="mb-0">
-            <TextInput
-              value={formData.urination}
-              onChange={(value) => onChange('urination', value)}
-            />
-          </FormField>
+          <PresetField
+            label="Сечовипускання"
+            value={formData.urination}
+            options={presets.urination}
+            onChange={(value) => onChange('urination', value)}
+          />
 
-          <FormField label="Симптом поколочування" className="mb-0">
-            <TextInput
-              value={formData.cvsSymptom}
-              onChange={(value) => onChange('cvsSymptom', value)}
-            />
-          </FormField>
+          <PresetField
+            label="Симптом поколочування"
+            value={formData.cvsSymptom}
+            options={presets.cvsSymptom}
+            onChange={(value) => onChange('cvsSymptom', value)}
+          />
         </div>
       </section>
     </div>
