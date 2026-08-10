@@ -10,6 +10,22 @@ function joinParts(parts) {
   return parts.filter(hasValue).join(', ');
 }
 
+function trimEndingPunctuation(value) {
+  return String(value).trim().replace(/[.!?…]+$/u, '');
+}
+
+function capitalizeFirst(value) {
+  const text = String(value).trim();
+  if (!text) return '';
+
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function normalizeSentence(value) {
+  if (!hasValue(value)) return '';
+  return capitalizeFirst(trimEndingPunctuation(value));
+}
+
 function buildObjectiveStatus(formData) {
   const generalCondition = joinParts([
     formData.generalCondition && `загальний стан: ${formData.generalCondition}`,
@@ -34,14 +50,14 @@ function buildObjectiveStatus(formData) {
     ]),
     formData.heartAuscultation && `аускультація серця: ${formData.heartAuscultation}`,
     formData.lungAuscultation && `аускультація легень: ${formData.lungAuscultation}`,
-    formData.abdomen && `живіт: ${formData.abdomen}`,
+    formData.abdomen,
     formData.defecation && `дефекація: ${formData.defecation}`,
     formData.urination && `сечовипускання: ${formData.urination}`,
     formData.cvsSymptom && `симптом поколочування по попереку: ${formData.cvsSymptom}`,
     formData.edema && `набряки: ${formData.edema}`,
   ];
 
-  return objectiveRows.filter(hasValue).join('. ');
+  return objectiveRows.map(normalizeSentence).filter(hasValue).join('. ');
 }
 
 export function buildDoctorConclusion(formData, options = {}) {

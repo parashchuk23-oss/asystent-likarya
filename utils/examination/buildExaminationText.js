@@ -6,9 +6,25 @@ function joinParts(parts) {
   return parts.filter(hasValue).join(', ');
 }
 
+function trimEndingPunctuation(value) {
+  return String(value).trim().replace(/[.!?…]+$/u, '');
+}
+
+function capitalizeFirst(value) {
+  const text = String(value).trim();
+  if (!text) return '';
+
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function normalizeSentence(value) {
+  if (!hasValue(value)) return '';
+  return capitalizeFirst(trimEndingPunctuation(value));
+}
+
 function buildSentence(label, value) {
   if (!hasValue(value)) return '';
-  return `${label}: ${String(value).trim()}`;
+  return `${label}: ${trimEndingPunctuation(value)}`;
 }
 
 function buildGeneralStatus(formData, mode) {
@@ -29,7 +45,7 @@ function buildGeneralStatus(formData, mode) {
       formData.weight && `маса тіла: ${formData.weight} кг`,
       formData.bmi && `ІМТ: ${formData.bmi} кг/м²`,
     ]),
-    buildSentence('живіт', formData.abdomen),
+    formData.abdomen,
     mode === 'expanded' && buildSentence('дефекація', formData.defecation),
     mode === 'expanded' && buildSentence('сечовипускання', formData.urination),
     mode === 'expanded' && buildSentence('симптом поколочування по попереку', formData.cvsSymptom),
@@ -98,7 +114,7 @@ export function buildExaminationText(selectedStatuses, formData, statusModes = {
     return builder(formData, statusModes[statusId] || 'standard');
   });
 
-  const text = rows.filter(hasValue).join('. ');
+  const text = rows.map(normalizeSentence).filter(hasValue).join('. ');
 
   if (!text) {
     return '';
