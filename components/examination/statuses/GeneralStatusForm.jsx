@@ -1,16 +1,19 @@
-import { useEffect, useState } from 'react';
 import FormField from '../../FormField';
 import { inputClass } from '../../formStyles';
-
-const manualValue = '__manual__';
 
 const generalConditionOptions = ['задовільний', 'відносно задовільний', 'середньої тяжкості', 'тяжкий'];
 
 const presets = {
   consciousness: ['свідомість ясна', 'свідомість сплутана', 'оглушення', 'сопор', 'кома'],
   patientPosition: ['положення активне', 'положення пасивне', 'положення вимушене', 'ортопное'],
-  skinCondition: ['чисті, блідо-рожеві', 'бліді', 'гіперемовані', 'ціанотичні', 'жовтяничні', 'висип не виявлено'],
-  mucousMembranes: ['видимі слизові рожеві, вологі', 'видимі слизові бліді', 'видимі слизові сухі', 'видимі слизові ціанотичні'],
+  skinCondition: ['чисті, блідо-рожеві', 'бліді', 'гіперемовані', 'ціанотичні', 'жовтушні', 'висип не виявлено'],
+  mucousMembranes: [
+    'видимі слизові рожеві, вологі',
+    'видимі слизові бліді',
+    'видимі слизові гіперемовані',
+    'видимі слизові сухі',
+    'видимі слизові ціанотичні',
+  ],
   peripheralEdema: [
     '',
     'периферичні набряки не виявлені',
@@ -69,28 +72,12 @@ function RadioPills({ name, value, options, onChange }) {
   );
 }
 
-function PresetField({ label, value, options, onChange, placeholder = 'Власний опис' }) {
-  const [isManual, setIsManual] = useState(!options.includes(value));
-  const selectValue = isManual ? manualValue : value;
-
-  useEffect(() => {
-    if (!options.includes(value)) {
-      setIsManual(true);
-    }
-  }, [options, value]);
-
+function PresetField({ label, value, options, onChange }) {
   return (
     <FormField label={label} className="mb-0">
       <select
-        value={selectValue}
-        onChange={(event) => {
-          if (event.target.value === manualValue) {
-            setIsManual(true);
-          } else {
-            setIsManual(false);
-            onChange(event.target.value);
-          }
-        }}
+        value={options.includes(value) ? value : options[0] || ''}
+        onChange={(event) => onChange(event.target.value)}
         className={inputClass}
       >
         {options.map((option) => (
@@ -98,18 +85,7 @@ function PresetField({ label, value, options, onChange, placeholder = 'Влас�
             {option || 'не вносити в текст'}
           </option>
         ))}
-        <option value={manualValue}>Власний текст</option>
       </select>
-
-      {selectValue === manualValue ? (
-        <input
-          type="text"
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          placeholder={placeholder}
-          className={`${inputClass} mt-2`}
-        />
-      ) : null}
     </FormField>
   );
 }
