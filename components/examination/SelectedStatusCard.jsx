@@ -3,13 +3,11 @@ import { examinationStatusMap } from '../../data/examination/statusRegistry';
 import GeneralStatusForm from './statuses/GeneralStatusForm';
 import RespiratoryStatusForm from './statuses/RespiratoryStatusForm';
 import NeurologicalStatusForm from './statuses/NeurologicalStatusForm';
-import CustomStatusForm from './statuses/CustomStatusForm';
 
 const statusForms = {
   general: GeneralStatusForm,
   respiratory: RespiratoryStatusForm,
   neurological: NeurologicalStatusForm,
-  custom: CustomStatusForm,
 };
 
 export default function SelectedStatusCard({

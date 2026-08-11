@@ -20,13 +20,6 @@ export const implementedExaminationStatuses = [
     defaultMode: 'expanded',
     modes: ['short', 'standard', 'expanded'],
   },
-  {
-    id: 'custom',
-    title: 'Інший / довільний статус',
-    description: 'Вільний текст без автоматичної інтерпретації.',
-    defaultMode: 'standard',
-    modes: ['standard'],
-  },
 ];
 
 export const plannedExaminationStatuses = [

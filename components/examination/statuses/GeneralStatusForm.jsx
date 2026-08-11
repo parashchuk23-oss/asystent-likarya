@@ -32,13 +32,18 @@ const presets = {
   ],
   oralCavity: ['зів рожевий, мигдалики чисті', 'зів гіперемований', 'слизова ротової порожнини суха', 'язик вологий'],
   bodyType: ['нормостенічний', 'астенічний', 'гіперстенічний'],
-  heartAuscultation: [
-    'Тони серця ритмічні, звучні. Шуми не вислуховуються.',
-    'Тони серця ритмічні, приглушені. Шуми не вислуховуються.',
-    'Тони серця аритмічні. Шуми не вислуховуються.',
-    'Тони серця ритмічні. Систолічний шум вислуховується.',
-    'Тони серця ритмічні. Діастолічний шум вислуховується.',
-    'Тони серця аритмічні. Систолічний шум вислуховується.',
+  heartSounds: [
+    'тони серця ритмічні, звучні',
+    'тони серця ритмічні, приглушені',
+    'тони серця аритмічні',
+    'тони серця ослаблені',
+  ],
+  heartMurmurs: [
+    'шуми не вислуховуються',
+    'систолічний шум вислуховується',
+    'діастолічний шум вислуховується',
+    'систолічний шум на верхівці',
+    'систолічний шум над аортою',
   ],
   abdomen: ["живіт м'який, безболісний", "живіт м'який, болючий", 'живіт здутий', 'живіт напружений'],
   liver: ['печінка не збільшена', 'печінка збільшена', 'край печінки пальпується біля краю реберної дуги'],
@@ -244,7 +249,7 @@ export default function GeneralStatusForm({ formData, onChange }) {
 
       <section className="rounded-lg border border-slate-200 bg-white p-3">
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-teal-700">
-          Серцево-судинний статус
+          Серцево-судинна система
         </p>
         <div className="grid gap-3 md:grid-cols-2">
           <FormField label="Артеріальний тиск" hint="мм рт. ст." className="mb-0">
@@ -269,10 +274,17 @@ export default function GeneralStatusForm({ formData, onChange }) {
           />
 
           <PresetField
-            label="Аускультація серця"
-            value={formData.heartAuscultation}
-            options={presets.heartAuscultation}
-            onChange={(value) => onChange('heartAuscultation', value)}
+            label="Тони серця"
+            value={formData.heartSounds}
+            options={presets.heartSounds}
+            onChange={(value) => onChange('heartSounds', value)}
+          />
+
+          <PresetField
+            label="Шуми"
+            value={formData.heartMurmurs}
+            options={presets.heartMurmurs}
+            onChange={(value) => onChange('heartMurmurs', value)}
           />
 
           <PresetField

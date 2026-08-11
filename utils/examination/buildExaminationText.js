@@ -52,7 +52,10 @@ function buildGeneralStatus(formData) {
       formData.bloodPressure && `АТ: ${formData.bloodPressure} мм рт. ст.`,
       formData.heartRate && `ЧСС: ${formData.heartRate} уд/хв`,
     ]),
-    buildSentence('аускультація серця', formData.heartAuscultation),
+    buildSentence(
+      'аускультація серця',
+      joinParts([formData.heartSounds, formData.heartMurmurs]) || formData.heartAuscultation,
+    ),
     buildSentence('периферичні набряки', formData.peripheralEdema),
     formData.abdomen,
     formData.liver,
@@ -89,18 +92,10 @@ function buildNeurologicalStatus(formData, mode) {
   return rows.filter(hasValue);
 }
 
-function buildCustomStatus(formData) {
-  if (!hasValue(formData.customText)) return [];
-
-  const title = hasValue(formData.customTitle) ? String(formData.customTitle).trim() : 'Додатковий статус';
-  return [`${title}: ${String(formData.customText).trim()}`];
-}
-
 const statusBuilders = {
   general: buildGeneralStatus,
   respiratory: buildRespiratoryStatus,
   neurological: buildNeurologicalStatus,
-  custom: buildCustomStatus,
 };
 
 export function buildExaminationText(selectedStatuses, formData, statusModes = {}) {

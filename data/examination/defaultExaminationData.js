@@ -21,6 +21,8 @@ export const defaultExaminationData = {
   cvsSymptom: 'симптом поколочування негативний з обох боків',
   bloodPressure: '',
   heartRate: '',
+  heartSounds: 'тони серця ритмічні, звучні',
+  heartMurmurs: 'шуми не вислуховуються',
   heartAuscultation: 'Тони серця ритмічні, звучні. Шуми не вислуховуються.',
   edema: '',
   lungAuscultation: 'Дихання везикулярне, проводиться з обох боків. Хрипи не вислуховуються.',
