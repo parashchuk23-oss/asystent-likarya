@@ -134,26 +134,14 @@ export default function GeneralStatusForm({ formData, onChange }) {
   return (
     <div className="space-y-3">
       <section className="rounded-lg border border-slate-200 bg-slate-50/60 p-3">
-        <div className="grid gap-3 lg:grid-cols-2">
-          <FormField label="Загальний стан" className="mb-0">
-            <RadioPills
-              name="generalCondition"
-              value={formData.generalCondition}
-              options={generalConditionOptions}
-              onChange={(value) => onChange('generalCondition', value)}
-            />
-          </FormField>
-
-          <FormField label="Додатково до стану" className="mb-0">
-            <input
-              type="text"
-              value={formData.generalConditionNote}
-              onChange={(event) => onChange('generalConditionNote', event.target.value)}
-              placeholder="Наприклад: за рахунок больового синдрому"
-              className={inputClass}
-            />
-          </FormField>
-        </div>
+        <FormField label="Загальний стан" className="mb-0">
+          <RadioPills
+            name="generalCondition"
+            value={formData.generalCondition}
+            options={generalConditionOptions}
+            onChange={(value) => onChange('generalCondition', value)}
+          />
+        </FormField>
       </section>
 
       <section className="rounded-lg border border-slate-200 bg-white p-3">
