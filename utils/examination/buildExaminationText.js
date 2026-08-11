@@ -27,6 +27,10 @@ function buildSentence(label, value) {
   return `${label}: ${trimEndingPunctuation(value)}`;
 }
 
+function buildLungAuscultation(formData) {
+  return joinParts([formData.breathSounds, formData.lungWheezes]) || formData.lungAuscultation;
+}
+
 function buildGeneralStatus(formData) {
   const generalCondition = joinParts([
     formData.generalCondition && `загальний стан: ${formData.generalCondition}`,
@@ -57,7 +61,8 @@ function buildGeneralStatus(formData) {
       joinParts([formData.heartSounds, formData.heartMurmurs]) || formData.heartAuscultation,
     ),
     buildSentence('периферичні набряки', formData.peripheralEdema),
-    buildSentence('аускультація легень', formData.lungAuscultation),
+    formData.respiratoryRate && `ЧД: ${formData.respiratoryRate}/хв`,
+    buildSentence('аускультація легень', buildLungAuscultation(formData)),
     formData.abdomen,
     formData.liver,
     formData.spleen,

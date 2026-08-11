@@ -31,6 +31,8 @@ function buildObjectiveStatus(formData) {
     formData.generalCondition && `загальний стан: ${formData.generalCondition}`,
     formData.generalConditionNote,
   ]);
+  const lungAuscultation =
+    joinParts([formData.breathSounds, formData.lungWheezes]) || formData.lungAuscultation;
 
   const objectiveRows = [
     generalCondition,
@@ -53,7 +55,8 @@ function buildObjectiveStatus(formData) {
       formData.heartRate && `ЧСС: ${formData.heartRate} уд/хв`,
     ]),
     formData.heartAuscultation && `аускультація серця: ${formData.heartAuscultation}`,
-    formData.lungAuscultation && `аускультація легень: ${formData.lungAuscultation}`,
+    formData.respiratoryRate && `ЧД: ${formData.respiratoryRate}/хв`,
+    lungAuscultation && `аускультація легень: ${lungAuscultation}`,
     formData.abdomen,
     formData.liver,
     formData.spleen,
