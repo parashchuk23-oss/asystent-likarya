@@ -77,33 +77,6 @@ const presets = {
   ],
 };
 
-function RadioPills({ name, value, options, onChange }) {
-  return (
-    <div className="flex flex-wrap gap-2">
-      {options.map((option) => (
-        <label
-          key={option}
-          className={`flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 transition ${
-            value === option
-              ? 'border-blue-500 bg-blue-50 text-blue-700'
-              : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-blue-200 hover:bg-blue-50/50'
-          }`}
-        >
-          <input
-            type="radio"
-            name={name}
-            value={option}
-            checked={value === option}
-            onChange={() => onChange(option)}
-            className="h-4 w-4 cursor-pointer text-blue-600"
-          />
-          <span className="text-sm font-medium">{option}</span>
-        </label>
-      ))}
-    </div>
-  );
-}
-
 function PresetField({ label, value, options, onChange }) {
   return (
     <FormField label={label} className="mb-0">
@@ -142,14 +115,12 @@ export default function GeneralStatusForm({ formData, onChange }) {
   return (
     <div className="space-y-3">
       <section className="rounded-lg border border-slate-200 bg-slate-50/60 p-3">
-        <FormField label="Загальний стан" className="mb-0">
-          <RadioPills
-            name="generalCondition"
-            value={formData.generalCondition}
-            options={generalConditionOptions}
-            onChange={(value) => onChange('generalCondition', value)}
-          />
-        </FormField>
+        <PresetField
+          label="Загальний стан"
+          value={formData.generalCondition}
+          options={generalConditionOptions}
+          onChange={(value) => onChange('generalCondition', value)}
+        />
       </section>
 
       <section className="rounded-lg border border-slate-200 bg-white p-3">
