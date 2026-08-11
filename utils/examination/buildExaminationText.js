@@ -57,6 +57,7 @@ function buildGeneralStatus(formData) {
       joinParts([formData.heartSounds, formData.heartMurmurs]) || formData.heartAuscultation,
     ),
     buildSentence('периферичні набряки', formData.peripheralEdema),
+    buildSentence('аускультація легень', formData.lungAuscultation),
     formData.abdomen,
     formData.liver,
     formData.spleen,
@@ -66,10 +67,6 @@ function buildGeneralStatus(formData) {
   ];
 
   return rows.filter(hasValue);
-}
-
-function buildRespiratoryStatus(formData) {
-  return [buildSentence('аускультація легень', formData.lungAuscultation)].filter(hasValue);
 }
 
 function buildNeurologicalStatus(formData, mode) {
@@ -94,7 +91,6 @@ function buildNeurologicalStatus(formData, mode) {
 
 const statusBuilders = {
   general: buildGeneralStatus,
-  respiratory: buildRespiratoryStatus,
   neurological: buildNeurologicalStatus,
 };
 

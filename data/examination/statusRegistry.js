@@ -2,16 +2,9 @@ export const implementedExaminationStatuses = [
   {
     id: 'general',
     title: 'Загальний соматичний статус',
-    description: 'Загальний стан, шкіра, антропометрія, серцево-судинна система, живіт.',
+    description: 'Загальний стан, шкіра, антропометрія, серцево-судинна і респіраторна системи, живіт.',
     defaultMode: 'expanded',
     modes: ['short', 'standard', 'expanded'],
-  },
-  {
-    id: 'respiratory',
-    title: 'Респіраторний статус',
-    description: 'Аускультація легень та короткий опис дихання.',
-    defaultMode: 'standard',
-    modes: ['short', 'standard'],
   },
   {
     id: 'neurological',

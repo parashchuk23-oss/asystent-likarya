@@ -45,6 +45,16 @@ const presets = {
     'систолічний шум на верхівці',
     'систолічний шум над аортою',
   ],
+  lungAuscultation: [
+    'Дихання везикулярне, проводиться з обох боків. Хрипи не вислуховуються.',
+    'Дихання жорстке, проводиться з обох боків. Хрипи не вислуховуються.',
+    'Дихання ослаблене з обох боків. Хрипи не вислуховуються.',
+    'Дихання ослаблене справа. Хрипи не вислуховуються.',
+    'Дихання ослаблене зліва. Хрипи не вислуховуються.',
+    'Дихання везикулярне. Сухі хрипи вислуховуються.',
+    'Дихання везикулярне. Вологі хрипи вислуховуються.',
+    'Дихання ослаблене в нижніх відділах. Вологі хрипи вислуховуються.',
+  ],
   abdomen: ["живіт м'який, безболісний", "живіт м'який, болючий", 'живіт здутий', 'живіт напружений'],
   liver: ['печінка не збільшена', 'печінка збільшена', 'край печінки пальпується біля краю реберної дуги'],
   spleen: ['селезінка не пальпується', 'селезінка пальпується', 'селезінка збільшена'],
@@ -294,6 +304,18 @@ export default function GeneralStatusForm({ formData, onChange }) {
             onChange={(value) => onChange('peripheralEdema', value)}
           />
         </div>
+      </section>
+
+      <section className="rounded-lg border border-slate-200 bg-white p-3">
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-teal-700">
+          Респіраторна система
+        </p>
+        <PresetField
+          label="Аускультація легень"
+          value={formData.lungAuscultation}
+          options={presets.lungAuscultation}
+          onChange={(value) => onChange('lungAuscultation', value)}
+        />
       </section>
 
       <section className="rounded-lg border border-slate-200 bg-white p-3">
