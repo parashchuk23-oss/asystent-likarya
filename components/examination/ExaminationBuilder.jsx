@@ -9,7 +9,7 @@ import { textareaClass } from '../formStyles';
 import SelectedStatusCard from './SelectedStatusCard';
 import StatusPicker from './StatusPicker';
 
-const defaultSelectedStatuses = ['general', 'cardiovascular', 'respiratory'];
+const defaultSelectedStatuses = ['general', 'respiratory'];
 
 function getInitialModes(statusIds) {
   return Object.fromEntries(

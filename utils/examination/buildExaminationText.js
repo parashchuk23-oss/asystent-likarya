@@ -39,7 +39,6 @@ function buildGeneralStatus(formData) {
     formData.patientPosition,
     buildSentence('шкірні покриви', formData.skinCondition),
     formData.mucousMembranes,
-    buildSentence('периферичні набряки', formData.peripheralEdema),
     buildSentence('лімфатичні вузли', formData.lymphNodes),
     buildSentence('щитоподібна залоза', formData.thyroid),
     buildSentence('ротова порожнина', formData.oralCavity),
@@ -49,25 +48,18 @@ function buildGeneralStatus(formData) {
       formData.weight && `маса тіла: ${formData.weight} кг`,
       formData.bmi && `ІМТ: ${formData.bmi} кг/м²`,
     ]),
+    joinParts([
+      formData.bloodPressure && `АТ: ${formData.bloodPressure} мм рт. ст.`,
+      formData.heartRate && `ЧСС: ${formData.heartRate} уд/хв`,
+    ]),
+    buildSentence('аускультація серця', formData.heartAuscultation),
+    buildSentence('периферичні набряки', formData.peripheralEdema),
     formData.abdomen,
     formData.liver,
     formData.spleen,
     buildSentence('дефекація', formData.defecation),
     buildSentence('сечовипускання', formData.urination),
     formData.cvsSymptom,
-  ];
-
-  return rows.filter(hasValue);
-}
-
-function buildCardiovascularStatus(formData, mode) {
-  const rows = [
-    joinParts([
-      formData.bloodPressure && `АТ: ${formData.bloodPressure} мм рт. ст.`,
-      formData.heartRate && `ЧСС: ${formData.heartRate} уд/хв`,
-    ]),
-    buildSentence('аускультація серця', formData.heartAuscultation),
-    mode !== 'short' && buildSentence('набряки', formData.edema || 'не виявлені'),
   ];
 
   return rows.filter(hasValue);
@@ -106,7 +98,6 @@ function buildCustomStatus(formData) {
 
 const statusBuilders = {
   general: buildGeneralStatus,
-  cardiovascular: buildCardiovascularStatus,
   respiratory: buildRespiratoryStatus,
   neurological: buildNeurologicalStatus,
   custom: buildCustomStatus,

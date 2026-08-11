@@ -2,8 +2,8 @@ export const examinationPresets = [
   {
     id: 'general-visit',
     title: 'Загальний прийом',
-    description: 'Загальний, серцево-судинний і респіраторний статус.',
-    statusIds: ['general', 'cardiovascular', 'respiratory'],
+    description: 'Загальний соматичний і респіраторний статус.',
+    statusIds: ['general', 'respiratory'],
   },
   {
     id: 'neurological-complaint',
@@ -21,6 +21,6 @@ export const examinationPresets = [
     id: 'child-preventive',
     title: 'Профілактичний огляд дитини',
     description: 'Поки додає загальний статус; дитячий шаблон буде окремим етапом.',
-    statusIds: ['general', 'cardiovascular', 'respiratory', 'neurological'],
+    statusIds: ['general', 'respiratory', 'neurological'],
   },
 ];

@@ -2,16 +2,9 @@ export const implementedExaminationStatuses = [
   {
     id: 'general',
     title: 'Загальний соматичний статус',
-    description: 'Загальний стан, шкіра, антропометрія, живіт, сечовидільна система.',
+    description: 'Загальний стан, шкіра, антропометрія, серцево-судинна система, живіт.',
     defaultMode: 'expanded',
     modes: ['short', 'standard', 'expanded'],
-  },
-  {
-    id: 'cardiovascular',
-    title: 'Серцево-судинний статус',
-    description: 'АТ, ЧСС, аускультація серця, набряки.',
-    defaultMode: 'standard',
-    modes: ['short', 'standard'],
   },
   {
     id: 'respiratory',

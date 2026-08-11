@@ -32,6 +32,14 @@ const presets = {
   ],
   oralCavity: ['зів рожевий, мигдалики чисті', 'зів гіперемований', 'слизова ротової порожнини суха', 'язик вологий'],
   bodyType: ['нормостенічний', 'астенічний', 'гіперстенічний'],
+  heartAuscultation: [
+    'Тони серця ритмічні, звучні. Шуми не вислуховуються.',
+    'Тони серця ритмічні, приглушені. Шуми не вислуховуються.',
+    'Тони серця аритмічні. Шуми не вислуховуються.',
+    'Тони серця ритмічні. Систолічний шум вислуховується.',
+    'Тони серця ритмічні. Діастолічний шум вислуховується.',
+    'Тони серця аритмічні. Систолічний шум вислуховується.',
+  ],
   abdomen: ["живіт м'який, безболісний", "живіт м'який, болючий", 'живіт здутий', 'живіт напружений'],
   liver: ['печінка не збільшена', 'печінка збільшена', 'край печінки пальпується біля краю реберної дуги'],
   spleen: ['селезінка не пальпується', 'селезінка пальпується', 'селезінка збільшена'],
@@ -143,9 +151,9 @@ export default function GeneralStatusForm({ formData, onChange }) {
 
       <section className="rounded-lg border border-slate-200 bg-white p-3">
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-teal-700">
-          Шкіра, слизові, набряки
+          Шкіра і слизові
         </p>
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2">
           <PresetField
             label="Шкірні покриви"
             value={formData.skinCondition}
@@ -158,14 +166,6 @@ export default function GeneralStatusForm({ formData, onChange }) {
             value={formData.mucousMembranes}
             options={presets.mucousMembranes}
             onChange={(value) => onChange('mucousMembranes', value)}
-          />
-
-          <PresetField
-            label="Периферичні набряки"
-            value={formData.peripheralEdema}
-            options={presets.peripheralEdema}
-            onChange={(value) => onChange('peripheralEdema', value)}
-            placeholder="Наприклад: пастозність стоп"
           />
         </div>
       </section>
@@ -239,6 +239,48 @@ export default function GeneralStatusForm({ formData, onChange }) {
               className={`${inputClass} bg-slate-50 text-slate-600`}
             />
           </FormField>
+        </div>
+      </section>
+
+      <section className="rounded-lg border border-slate-200 bg-white p-3">
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-teal-700">
+          Серцево-судинний статус
+        </p>
+        <div className="grid gap-3 md:grid-cols-2">
+          <FormField label="Артеріальний тиск" hint="мм рт. ст." className="mb-0">
+            <input
+              type="text"
+              inputMode="numeric"
+              value={formData.bloodPressure}
+              onChange={(event) => onChange('bloodPressure', event.target.value)}
+              placeholder="120/80"
+              className={inputClass}
+            />
+          </FormField>
+
+          <NumberField
+            label="ЧСС"
+            hint="уд/хв"
+            value={formData.heartRate}
+            onChange={(value) => onChange('heartRate', value)}
+            placeholder="72"
+            min="20"
+            max="300"
+          />
+
+          <PresetField
+            label="Аускультація серця"
+            value={formData.heartAuscultation}
+            options={presets.heartAuscultation}
+            onChange={(value) => onChange('heartAuscultation', value)}
+          />
+
+          <PresetField
+            label="Периферичні набряки"
+            value={formData.peripheralEdema}
+            options={presets.peripheralEdema}
+            onChange={(value) => onChange('peripheralEdema', value)}
+          />
         </div>
       </section>
 
