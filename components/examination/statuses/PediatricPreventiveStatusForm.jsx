@@ -51,6 +51,20 @@ const presets = {
     'Потребує додаткової клінічної оцінки за результатами огляду.',
     'Потребує консультації профільного спеціаліста за результатами огляду.',
   ],
+  heightAssessment: [
+    'нормальний зріст',
+    'нижче середнього, потребує оцінки динаміки росту',
+    'низький зріст',
+    'вище середнього, потребує оцінки динаміки росту',
+    'високий зріст',
+  ],
+  weightAssessment: [
+    'нормальна маса тіла',
+    'дефіцит маси тіла',
+    'тяжкий дефіцит маси тіла',
+    'надлишкова маса тіла',
+    'ожиріння',
+  ],
 };
 
 function calculatePediatricBmi(height, weight) {
@@ -175,6 +189,22 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
             Зріст, маса тіла та ІМТ оцінюються за перцентилями / SD згідно з наказом МОЗ України
             №1590 від 13.09.2024.
           </div>
+        </div>
+
+        <div className="mt-3 grid gap-3 md:grid-cols-2">
+          <PresetField
+            label="Оцінка зросту"
+            value={formData.pediatricHeightAssessment}
+            options={presets.heightAssessment}
+            onChange={(value) => onChange('pediatricHeightAssessment', value)}
+          />
+
+          <PresetField
+            label="Оцінка маси / ІМТ"
+            value={formData.pediatricWeightAssessment}
+            options={presets.weightAssessment}
+            onChange={(value) => onChange('pediatricWeightAssessment', value)}
+          />
         </div>
       </section>
 

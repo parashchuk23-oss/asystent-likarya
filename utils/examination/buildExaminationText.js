@@ -119,6 +119,8 @@ function buildPediatricPreventiveStatus(formData) {
       formData.pediatricHeight && `зріст: ${formData.pediatricHeight} см`,
       formData.pediatricWeight && `маса тіла: ${formData.pediatricWeight} кг`,
       pediatricBmi && `ІМТ: ${pediatricBmi} кг/м²`,
+      formData.pediatricHeightAssessment && `оцінка зросту: ${formData.pediatricHeightAssessment}`,
+      formData.pediatricWeightAssessment && `оцінка маси тіла: ${formData.pediatricWeightAssessment}`,
     ]),
     joinParts([
       formData.pediatricBloodPressure && `АТ: ${formData.pediatricBloodPressure} мм рт. ст.`,

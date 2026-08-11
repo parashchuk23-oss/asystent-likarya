@@ -47,6 +47,8 @@ export const defaultExaminationData = {
   pediatricTemperature: '',
   pediatricHeight: '',
   pediatricWeight: '',
+  pediatricHeightAssessment: '',
+  pediatricWeightAssessment: '',
   pediatricBloodPressure: '',
   pediatricHeartRate: '',
   pediatricRespiratoryRate: '',
