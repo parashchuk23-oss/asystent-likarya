@@ -53,6 +53,18 @@ const presets = {
   ],
 };
 
+function calculatePediatricBmi(height, weight) {
+  const heightCm = Number(height);
+  const weightKg = Number(weight);
+
+  if (!heightCm || !weightKg || heightCm <= 0 || weightKg <= 0) {
+    return '';
+  }
+
+  const heightM = heightCm / 100;
+  return (weightKg / (heightM * heightM)).toFixed(1);
+}
+
 function NumberField({ label, hint, value, onChange, placeholder, min, max, step }) {
   return (
     <FormField label={label} hint={hint} className="mb-0">
@@ -71,6 +83,8 @@ function NumberField({ label, hint, value, onChange, placeholder, min, max, step
 }
 
 export default function PediatricPreventiveStatusForm({ formData, onChange }) {
+  const pediatricBmi = calculatePediatricBmi(formData.pediatricHeight, formData.pediatricWeight);
+
   return (
     <div className="space-y-3">
       <section className="rounded-lg border border-slate-200 bg-slate-50/60 p-3">
@@ -84,6 +98,38 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
             options={presets.generalCondition}
             onChange={(value) => onChange('pediatricGeneralCondition', value)}
           />
+
+          <NumberField
+            label="Вік"
+            hint="років"
+            value={formData.pediatricAgeYears}
+            onChange={(value) => onChange('pediatricAgeYears', value)}
+            placeholder="10"
+            min="0"
+            max="17"
+          />
+
+          <NumberField
+            label="Місяці"
+            hint="додатково"
+            value={formData.pediatricAgeMonths}
+            onChange={(value) => onChange('pediatricAgeMonths', value)}
+            placeholder="0"
+            min="0"
+            max="11"
+          />
+
+          <FormField label="Стать" className="mb-0">
+            <select
+              value={formData.pediatricSex}
+              onChange={(event) => onChange('pediatricSex', event.target.value)}
+              className={inputClass}
+            >
+              <option value="">не обрано</option>
+              <option value="хлопчик">хлопчик</option>
+              <option value="дівчинка">дівчинка</option>
+            </select>
+          </FormField>
 
           <NumberField
             label="Температура"
@@ -115,6 +161,20 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
             min="2"
             max="180"
           />
+        </div>
+
+        <div className="mt-3 grid gap-3 md:grid-cols-2">
+          <div className="rounded-lg border border-blue-100 bg-blue-50/70 p-3 text-sm font-semibold leading-relaxed text-slate-700">
+            <span className="text-slate-900">ІМТ:</span>{' '}
+            {pediatricBmi ? `${pediatricBmi} кг/м²` : 'буде розраховано після введення зросту і маси тіла'}.
+            <br />
+            У дітей ІМТ оцінюється за віком і статтю, а не за дорослими межами.
+          </div>
+
+          <div className="rounded-lg border border-teal-100 bg-teal-50/70 p-3 text-sm font-semibold leading-relaxed text-slate-700">
+            Зріст, маса тіла та ІМТ оцінюються за перцентилями / SD згідно з наказом МОЗ України
+            №1590 від 13.09.2024.
+          </div>
         </div>
       </section>
 
@@ -231,6 +291,10 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
               placeholder="100/60"
               className={inputClass}
             />
+            <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-500">
+              У дітей АТ оцінюють з урахуванням віку, статі та зросту; одна універсальна норма
+              для всіх дітей некоректна.
+            </p>
           </FormField>
 
           <NumberField

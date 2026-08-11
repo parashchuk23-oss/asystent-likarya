@@ -99,9 +99,18 @@ function buildPediatricPreventiveStatus(formData) {
     formData.pediatricVisionOd && `OD ${formData.pediatricVisionOd}`,
     formData.pediatricVisionOs && `OS ${formData.pediatricVisionOs}`,
   ]) || formData.pediatricVision;
+  const pediatricAge = joinParts([
+    formData.pediatricAgeYears && `${formData.pediatricAgeYears} років`,
+    formData.pediatricAgeMonths && `${formData.pediatricAgeMonths} міс.`,
+  ]);
+  const pediatricBmi = calculateBmi(formData.pediatricHeight, formData.pediatricWeight);
 
   const rows = [
     'профілактичний огляд дитини',
+    joinParts([
+      pediatricAge && `вік: ${pediatricAge}`,
+      formData.pediatricSex && `стать: ${formData.pediatricSex}`,
+    ]),
     joinParts([
       formData.pediatricGeneralCondition && `загальний стан: ${formData.pediatricGeneralCondition}`,
       formData.pediatricTemperature && `температура: ${formData.pediatricTemperature} °C`,
@@ -109,6 +118,7 @@ function buildPediatricPreventiveStatus(formData) {
     joinParts([
       formData.pediatricHeight && `зріст: ${formData.pediatricHeight} см`,
       formData.pediatricWeight && `маса тіла: ${formData.pediatricWeight} кг`,
+      pediatricBmi && `ІМТ: ${pediatricBmi} кг/м²`,
     ]),
     joinParts([
       formData.pediatricBloodPressure && `АТ: ${formData.pediatricBloodPressure} мм рт. ст.`,
