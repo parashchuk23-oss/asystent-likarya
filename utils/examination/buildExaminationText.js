@@ -1,3 +1,5 @@
+import { calculatePediatricGrowthAssessment } from '../growthAssessment';
+
 function hasValue(value) {
   return value !== undefined && value !== null && String(value).trim() !== '';
 }
@@ -104,6 +106,13 @@ function buildPediatricPreventiveStatus(formData) {
     formData.pediatricAgeMonths && `${formData.pediatricAgeMonths} міс.`,
   ]);
   const pediatricBmi = calculateBmi(formData.pediatricHeight, formData.pediatricWeight);
+  const growthAssessment = calculatePediatricGrowthAssessment({
+    sex: formData.pediatricSex,
+    ageYears: formData.pediatricAgeYears,
+    ageMonths: formData.pediatricAgeMonths,
+    height: formData.pediatricHeight,
+    weight: formData.pediatricWeight,
+  });
 
   const rows = [
     'профілактичний огляд дитини',
@@ -119,8 +128,8 @@ function buildPediatricPreventiveStatus(formData) {
       formData.pediatricHeight && `зріст: ${formData.pediatricHeight} см`,
       formData.pediatricWeight && `маса тіла: ${formData.pediatricWeight} кг`,
       pediatricBmi && `ІМТ: ${pediatricBmi} кг/м²`,
-      formData.pediatricHeightAssessment && `оцінка зросту: ${formData.pediatricHeightAssessment}`,
-      formData.pediatricWeightAssessment && `оцінка маси тіла: ${formData.pediatricWeightAssessment}`,
+      growthAssessment.height?.category && `оцінка зросту: ${growthAssessment.height.category}`,
+      growthAssessment.bmi?.category && `оцінка ІМТ для віку: ${growthAssessment.bmi.category}`,
     ]),
     joinParts([
       formData.pediatricBloodPressure && `АТ: ${formData.pediatricBloodPressure} мм рт. ст.`,

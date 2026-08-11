@@ -1,6 +1,7 @@
 import FormField from '../../FormField';
 import { inputClass } from '../../formStyles';
 import { PresetField } from './StatusPresetFields';
+import { calculatePediatricGrowthAssessment } from '../../../utils/growthAssessment';
 
 const presets = {
   generalCondition: ['задовільний', 'відносно задовільний', 'середньої тяжкості'],
@@ -51,33 +52,7 @@ const presets = {
     'Потребує додаткової клінічної оцінки за результатами огляду.',
     'Потребує консультації профільного спеціаліста за результатами огляду.',
   ],
-  heightAssessment: [
-    'нормальний зріст',
-    'нижче середнього, потребує оцінки динаміки росту',
-    'низький зріст',
-    'вище середнього, потребує оцінки динаміки росту',
-    'високий зріст',
-  ],
-  weightAssessment: [
-    'нормальна маса тіла',
-    'дефіцит маси тіла',
-    'тяжкий дефіцит маси тіла',
-    'надлишкова маса тіла',
-    'ожиріння',
-  ],
 };
-
-function calculatePediatricBmi(height, weight) {
-  const heightCm = Number(height);
-  const weightKg = Number(weight);
-
-  if (!heightCm || !weightKg || heightCm <= 0 || weightKg <= 0) {
-    return '';
-  }
-
-  const heightM = heightCm / 100;
-  return (weightKg / (heightM * heightM)).toFixed(1);
-}
 
 function NumberField({ label, hint, value, onChange, placeholder, min, max, step }) {
   return (
@@ -97,7 +72,13 @@ function NumberField({ label, hint, value, onChange, placeholder, min, max, step
 }
 
 export default function PediatricPreventiveStatusForm({ formData, onChange }) {
-  const pediatricBmi = calculatePediatricBmi(formData.pediatricHeight, formData.pediatricWeight);
+  const growthAssessment = calculatePediatricGrowthAssessment({
+    sex: formData.pediatricSex,
+    ageYears: formData.pediatricAgeYears,
+    ageMonths: formData.pediatricAgeMonths,
+    height: formData.pediatricHeight,
+    weight: formData.pediatricWeight,
+  });
 
   return (
     <div className="space-y-3">
@@ -180,7 +161,9 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
         <div className="mt-3 grid gap-3 md:grid-cols-2">
           <div className="rounded-lg border border-blue-100 bg-blue-50/70 p-3 text-sm font-semibold leading-relaxed text-slate-700">
             <span className="text-slate-900">ІМТ:</span>{' '}
-            {pediatricBmi ? `${pediatricBmi} кг/м²` : 'буде розраховано після введення зросту і маси тіла'}.
+            {growthAssessment.bmi?.value
+              ? `${growthAssessment.bmi.value} кг/м²`
+              : 'буде розраховано після введення зросту і маси тіла'}.
             <br />
             У дітей ІМТ оцінюється за віком і статтю, а не за дорослими межами.
           </div>
@@ -191,20 +174,49 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
           </div>
         </div>
 
-        <div className="mt-3 grid gap-3 md:grid-cols-2">
-          <PresetField
-            label="Оцінка зросту"
-            value={formData.pediatricHeightAssessment}
-            options={presets.heightAssessment}
-            onChange={(value) => onChange('pediatricHeightAssessment', value)}
-          />
+        <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3">
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-teal-700">
+            Автоматична оцінка фізичного розвитку
+          </p>
+          {growthAssessment.status === 'ready' ? (
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-semibold leading-relaxed text-slate-700">
+                <span className="block text-slate-900">Зріст для віку</span>
+                {growthAssessment.height ? (
+                  <>
+                    {growthAssessment.height.category}
+                    <br />
+                    <span className="text-xs text-slate-500">
+                      z-score: {growthAssessment.height.zScore}; приблизно {growthAssessment.height.percentile}
+                      -й перцентиль
+                    </span>
+                  </>
+                ) : (
+                  'введіть зріст'
+                )}
+              </div>
 
-          <PresetField
-            label="Оцінка маси / ІМТ"
-            value={formData.pediatricWeightAssessment}
-            options={presets.weightAssessment}
-            onChange={(value) => onChange('pediatricWeightAssessment', value)}
-          />
+              <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-semibold leading-relaxed text-slate-700">
+                <span className="block text-slate-900">ІМТ для віку</span>
+                {growthAssessment.bmi ? (
+                  <>
+                    {growthAssessment.bmi.category}
+                    <br />
+                    <span className="text-xs text-slate-500">
+                      z-score: {growthAssessment.bmi.zScore}; приблизно {growthAssessment.bmi.percentile}-й
+                      перцентиль
+                    </span>
+                  </>
+                ) : (
+                  'введіть зріст і масу тіла'
+                )}
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm font-semibold leading-relaxed text-slate-500">
+              {growthAssessment.message}
+            </p>
+          )}
         </div>
       </section>
 
