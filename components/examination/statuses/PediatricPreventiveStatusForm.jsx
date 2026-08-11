@@ -121,72 +121,6 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
 
       <section className="rounded-lg border border-slate-200 bg-white p-3">
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-teal-700">
-          Серцево-судинна і респіраторна системи
-        </p>
-        <div className="grid gap-3 md:grid-cols-3">
-          <FormField label="АТ" hint="мм рт. ст." className="mb-0">
-            <input
-              type="text"
-              inputMode="numeric"
-              value={formData.pediatricBloodPressure}
-              onChange={(event) => onChange('pediatricBloodPressure', event.target.value)}
-              placeholder="100/60"
-              className={inputClass}
-            />
-          </FormField>
-
-          <NumberField
-            label="ЧСС"
-            hint="уд/хв"
-            value={formData.pediatricHeartRate}
-            onChange={(value) => onChange('pediatricHeartRate', value)}
-            placeholder="82"
-            min="30"
-            max="240"
-          />
-
-          <NumberField
-            label="ЧД"
-            hint="за хв"
-            value={formData.pediatricRespiratoryRate}
-            onChange={(value) => onChange('pediatricRespiratoryRate', value)}
-            placeholder="18"
-            min="4"
-            max="80"
-          />
-
-          <PresetField
-            label="Тони серця"
-            value={formData.pediatricHeartSounds}
-            options={presets.heartSounds}
-            onChange={(value) => onChange('pediatricHeartSounds', value)}
-          />
-
-          <PresetField
-            label="Шуми"
-            value={formData.pediatricHeartMurmurs}
-            options={presets.heartMurmurs}
-            onChange={(value) => onChange('pediatricHeartMurmurs', value)}
-          />
-
-          <PresetField
-            label="Дихання"
-            value={formData.pediatricBreathSounds}
-            options={presets.breathSounds}
-            onChange={(value) => onChange('pediatricBreathSounds', value)}
-          />
-
-          <PresetField
-            label="Хрипи"
-            value={formData.pediatricLungWheezes}
-            options={presets.lungWheezes}
-            onChange={(value) => onChange('pediatricLungWheezes', value)}
-          />
-        </div>
-      </section>
-
-      <section className="rounded-lg border border-slate-200 bg-white p-3">
-        <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-teal-700">
           Соматичний статус і шкільний скринінг
         </p>
         <div className="grid gap-3 md:grid-cols-3">
@@ -265,6 +199,72 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
             value={formData.pediatricPediculosis}
             options={presets.pediculosis}
             onChange={(value) => onChange('pediatricPediculosis', value)}
+          />
+        </div>
+      </section>
+
+      <section className="rounded-lg border border-slate-200 bg-white p-3">
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-teal-700">
+          Серцево-судинна і респіраторна системи
+        </p>
+        <div className="grid gap-3 md:grid-cols-3">
+          <FormField label="АТ" hint="мм рт. ст." className="mb-0">
+            <input
+              type="text"
+              inputMode="numeric"
+              value={formData.pediatricBloodPressure}
+              onChange={(event) => onChange('pediatricBloodPressure', event.target.value)}
+              placeholder="100/60"
+              className={inputClass}
+            />
+          </FormField>
+
+          <NumberField
+            label="ЧСС"
+            hint="уд/хв"
+            value={formData.pediatricHeartRate}
+            onChange={(value) => onChange('pediatricHeartRate', value)}
+            placeholder="82"
+            min="30"
+            max="240"
+          />
+
+          <NumberField
+            label="ЧД"
+            hint="за хв"
+            value={formData.pediatricRespiratoryRate}
+            onChange={(value) => onChange('pediatricRespiratoryRate', value)}
+            placeholder="18"
+            min="4"
+            max="80"
+          />
+
+          <PresetField
+            label="Тони серця"
+            value={formData.pediatricHeartSounds}
+            options={presets.heartSounds}
+            onChange={(value) => onChange('pediatricHeartSounds', value)}
+          />
+
+          <PresetField
+            label="Шуми"
+            value={formData.pediatricHeartMurmurs}
+            options={presets.heartMurmurs}
+            onChange={(value) => onChange('pediatricHeartMurmurs', value)}
+          />
+
+          <PresetField
+            label="Дихання"
+            value={formData.pediatricBreathSounds}
+            options={presets.breathSounds}
+            onChange={(value) => onChange('pediatricBreathSounds', value)}
+          />
+
+          <PresetField
+            label="Хрипи"
+            value={formData.pediatricLungWheezes}
+            options={presets.lungWheezes}
+            onChange={(value) => onChange('pediatricLungWheezes', value)}
           />
         </div>
       </section>
