@@ -56,6 +56,8 @@ export const defaultExaminationData = {
   pediatricLymphNodes: 'не збільшені',
   pediatricOralCavity: 'зів рожевий, мигдалики чисті',
   pediatricAbdomen: "живіт м'який, безболісний",
+  pediatricVisionOd: '',
+  pediatricVisionOs: '',
   pediatricVision: 'гострота зору без скарг / видимих порушень',
   pediatricHearing: 'слух на шепітну мову збережений',
   pediatricPosture: 'постава без видимих порушень',

@@ -36,7 +36,6 @@ const presets = {
   abdomen: ["живіт м'який, безболісний", "живіт м'який, болючий", 'живіт здутий'],
   posture: ['постава без видимих порушень', 'порушення постави', 'сколіотична постава під питанням'],
   footArch: ['склепіння стопи без видимих порушень', 'плоскостопість під питанням', 'порушення склепіння стопи'],
-  vision: ['гострота зору без скарг / видимих порушень', 'потребує уточнення гостроти зору', 'користується окулярами / лінзами'],
   hearing: ['слух на шепітну мову збережений', 'потребує уточнення слуху', 'зниження слуху під питанням'],
   dentalStatus: ['стоматологічний огляд рекомендований планово', 'карієс під питанням', 'скарги стоматологічного профілю відсутні'],
   pediculosis: ['ознак педикульозу не виявлено', 'потребує огляду на педикульоз', 'виявлені ознаки педикульозу'],
@@ -159,12 +158,27 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
             onChange={(value) => onChange('pediatricAbdomen', value)}
           />
 
-          <PresetField
-            label="Зір"
-            value={formData.pediatricVision}
-            options={presets.vision}
-            onChange={(value) => onChange('pediatricVision', value)}
-          />
+          <FormField label="Зір OD" className="mb-0">
+            <input
+              type="text"
+              inputMode="decimal"
+              value={formData.pediatricVisionOd}
+              onChange={(event) => onChange('pediatricVisionOd', event.target.value)}
+              placeholder="1.0"
+              className={inputClass}
+            />
+          </FormField>
+
+          <FormField label="Зір OS" className="mb-0">
+            <input
+              type="text"
+              inputMode="decimal"
+              value={formData.pediatricVisionOs}
+              onChange={(event) => onChange('pediatricVisionOs', event.target.value)}
+              placeholder="1.0"
+              className={inputClass}
+            />
+          </FormField>
 
           <PresetField
             label="Слух"

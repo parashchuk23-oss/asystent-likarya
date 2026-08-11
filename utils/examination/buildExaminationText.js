@@ -95,6 +95,11 @@ function buildNeurologicalStatus(formData, mode) {
 }
 
 function buildPediatricPreventiveStatus(formData) {
+  const pediatricVision = joinParts([
+    formData.pediatricVisionOd && `OD ${formData.pediatricVisionOd}`,
+    formData.pediatricVisionOs && `OS ${formData.pediatricVisionOs}`,
+  ]) || formData.pediatricVision;
+
   const rows = [
     'профілактичний огляд дитини',
     joinParts([
@@ -123,7 +128,7 @@ function buildPediatricPreventiveStatus(formData) {
     buildSentence('лімфатичні вузли', formData.pediatricLymphNodes),
     buildSentence('ротова порожнина', formData.pediatricOralCavity),
     formData.pediatricAbdomen,
-    buildSentence('зір', formData.pediatricVision),
+    buildSentence('зір', pediatricVision),
     buildSentence('слух', formData.pediatricHearing),
     buildSentence('постава', formData.pediatricPosture),
     buildSentence('склепіння стопи', formData.pediatricFootArch),
