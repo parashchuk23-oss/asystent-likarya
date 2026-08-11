@@ -248,27 +248,29 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
             onChange={(value) => onChange('pediatricAbdomen', value)}
           />
 
-          <FormField label="Зір OD" className="mb-0">
-            <input
-              type="text"
-              inputMode="decimal"
-              value={formData.pediatricVisionOd}
-              onChange={(event) => onChange('pediatricVisionOd', event.target.value)}
-              placeholder="1.0"
-              className={inputClass}
-            />
-          </FormField>
+          <div className="grid grid-cols-2 gap-3">
+            <FormField label="Зір OD" className="mb-0">
+              <input
+                type="text"
+                inputMode="decimal"
+                value={formData.pediatricVisionOd}
+                onChange={(event) => onChange('pediatricVisionOd', event.target.value)}
+                placeholder="1.0"
+                className={inputClass}
+              />
+            </FormField>
 
-          <FormField label="Зір OS" className="mb-0">
-            <input
-              type="text"
-              inputMode="decimal"
-              value={formData.pediatricVisionOs}
-              onChange={(event) => onChange('pediatricVisionOs', event.target.value)}
-              placeholder="1.0"
-              className={inputClass}
-            />
-          </FormField>
+            <FormField label="Зір OS" className="mb-0">
+              <input
+                type="text"
+                inputMode="decimal"
+                value={formData.pediatricVisionOs}
+                onChange={(event) => onChange('pediatricVisionOs', event.target.value)}
+                placeholder="1.0"
+                className={inputClass}
+              />
+            </FormField>
+          </div>
 
           <PresetField
             label="Слух"
