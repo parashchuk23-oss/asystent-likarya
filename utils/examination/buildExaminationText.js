@@ -1,4 +1,5 @@
 import { calculatePediatricGrowthAssessment } from '../growthAssessment';
+import { assessPediatricBloodPressure } from '../pediatricBloodPressure';
 
 function hasValue(value) {
   return value !== undefined && value !== null && String(value).trim() !== '';
@@ -113,6 +114,12 @@ function buildPediatricPreventiveStatus(formData) {
     height: formData.pediatricHeight,
     weight: formData.pediatricWeight,
   });
+  const bloodPressureAssessment = assessPediatricBloodPressure({
+    bloodPressure: formData.pediatricBloodPressure,
+    sex: formData.pediatricSex,
+    ageYears: formData.pediatricAgeYears,
+    ageMonths: formData.pediatricAgeMonths,
+  });
 
   const rows = [
     'профілактичний огляд дитини',
@@ -133,6 +140,7 @@ function buildPediatricPreventiveStatus(formData) {
     ]),
     joinParts([
       formData.pediatricBloodPressure && `АТ: ${formData.pediatricBloodPressure} мм рт. ст.`,
+      bloodPressureAssessment.status === 'ready' && `оцінка АТ: ${bloodPressureAssessment.category}`,
       formData.pediatricHeartRate && `ЧСС: ${formData.pediatricHeartRate} уд/хв`,
       formData.pediatricRespiratoryRate && `ЧД: ${formData.pediatricRespiratoryRate}/хв`,
     ]),

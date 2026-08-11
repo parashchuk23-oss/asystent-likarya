@@ -2,6 +2,7 @@ import FormField from '../../FormField';
 import { inputClass } from '../../formStyles';
 import { PresetField } from './StatusPresetFields';
 import { calculatePediatricGrowthAssessment } from '../../../utils/growthAssessment';
+import { assessPediatricBloodPressure } from '../../../utils/pediatricBloodPressure';
 
 const presets = {
   generalCondition: ['задовільний', 'відносно задовільний', 'середньої тяжкості'],
@@ -71,6 +72,18 @@ function NumberField({ label, hint, value, onChange, placeholder, min, max, step
   );
 }
 
+function getAssessmentCardClass(tone) {
+  if (tone === 'danger') {
+    return 'border-rose-200 bg-rose-50 text-rose-900';
+  }
+
+  if (tone === 'warning' || tone === 'notice') {
+    return 'border-amber-200 bg-amber-50 text-amber-900';
+  }
+
+  return 'border-teal-100 bg-teal-50 text-teal-900';
+}
+
 export default function PediatricPreventiveStatusForm({ formData, onChange }) {
   const growthAssessment = calculatePediatricGrowthAssessment({
     sex: formData.pediatricSex,
@@ -78,6 +91,12 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
     ageMonths: formData.pediatricAgeMonths,
     height: formData.pediatricHeight,
     weight: formData.pediatricWeight,
+  });
+  const bloodPressureAssessment = assessPediatricBloodPressure({
+    bloodPressure: formData.pediatricBloodPressure,
+    sex: formData.pediatricSex,
+    ageYears: formData.pediatricAgeYears,
+    ageMonths: formData.pediatricAgeMonths,
   });
 
   return (
@@ -169,8 +188,9 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
           </div>
 
           <div className="rounded-lg border border-teal-100 bg-teal-50/70 p-3 text-sm font-semibold leading-relaxed text-slate-700">
-            Зріст, маса тіла та ІМТ оцінюються за перцентилями / SD згідно з наказом МОЗ України
-            №1590 від 13.09.2024.
+            Оцінка виконується за WHO Growth Reference 2007 для дітей 5-19 років; підхід
+            відповідає принципу оцінювання за віком і статтю, передбаченому наказом МОЗ
+            України №1590.
           </div>
         </div>
 
@@ -335,10 +355,26 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
               placeholder="100/60"
               className={inputClass}
             />
-            <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-500">
-              У дітей АТ оцінюють з урахуванням віку, статі та зросту; одна універсальна норма
-              для всіх дітей некоректна.
-            </p>
+            <div
+              className={`mt-2 rounded-lg border p-2 text-xs font-semibold leading-relaxed ${getAssessmentCardClass(
+                bloodPressureAssessment.tone,
+              )}`}
+            >
+              {bloodPressureAssessment.status === 'ready' ? (
+                <>
+                  <span className="block text-sm">{bloodPressureAssessment.category}</span>
+                  {bloodPressureAssessment.threshold && (
+                    <span className="block text-slate-600">
+                      Скринінговий поріг: {bloodPressureAssessment.threshold.systolic}/
+                      {bloodPressureAssessment.threshold.diastolic} мм рт. ст.
+                    </span>
+                  )}
+                  <span className="block">{bloodPressureAssessment.interpretation}</span>
+                </>
+              ) : (
+                bloodPressureAssessment.message
+              )}
+            </div>
           </FormField>
 
           <NumberField
