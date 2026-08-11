@@ -2,10 +2,12 @@ import AccordionSection from '../AccordionSection';
 import { examinationStatusMap } from '../../data/examination/statusRegistry';
 import GeneralStatusForm from './statuses/GeneralStatusForm';
 import NeurologicalStatusForm from './statuses/NeurologicalStatusForm';
+import PediatricPreventiveStatusForm from './statuses/PediatricPreventiveStatusForm';
 
 const statusForms = {
   general: GeneralStatusForm,
   neurological: NeurologicalStatusForm,
+  'pediatric-preventive': PediatricPreventiveStatusForm,
 };
 
 export default function SelectedStatusCard({

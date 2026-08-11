@@ -94,9 +94,52 @@ function buildNeurologicalStatus(formData, mode) {
   return rows.filter(hasValue);
 }
 
+function buildPediatricPreventiveStatus(formData) {
+  const rows = [
+    'профілактичний огляд дитини',
+    joinParts([
+      formData.pediatricGeneralCondition && `загальний стан: ${formData.pediatricGeneralCondition}`,
+      formData.pediatricTemperature && `температура: ${formData.pediatricTemperature} °C`,
+    ]),
+    joinParts([
+      formData.pediatricHeight && `зріст: ${formData.pediatricHeight} см`,
+      formData.pediatricWeight && `маса тіла: ${formData.pediatricWeight} кг`,
+    ]),
+    joinParts([
+      formData.pediatricBloodPressure && `АТ: ${formData.pediatricBloodPressure} мм рт. ст.`,
+      formData.pediatricHeartRate && `ЧСС: ${formData.pediatricHeartRate} уд/хв`,
+      formData.pediatricRespiratoryRate && `ЧД: ${formData.pediatricRespiratoryRate}/хв`,
+    ]),
+    buildSentence(
+      'аускультація серця',
+      joinParts([formData.pediatricHeartSounds, formData.pediatricHeartMurmurs]),
+    ),
+    buildSentence(
+      'аускультація легень',
+      joinParts([formData.pediatricBreathSounds, formData.pediatricLungWheezes]),
+    ),
+    buildSentence('шкірні покриви', formData.pediatricSkinCondition),
+    formData.pediatricMucousMembranes,
+    buildSentence('лімфатичні вузли', formData.pediatricLymphNodes),
+    buildSentence('ротова порожнина', formData.pediatricOralCavity),
+    formData.pediatricAbdomen,
+    buildSentence('зір', formData.pediatricVision),
+    buildSentence('слух', formData.pediatricHearing),
+    buildSentence('постава', formData.pediatricPosture),
+    buildSentence('склепіння стопи', formData.pediatricFootArch),
+    buildSentence('стоматологічний статус', formData.pediatricDentalStatus),
+    buildSentence('педикульоз', formData.pediatricPediculosis),
+    buildSentence('група для занять фізичною культурою', formData.pediatricPhysicalEducationGroup),
+    formData.pediatricConclusion,
+  ];
+
+  return rows.filter(hasValue);
+}
+
 const statusBuilders = {
   general: buildGeneralStatus,
   neurological: buildNeurologicalStatus,
+  'pediatric-preventive': buildPediatricPreventiveStatus,
 };
 
 export function buildExaminationText(selectedStatuses, formData, statusModes = {}) {

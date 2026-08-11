@@ -20,7 +20,7 @@ export const examinationPresets = [
   {
     id: 'child-preventive',
     title: 'Профілактичний огляд дитини',
-    description: 'Поки додає загальний статус; дитячий шаблон буде окремим етапом.',
-    statusIds: ['general', 'neurological'],
+    description: 'Профілактичний огляд, скринінг школяра і група для фізкультури.',
+    statusIds: ['pediatric-preventive'],
   },
 ];

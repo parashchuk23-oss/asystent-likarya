@@ -13,17 +13,19 @@ export const implementedExaminationStatuses = [
     defaultMode: 'expanded',
     modes: ['short', 'standard', 'expanded'],
   },
+  {
+    id: 'pediatric-preventive',
+    title: 'Профілактичний огляд дитини',
+    description: 'Соматичний статус, шкільний скринінг і група для фізкультури.',
+    defaultMode: 'expanded',
+    modes: ['standard', 'expanded'],
+  },
 ];
 
 export const plannedExaminationStatuses = [
   {
     id: 'orthopedic',
     title: 'Ортопедичний статус',
-    description: 'Буде додано окремим клінічним шаблоном.',
-  },
-  {
-    id: 'pediatric-preventive',
-    title: 'Профілактичний огляд дитини',
     description: 'Буде додано окремим клінічним шаблоном.',
   },
   {
