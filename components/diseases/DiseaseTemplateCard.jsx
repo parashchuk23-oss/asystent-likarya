@@ -7,7 +7,7 @@ function getInitialConstructorState(disease) {
   const selectValues = Object.fromEntries(
     constructor.selectFields.map((field) => [
       field.id,
-      field.defaultValue ?? field.options[0]?.value ?? '',
+      field.defaultValue ?? field.options?.[0]?.value ?? '',
     ]),
   );
   const checkboxValues = Object.fromEntries(
@@ -137,28 +137,16 @@ function buildDiagnosisFromState(disease, state) {
       ? `інтенсивність болю ${state.painScore}/10 за числовою шкалою`
       : '';
     const durationPart = state.duration?.trim() ?? '';
-    const localizationText = state.localizationText
-      ? formatFreeTextValue(
-          constructor.freeTextFields.find((field) => field.id === 'localizationText'),
-          state.localizationText,
-        )
-      : '';
     const additionalText = state.additionalText?.trim() ?? '';
     const functionalDetails = state.functionalDetails?.length
       ? `функціональний вплив: ${state.functionalDetails.join(', ')}`
       : '';
-    const neuropathicFeatures = state.neuropathicFeatures?.length
-      ? `ознаки нейропатичного компонента: ${state.neuropathicFeatures.join(', ')}`
-      : '';
     const detailParts = [
-      state.localization,
-      localizationText,
       state.painType,
       painScorePart,
       durationPart,
       state.functionalImpact,
       functionalDetails,
-      neuropathicFeatures,
       additionalText,
     ].filter(Boolean);
 
@@ -221,17 +209,30 @@ export default function DiseaseTemplateCard({ disease, onAddDiagnosis }) {
                 <span className="mb-1 block text-xs font-semibold text-slate-600">
                   {field.label}
                 </span>
-                <select
-                  value={constructorState[field.id]}
-                  onChange={(event) => updateConstructorValue(field.id, event.target.value)}
-                  className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                >
-                  {field.options.map((option) => (
-                    <option key={`${field.id}-${option.label}`} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                {field.type === 'number' ? (
+                  <input
+                    type="number"
+                    value={constructorState[field.id]}
+                    onChange={(event) => updateConstructorValue(field.id, event.target.value)}
+                    placeholder={field.placeholder}
+                    min={field.min}
+                    max={field.max}
+                    step={field.step}
+                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  />
+                ) : (
+                  <select
+                    value={constructorState[field.id]}
+                    onChange={(event) => updateConstructorValue(field.id, event.target.value)}
+                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-950 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  >
+                    {field.options.map((option) => (
+                      <option key={`${field.id}-${option.label}`} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </label>
             ))}
           </div>
