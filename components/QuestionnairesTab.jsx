@@ -8,6 +8,7 @@ import FagerstromQuestionnaire from './questionnaires/FagerstromQuestionnaire';
 import FindriscQuestionnaire from './questionnaires/FindriscQuestionnaire';
 import Gad7Questionnaire from './questionnaires/Gad7Questionnaire';
 import NeuropathicPainScreeningQuestionnaire from './questionnaires/NeuropathicPainScreeningQuestionnaire';
+import PalliativeCareNeedQuestionnaire from './questionnaires/PalliativeCareNeedQuestionnaire';
 import PainFunctionalImpactQuestionnaire from './questionnaires/PainFunctionalImpactQuestionnaire';
 import PainIntensityQuestionnaire from './questionnaires/PainIntensityQuestionnaire';
 import Phq9Questionnaire from './questionnaires/Phq9Questionnaire';
@@ -93,6 +94,12 @@ const questionnaires = [
     title: 'Функціональний вплив болю',
     description: 'Спрощений модуль замість копіювання BPI short form',
     component: <PainFunctionalImpactQuestionnaire />,
+  },
+  {
+    id: 'palliative-care-need',
+    title: 'Потреба в паліативній допомозі',
+    description: 'Оцінка за критеріями наказу МОЗ №1308',
+    component: <PalliativeCareNeedQuestionnaire />,
   },
 ];
 

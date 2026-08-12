@@ -1628,3 +1628,57 @@ export function calculatePainFunctionalImpact(answers) {
     interpretation,
   };
 }
+
+export function evaluatePalliativeCareNeed({ selectedGroup, selectedScaleCriteria = [], selectedClinicalCriteria = [] }) {
+  const hasGroup = Boolean(selectedGroup);
+  const scaleCount = selectedScaleCriteria.length;
+  const clinicalCount = selectedClinicalCriteria.length;
+  const hasScaleCriterion = scaleCount > 0;
+  const hasEnoughClinicalCriteria = clinicalCount >= 5;
+
+  if (!hasGroup) {
+    return {
+      status: 'missing',
+      title: 'Недостатньо даних',
+      message: 'Оберіть основне захворювання або групу станів.',
+      missingItems: ['Основне захворювання / група станів'],
+      scaleCount,
+      clinicalCount,
+      isConfirmed: false,
+    };
+  }
+
+  const missingItems = [];
+
+  if (!hasScaleCriterion) {
+    missingItems.push('Щонайменше один критерій захворювання або функціональної шкали з лівої колонки додатка 2.');
+  }
+
+  if (!hasEnoughClinicalCriteria) {
+    missingItems.push(`Клінічні ознаки / показники: потрібно не менше 5, зараз обрано ${clinicalCount}.`);
+  }
+
+  if (missingItems.length > 0) {
+    return {
+      status: 'not-confirmed',
+      title: 'Критерії не підтверджені',
+      message:
+        'За зазначеними даними критерії визначення пацієнта, який потребує паліативної допомоги, не підтверджені.',
+      missingItems,
+      scaleCount,
+      clinicalCount,
+      isConfirmed: false,
+    };
+  }
+
+  return {
+    status: 'confirmed',
+    title: 'Відповідає критеріям',
+    message:
+      'За зазначеними даними пацієнт відповідає критеріям визначення пацієнта, який потребує паліативної допомоги, відповідно до наказу МОЗ України №1308.',
+    missingItems: [],
+    scaleCount,
+    clinicalCount,
+    isConfirmed: true,
+  };
+}
