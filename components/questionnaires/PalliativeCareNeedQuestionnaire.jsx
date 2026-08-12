@@ -166,9 +166,6 @@ export default function PalliativeCareNeedQuestionnaire() {
           <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.28em] text-teal-700">
-                  Ліва колонка додатка 2
-                </p>
                 <h3 className="mt-1 text-lg font-semibold text-slate-950">
                   Захворювання / оцінка за шкалою
                 </h3>
@@ -177,6 +174,12 @@ export default function PalliativeCareNeedQuestionnaire() {
                 Обрано: {selectedScaleCriteria.length}
               </span>
             </div>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Тут потрібно відмітити хоча б один пункт, який підтверджує важкість
+              стану або значне функціональне обмеження пацієнта, наприклад: ECOG &gt; 2,
+              індекс Карновського ≤ 50, PPS ≤ 30% або шкала Бартел &lt; 25.
+            </p>
 
             <div className="mt-4 grid gap-3 lg:grid-cols-2">
               {selectedGroup.scaleCriteria.map((criterion) => (
@@ -193,9 +196,6 @@ export default function PalliativeCareNeedQuestionnaire() {
           <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.28em] text-teal-700">
-                  Права колонка додатка 2
-                </p>
                 <h3 className="mt-1 text-lg font-semibold text-slate-950">
                   Клінічні ознаки / показники
                 </h3>
