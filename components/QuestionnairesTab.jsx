@@ -2,10 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import AuditCQuestionnaire from './questionnaires/AuditCQuestionnaire';
+import ChronicPainImpactQuestionnaire from './questionnaires/ChronicPainImpactQuestionnaire';
 import EpworthQuestionnaire from './questionnaires/EpworthQuestionnaire';
 import FagerstromQuestionnaire from './questionnaires/FagerstromQuestionnaire';
 import FindriscQuestionnaire from './questionnaires/FindriscQuestionnaire';
 import Gad7Questionnaire from './questionnaires/Gad7Questionnaire';
+import NeuropathicPainScreeningQuestionnaire from './questionnaires/NeuropathicPainScreeningQuestionnaire';
+import PainIntensityQuestionnaire from './questionnaires/PainIntensityQuestionnaire';
 import Phq9Questionnaire from './questionnaires/Phq9Questionnaire';
 import StopBangQuestionnaire from './questionnaires/StopBangQuestionnaire';
 
@@ -51,6 +54,24 @@ const questionnaires = [
     title: 'Epworth',
     description: 'Оцінка денної сонливості',
     component: <EpworthQuestionnaire />,
+  },
+  {
+    id: 'pain-intensity',
+    title: 'Біль 0-10',
+    description: 'NRS / VAS для швидкої оцінки інтенсивності болю',
+    component: <PainIntensityQuestionnaire />,
+  },
+  {
+    id: 'chronic-pain-impact',
+    title: 'Хронічний біль',
+    description: 'GCPS-R / PEG: частота болю та функціональний вплив',
+    component: <ChronicPainImpactQuestionnaire />,
+  },
+  {
+    id: 'neuropathic-pain',
+    title: 'Нейропатичний компонент болю',
+    description: 'Короткий чек-лист ознак без використання DN4 як шкали',
+    component: <NeuropathicPainScreeningQuestionnaire />,
   },
 ];
 

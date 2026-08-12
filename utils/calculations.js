@@ -1429,3 +1429,110 @@ export function calculateEpworth(answers) {
     interpretation,
   };
 }
+
+export function calculatePainIntensity({ currentPain = 0, averagePain = 0, worstPain = 0 }) {
+  const values = [currentPain, averagePain, worstPain].map((value) => Number(value || 0));
+  const highestPain = Math.max(...values);
+
+  let category = 'Біль незначної інтенсивності.';
+  let interpretation =
+    'Результат відповідає низькій інтенсивності болю. Оцінку варто співставити з функціональним впливом, тривалістю та основним захворюванням.';
+
+  if (highestPain >= 4 && highestPain <= 6) {
+    category = 'Біль помірної інтенсивності.';
+    interpretation =
+      'Результат відповідає помірній інтенсивності болю. Доцільно оцінити вплив болю на сон, активність, роботу або навчання та повсякденне функціонування.';
+  }
+
+  if (highestPain >= 7) {
+    category = 'Біль високої інтенсивності.';
+    interpretation =
+      'Результат відповідає високій інтенсивності болю. Потрібна клінічна оцінка причини болю, функціонального впливу та безпеки подальшої тактики.';
+  }
+
+  if (highestPain === 0) {
+    category = 'Біль не зазначений.';
+    interpretation =
+      'За введеними значеннями інтенсивність болю дорівнює 0/10. Якщо біль є в анамнезі, оцінку варто повторити для типового або найгіршого епізоду.';
+  }
+
+  return {
+    currentPain: values[0],
+    averagePain: values[1],
+    worstPain: values[2],
+    highestPain,
+    category,
+    interpretation,
+  };
+}
+
+export function calculateGcpsR({ painFrequency = 'some', activityLimitation = 'none', pain = 0, enjoyment = 0, activity = 0 }) {
+  const painValue = Number(pain || 0);
+  const enjoymentValue = Number(enjoyment || 0);
+  const activityValue = Number(activity || 0);
+  const pegTotal = painValue + enjoymentValue + activityValue;
+  const pegAverage = Number((pegTotal / 3).toFixed(1));
+  const hasChronicPain = painFrequency === 'most' || painFrequency === 'every';
+  const hasHighImpact = activityLimitation === 'most' || activityLimitation === 'every';
+
+  let grade = 'Grade 0';
+  let category = 'Хронічний біль за GCPS-R не визначається.';
+  let interpretation =
+    'Біль не відмічається у більшість днів або щодня протягом останніх 3 місяців. Якщо клінічно біль суттєвий, інтерпретуйте результат разом з анамнезом.';
+
+  if (hasChronicPain) {
+    grade = 'Grade 1';
+    category = 'Хронічний біль низького впливу.';
+    interpretation =
+      'Хронічний біль присутній, але за введеними даними функціональний вплив не є високим. Доцільно оцінювати динаміку та вплив на повсякденну активність.';
+  }
+
+  if (hasChronicPain && pegTotal >= 12) {
+    grade = 'Grade 2';
+    category = 'Хронічний біль, що турбує пацієнта.';
+    interpretation =
+      'Хронічний біль має помітний вплив за PEG. Доцільно уточнити основне захворювання, цілі лікування та функціональні обмеження.';
+  }
+
+  if (hasChronicPain && hasHighImpact) {
+    grade = 'Grade 3';
+    category = 'Хронічний біль високого впливу.';
+    interpretation =
+      'Біль обмежує життєву активність або роботу у більшість днів чи щодня. Потрібна структурована клінічна оцінка функціонування та подальшої тактики.';
+  }
+
+  return {
+    grade,
+    category,
+    interpretation,
+    pegTotal,
+    pegAverage,
+    hasChronicPain,
+  };
+}
+
+export function calculateNeuropathicPainScreening(selectedItems = []) {
+  const score = selectedItems.length;
+
+  let category = 'Нейропатичний компонент менш імовірний.';
+  let interpretation =
+    'Позначено мало ознак нейропатичного компонента. Результат не виключає нейропатичний біль і потребує клінічної інтерпретації.';
+
+  if (score >= 2 && score <= 3) {
+    category = 'Можливий нейропатичний компонент.';
+    interpretation =
+      'Кілька ознак можуть відповідати нейропатичному компоненту болю. Доцільно співставити з неврологічним статусом, анамнезом та основною причиною болю.';
+  }
+
+  if (score >= 4) {
+    category = 'Нейропатичний компонент імовірний.';
+    interpretation =
+      'Наявні кілька типових ознак нейропатичного компонента. Це не встановлює діагноз самостійно, але допомагає не пропустити потребу в детальнішій оцінці.';
+  }
+
+  return {
+    score,
+    category,
+    interpretation,
+  };
+}

@@ -56,7 +56,13 @@ export default function PrintableQuestionnaire({
 
   function isOptionSelected(question, option) {
     if (!answers) return false;
-    return Number(answers[question.key]) === Number(option.value);
+    const answer = answers[question.key];
+
+    if (typeof option.value === 'number') {
+      return Number(answer) === Number(option.value);
+    }
+
+    return String(answer) === String(option.value);
   }
 
   const hasPrintedScore = result?.score !== undefined && result?.score !== null;
