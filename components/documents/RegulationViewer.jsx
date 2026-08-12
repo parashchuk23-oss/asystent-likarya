@@ -1,12 +1,21 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import MedicineBenefitRegulationViewer from './MedicineBenefitRegulationViewer';
 import RegulationSearch from './RegulationSearch';
 import RegulationSection from './RegulationSection';
 
 const normalize = (value) => value.toLowerCase().trim();
 
 export default function RegulationViewer({ regulation }) {
+  if (regulation.viewer === 'medicine-benefit-1303') {
+    return <MedicineBenefitRegulationViewer regulation={regulation} />;
+  }
+
+  return <HospitalizationRegulationViewer regulation={regulation} />;
+}
+
+function HospitalizationRegulationViewer({ regulation }) {
   const [query, setQuery] = useState('');
   const [selectedDirection, setSelectedDirection] = useState('all');
 

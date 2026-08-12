@@ -1,0 +1,54 @@
+[
+  { "id": "oncology", "title": "Онкологічні захворювання" },
+  { "id": "hematologic", "title": "Гематологічні захворювання" },
+  { "id": "diabetes", "title": "Діабет (цукровий і нецукровий)" },
+  { "id": "rheumatism", "title": "Ревматизм" },
+  { "id": "rheumatoid-arthritis", "title": "Ревматоїдний артрит" },
+  { "id": "pemphigus", "title": "Пухирчатка" },
+  { "id": "sle", "title": "Системний гострий вовчак" },
+  { "id": "severe-chronic-skin-diseases", "title": "Системні, хронічні, тяжкі захворювання шкіри" },
+  { "id": "syphilis", "title": "Сифіліс" },
+  { "id": "leprosy", "title": "Лепра" },
+  { "id": "tuberculosis", "title": "Туберкульоз" },
+  { "id": "addison", "title": "Аддісонова хвороба" },
+  { "id": "hepatocerebral-dystrophy", "title": "Гепатоцеребральна дистрофія" },
+  { "id": "phenylketonuria", "title": "Фенілкетонурія" },
+  { "id": "schizophrenia-epilepsy", "title": "Шизофренія та епілепсія" },
+  {
+    "id": "mental-diseases-limited",
+    "title": "Психічні захворювання",
+    "note": "Особам з інвалідністю I та II груп, а також хворим, які працюють у лікувально-виробничих майстернях психоневрологічних і психіатричних закладів."
+  },
+  { "id": "after-heart-valve-prosthesis", "title": "Стан після операції протезування клапанів серця" },
+  { "id": "acute-intermittent-porphyria", "title": "Гостра переміжна порфірія" },
+  { "id": "cystic-fibrosis", "title": "Муковісцидоз" },
+  { "id": "severe-brucellosis", "title": "Тяжкі форми бруцельозу" },
+  { "id": "dysentery", "title": "Дизентерія" },
+  { "id": "pituitary-dwarfism", "title": "Гіпофізарний нанізм" },
+  { "id": "after-transplant", "title": "Стан після пересадки органів і тканин" },
+  { "id": "asthma", "title": "Бронхіальна астма" },
+  { "id": "ankylosing-spondylitis", "title": "Хвороба Бехтерєва" },
+  { "id": "myasthenia", "title": "Міостенія" },
+  { "id": "myopathy", "title": "Міопатія" },
+  { "id": "marie-cerebellar-ataxia", "title": "Мозочкова атаксія Марі" },
+  { "id": "parkinson", "title": "Хвороба Паркінсона" },
+  { "id": "myocardial-infarction-first-six-months", "title": "Інфаркт міокарду (перші шість місяців)" },
+  { "id": "cerebral-palsy", "title": "Дитячий церебральний параліч" },
+  {
+    "id": "hiv-aids",
+    "title": "СНІД, ВІЧ-інфекція",
+    "note": "Хворі на СНІД та ВІЧ-інфіковані незалежно від основного захворювання мають право на безоплатний відпуск лікарських засобів за наявності будь-яких інших захворювань."
+  },
+  { "id": "postoperative-hypothyroidism", "title": "Післяопераційний гіпотиреоз, у тому числі з приводу раку щитовидної залози" },
+  { "id": "hypoparathyroidism", "title": "Гіпопаратиреоз" },
+  { "id": "congenital-adrenal-hyperplasia", "title": "Вроджена дисфункція кори наднирників" },
+  { "id": "occupational-pneumoconiosis", "title": "Пневмоконіози у випадках професійного захворювання" },
+  {
+    "id": "occupational-tbi",
+    "title": "Ушкодження головного мозку внаслідок черепно-мозкової травми, спричинені нещасним випадком на виробництві"
+  },
+  {
+    "id": "occupational-spinal-cord-injury",
+    "title": "Травми спинного мозку, спричинені нещасним випадком на виробництві"
+  }
+]
