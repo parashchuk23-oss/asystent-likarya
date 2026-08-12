@@ -8,9 +8,12 @@ import FagerstromQuestionnaire from './questionnaires/FagerstromQuestionnaire';
 import FindriscQuestionnaire from './questionnaires/FindriscQuestionnaire';
 import Gad7Questionnaire from './questionnaires/Gad7Questionnaire';
 import NeuropathicPainScreeningQuestionnaire from './questionnaires/NeuropathicPainScreeningQuestionnaire';
+import PainFunctionalImpactQuestionnaire from './questionnaires/PainFunctionalImpactQuestionnaire';
 import PainIntensityQuestionnaire from './questionnaires/PainIntensityQuestionnaire';
 import Phq9Questionnaire from './questionnaires/Phq9Questionnaire';
+import SleepDifficultyQuestionnaire from './questionnaires/SleepDifficultyQuestionnaire';
 import StopBangQuestionnaire from './questionnaires/StopBangQuestionnaire';
+import StressPerceptionQuestionnaire from './questionnaires/StressPerceptionQuestionnaire';
 
 const questionnaires = [
   {
@@ -56,6 +59,18 @@ const questionnaires = [
     component: <EpworthQuestionnaire />,
   },
   {
+    id: 'sleep-difficulty',
+    title: 'Порушення сну',
+    description: 'Короткий скринінг безсоння без копіювання ISI',
+    component: <SleepDifficultyQuestionnaire />,
+  },
+  {
+    id: 'stress-perception',
+    title: 'Сприйнятий стрес',
+    description: 'Короткий скринінг стресу без копіювання PSS-10',
+    component: <StressPerceptionQuestionnaire />,
+  },
+  {
     id: 'pain-intensity',
     title: 'Біль 0-10',
     description: 'NRS / VAS для швидкої оцінки інтенсивності болю',
@@ -72,6 +87,12 @@ const questionnaires = [
     title: 'Нейропатичний компонент болю',
     description: 'Короткий чек-лист ознак без використання DN4 як шкали',
     component: <NeuropathicPainScreeningQuestionnaire />,
+  },
+  {
+    id: 'pain-functional-impact',
+    title: 'Функціональний вплив болю',
+    description: 'Спрощений модуль замість копіювання BPI short form',
+    component: <PainFunctionalImpactQuestionnaire />,
   },
 ];
 
