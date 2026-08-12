@@ -132,6 +132,41 @@ function buildDiagnosisFromState(disease, state) {
     return `${base} ${detailParts.join('. ')}.`;
   }
 
+  if (disease.id === 'chronicPain') {
+    const painScorePart = state.painScore
+      ? `інтенсивність болю ${state.painScore}/10 за числовою шкалою`
+      : '';
+    const durationPart = state.duration?.trim() ?? '';
+    const localizationText = state.localizationText
+      ? formatFreeTextValue(
+          constructor.freeTextFields.find((field) => field.id === 'localizationText'),
+          state.localizationText,
+        )
+      : '';
+    const additionalText = state.additionalText?.trim() ?? '';
+    const functionalDetails = state.functionalDetails?.length
+      ? `функціональний вплив: ${state.functionalDetails.join(', ')}`
+      : '';
+    const neuropathicFeatures = state.neuropathicFeatures?.length
+      ? `ознаки нейропатичного компонента: ${state.neuropathicFeatures.join(', ')}`
+      : '';
+    const detailParts = [
+      state.localization,
+      localizationText,
+      state.painType,
+      painScorePart,
+      durationPart,
+      state.functionalImpact,
+      functionalDetails,
+      neuropathicFeatures,
+      additionalText,
+    ].filter(Boolean);
+
+    if (!detailParts.length) return `${constructor.textPrefix}.`;
+
+    return `${constructor.textPrefix}, ${detailParts.join(', ')}.`;
+  }
+
   const fallbackParts = constructor.selectFields
     .map((field) => state[field.id])
     .filter(Boolean);

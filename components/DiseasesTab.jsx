@@ -5,6 +5,7 @@ import { hypertensionDisease } from '../data/diseases/hypertension';
 import { ihdDisease } from '../data/diseases/ihd';
 import { heartFailureDisease } from '../data/diseases/heartFailure';
 import { atrialFibrillationDisease } from '../data/diseases/atrialFibrillation';
+import { chronicPainDisease } from '../data/diseases/chronicPain';
 import DiseaseTemplateCard from './diseases/DiseaseTemplateCard';
 
 const diseases = [
@@ -12,6 +13,7 @@ const diseases = [
   ihdDisease,
   heartFailureDisease,
   atrialFibrillationDisease,
+  chronicPainDisease,
 ];
 
 const recommendationSections = [
@@ -51,6 +53,13 @@ function inferDiseaseIdsFromDiagnosis(text) {
     inferredIds.push('atrialFibrillation');
   }
 
+  if (
+    normalizedText.includes('хронічний больовий синдром') ||
+    normalizedText.includes('хронічного больового синдрому')
+  ) {
+    inferredIds.push('chronicPain');
+  }
+
   return inferredIds;
 }
 
@@ -60,6 +69,17 @@ function formatRecommendationText(groups) {
   const consultationsText = groups.consultations.map((item) => item.text).join(', ');
   const lifestyleText = groups.lifestyle.map((item) => `- ${item.text};`).join('\n');
   const medicationsText = groups.medications.map((item) => `- ${item.text};`).join('\n');
+  const hasAssessmentSection = groups.labs.length || groups.instrumental.length || groups.consultations.length;
+
+  if (!hasAssessmentSection) {
+    return `Рекомендації:
+
+1. Спосіб життя
+${lifestyleText || '- індивідуальні рекомендації щодо способу життя;'}
+
+2. Медикаментозна терапія
+${medicationsText || '- визначити індивідуально з урахуванням клінічного стану пацієнта;'}`;
+  }
 
   return `Рекомендації:
 
