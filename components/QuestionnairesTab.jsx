@@ -43,7 +43,7 @@ const questionnaires = [
   },
   {
     id: 'fagerstrom',
-    title: 'Fagerström',
+    title: 'Тест Фагерстрема',
     description: 'Оцінка нікотинової залежності',
     component: <FagerstromQuestionnaire />,
   },

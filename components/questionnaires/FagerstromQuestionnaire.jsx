@@ -88,9 +88,9 @@ export default function FagerstromQuestionnaire() {
   return (
     <div className="space-y-3">
       <div className="rounded-md border border-blue-100 bg-blue-50/50 p-3 text-sm leading-relaxed text-slate-700">
-        <p className="font-semibold text-slate-900">Про тест Fagerström</p>
+        <p className="font-semibold text-slate-900">Про тест Фагерстрема</p>
         <p className="mt-2">
-          Тест Fagerström використовується для орієнтовної оцінки фізичної нікотинової
+          Тест Фагерстрема використовується для орієнтовної оцінки фізичної нікотинової
           залежності у курців.
         </p>
         <p className="mt-2">
@@ -151,7 +151,7 @@ export default function FagerstromQuestionnaire() {
       </div>
 
       <PrintableQuestionnaire
-        title="Тест Fagerström"
+        title="Тест Фагерстрема на нікотинову залежність"
         instruction="Оберіть один варіант відповіді в кожному пункті."
         questions={questions}
       />

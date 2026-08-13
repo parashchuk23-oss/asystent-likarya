@@ -59,7 +59,7 @@
 * PHQ-9;
 * FINDRISC;
 * AUDIT-C;
-* Fagerstrom;
+* Тест Фагерстрема на нікотинову залежність;
 * STOP-Bang;
 * Epworth.
 
