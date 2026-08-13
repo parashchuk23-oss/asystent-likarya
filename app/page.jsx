@@ -37,6 +37,29 @@ export default function HomePage() {
             Асистент лікаря є допоміжним інструментом для медичних працівників. Результати
             калькуляторів та опитувальників не замінюють клінічне рішення лікаря.
           </p>
+          <div className="mt-3 rounded-md border border-blue-100 bg-blue-50/60 p-3">
+            <p className="font-semibold text-slate-800">Знайшли помилку або маєте пропозицію?</p>
+            <p className="mt-1 text-slate-600">
+              Автор проєкту: лікар Паращук Ярослав Юрійович. Напишіть, якщо помітили неточність у
+              калькуляторі, формулюванні, довіднику або документі.
+            </p>
+            <div className="mt-2 flex flex-wrap gap-3">
+              <a
+                href="https://web.telegram.org/a/#-1004352810076"
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold text-blue-700 hover:text-blue-800 hover:underline"
+              >
+                Telegram
+              </a>
+              <a
+                href="mailto:parashchukyroslav@ukr.net"
+                className="font-semibold text-blue-700 hover:text-blue-800 hover:underline"
+              >
+                parashchukyroslav@ukr.net
+              </a>
+            </div>
+          </div>
           <div className="mt-3 flex flex-col gap-2 border-t border-slate-200 pt-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="font-semibold text-slate-700">Асистент лікаря v1.0</p>
