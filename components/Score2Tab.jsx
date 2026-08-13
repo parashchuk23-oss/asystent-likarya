@@ -338,7 +338,7 @@ function ScenarioCalculatorPanel({
 
           <SexCheckboxes value={riskData.sex} onChange={(value) => onChange('sex', value)} />
 
-          <CheckboxField
+          <InlineCheckboxField
             label="Куріння"
             checked={riskData.smoking === 'так'}
             onChange={(checked) => onChange('smoking', checked ? 'так' : 'ні')}
