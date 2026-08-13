@@ -34,7 +34,7 @@ const initialRiskData = {
 function CheckboxField({ label, checked, onChange, className = '' }) {
   return (
     <label
-      className={`flex cursor-pointer items-start gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 ${className}`}
+      className={`flex cursor-pointer items-center gap-2.5 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50 ${className}`}
     >
       <input
         type="checkbox"
@@ -55,7 +55,7 @@ function InlineCheckboxField({ label, checked, onChange }) {
         label={label}
         checked={checked}
         onChange={onChange}
-        className="min-h-[2.625rem] items-center py-2.5"
+        className="min-h-[2.25rem] items-center py-2"
       />
     </div>
   );
@@ -66,7 +66,7 @@ function ScenarioCard({ title, description, active, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-md border px-3 py-3 text-left transition ${
+      className={`rounded-md border px-3 py-2.5 text-left transition ${
         active
           ? 'border-blue-300 bg-blue-50 shadow-sm shadow-blue-100'
           : 'border-slate-200 bg-white hover:border-blue-200 hover:bg-blue-50'
@@ -324,7 +324,7 @@ function ScenarioCalculatorPanel({
           )}
         </div>
 
-        <div className="grid gap-4 border-t border-blue-100 pt-4">
+        <div className="grid gap-3 border-t border-blue-100 pt-3 sm:grid-cols-2">
           <FormField label="Вік">
             <input
               type="number"
@@ -380,7 +380,7 @@ function ScenarioCalculatorPanel({
           </FormField>
         </div>
 
-        <div className="flex flex-col gap-3 border-t border-blue-100 pt-4 sm:flex-row">
+        <div className="flex flex-col gap-2 border-t border-blue-100 pt-3 sm:flex-row">
           <button
             type="button"
             onClick={onCalculate}
@@ -432,9 +432,9 @@ export default function Score2Tab() {
   const [calculatedResult, setCalculatedResult] = useState(null);
   const isCalculateEnabled = canCalculateRisk(riskData);
   const primaryButtonClass =
-    'w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none sm:w-auto';
+    'w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none sm:w-auto';
   const secondaryButtonClass =
-    'w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto';
+    'w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto';
 
   function handleChange(field, value) {
     setRiskData((current) => ({
@@ -466,8 +466,8 @@ export default function Score2Tab() {
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1.38fr)_minmax(0,1fr)]">
-      <section className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-200/60">
+    <div className="grid gap-3 lg:grid-cols-[minmax(0,1.38fr)_minmax(0,1fr)]">
+      <section className="rounded-lg border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-200/60">
         <div className="space-y-3">
           <div>
             <p className="mb-2 text-sm font-semibold text-slate-800">Клінічний сценарій</p>
@@ -536,8 +536,8 @@ export default function Score2Tab() {
         </div>
       </section>
 
-      <section className="rounded-lg border border-blue-100 bg-white p-5 shadow-sm shadow-slate-200/60">
-        <div className="mb-4 border-b border-blue-100 pb-3">
+      <section className="rounded-lg border border-blue-100 bg-white p-4 shadow-sm shadow-slate-200/60">
+        <div className="mb-3 border-b border-blue-100 pb-2.5">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">Результат</p>
           <h2 className="mt-1 text-base font-semibold tracking-tight text-slate-950">Заключення</h2>
         </div>

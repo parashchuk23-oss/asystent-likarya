@@ -29,7 +29,7 @@ const fields = [
 
 function CheckboxField({ label, checked, onChange }) {
   return (
-    <label className="flex cursor-pointer items-start justify-between gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50">
+    <label className="flex cursor-pointer items-start justify-between gap-2.5 rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50">
       <span className="flex items-start gap-3">
         <input
           type="checkbox"
@@ -93,7 +93,7 @@ export default function HasBledCalculator() {
         <button
           type="button"
           onClick={handleCalculate}
-          className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
+          className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
         >
           Розрахувати
         </button>
@@ -101,7 +101,7 @@ export default function HasBledCalculator() {
         <button
           type="button"
           onClick={handleClear}
-          className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+          className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
           Очистити
         </button>

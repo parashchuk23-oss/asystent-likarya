@@ -70,7 +70,7 @@ function hasPositiveNumber(value) {
 
 function CheckboxCard({ title, description, checked, onChange }) {
   return (
-    <label className="flex cursor-pointer gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm transition hover:border-blue-200 hover:bg-blue-50">
+    <label className="flex cursor-pointer gap-2.5 rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm transition hover:border-blue-200 hover:bg-blue-50">
       <input
         type="checkbox"
         checked={checked}
@@ -87,7 +87,7 @@ function CheckboxCard({ title, description, checked, onChange }) {
 
 function RadioCard({ name, title, description, checked, onChange }) {
   return (
-    <label className="flex cursor-pointer gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm transition hover:border-blue-200 hover:bg-blue-50">
+    <label className="flex cursor-pointer gap-2.5 rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm transition hover:border-blue-200 hover:bg-blue-50">
       <input
         type="radio"
         name={name}
@@ -154,7 +154,7 @@ export default function H2fpefCalculator() {
 
       <section className="rounded-md border border-slate-200 bg-white p-4">
         <h3 className="font-semibold text-slate-950">A. H2FPEF Score</h3>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <FormField label="Вік" hint="років">
             <input
               type="number"
@@ -281,22 +281,22 @@ export default function H2fpefCalculator() {
           type="button"
           onClick={handleCalculate}
           disabled={!canCalculate}
-          className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none sm:w-auto"
+          className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none sm:w-auto"
         >
           Розрахувати
         </button>
         <button
           type="button"
           onClick={handleClear}
-          className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+          className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
           Очистити
         </button>
       </div>
 
       {result ? (
-        <div className="mt-5 space-y-4">
-          <div className="grid gap-4 lg:grid-cols-3">
+        <div className="mt-4 space-y-3">
+          <div className="grid gap-3 lg:grid-cols-3">
             <ResultCard
               title="H2FPEF"
               value={result.h2fpef.score}

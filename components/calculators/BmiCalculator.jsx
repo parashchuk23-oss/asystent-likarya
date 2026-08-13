@@ -54,7 +54,7 @@ function SexSegmentedControl({ value, onChange }) {
   ];
 
   return (
-    <div className="grid h-[42px] grid-cols-2 rounded-md border border-slate-300 bg-white p-1 shadow-sm shadow-slate-100">
+    <div className="grid h-9 grid-cols-2 rounded-md border border-slate-300 bg-white p-1 shadow-sm shadow-slate-100">
       {options.map((option) => {
         const isSelected = value === option.value;
 
@@ -127,7 +127,7 @@ export default function BmiCalculator() {
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2">
         <FormField label="Маса тіла" hint="кг">
           <input
             type="number"
@@ -177,7 +177,7 @@ export default function BmiCalculator() {
           type="button"
           onClick={handleCalculate}
           disabled={!isCalculateEnabled}
-          className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none sm:w-auto"
+          className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none sm:w-auto"
         >
           Розрахувати
         </button>
@@ -185,15 +185,15 @@ export default function BmiCalculator() {
         <button
           type="button"
           onClick={handleClear}
-          className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+          className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
           Очистити
         </button>
       </div>
 
       {result ? (
-        <div className="mt-5 space-y-4">
-          <div className="grid items-stretch gap-4 lg:grid-cols-3">
+        <div className="mt-4 space-y-3">
+          <div className="grid items-stretch gap-3 lg:grid-cols-3">
             <div className="h-full rounded-md border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
               <p className="text-slate-600">ІМТ</p>
               <p className="text-3xl font-semibold text-blue-800">{result.bmi}</p>
@@ -239,7 +239,7 @@ export default function BmiCalculator() {
             </div>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-3">
+          <div className="grid gap-3 lg:grid-cols-3">
             <InfoList title="Що перевірити додатково" items={result.recommendations.additionalChecks} />
             <TextInfo title="Орієнтовна цільова вага">
               <p>{result.weightLossGoal?.text}</p>

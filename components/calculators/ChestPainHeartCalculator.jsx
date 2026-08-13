@@ -136,7 +136,7 @@ function OptionCard({ option, selected, onSelect }) {
     <button
       type="button"
       onClick={onSelect}
-      className={`rounded-md border px-3 py-3 text-left text-sm transition ${
+      className={`rounded-md border px-3 py-2.5 text-left text-sm transition ${
         selected
           ? 'border-blue-500 bg-blue-50 text-blue-950 shadow-sm'
           : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-blue-200 hover:bg-blue-50'
@@ -234,7 +234,7 @@ export default function ChestPainHeartCalculator() {
         <p className="mt-1">HEART Score та подальша клінічна оцінка пацієнта.</p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         <Card title="Коли використовувати" tone="info">
           <div className="mt-3 grid gap-3 lg:grid-cols-2">
             <div>
@@ -249,7 +249,7 @@ export default function ChestPainHeartCalculator() {
         </Card>
 
         <Card title="HEART Score">
-          <div className="mt-4 space-y-4">
+          <div className="mt-3 space-y-3">
             {heartSections.map((section) => (
               <div key={section.key} className="rounded-md border border-slate-100 bg-white p-3">
                 <div className="flex flex-wrap items-baseline gap-2">
@@ -275,14 +275,14 @@ export default function ChestPainHeartCalculator() {
               type="button"
               onClick={handleCalculate}
               disabled={!canCalculate}
-              className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none sm:w-auto"
+              className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none sm:w-auto"
             >
               Розрахувати
             </button>
             <button
               type="button"
               onClick={handleClear}
-              className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+              className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
             >
               Очистити
             </button>

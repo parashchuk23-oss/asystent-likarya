@@ -31,7 +31,7 @@ const kdigoColorClasses = {
 
 function CheckboxField({ label, checked, onChange }) {
   return (
-    <label className="flex cursor-pointer items-start gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50">
+    <label className="flex cursor-pointer items-center gap-2.5 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50">
       <input
         type="checkbox"
         checked={checked}
@@ -95,9 +95,9 @@ export default function EgfrTab() {
   const [result, setResult] = useState(null);
   const isCalculateEnabled = canCalculateRenalFunction(formData);
   const primaryButtonClass =
-    'w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none sm:w-auto';
+    'w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none sm:w-auto';
   const secondaryButtonClass =
-    'w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto';
+    'w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto';
 
   function handleChange(field, value) {
     setFormData((current) => ({
@@ -135,15 +135,15 @@ export default function EgfrTab() {
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1.38fr)_minmax(0,1fr)]">
-      <section className="rounded-lg border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-200/60">
-        <div className="mb-4 border-b border-blue-100 pb-3">
+    <div className="grid gap-3 lg:grid-cols-[minmax(0,1.38fr)_minmax(0,1fr)]">
+      <section className="rounded-lg border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-200/60">
+        <div className="mb-3 border-b border-blue-100 pb-2.5">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">CKD-EPI / KDIGO</p>
           <h2 className="mt-1 text-base font-semibold tracking-tight text-slate-950">Ниркова функція</h2>
         </div>
 
         <div>
-          <h3 className="mb-3 text-sm font-semibold text-slate-800">CKD-EPI 2021</h3>
+          <h3 className="mb-2 text-sm font-semibold text-slate-800">CKD-EPI 2021</h3>
 
           <FormField label="Вік">
             <input
@@ -181,8 +181,8 @@ export default function EgfrTab() {
           />
         </div>
 
-        <div className="mt-5 border-t border-slate-100 pt-4">
-          <h3 className="mb-3 text-sm font-semibold text-slate-800">Cockcroft-Gault</h3>
+        <div className="mt-4 border-t border-slate-100 pt-3">
+          <h3 className="mb-2 text-sm font-semibold text-slate-800">Cockcroft-Gault</h3>
 
           <FormField label="Маса тіла" hint="кг">
             <input
@@ -197,8 +197,8 @@ export default function EgfrTab() {
           </FormField>
         </div>
 
-        <div className="mt-5 border-t border-slate-100 pt-4">
-          <h3 className="mb-3 text-sm font-semibold text-slate-800">Альбумінурія</h3>
+        <div className="mt-4 border-t border-slate-100 pt-3">
+          <h3 className="mb-2 text-sm font-semibold text-slate-800">Альбумінурія</h3>
 
           <FormField label="ACR" hint="мг/г">
             <input
@@ -213,8 +213,8 @@ export default function EgfrTab() {
           </FormField>
         </div>
 
-        <div className="mt-5 border-t border-slate-100 pt-4">
-          <h3 className="mb-3 text-sm font-semibold text-slate-800">Безпека лікування</h3>
+        <div className="mt-4 border-t border-slate-100 pt-3">
+          <h3 className="mb-2 text-sm font-semibold text-slate-800">Безпека лікування</h3>
 
           <FormField label="Калій" hint="ммоль/л, якщо відомий">
             <input
@@ -229,7 +229,7 @@ export default function EgfrTab() {
           </FormField>
         </div>
 
-        <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-5 sm:flex-row">
+        <div className="mt-4 flex flex-col gap-2 border-t border-slate-100 pt-4 sm:flex-row">
           <button
             type="button"
             onClick={handleCalculate}
@@ -245,15 +245,15 @@ export default function EgfrTab() {
         </div>
       </section>
 
-      <section className="rounded-lg border border-blue-100 bg-white p-5 shadow-sm shadow-slate-200/60">
-        <div className="mb-4 border-b border-blue-100 pb-3">
+      <section className="rounded-lg border border-blue-100 bg-white p-4 shadow-sm shadow-slate-200/60">
+        <div className="mb-3 border-b border-blue-100 pb-2.5">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">Клінічна оцінка</p>
           <h2 className="mt-1 text-base font-semibold tracking-tight text-slate-950">Результат</h2>
         </div>
 
         {result ? (
-          <div className="space-y-4 text-sm leading-relaxed text-slate-900">
-            <div className="rounded-md border border-blue-100 bg-blue-50 p-4">
+          <div className="space-y-3 text-sm leading-relaxed text-slate-900">
+            <div className="rounded-md border border-blue-100 bg-blue-50 p-3">
               <p className="text-slate-600">ШКФ CKD-EPI 2021</p>
               <p className="text-3xl font-semibold text-blue-800">
                 {result.ckdEpi.egfr} мл/хв/1,73 м²
@@ -267,7 +267,7 @@ export default function EgfrTab() {
             </div>
 
             {result.cockcroftGault && (
-              <div className="rounded-md border border-slate-200/80 bg-slate-50 p-4">
+              <div className="rounded-md border border-slate-200/80 bg-slate-50 p-3">
                 <p>
                   <span className="font-semibold">CrCl Cockcroft-Gault:</span>{' '}
                   {result.cockcroftGault.crCl} мл/хв
@@ -276,7 +276,7 @@ export default function EgfrTab() {
             )}
 
             {result.acr && (
-              <div className="rounded-md border border-slate-200/80 bg-slate-50 p-4">
+              <div className="rounded-md border border-slate-200/80 bg-slate-50 p-3">
                 <p>
                   <span className="font-semibold">ACR:</span> {result.acr.value} мг/г
                 </p>
@@ -289,7 +289,7 @@ export default function EgfrTab() {
 
             {result.kdigoRisk && (
               <div
-                className={`rounded-md border p-4 font-semibold ${
+                className={`rounded-md border p-3 font-semibold ${
                   kdigoColorClasses[result.kdigoRisk.color]
                 }`}
               >

@@ -74,7 +74,7 @@ const medicationGroups = [
 
 function CheckboxField({ label, checked, onChange }) {
   return (
-    <label className="flex cursor-pointer items-start gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50">
+    <label className="flex cursor-pointer items-start gap-2.5 rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50">
       <input
         type="checkbox"
         checked={checked}
@@ -99,7 +99,7 @@ function AccordionBlock({ id, title, openId, onToggle, children }) {
     >
       <button
         type="button"
-        className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left transition hover:bg-teal-50/40"
+        className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition hover:bg-teal-50/40"
         onClick={() => onToggle(isOpen ? null : id)}
         aria-expanded={isOpen}
       >
@@ -195,7 +195,7 @@ export default function FraxCalculator() {
         </AccordionBlock>
 
         <AccordionBlock id="dxa" title="2. DXA" openId={openId} onToggle={setOpenId}>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-3 md:grid-cols-2">
             <FormField label="T-score шийки стегнової кістки" hint="необов’язково">
               <input
                 type="number"
@@ -273,14 +273,14 @@ export default function FraxCalculator() {
         <button
           type="button"
           onClick={handleCalculate}
-          className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
+          className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
         >
           Оновити оцінку
         </button>
         <button
           type="button"
           onClick={handleClear}
-          className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+          className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
           Очистити
         </button>

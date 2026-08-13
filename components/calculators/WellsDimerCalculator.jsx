@@ -185,7 +185,7 @@ const relatedTools = ['ШКФ', 'ФП / антикоагуляція', 'Преп
 
 function CheckboxCard({ title, points, checked, onChange }) {
   return (
-    <label className="flex cursor-pointer items-start justify-between gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50">
+    <label className="flex cursor-pointer items-start justify-between gap-2.5 rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50">
       <span className="flex items-start gap-3">
         <input
           type="checkbox"
@@ -213,7 +213,7 @@ function ResultCard({ title, value, subtitle, children }) {
 
 function DimerInputs({ formData, onChange }) {
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="grid gap-3 md:grid-cols-3">
       <FormField label="Вік" hint="років">
         <input
           type="number"
@@ -421,7 +421,7 @@ export default function WellsDimerCalculator() {
             type="button"
             key={scenario.id}
             onClick={() => handleScenarioChange(scenario.id)}
-            className={`rounded-md border px-3 py-3 text-left text-sm font-semibold transition ${
+            className={`rounded-md border px-3 py-2.5 text-left text-sm font-semibold transition ${
               formData.scenario === scenario.id
                 ? 'border-blue-300 bg-blue-50 text-blue-800'
                 : 'border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50'
@@ -433,7 +433,7 @@ export default function WellsDimerCalculator() {
       </div>
 
       {formData.scenario === 'dvt' && (
-        <section className="mt-4 space-y-4">
+        <section className="mt-3 space-y-3">
           <div className="rounded-md border border-slate-200 bg-white p-4">
             <h3 className="font-semibold text-slate-950">Wells DVT</h3>
             <div className="mt-4 grid gap-3 lg:grid-cols-2">
@@ -458,7 +458,7 @@ export default function WellsDimerCalculator() {
       )}
 
       {formData.scenario === 'pe' && (
-        <section className="mt-4 space-y-4">
+        <section className="mt-3 space-y-3">
           <div className="rounded-md border border-slate-200 bg-white p-4">
             <h3 className="font-semibold text-slate-950">Wells PE</h3>
             <div className="mt-4 grid gap-3 lg:grid-cols-2">
@@ -499,7 +499,7 @@ export default function WellsDimerCalculator() {
       )}
 
       {formData.scenario === 'confirmedPe' && (
-        <section className="mt-4 grid gap-4 lg:grid-cols-2">
+        <section className="mt-3 grid gap-3 lg:grid-cols-2">
           <div className="rounded-md border border-slate-200 bg-white p-4">
             <h3 className="font-semibold text-slate-950">sPESI</h3>
             <div className="mt-4 grid gap-3">
@@ -530,7 +530,7 @@ export default function WellsDimerCalculator() {
       )}
 
       {formData.scenario === 'longTerm' && (
-        <section className="mt-4 space-y-4">
+        <section className="mt-3 space-y-3">
           <div className="rounded-md border border-slate-200 bg-white p-4">
             <h3 className="font-semibold text-slate-950">VTE-BLEED</h3>
             <div className="mt-4 grid gap-3 lg:grid-cols-2">
@@ -550,7 +550,7 @@ export default function WellsDimerCalculator() {
             <p className="mt-1 text-sm text-slate-600">
               Лише для жінок після першого неспровокованого епізоду ВТЕ.
             </p>
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div className="mt-3 grid gap-3 md:grid-cols-2">
               <FormField label="Стать для HERDOO2">
                 <select
                   value={formData.herdoo2Sex}
@@ -594,22 +594,22 @@ export default function WellsDimerCalculator() {
         <button
           type="button"
           onClick={handleCalculate}
-          className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
+          className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
         >
           Розрахувати
         </button>
         <button
           type="button"
           onClick={handleClear}
-          className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+          className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
           Очистити
         </button>
       </div>
 
       {result && (
-        <div className="mt-5 space-y-4">
-          <div className="grid gap-4 lg:grid-cols-3">
+        <div className="mt-4 space-y-3">
+          <div className="grid gap-3 lg:grid-cols-3">
             {result.wellsDvt && (
               <ResultCard title="Wells DVT" value={result.wellsDvt.score} subtitle={result.wellsDvt.interpretation}>
                 <p>{result.wellsDvt.isLikely ? 'Клінічна ймовірність висока.' : 'Клінічна ймовірність низька.'}</p>

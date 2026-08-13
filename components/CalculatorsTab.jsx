@@ -65,7 +65,7 @@ export default function CalculatorsTab() {
   const [openId, setOpenId] = useState(null);
 
   return (
-    <div className="space-y-4 rounded-lg bg-slate-50/70 p-3 sm:p-4">
+    <div className="space-y-3 rounded-lg bg-slate-50/70 p-3">
       {calculators.map((calculator) => {
         const isOpen = openId === calculator.id;
 
@@ -80,7 +80,7 @@ export default function CalculatorsTab() {
           >
             <button
               type="button"
-              className="flex w-full items-center justify-between gap-4 p-5 text-left"
+              className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left"
               aria-expanded={isOpen}
               aria-controls={`${calculator.id}-calculator`}
               onClick={() => setOpenId(isOpen ? null : calculator.id)}
@@ -89,10 +89,10 @@ export default function CalculatorsTab() {
                 <span className={`block font-semibold ${isOpen ? 'text-teal-900' : 'text-slate-950'}`}>
                   {calculator.title}
                 </span>
-                <span className="mt-1 block text-sm text-slate-600">{calculator.description}</span>
+                <span className="mt-0.5 block text-sm text-slate-600">{calculator.description}</span>
               </span>
               <span
-                className={`grid h-9 w-9 shrink-0 place-items-center rounded-full text-2xl leading-none transition ${
+                className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-xl leading-none transition ${
                   isOpen ? 'bg-teal-600 text-white' : 'bg-teal-50 text-teal-700'
                 }`}
                 aria-hidden="true"
@@ -102,7 +102,7 @@ export default function CalculatorsTab() {
             </button>
 
             {isOpen ? (
-              <div id={`${calculator.id}-calculator`} className="border-t border-teal-300 bg-white p-5">
+              <div id={`${calculator.id}-calculator`} className="border-t border-teal-300 bg-white p-4">
                 {calculator.component}
               </div>
             ) : null}

@@ -145,7 +145,7 @@ function RiskCard({ title, score, category, status, children }) {
 
 function CheckboxCard({ factor, checked, onChange }) {
   return (
-    <label className="flex cursor-pointer gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm transition hover:border-blue-200 hover:bg-blue-50">
+    <label className="flex cursor-pointer gap-2.5 rounded-md border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm transition hover:border-blue-200 hover:bg-blue-50">
       <input
         type="checkbox"
         checked={checked}
@@ -219,7 +219,7 @@ export default function AfAnticoagulationCalculator() {
 
       <section className="rounded-md border border-slate-200 bg-white p-4">
         <h3 className="font-semibold text-slate-950">Основні дані пацієнта</h3>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <FormField label="Вік" hint="років">
             <input
               type="number"
@@ -269,7 +269,7 @@ export default function AfAnticoagulationCalculator() {
           type="button"
           onClick={handleCalculate}
           disabled={!canCalculate}
-          className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none sm:w-auto"
+          className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none sm:w-auto"
         >
           Розрахувати
         </button>
@@ -277,14 +277,14 @@ export default function AfAnticoagulationCalculator() {
         <button
           type="button"
           onClick={handleClear}
-          className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+          className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
           Очистити
         </button>
       </div>
 
       {result ? (
-        <div className="mt-5 space-y-4">
+        <div className="mt-4 space-y-3">
           <section className="rounded-md border border-blue-100 bg-blue-50 p-4 text-sm text-slate-800">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="font-semibold text-slate-950">
@@ -301,7 +301,7 @@ export default function AfAnticoagulationCalculator() {
             {copyStatus ? <p className="mt-2 text-sm text-slate-600">{copyStatus}</p> : null}
           </section>
 
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="grid gap-3 lg:grid-cols-2">
             <RiskCard
               title="CHA₂DS₂-VASc"
               score={result.cha2ds2Vasc.score}
