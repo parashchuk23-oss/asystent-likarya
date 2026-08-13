@@ -31,7 +31,7 @@ const kdigoColorClasses = {
 
 function CheckboxField({ label, checked, onChange }) {
   return (
-    <label className="flex cursor-pointer items-center gap-2.5 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50">
+    <label className="flex min-h-[2.375rem] cursor-pointer items-center gap-2.5 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-800 transition hover:border-blue-200 hover:bg-blue-50">
       <input
         type="checkbox"
         checked={checked}
@@ -45,7 +45,7 @@ function CheckboxField({ label, checked, onChange }) {
 
 function SelectField({ label, value, onChange, options }) {
   return (
-    <FormField label={label}>
+    <FormField label={label} className="mb-0">
       <select value={value} onChange={(event) => onChange(event.target.value)} className={inputClass}>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -59,7 +59,7 @@ function SelectField({ label, value, onChange, options }) {
 
 function SexCheckboxes({ value, onChange }) {
   return (
-    <FormField label="Стать">
+    <FormField label="Стать" className="mb-0">
       <div className="grid gap-2 sm:grid-cols-2">
         <CheckboxField
           label="Чоловіча"
@@ -136,16 +136,14 @@ export default function EgfrTab() {
 
   return (
     <div className="grid gap-3 lg:grid-cols-[minmax(0,1.38fr)_minmax(0,1fr)]">
-      <section className="rounded-lg border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-200/60">
-        <div className="mb-3 border-b border-blue-100 pb-2.5">
+      <section className="rounded-lg border border-slate-200/80 bg-white p-3.5 shadow-sm shadow-slate-200/60">
+        <div className="mb-3 border-b border-blue-100 pb-2">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">CKD-EPI / KDIGO</p>
           <h2 className="mt-1 text-base font-semibold tracking-tight text-slate-950">Ниркова функція</h2>
         </div>
 
-        <div>
-          <h3 className="mb-2 text-sm font-semibold text-slate-800">CKD-EPI 2021</h3>
-
-          <FormField label="Вік">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <FormField label="Вік" className="mb-0">
             <input
               type="number"
               value={formData.age}
@@ -158,7 +156,7 @@ export default function EgfrTab() {
 
           <SexCheckboxes value={formData.sex} onChange={(value) => handleChange('sex', value)} />
 
-          <FormField label="Креатинін">
+          <FormField label="Креатинін" className="mb-0">
             <input
               type="number"
               value={formData.creatinine}
@@ -179,12 +177,8 @@ export default function EgfrTab() {
               { value: 'mgDl', label: 'мг/дл' },
             ]}
           />
-        </div>
 
-        <div className="mt-4 border-t border-slate-100 pt-3">
-          <h3 className="mb-2 text-sm font-semibold text-slate-800">Cockcroft-Gault</h3>
-
-          <FormField label="Маса тіла" hint="кг">
+          <FormField label="Маса тіла" hint="кг" className="mb-0">
             <input
               type="number"
               value={formData.weight}
@@ -195,12 +189,8 @@ export default function EgfrTab() {
               step="0.1"
             />
           </FormField>
-        </div>
 
-        <div className="mt-4 border-t border-slate-100 pt-3">
-          <h3 className="mb-2 text-sm font-semibold text-slate-800">Альбумінурія</h3>
-
-          <FormField label="ACR" hint="мг/г">
+          <FormField label="ACR" hint="мг/г" className="mb-0">
             <input
               type="number"
               value={formData.acr}
@@ -211,12 +201,8 @@ export default function EgfrTab() {
               step="0.1"
             />
           </FormField>
-        </div>
 
-        <div className="mt-4 border-t border-slate-100 pt-3">
-          <h3 className="mb-2 text-sm font-semibold text-slate-800">Безпека лікування</h3>
-
-          <FormField label="Калій" hint="ммоль/л, якщо відомий">
+          <FormField label="Калій" hint="ммоль/л, якщо відомий" className="mb-0">
             <input
               type="number"
               value={formData.potassium}
@@ -229,7 +215,7 @@ export default function EgfrTab() {
           </FormField>
         </div>
 
-        <div className="mt-4 flex flex-col gap-2 border-t border-slate-100 pt-4 sm:flex-row">
+        <div className="mt-3 flex flex-col gap-2 border-t border-slate-100 pt-3 sm:flex-row">
           <button
             type="button"
             onClick={handleCalculate}
@@ -245,8 +231,8 @@ export default function EgfrTab() {
         </div>
       </section>
 
-      <section className="rounded-lg border border-blue-100 bg-white p-4 shadow-sm shadow-slate-200/60">
-        <div className="mb-3 border-b border-blue-100 pb-2.5">
+      <section className="rounded-lg border border-blue-100 bg-white p-3.5 shadow-sm shadow-slate-200/60">
+        <div className="mb-3 border-b border-blue-100 pb-2">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">Клінічна оцінка</p>
           <h2 className="mt-1 text-base font-semibold tracking-tight text-slate-950">Результат</h2>
         </div>

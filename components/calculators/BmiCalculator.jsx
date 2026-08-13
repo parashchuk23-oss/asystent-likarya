@@ -27,9 +27,9 @@ function hasPositiveNumber(value) {
 
 function InfoList({ title, items }) {
   return (
-    <div className="rounded-md border border-slate-200 bg-white p-4">
+    <div className="rounded-md border border-slate-200 bg-white p-3">
       <h3 className="font-semibold text-slate-950">{title}</h3>
-      <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm leading-6 text-slate-700">
+      <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-slate-700">
         {items.map((item) => (
           <li key={item}>{item}</li>
         ))}
@@ -40,9 +40,9 @@ function InfoList({ title, items }) {
 
 function TextInfo({ title, children }) {
   return (
-    <div className="rounded-md border border-slate-200 bg-white p-4">
+    <div className="rounded-md border border-slate-200 bg-white p-3">
       <h3 className="font-semibold text-slate-950">{title}</h3>
-      <div className="mt-3 text-sm leading-6 text-slate-700">{children}</div>
+      <div className="mt-2 text-sm leading-6 text-slate-700">{children}</div>
     </div>
   );
 }
@@ -54,7 +54,7 @@ function SexSegmentedControl({ value, onChange }) {
   ];
 
   return (
-    <div className="grid h-9 grid-cols-2 rounded-md border border-slate-300 bg-white p-1 shadow-sm shadow-slate-100">
+    <div className="grid h-[38px] grid-cols-2 rounded-md border border-slate-300 bg-white p-1 shadow-sm shadow-slate-100">
       {options.map((option) => {
         const isSelected = value === option.value;
 
@@ -120,7 +120,7 @@ export default function BmiCalculator() {
 
   return (
     <>
-      <div className="mb-5 rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
+      <div className="mb-3 rounded-md border border-blue-100 bg-blue-50/50 p-3 text-sm leading-relaxed text-slate-700">
         <h2 className="text-base font-semibold text-slate-950">Оцінка маси тіла</h2>
         <p className="mt-1">
           ІМТ, цільова вага, окружність талії та кардіометаболічний ризик.
@@ -128,7 +128,7 @@ export default function BmiCalculator() {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <FormField label="Маса тіла" hint="кг">
+        <FormField label="Маса тіла" hint="кг" className="mb-0">
           <input
             type="number"
             value={formData.weight}
@@ -140,7 +140,7 @@ export default function BmiCalculator() {
           />
         </FormField>
 
-        <FormField label="Зріст" hint="см">
+        <FormField label="Зріст" hint="см" className="mb-0">
           <input
             type="number"
             value={formData.height}
@@ -152,14 +152,14 @@ export default function BmiCalculator() {
           />
         </FormField>
 
-        <FormField label="Стать" hint="необов’язково">
+        <FormField label="Стать" hint="необов’язково" className="mb-0">
           <SexSegmentedControl
             value={formData.sex}
             onChange={(value) => handleChange('sex', value)}
           />
         </FormField>
 
-        <FormField label="Окружність талії" hint="см, необов’язково">
+        <FormField label="Окружність талії" hint="см, необов’язково" className="mb-0">
           <input
             type="number"
             value={formData.waist}
@@ -172,7 +172,7 @@ export default function BmiCalculator() {
         </FormField>
       </div>
 
-      <div className="mt-1 flex flex-col gap-3 border-t border-slate-100 pt-5 sm:flex-row">
+      <div className="mt-0 flex flex-col gap-2 border-t border-slate-100 pt-3 sm:flex-row">
         <button
           type="button"
           onClick={handleCalculate}
@@ -192,9 +192,9 @@ export default function BmiCalculator() {
       </div>
 
       {result ? (
-        <div className="mt-4 space-y-3">
+        <div className="mt-3 space-y-3">
           <div className="grid items-stretch gap-3 lg:grid-cols-3">
-            <div className="h-full rounded-md border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
+            <div className="h-full rounded-md border border-blue-100 bg-blue-50 p-3 text-sm text-slate-900">
               <p className="text-slate-600">ІМТ</p>
               <p className="text-3xl font-semibold text-blue-800">{result.bmi}</p>
               <p className="mt-2">
@@ -202,7 +202,7 @@ export default function BmiCalculator() {
               </p>
             </div>
 
-            <div className="h-full rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-900">
+            <div className="h-full rounded-md border border-slate-200 bg-white p-3 text-sm text-slate-900">
               <p className="font-semibold">Окружність талії</p>
               {result.waistCategory ? (
                 <>
@@ -216,7 +216,7 @@ export default function BmiCalculator() {
                   Додайте стать та окружність талії для інтерпретації.
                 </p>
               )}
-              <div className="mt-3 border-t border-slate-100 pt-3 text-xs leading-5 text-slate-500">
+              <div className="mt-2 border-t border-slate-100 pt-2 text-xs leading-5 text-slate-500">
                 <p>Орієнтири:</p>
                 <p>чоловіки: &lt;94 см, 94–101 см, ≥102 см</p>
                 <p>жінки: &lt;80 см, 80–87 см, ≥88 см</p>
@@ -224,7 +224,7 @@ export default function BmiCalculator() {
             </div>
 
             <div
-              className={`h-full rounded-md border p-4 text-sm ${
+              className={`h-full rounded-md border p-3 text-sm ${
                 result.cardiometabolicRisk?.className || 'border-slate-200 bg-white text-slate-800'
               }`}
             >
@@ -251,13 +251,13 @@ export default function BmiCalculator() {
           </div>
 
           {result.recommendations.needsAdditionalAssessment && (
-            <div className="rounded-md border border-orange-200 bg-orange-50 p-4 text-sm leading-6 text-orange-900">
+            <div className="rounded-md border border-orange-200 bg-orange-50 p-3 text-sm leading-6 text-orange-900">
               <p className="font-semibold">Коли потрібна додаткова оцінка</p>
               <p className="mt-2">{result.recommendations.additionalAssessmentText}</p>
             </div>
           )}
 
-          <div className="rounded-md border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+          <div className="rounded-md border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
             <p className="font-semibold text-slate-950">Пов’язані інструменти</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {['SCORE2', 'ШКФ', 'FINDRISK', 'Цілі ЛПНЩ у SCORE2'].map((tool) => (
@@ -271,7 +271,7 @@ export default function BmiCalculator() {
             </div>
           </div>
 
-          <p className="rounded-md border border-slate-200 bg-white p-4 text-xs leading-5 text-slate-600">
+          <p className="rounded-md border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-600">
             Оцінка маси тіла є допоміжним інструментом. ІМТ не враховує склад тіла,
             м’язову масу та індивідуальні особливості пацієнта. Остаточна клінічна
             оцінка проводиться лікарем з урахуванням анамнезу, супутніх захворювань,
@@ -279,7 +279,7 @@ export default function BmiCalculator() {
           </p>
         </div>
       ) : (
-        <div className="mt-5 rounded-md border border-blue-100 bg-blue-50 p-4 text-sm text-slate-700">
+        <div className="mt-3 rounded-md border border-blue-100 bg-blue-50 p-3 text-sm text-slate-700">
           Введіть зріст і масу тіла, за потреби додайте стать та окружність талії, потім
           натисніть “Розрахувати”.
         </div>
