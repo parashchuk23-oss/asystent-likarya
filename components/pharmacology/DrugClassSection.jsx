@@ -42,8 +42,8 @@ export default function DrugClassSection({
     <section
       className={`overflow-hidden rounded-md border bg-white transition ${
         isOpen
-          ? 'border-teal-300 bg-teal-50/20 shadow-sm shadow-teal-100/70'
-          : 'border-teal-200/80 shadow-sm shadow-slate-200/60 hover:border-teal-300 hover:shadow-md hover:shadow-teal-100/60'
+          ? 'border-teal-500 bg-teal-50 shadow-sm shadow-slate-200/60'
+          : 'border-teal-300 shadow-sm shadow-slate-200/60 hover:border-teal-500'
       }`}
     >
       <button
@@ -69,7 +69,7 @@ export default function DrugClassSection({
       </button>
 
       {isOpen ? (
-        <div id={panelId} className="border-t border-teal-200/80 bg-white px-4 py-5 sm:px-5">
+        <div id={panelId} className="border-t border-teal-300 bg-white px-4 py-5 sm:px-5">
           <p className="max-w-4xl text-sm leading-6 text-slate-600">{description}</p>
 
           {filteredDrugs.length ? (

@@ -41,8 +41,8 @@ export default function RegulationSection({ block }) {
       id={block.id}
       className={`scroll-mt-24 rounded-lg border bg-white shadow-sm transition ${
         isOpen
-          ? 'border-teal-300 bg-teal-50/20 shadow-teal-100/70'
-          : 'border-teal-200/80 shadow-slate-200/60 hover:border-teal-300 hover:shadow-md hover:shadow-teal-100/60'
+          ? 'border-teal-500 bg-teal-50 shadow-sm shadow-slate-200/60'
+          : 'border-teal-300 shadow-sm shadow-slate-200/60 hover:border-teal-500'
       }`}
     >
       <button
@@ -67,7 +67,7 @@ export default function RegulationSection({ block }) {
       </button>
 
       {isOpen && (
-        <div className="border-t border-teal-200/80 bg-white p-4">
+        <div className="border-t border-teal-300 bg-white p-4">
           <div className="grid gap-4 xl:grid-cols-[1fr_320px]">
             <div>
               <h4 className="text-sm font-bold uppercase tracking-[0.18em] text-slate-500">Критерії</h4>

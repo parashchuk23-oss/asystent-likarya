@@ -74,8 +74,8 @@ export default function CalculatorsTab() {
             key={calculator.id}
             className={`overflow-hidden rounded-lg border bg-white transition ${
               isOpen
-                ? 'border-teal-300 bg-teal-50/20 shadow-sm shadow-teal-100/70'
-                : 'border-teal-200/80 shadow-sm shadow-slate-200/60 hover:border-teal-300 hover:shadow-md hover:shadow-teal-100/60'
+                ? 'border-teal-500 bg-teal-50 shadow-sm shadow-slate-200/60'
+                : 'border-teal-300 shadow-sm shadow-slate-200/60 hover:border-teal-500'
             }`}
           >
             <button
@@ -102,7 +102,7 @@ export default function CalculatorsTab() {
             </button>
 
             {isOpen ? (
-              <div id={`${calculator.id}-calculator`} className="border-t border-teal-200/80 bg-white p-5">
+              <div id={`${calculator.id}-calculator`} className="border-t border-teal-300 bg-white p-5">
                 {calculator.component}
               </div>
             ) : null}

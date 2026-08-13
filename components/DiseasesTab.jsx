@@ -262,12 +262,12 @@ export default function DiseasesTab() {
           </header>
 
           <div className="p-5">
-            <div className="rounded-lg border border-teal-200/80 bg-white shadow-sm shadow-slate-200/60">
+            <div className="rounded-lg border border-teal-300 bg-white shadow-sm shadow-slate-200/60">
               <details open>
                 <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-teal-900 transition hover:bg-teal-50/40">
                   Діагностичні орієнтири
                 </summary>
-                <ul className="space-y-2 border-t border-teal-200/80 p-4 text-sm leading-6 text-slate-600">
+                <ul className="space-y-2 border-t border-teal-300 p-4 text-sm leading-6 text-slate-600">
                   {activeDisease.diagnosticCriteria.map((item) => (
                     <li
                       key={item}

@@ -462,7 +462,7 @@ export default function PalliativeCareNeedQuestionnaire() {
 
               <div
                 className={`mt-4 rounded-md border bg-white transition ${
-                  isBarthelOpen ? 'border-teal-300 bg-teal-50/20' : 'border-teal-200/80 hover:border-teal-300'
+                  isBarthelOpen ? 'border-teal-500 bg-teal-50' : 'border-teal-300 hover:border-teal-500'
                 }`}
               >
                 <button
@@ -488,7 +488,7 @@ export default function PalliativeCareNeedQuestionnaire() {
                 </button>
 
                 {isBarthelOpen ? (
-                  <div className="border-t border-teal-200/80 bg-white p-4">
+                  <div className="border-t border-teal-300 bg-white p-4">
                     <div className="grid gap-3 lg:grid-cols-2">
                       {barthelItems.map((item) => (
                         <SelectField

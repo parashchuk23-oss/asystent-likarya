@@ -7,7 +7,7 @@ export default function DrugCard({ drug, isOpen, onToggle }) {
   return (
     <article
       className={`overflow-hidden rounded-md border bg-white transition ${
-        isOpen ? 'border-teal-300 shadow-sm shadow-teal-100/70' : 'border-teal-200/70 hover:border-teal-300 hover:bg-teal-50/20'
+        isOpen ? 'border-teal-500 shadow-sm shadow-slate-200/60' : 'border-teal-300 hover:border-teal-500 hover:bg-teal-50'
       }`}
     >
       <button
@@ -51,7 +51,7 @@ export default function DrugCard({ drug, isOpen, onToggle }) {
       </button>
 
       {isOpen ? (
-        <div id={panelId} className="border-t border-teal-200/80 bg-white px-4 py-5 sm:px-5">
+        <div id={panelId} className="border-t border-teal-300 bg-white px-4 py-5 sm:px-5">
           <dl className="grid gap-4 text-sm sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <dt className="font-semibold text-slate-600">Торгові назви, приклади</dt>

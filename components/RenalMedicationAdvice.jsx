@@ -55,7 +55,7 @@ export default function RenalMedicationAdvice({ advice }) {
             <div
               key={section.key}
               className={`overflow-hidden rounded-md border transition ${
-                isOpen ? 'border-teal-300 bg-teal-50/20' : 'border-teal-200/80 bg-white hover:border-teal-300'
+                isOpen ? 'border-teal-500 bg-teal-50' : 'border-teal-300 bg-white hover:border-teal-500'
               }`}
             >
               <button
@@ -77,7 +77,7 @@ export default function RenalMedicationAdvice({ advice }) {
               </button>
 
               {isOpen ? (
-                <div id={panelId} className="border-t border-teal-200/80 bg-white px-3 py-3">
+                <div id={panelId} className="border-t border-teal-300 bg-white px-3 py-3">
                   <ul className="space-y-2 pl-5 text-sm leading-6 text-slate-700">
                     {advice[section.key].map((item) => (
                       <li key={item} className="list-disc">

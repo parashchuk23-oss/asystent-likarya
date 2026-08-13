@@ -93,8 +93,8 @@ function AccordionBlock({ id, title, openId, onToggle, children }) {
     <section
       className={`overflow-hidden rounded-md border bg-white transition ${
         isOpen
-          ? 'border-teal-300 bg-teal-50/20 shadow-sm shadow-teal-100/70'
-          : 'border-teal-200/80 shadow-sm shadow-slate-200/60 hover:border-teal-300 hover:shadow-md hover:shadow-teal-100/60'
+          ? 'border-teal-500 bg-teal-50 shadow-sm shadow-slate-200/60'
+          : 'border-teal-300 shadow-sm shadow-slate-200/60 hover:border-teal-500'
       }`}
     >
       <button
@@ -113,7 +113,7 @@ function AccordionBlock({ id, title, openId, onToggle, children }) {
           {isOpen ? '−' : '+'}
         </span>
       </button>
-      {isOpen ? <div className="border-t border-teal-200/80 bg-white p-4">{children}</div> : null}
+      {isOpen ? <div className="border-t border-teal-300 bg-white p-4">{children}</div> : null}
     </section>
   );
 }

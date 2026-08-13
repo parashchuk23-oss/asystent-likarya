@@ -159,8 +159,8 @@ export default function EcgSyndromesModule() {
               key={syndrome.id}
               className={`rounded-lg border bg-white shadow-sm shadow-slate-200/60 transition ${
                 isOpen
-                  ? 'border-teal-300 bg-teal-50/20 shadow-teal-100/70'
-                  : 'border-teal-200/80 hover:border-teal-300 hover:shadow-md hover:shadow-teal-100/60'
+                  ? 'border-teal-500 bg-teal-50 shadow-sm shadow-slate-200/60'
+                  : 'border-teal-300 hover:border-teal-500'
               }`}
             >
             <button
@@ -186,7 +186,7 @@ export default function EcgSyndromesModule() {
             </button>
 
             {isOpen ? (
-              <div className="border-t border-teal-200/80 bg-white p-5">
+              <div className="border-t border-teal-300 bg-white p-5">
                 {isCompactImage ? (
                   <div className="grid gap-4 xl:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)]">
                     <div>
