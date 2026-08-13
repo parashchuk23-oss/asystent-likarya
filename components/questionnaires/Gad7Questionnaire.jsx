@@ -40,7 +40,7 @@ const additionalAssessmentItems = [
 ];
 
 const initialAnswers = questions.reduce((answers, _question, index) => {
-  answers[`q${index}`] = null;
+  answers[`q${index}`] = 0;
   return answers;
 }, {});
 
