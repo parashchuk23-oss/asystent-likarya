@@ -376,7 +376,7 @@ export default function PalliativeCareNeedQuestionnaire() {
 
   return (
     <div className="space-y-5">
-      <div className="rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
+      <div className="rounded-md border border-blue-100 bg-blue-50/50 p-3 text-sm leading-relaxed text-slate-700">
         <p className="font-semibold text-slate-950">Оцінка потреби в паліативній допомозі</p>
         <p className="mt-2">
           Оберіть основне захворювання або стан пацієнта. Програма покаже відповідні
@@ -384,7 +384,7 @@ export default function PalliativeCareNeedQuestionnaire() {
         </p>
       </div>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100">
+      <section className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm shadow-slate-100">
         <label className="block text-sm font-semibold text-slate-800" htmlFor="palliative-care-group">
           Основне захворювання / група станів
         </label>
@@ -392,7 +392,7 @@ export default function PalliativeCareNeedQuestionnaire() {
           id="palliative-care-group"
           value={groupId}
           onChange={handleGroupChange}
-          className="mt-2 w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-base text-slate-950 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+          className="mt-2 w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-base text-slate-950 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
         >
           <option value="">Оберіть групу</option>
           {palliativeCareAdultCriteria.map((group) => (
@@ -411,7 +411,7 @@ export default function PalliativeCareNeedQuestionnaire() {
 
       {selectedGroup ? (
         <>
-          <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100">
+          <section className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm shadow-slate-100">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <h3 className="mt-1 text-lg font-semibold text-slate-950">
@@ -429,14 +429,14 @@ export default function PalliativeCareNeedQuestionnaire() {
               індекс Карновського ≤ 50, PPS ≤ 30% або шкала Бартел &lt; 25.
             </p>
 
-            <div className="mt-4 rounded-md border border-blue-100 bg-blue-50/40 p-4">
+            <div className="mt-3 rounded-md border border-blue-100 bg-blue-50/40 p-3">
               <p className="text-sm font-semibold text-slate-950">Швидка функціональна оцінка</p>
               <p className="mt-1 text-sm leading-6 text-slate-600">
                 Якщо значення шкали досягає порогу наказу, відповідний критерій нижче
                 підтвердиться автоматично. Ручний вибір також залишається доступним.
               </p>
 
-              <div className="mt-4 grid gap-3 lg:grid-cols-3">
+              <div className="mt-2 grid gap-3 lg:grid-cols-3">
                 <SelectField
                   id="palliative-ecog"
                   label="ECOG"
@@ -461,14 +461,14 @@ export default function PalliativeCareNeedQuestionnaire() {
               </div>
 
               <div
-                className={`mt-4 rounded-md border bg-white transition ${
+                className={`mt-3 rounded-md border bg-white transition ${
                   isBarthelOpen ? 'border-teal-500 bg-teal-50' : 'border-teal-300 hover:border-teal-500'
                 }`}
               >
                 <button
                   type="button"
                   onClick={() => setIsBarthelOpen((current) => !current)}
-                  className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-teal-50/40"
+                  className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition hover:bg-teal-50/40"
                 >
                   <span>
                     <span className={`block text-sm font-semibold ${isBarthelOpen ? 'text-teal-900' : 'text-slate-950'}`}>
@@ -488,7 +488,7 @@ export default function PalliativeCareNeedQuestionnaire() {
                 </button>
 
                 {isBarthelOpen ? (
-                  <div className="border-t border-teal-300 bg-white p-4">
+                  <div className="border-t border-teal-300 bg-white p-3">
                     <div className="grid gap-3 lg:grid-cols-2">
                       {barthelItems.map((item) => (
                         <SelectField
@@ -506,7 +506,7 @@ export default function PalliativeCareNeedQuestionnaire() {
               </div>
 
               {automaticScaleCriteria.length > 0 ? (
-                <div className="mt-4 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm leading-6 text-emerald-900">
+                <div className="mt-3 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm leading-6 text-emerald-900">
                   <p className="font-semibold">Автоматично підтверджені критерії:</p>
                   <ul className="mt-2 list-disc space-y-1 pl-5">
                     {automaticScaleCriteria.map((criterion) => (
@@ -517,7 +517,7 @@ export default function PalliativeCareNeedQuestionnaire() {
               ) : null}
             </div>
 
-            <div className="mt-4 grid gap-3 lg:grid-cols-2">
+            <div className="mt-2 grid gap-3 lg:grid-cols-2">
               {selectedGroup.scaleCriteria.map((criterion) => (
                 <CheckItem
                   key={criterion}
@@ -529,7 +529,7 @@ export default function PalliativeCareNeedQuestionnaire() {
             </div>
           </section>
 
-          <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100">
+          <section className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm shadow-slate-100">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <h3 className="mt-1 text-lg font-semibold text-slate-950">
@@ -551,7 +551,7 @@ export default function PalliativeCareNeedQuestionnaire() {
               За додатком 2 потрібно обрати не менше 5 клінічних ознак / показників.
             </p>
 
-            <div className="mt-4 grid gap-3 lg:grid-cols-2">
+            <div className="mt-2 grid gap-3 lg:grid-cols-2">
               {selectedGroup.clinicalCriteria.map((criterion) => (
                 <CheckItem
                   key={criterion}
@@ -565,18 +565,18 @@ export default function PalliativeCareNeedQuestionnaire() {
         </>
       ) : null}
 
-      <div className="flex flex-col gap-3 border-t border-slate-100 pt-5 sm:flex-row">
+      <div className="flex flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row">
         <button
           type="button"
           onClick={handleCalculate}
-          className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
+          className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
         >
           Оцінити
         </button>
         <button
           type="button"
           onClick={handleClear}
-          className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+          className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
           Очистити
         </button>
@@ -584,7 +584,7 @@ export default function PalliativeCareNeedQuestionnaire() {
       </div>
 
       {result ? (
-        <section className={`rounded-lg border p-4 ${resultClassName}`}>
+        <section className={`rounded-lg border p-3 ${resultClassName}`}>
           <p className="text-sm font-semibold uppercase tracking-[0.22em] opacity-80">Результат</p>
           <h3 className="mt-1 text-xl font-semibold">{result.title}</h3>
           <p className="mt-2 text-sm leading-6">{result.message}</p>
@@ -603,12 +603,12 @@ export default function PalliativeCareNeedQuestionnaire() {
       ) : null}
 
       {copyText ? (
-        <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm shadow-slate-100">
+        <section className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm shadow-slate-100">
           <p className="font-semibold text-slate-950">Текст для копіювання</p>
           <textarea
             value={copyText}
             onChange={(event) => setCopyText(event.target.value)}
-            className="mt-3 min-h-72 w-full rounded-md border border-slate-300 p-4 text-sm leading-6 text-slate-800 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+            className="mt-3 min-h-72 w-full rounded-md border border-slate-300 p-3 text-sm leading-6 text-slate-800 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
           />
           <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
             <button
@@ -623,7 +623,7 @@ export default function PalliativeCareNeedQuestionnaire() {
         </section>
       ) : null}
 
-      <section className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-700">
+      <section className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-700">
         <p className="font-semibold text-slate-950">Нормативна база</p>
         <p className="mt-2">
           {palliativeCareSource.order} “{palliativeCareSource.title}”. Чинна редакція:{' '}
@@ -640,7 +640,7 @@ export default function PalliativeCareNeedQuestionnaire() {
         </a>
       </section>
 
-      <p className="rounded-md border border-slate-200 bg-white p-4 text-xs leading-5 text-slate-600">
+      <p className="rounded-md border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-600">
         Модуль є допоміжним інструментом для лікаря. Він не встановлює діагноз і не
         замінює клінічне рішення, оцінку стану пацієнта та чинні нормативні вимоги.
       </p>

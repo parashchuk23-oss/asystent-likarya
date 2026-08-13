@@ -48,7 +48,7 @@ function buildCopyText(result) {
 
 function VerticalOptionList({ name, selectedValue, onChange }) {
   return (
-    <div className="mt-3 space-y-2">
+    <div className="mt-2 space-y-1">
       {options.map((option) => {
         const isSelected = selectedValue === option.value;
 
@@ -112,9 +112,9 @@ export default function Phq9Questionnaire({ showIntro = true }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {showIntro ? (
-        <div className="rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
+        <div className="rounded-md border border-blue-100 bg-blue-50/50 p-3 text-sm leading-relaxed text-slate-700">
           <p className="font-semibold text-slate-900">Про PHQ-9</p>
           <p className="mt-2">
             PHQ-9 використовується для скринінгової оцінки депресивних симптомів за останні 2
@@ -126,10 +126,10 @@ export default function Phq9Questionnaire({ showIntro = true }) {
         </div>
       ) : null}
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {questions.map((question, index) => (
-          <div key={question} className="rounded-md border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-100/60">
-            <p className="text-base font-semibold leading-6 text-slate-900">
+          <div key={question} className="rounded-md border border-slate-200/80 bg-white p-3 shadow-sm shadow-slate-100/60">
+            <p className="text-sm font-semibold leading-6 text-slate-900">
               {index + 1}. {question}
             </p>
             <VerticalOptionList
@@ -141,11 +141,11 @@ export default function Phq9Questionnaire({ showIntro = true }) {
         ))}
       </div>
 
-      <div className="flex flex-col gap-3 border-t border-slate-100 pt-5 sm:flex-row">
+      <div className="flex flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row">
         <button
           type="button"
           onClick={handleCalculate}
-          className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
+          className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
         >
           Розрахувати
         </button>
@@ -153,7 +153,7 @@ export default function Phq9Questionnaire({ showIntro = true }) {
         <button
           type="button"
           onClick={handleClear}
-          className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+          className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
           Очистити
         </button>
@@ -161,7 +161,7 @@ export default function Phq9Questionnaire({ showIntro = true }) {
         <PrintQuestionnaireButton />
       </div>
 
-      <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
+      <div className="rounded-lg border border-blue-100 bg-blue-50 p-3 text-sm text-slate-900">
         <p className="text-slate-600">Результат</p>
         <p className="mt-1 text-3xl font-semibold text-blue-800">
           {result ? `PHQ-9: ${result.score} із 27 балів` : '—'}
@@ -174,7 +174,7 @@ export default function Phq9Questionnaire({ showIntro = true }) {
           <>
             <p className="mt-2 leading-6">{result.interpretation}</p>
             {result.hasSelfHarmAnswer ? (
-              <div className="mt-4 rounded-md border border-red-200 bg-red-50 p-3 text-red-900">
+              <div className="mt-3 rounded-md border border-red-200 bg-red-50 p-3 text-red-900">
                 <p className="font-semibold">Окрема увага до 9-го питання</p>
                 <p className="mt-1 leading-6">
                   Позитивна відповідь на питання про смерть або самоушкодження потребує окремої
@@ -182,7 +182,7 @@ export default function Phq9Questionnaire({ showIntro = true }) {
                 </p>
               </div>
             ) : null}
-            <div className="mt-4 rounded-md border border-blue-200 bg-white/70 p-3">
+            <div className="mt-3 rounded-md border border-blue-200 bg-white/70 p-3">
               <p className="font-semibold">Наступний клінічний крок</p>
               <p className="mt-1 leading-6">{result.nextStep}</p>
             </div>
@@ -198,7 +198,7 @@ export default function Phq9Questionnaire({ showIntro = true }) {
       ) : null}
 
       {result ? (
-        <div className="rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-700">
+        <div className="rounded-md border border-slate-200 bg-white p-3 text-sm text-slate-700">
           <p className="font-semibold text-slate-950">Текст для медичної документації</p>
           <p className="mt-2 leading-6">{buildCopyText(result)}</p>
           <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -214,16 +214,16 @@ export default function Phq9Questionnaire({ showIntro = true }) {
         </div>
       ) : null}
 
-      <div className="rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-700">
+      <div className="rounded-md border border-slate-200 bg-white p-3 text-sm text-slate-700">
         <p className="font-semibold text-slate-950">Що варто оцінити додатково</p>
-        <ul className="mt-3 list-disc space-y-1.5 pl-5 leading-6">
+        <ul className="mt-2 list-disc space-y-1 pl-5 leading-6">
           {additionalAssessmentItems.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>
       </div>
 
-      <div className="rounded-md border border-slate-200 bg-white p-4 text-xs leading-5 text-slate-600">
+      <div className="rounded-md border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-600">
         <p className="font-semibold text-slate-800">Джерело</p>
         <p className="mt-2">
           PHQ-9 є частиною Patient Health Questionnaire і використовується як скринінговий
@@ -235,7 +235,7 @@ export default function Phq9Questionnaire({ showIntro = true }) {
         </p>
       </div>
 
-      <p className="rounded-md border border-slate-200 bg-white p-4 text-xs leading-5 text-slate-600">
+      <p className="rounded-md border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-600">
         PHQ-9 є скринінговим інструментом для оцінки вираженості депресивних симптомів.
         Результат не є самостійною підставою для встановлення діагнозу або призначення лікування.
         Остаточна оцінка здійснюється лікарем з урахуванням анамнезу, клінічного стану,

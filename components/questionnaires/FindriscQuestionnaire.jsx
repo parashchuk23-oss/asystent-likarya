@@ -201,12 +201,12 @@ export default function FindriscQuestionnaire({ showIntro = true }) {
 
   function renderHelperBlock() {
     return (
-      <div className="rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
+      <div className="rounded-md border border-blue-100 bg-blue-50/50 p-3 text-sm leading-relaxed text-slate-700">
         <p className="font-semibold text-slate-900">Автоматичний розрахунок ІМТ і талії</p>
         <p className="mt-1">
           Цей блок потрібен лише для автоматичного заповнення FINDRISC і не друкується у бланку.
         </p>
-        <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-2 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           <FormField label="Стать">
             <SexSegmentedControl
               value={helperData.sex}
@@ -260,9 +260,9 @@ export default function FindriscQuestionnaire({ showIntro = true }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {showIntro ? (
-        <div className="rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
+        <div className="rounded-md border border-blue-100 bg-blue-50/50 p-3 text-sm leading-relaxed text-slate-700">
           <p className="font-semibold text-slate-900">Про FINDRISC</p>
           <p className="mt-2">
             FINDRISC використовується для орієнтовної оцінки ризику розвитку цукрового
@@ -274,12 +274,12 @@ export default function FindriscQuestionnaire({ showIntro = true }) {
         </div>
       ) : null}
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {questions.map((question) => (
           <Fragment key={question.key}>
-            <div className="rounded-md border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-100/60">
+            <div className="rounded-md border border-slate-200/80 bg-white p-3 shadow-sm shadow-slate-100/60">
               <p className="text-sm font-semibold text-slate-900">{question.text}</p>
-              <div className="mt-3 grid gap-2">
+              <div className="mt-2 grid gap-2">
                 {question.options.map((option) => (
                   <label key={option.label} className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
                     <input
@@ -300,11 +300,11 @@ export default function FindriscQuestionnaire({ showIntro = true }) {
         ))}
       </div>
 
-      <div className="flex flex-col gap-3 border-t border-slate-100 pt-5 sm:flex-row">
+      <div className="flex flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row">
         <button
           type="button"
           onClick={handleCalculate}
-          className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
+          className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
         >
           Розрахувати
         </button>
@@ -312,7 +312,7 @@ export default function FindriscQuestionnaire({ showIntro = true }) {
         <button
           type="button"
           onClick={handleClear}
-          className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+          className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
           Очистити
         </button>
@@ -320,7 +320,7 @@ export default function FindriscQuestionnaire({ showIntro = true }) {
         <PrintQuestionnaireButton />
       </div>
 
-      <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
+      <div className="rounded-lg border border-blue-100 bg-blue-50 p-3 text-sm text-slate-900">
         <p className="text-slate-600">Сума балів</p>
         <p className="text-3xl font-semibold text-blue-800">{result?.score ?? '—'}</p>
         <p className="mt-2">

@@ -81,8 +81,8 @@ export default function NeuropathicPainScreeningQuestionnaire() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
+    <div className="space-y-3">
+      <div className="rounded-md border border-blue-100 bg-blue-50/50 p-3 text-sm leading-relaxed text-slate-700">
         <p className="font-semibold text-slate-900">Скринінг нейропатичного компонента болю</p>
         <p className="mt-2">
           Короткий чек-лист типових ознак, які можуть підказувати нейропатичний компонент.
@@ -99,7 +99,7 @@ export default function NeuropathicPainScreeningQuestionnaire() {
           return (
             <label
               key={item.key}
-              className={`flex cursor-pointer items-center gap-3 rounded-md border p-4 text-base font-medium transition ${
+              className={`flex cursor-pointer items-center gap-3 rounded-md border p-3 text-base font-medium transition ${
                 isSelected
                   ? 'border-blue-300 bg-blue-50 text-blue-800'
                   : 'border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:bg-blue-50/50'
@@ -117,25 +117,25 @@ export default function NeuropathicPainScreeningQuestionnaire() {
         })}
       </div>
 
-      <div className="flex flex-col gap-3 border-t border-slate-100 pt-5 sm:flex-row">
+      <div className="flex flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row">
         <button
           type="button"
           onClick={handleCalculate}
-          className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
+          className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
         >
           Розрахувати
         </button>
         <button
           type="button"
           onClick={handleClear}
-          className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+          className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
           Очистити
         </button>
         <PrintQuestionnaireButton />
       </div>
 
-      <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
+      <div className="rounded-lg border border-blue-100 bg-blue-50 p-3 text-sm text-slate-900">
         <p className="text-slate-600">Результат</p>
         <p className="mt-1 text-3xl font-semibold text-blue-800">
           {result ? `${result.score} озн.` : '—'}
@@ -148,7 +148,7 @@ export default function NeuropathicPainScreeningQuestionnaire() {
       </div>
 
       {result ? (
-        <div className="rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-700">
+        <div className="rounded-md border border-slate-200 bg-white p-3 text-sm text-slate-700">
           <p className="font-semibold text-slate-950">Текст для медичної документації</p>
           <p className="mt-2 leading-6">{buildCopyText(result, selectedLabels)}</p>
           <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -164,7 +164,7 @@ export default function NeuropathicPainScreeningQuestionnaire() {
         </div>
       ) : null}
 
-      <p className="rounded-md border border-slate-200 bg-white p-4 text-xs leading-5 text-slate-600">
+      <p className="rounded-md border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-600">
         Чек-лист не встановлює діагноз нейропатичного болю. Остаточна оцінка проводиться
         лікарем з урахуванням анамнезу, неврологічного статусу, основного захворювання та
         додаткових даних.

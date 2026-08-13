@@ -125,7 +125,7 @@ export default function QuestionnairesTab() {
   }
 
   return (
-    <div className="space-y-4 rounded-lg bg-slate-50/70 p-3 sm:p-4">
+    <div className="space-y-3 rounded-lg bg-slate-50/70 p-3 sm:p-4">
       {questionnaires.map((questionnaire) => {
         const isOpen = openId === questionnaire.id;
 
@@ -144,10 +144,10 @@ export default function QuestionnairesTab() {
               }}
               type="button"
               onClick={() => toggleQuestionnaire(questionnaire.id)}
-              className="scroll-mt-4 flex w-full items-center justify-between gap-4 rounded-lg p-5 text-left transition hover:bg-teal-50/40"
+              className="scroll-mt-3 flex w-full items-center justify-between gap-3 rounded-lg p-3 text-left transition hover:bg-teal-50/40"
             >
               <span>
-                <span className={`block text-base font-semibold tracking-tight ${isOpen ? 'text-teal-900' : 'text-slate-950'}`}>
+                <span className={`block text-sm font-semibold tracking-tight ${isOpen ? 'text-teal-900' : 'text-slate-950'}`}>
                   {questionnaire.title}
                 </span>
                 <span className="mt-1 block text-sm text-slate-500">{questionnaire.description}</span>
@@ -162,9 +162,9 @@ export default function QuestionnairesTab() {
             </button>
 
             {isOpen && (
-              <div className="border-t border-teal-300 bg-white p-5">
+              <div className="border-t border-teal-300 bg-white p-3">
                 {questionnaire.component || (
-                  <p className="rounded-md border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-500">
+                  <p className="rounded-md border border-dashed border-slate-300 bg-slate-50 p-3 text-sm text-slate-500">
                     Буде додано пізніше.
                   </p>
                 )}

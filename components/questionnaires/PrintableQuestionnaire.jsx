@@ -30,7 +30,7 @@ export function PrintQuestionnaireButton({ label = 'Роздрукувати о�
     <button
       type="button"
       onClick={handlePrint}
-      className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+      className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
     >
       {label}
     </button>

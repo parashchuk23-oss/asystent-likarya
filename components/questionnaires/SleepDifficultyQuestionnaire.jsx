@@ -35,11 +35,11 @@ function buildCopyText(result) {
 
 function QuestionCard({ question, index, value, onChange }) {
   return (
-    <div className="rounded-md border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-100/60">
-      <p className="text-base font-semibold leading-6 text-slate-900">
+    <div className="rounded-md border border-slate-200/80 bg-white p-3 shadow-sm shadow-slate-100/60">
+      <p className="text-sm font-semibold leading-6 text-slate-900">
         {index + 1}. {question}
       </p>
-      <div className="mt-3 grid gap-2 sm:grid-cols-5">
+      <div className="mt-2 grid gap-2 sm:grid-cols-5">
         {options.map((option) => (
           <label
             key={option.value}
@@ -102,8 +102,8 @@ export default function SleepDifficultyQuestionnaire() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
+    <div className="space-y-3">
+      <div className="rounded-md border border-blue-100 bg-blue-50/50 p-3 text-sm leading-relaxed text-slate-700">
         <p className="font-semibold text-slate-900">Скринінг порушення сну</p>
         <p className="mt-2">
           Короткий модуль за основними доменами безсоння: засинання, підтримання сну,
@@ -115,7 +115,7 @@ export default function SleepDifficultyQuestionnaire() {
         </p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {questions.map((question, index) => (
           <QuestionCard
             key={question}
@@ -127,25 +127,25 @@ export default function SleepDifficultyQuestionnaire() {
         ))}
       </div>
 
-      <div className="flex flex-col gap-3 border-t border-slate-100 pt-5 sm:flex-row">
+      <div className="flex flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row">
         <button
           type="button"
           onClick={handleCalculate}
-          className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
+          className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
         >
           Розрахувати
         </button>
         <button
           type="button"
           onClick={handleClear}
-          className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+          className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
           Очистити
         </button>
         <PrintQuestionnaireButton />
       </div>
 
-      <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
+      <div className="rounded-lg border border-blue-100 bg-blue-50 p-3 text-sm text-slate-900">
         <p className="text-slate-600">Результат</p>
         <p className="mt-1 text-3xl font-semibold text-blue-800">
           {result ? `${result.score} із 24` : '—'}
@@ -158,7 +158,7 @@ export default function SleepDifficultyQuestionnaire() {
       </div>
 
       {result ? (
-        <div className="rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-700">
+        <div className="rounded-md border border-slate-200 bg-white p-3 text-sm text-slate-700">
           <p className="font-semibold text-slate-950">Текст для медичної документації</p>
           <p className="mt-2 leading-6">{buildCopyText(result)}</p>
           <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -174,7 +174,7 @@ export default function SleepDifficultyQuestionnaire() {
         </div>
       ) : null}
 
-      <p className="rounded-md border border-slate-200 bg-white p-4 text-xs leading-5 text-slate-600">
+      <p className="rounded-md border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-600">
         Результат є допоміжною клінічною підказкою. Безсоння оцінюється з урахуванням
         тривалості симптомів, режиму сну, болю, тривоги, депресивних симптомів, апное сну,
         ліків, кофеїну, алкоголю та соматичного стану.

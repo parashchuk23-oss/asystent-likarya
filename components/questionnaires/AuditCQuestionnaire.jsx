@@ -67,8 +67,8 @@ export default function AuditCQuestionnaire() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
+    <div className="space-y-3">
+      <div className="rounded-md border border-blue-100 bg-blue-50/50 p-3 text-sm leading-relaxed text-slate-700">
         <p className="font-semibold text-slate-900">Про AUDIT-C</p>
         <p className="mt-2">
           AUDIT-C використовується для короткого скринінгу ризикованого вживання алкоголю.
@@ -78,11 +78,11 @@ export default function AuditCQuestionnaire() {
         </p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {questions.map((question) => (
-          <div key={question.key} className="rounded-md border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-100/60">
+          <div key={question.key} className="rounded-md border border-slate-200/80 bg-white p-3 shadow-sm shadow-slate-100/60">
             <p className="text-sm font-semibold text-slate-900">{question.text}</p>
-            <div className="mt-3 grid gap-2">
+            <div className="mt-2 grid gap-2">
               {question.options.map((option) => (
                 <label key={option.label} className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
                   <input
@@ -101,11 +101,11 @@ export default function AuditCQuestionnaire() {
         ))}
       </div>
 
-      <div className="flex flex-col gap-3 border-t border-slate-100 pt-5 sm:flex-row">
+      <div className="flex flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row">
         <button
           type="button"
           onClick={handleCalculate}
-          className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
+          className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
         >
           Розрахувати
         </button>
@@ -113,7 +113,7 @@ export default function AuditCQuestionnaire() {
         <button
           type="button"
           onClick={handleClear}
-          className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+          className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
           Очистити
         </button>
@@ -121,7 +121,7 @@ export default function AuditCQuestionnaire() {
         <PrintQuestionnaireButton />
       </div>
 
-      <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
+      <div className="rounded-lg border border-blue-100 bg-blue-50 p-3 text-sm text-slate-900">
         <p className="text-slate-600">Сума балів</p>
         <p className="text-3xl font-semibold text-blue-800">{result?.score ?? '—'}</p>
         <p className="mt-2">

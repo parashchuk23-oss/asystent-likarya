@@ -68,7 +68,7 @@ function buildCopyText(result) {
 
 function RadioList({ name, options, value, onChange }) {
   return (
-    <div className="mt-3 grid gap-2 sm:grid-cols-2">
+    <div className="mt-2 grid gap-2 sm:grid-cols-2">
       {options.map((option) => (
         <label
           key={option.value}
@@ -104,7 +104,7 @@ function NumberField({ label, value, onChange }) {
         step="1"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 w-full rounded-md border border-slate-300 px-4 py-3 text-base text-slate-950 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+        className="mt-2 w-full rounded-md border border-slate-300 px-4 py-2.5 text-base text-slate-950 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
       />
       <span className="mt-1 block text-xs text-slate-500">0 — не заважав, 10 — максимально.</span>
     </label>
@@ -153,17 +153,17 @@ export default function ChronicPainImpactQuestionnaire() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
+    <div className="space-y-3">
+      <div className="rounded-md border border-blue-100 bg-blue-50/50 p-3 text-sm leading-relaxed text-slate-700">
         <p className="font-semibold text-slate-900">Хронічний біль — GCPS-R / PEG</p>
         <p className="mt-2">
           Коротка оцінка частоти болю, функціонального впливу та середнього PEG-показника.
         </p>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-md border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-100/60">
-          <p className="text-base font-semibold text-slate-900">
+      <div className="grid gap-3 lg:grid-cols-2">
+        <div className="rounded-md border border-slate-200/80 bg-white p-3 shadow-sm shadow-slate-100/60">
+          <p className="text-sm font-semibold text-slate-900">
             Як часто біль був присутній протягом останніх 3 місяців?
           </p>
           <RadioList
@@ -174,8 +174,8 @@ export default function ChronicPainImpactQuestionnaire() {
           />
         </div>
 
-        <div className="rounded-md border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-100/60">
-          <p className="text-base font-semibold text-slate-900">
+        <div className="rounded-md border border-slate-200/80 bg-white p-3 shadow-sm shadow-slate-100/60">
+          <p className="text-sm font-semibold text-slate-900">
             Як часто біль обмежував життя або роботу?
           </p>
           <RadioList
@@ -187,9 +187,9 @@ export default function ChronicPainImpactQuestionnaire() {
         </div>
       </div>
 
-      <div className="rounded-md border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-100/60">
-        <p className="text-base font-semibold text-slate-900">PEG 0-10</p>
-        <div className="mt-3 grid gap-4 lg:grid-cols-3">
+      <div className="rounded-md border border-slate-200/80 bg-white p-3 shadow-sm shadow-slate-100/60">
+        <p className="text-sm font-semibold text-slate-900">PEG 0-10</p>
+        <div className="mt-2 grid gap-3 lg:grid-cols-3">
           <NumberField
             label="Біль у середньому"
             value={answers.pain}
@@ -208,25 +208,25 @@ export default function ChronicPainImpactQuestionnaire() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 border-t border-slate-100 pt-5 sm:flex-row">
+      <div className="flex flex-col gap-3 border-t border-slate-100 pt-3 sm:flex-row">
         <button
           type="button"
           onClick={handleCalculate}
-          className="w-full rounded-md bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
+          className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
         >
           Розрахувати
         </button>
         <button
           type="button"
           onClick={handleClear}
-          className="w-full rounded-md border border-slate-300 bg-white px-5 py-3 text-base font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
+          className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
           Очистити
         </button>
         <PrintQuestionnaireButton />
       </div>
 
-      <div className="rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
+      <div className="rounded-lg border border-blue-100 bg-blue-50 p-3 text-sm text-slate-900">
         <p className="text-slate-600">Результат</p>
         <p className="mt-1 text-3xl font-semibold text-blue-800">
           {result ? `${result.grade}` : '—'}
@@ -242,7 +242,7 @@ export default function ChronicPainImpactQuestionnaire() {
       </div>
 
       {result ? (
-        <div className="rounded-md border border-slate-200 bg-white p-4 text-sm text-slate-700">
+        <div className="rounded-md border border-slate-200 bg-white p-3 text-sm text-slate-700">
           <p className="font-semibold text-slate-950">Текст для медичної документації</p>
           <p className="mt-2 leading-6">{buildCopyText(result)}</p>
           <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -258,7 +258,7 @@ export default function ChronicPainImpactQuestionnaire() {
         </div>
       ) : null}
 
-      <p className="rounded-md border border-slate-200 bg-white p-4 text-xs leading-5 text-slate-600">
+      <p className="rounded-md border border-slate-200 bg-white p-3 text-xs leading-5 text-slate-600">
         GCPS-R / PEG допомагає структуровано оцінити вплив хронічного болю, але не встановлює
         причину болю та не замінює клінічну оцінку лікаря.
       </p>
