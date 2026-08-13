@@ -212,21 +212,19 @@ function generateFocalText(data) {
 function generateLymphText(data) {
   const lymph = data.lymphNodes;
   const zones = listLabels('lymphZones', lymph.zones);
+  const statusText = `Регіонарні лімфатичні вузли ${lymph.status === 'enlarged' ? 'збільшені' : 'не збільшені'}.`;
   const details = compact([
-    zones ? `зони: ${zones}` : '',
-    lymph.structure ? `структура: ${lymph.structure}` : '',
-    lymph.bloodFlow ? `кровотік: ${lymph.bloodFlow}` : '',
-    lymph.shortAxisMax ? `максимальна коротка вісь ${lymph.shortAxisMax} мм` : '',
-  ]).join(', ');
+    zones ? `зони — ${zones}` : '',
+    lymph.structure ? `структура — ${lymph.structure}` : '',
+    lymph.bloodFlow ? `кровотік — ${lymph.bloodFlow}` : '',
+    lymph.shortAxisMax ? `максимальна коротка вісь — ${lymph.shortAxisMax} мм` : '',
+  ]);
 
-  if (lymph.status === 'notEnlarged' && !details) {
-    return 'Регіонарні лімфатичні вузли не збільшені.';
+  if (!details.length) {
+    return statusText;
   }
 
-  return commaSentence([
-    `Регіонарні лімфатичні вузли ${lymph.status === 'enlarged' ? 'збільшені' : 'не збільшені'}`,
-    details,
-  ]);
+  return `${statusText} ${details.join(', ')}.`;
 }
 
 function generateOptionalVascularText(data) {
@@ -234,30 +232,41 @@ function generateOptionalVascularText(data) {
   const { jugular, carotid } = data.optionalVascular;
 
   if (data.optionalVascular.jugularEnabled) {
-    lines.push(
-      sentence([
-        'Внутрішні яремні вени:',
-        jugular.rightDiameter ? `праворуч ${jugular.rightDiameter} мм` : '',
-        jugular.leftDiameter ? `ліворуч ${jugular.leftDiameter} мм` : '',
-        jugular.dilation ? `стан: ${jugular.dilation}` : '',
-        jugular.patency ? `прохідність: ${jugular.patency}` : '',
-        jugular.compression ? `компресія: ${jugular.compression}` : '',
-      ]),
-    );
+    const diameterText = compact([
+      jugular.rightDiameter ? `праворуч — ${jugular.rightDiameter} мм` : '',
+      jugular.leftDiameter ? `ліворуч — ${jugular.leftDiameter} мм` : '',
+    ]).join(', ');
+    const jugularSentences = compact([
+      diameterText ? `Внутрішні яремні вени: ${diameterText}.` : 'Внутрішні яремні вени.',
+      jugular.dilation ? `Стан: ${jugular.dilation}.` : '',
+      jugular.patency ? `Прохідність: ${jugular.patency}.` : '',
+      jugular.compression ? `Компресія: ${jugular.compression}.` : '',
+    ]);
+
+    lines.push(jugularSentences.join(' '));
   }
 
   if (data.optionalVascular.carotidEnabled) {
-    lines.push(
-      sentence([
-        'Загальні сонні артерії:',
-        carotid.course ? `хід: ${carotid.course}` : '',
-        carotid.intima ? `інтима: ${carotid.intima}` : '',
-        carotid.cimtRight ? `КІМ праворуч ${carotid.cimtRight} мм` : '',
-        carotid.cimtLeft ? `КІМ ліворуч ${carotid.cimtLeft} мм` : '',
-        carotid.bifurcation ? `біфуркація: ${carotid.bifurcation}` : '',
-        carotid.plaques === 'detected' ? `бляшки: ${carotid.plaqueDescription || 'виявлені'}` : 'бляшки не виявлені',
-      ]),
-    );
+    const appearanceText = compact([
+      carotid.course ? `хід ${carotid.course}` : '',
+      carotid.intima ? `інтима ${carotid.intima}` : '',
+    ]).join(', ');
+    const cimtText = compact([
+      carotid.cimtRight ? `КІМ праворуч — ${carotid.cimtRight} мм` : '',
+      carotid.cimtLeft ? `КІМ ліворуч — ${carotid.cimtLeft} мм` : '',
+    ]).join(', ');
+    const plaqueText =
+      carotid.plaques === 'detected'
+        ? `Бляшки: ${carotid.plaqueDescription || 'виявлені'}.`
+        : 'Бляшки не виявлені.';
+    const carotidSentences = compact([
+      appearanceText ? `Загальні сонні артерії: ${appearanceText}.` : 'Загальні сонні артерії.',
+      cimtText ? `${cimtText}.` : '',
+      carotid.bifurcation ? `Біфуркація — ${carotid.bifurcation}.` : '',
+      plaqueText,
+    ]);
+
+    lines.push(carotidSentences.join(' '));
   }
 
   return lines.filter(Boolean).join('\n');
