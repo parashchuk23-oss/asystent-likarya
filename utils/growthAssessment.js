@@ -1,6 +1,8 @@
 import { whoGrowthReference2007 } from '../data/growth/whoGrowthReference2007';
 
 const SEX_MAP = {
+  чоловіча: 'male',
+  жіноча: 'female',
   хлопчик: 'male',
   дівчинка: 'female',
 };

@@ -1,6 +1,8 @@
 import { pediatricBloodPressureScreening } from '../data/pediatrics/pediatricBloodPressureScreening';
 
 const SEX_MAP = {
+  чоловіча: 'male',
+  жіноча: 'female',
   хлопчик: 'male',
   дівчинка: 'female',
 };

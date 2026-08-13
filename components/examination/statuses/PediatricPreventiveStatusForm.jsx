@@ -140,8 +140,8 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
               className={inputClass}
             >
               <option value="">не обрано</option>
-              <option value="хлопчик">хлопчик</option>
-              <option value="дівчинка">дівчинка</option>
+              <option value="чоловіча">чоловіча</option>
+              <option value="жіноча">жіноча</option>
             </select>
           </FormField>
 
