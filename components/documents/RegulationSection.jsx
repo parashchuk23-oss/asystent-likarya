@@ -37,26 +37,37 @@ export default function RegulationSection({ block }) {
   };
 
   return (
-    <article id={block.id} className="scroll-mt-24 rounded-lg border border-slate-200 bg-white shadow-sm">
+    <article
+      id={block.id}
+      className={`scroll-mt-24 rounded-lg border bg-white shadow-sm transition ${
+        isOpen
+          ? 'border-teal-300 bg-teal-50/20 shadow-teal-100/70'
+          : 'border-teal-200/80 shadow-slate-200/60 hover:border-teal-300 hover:shadow-md hover:shadow-teal-100/60'
+      }`}
+    >
       <button
         type="button"
         onClick={() => setIsOpen((value) => !value)}
-        className="flex w-full items-start justify-between gap-4 p-4 text-left"
+        className="flex w-full items-start justify-between gap-4 p-4 text-left transition hover:bg-teal-50/40"
       >
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{block.direction}</p>
-          <h3 className="mt-2 text-lg font-bold text-slate-950">{block.name}</h3>
+          <h3 className={`mt-2 text-lg font-bold ${isOpen ? 'text-teal-900' : 'text-slate-950'}`}>{block.name}</h3>
           <p className="mt-1 text-sm font-semibold text-slate-500">
             {block.decisionType} · {sourceLine}
           </p>
         </div>
-        <span className="rounded-full bg-slate-100 px-3 py-1 text-xl font-bold text-slate-500">
+        <span
+          className={`grid h-9 w-9 shrink-0 place-items-center rounded-full text-xl font-bold transition ${
+            isOpen ? 'bg-teal-600 text-white' : 'bg-teal-50 text-teal-700'
+          }`}
+        >
           {isOpen ? '−' : '+'}
         </span>
       </button>
 
       {isOpen && (
-        <div className="border-t border-slate-100 p-4">
+        <div className="border-t border-teal-200/80 bg-white p-4">
           <div className="grid gap-4 xl:grid-cols-[1fr_320px]">
             <div>
               <h4 className="text-sm font-bold uppercase tracking-[0.18em] text-slate-500">Критерії</h4>

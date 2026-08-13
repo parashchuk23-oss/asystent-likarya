@@ -1157,24 +1157,36 @@ export default function EcgChecklistModule() {
               </div>
             </div>
 
-            <div className="mt-3 rounded-md border border-slate-200 bg-slate-50">
+            <div
+              className={`mt-3 rounded-md border transition ${
+                showChamberOverloadDetails
+                  ? 'border-teal-300 bg-teal-50/20'
+                  : 'border-teal-200/80 bg-slate-50 hover:border-teal-300'
+              }`}
+            >
               <button
                 type="button"
                 onClick={() => setShowChamberOverloadDetails((current) => !current)}
-                className="flex w-full items-center justify-between gap-3 px-3 py-3 text-left"
+                className="flex w-full items-center justify-between gap-3 px-3 py-3 text-left transition hover:bg-teal-50/40"
               >
                 <span>
-                  <span className="block text-sm font-bold text-slate-900">Додаткові ознаки перевантаження камер</span>
+                  <span className={`block text-sm font-bold ${showChamberOverloadDetails ? 'text-teal-900' : 'text-slate-900'}`}>Додаткові ознаки перевантаження камер</span>
                   <span className="mt-0.5 block text-xs font-medium text-slate-500">
                     Праві відділи, ліве передсердя, праве передсердя
                     {chamberOverloadSignsCount ? `; вибрано: ${chamberOverloadSignsCount}` : ''}
                   </span>
                 </span>
-                <span className="text-lg font-bold text-teal-700">{showChamberOverloadDetails ? '−' : '+'}</span>
+                <span
+                  className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-lg font-bold transition ${
+                    showChamberOverloadDetails ? 'bg-teal-600 text-white' : 'bg-teal-50 text-teal-700'
+                  }`}
+                >
+                  {showChamberOverloadDetails ? '−' : '+'}
+                </span>
               </button>
 
               {showChamberOverloadDetails ? (
-                <div className="grid gap-3 border-t border-slate-200 p-3 lg:grid-cols-3">
+                <div className="grid gap-3 border-t border-teal-200/80 bg-white p-3 lg:grid-cols-3">
                   {[
                     ['rightHeartOverloadSigns', 'Праві відділи', rightHeartOverloadOptions],
                     ['leftAtrialOverloadSigns', 'Ліве передсердя', leftAtrialOverloadOptions],

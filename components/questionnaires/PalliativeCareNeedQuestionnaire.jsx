@@ -460,25 +460,35 @@ export default function PalliativeCareNeedQuestionnaire() {
                 />
               </div>
 
-              <div className="mt-4 rounded-md border border-slate-200 bg-white">
+              <div
+                className={`mt-4 rounded-md border bg-white transition ${
+                  isBarthelOpen ? 'border-teal-300 bg-teal-50/20' : 'border-teal-200/80 hover:border-teal-300'
+                }`}
+              >
                 <button
                   type="button"
                   onClick={() => setIsBarthelOpen((current) => !current)}
-                  className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+                  className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-teal-50/40"
                 >
                   <span>
-                    <span className="block text-sm font-semibold text-slate-950">
+                    <span className={`block text-sm font-semibold ${isBarthelOpen ? 'text-teal-900' : 'text-slate-950'}`}>
                       Шкала Бартел
                     </span>
                     <span className="mt-1 block text-xs text-slate-500">
                       {barthelScore === null ? 'Заповніть 10 пунктів для автоматичного підрахунку.' : `Сума: ${barthelScore} балів`}
                     </span>
                   </span>
-                  <span className="text-xl font-semibold text-blue-700">{isBarthelOpen ? '−' : '+'}</span>
+                  <span
+                    className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-xl font-semibold transition ${
+                      isBarthelOpen ? 'bg-teal-600 text-white' : 'bg-teal-50 text-teal-700'
+                    }`}
+                  >
+                    {isBarthelOpen ? '−' : '+'}
+                  </span>
                 </button>
 
                 {isBarthelOpen ? (
-                  <div className="border-t border-slate-100 p-4">
+                  <div className="border-t border-teal-200/80 bg-white p-4">
                     <div className="grid gap-3 lg:grid-cols-2">
                       {barthelItems.map((item) => (
                         <SelectField

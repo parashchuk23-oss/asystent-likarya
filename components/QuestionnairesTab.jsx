@@ -125,7 +125,7 @@ export default function QuestionnairesTab() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 rounded-lg bg-slate-50/70 p-3 sm:p-4">
       {questionnaires.map((questionnaire) => {
         const isOpen = openId === questionnaire.id;
 
@@ -133,7 +133,9 @@ export default function QuestionnairesTab() {
           <article
             key={questionnaire.id}
             className={`rounded-lg border bg-white shadow-sm shadow-slate-200/60 transition ${
-              isOpen ? 'border-blue-200 ring-1 ring-blue-100' : 'border-slate-200/80'
+              isOpen
+                ? 'border-teal-300 bg-teal-50/20 shadow-sm shadow-teal-100/70'
+                : 'border-teal-200/80 hover:border-teal-300 hover:shadow-md hover:shadow-teal-100/60'
             }`}
           >
             <button
@@ -142,21 +144,25 @@ export default function QuestionnairesTab() {
               }}
               type="button"
               onClick={() => toggleQuestionnaire(questionnaire.id)}
-              className="scroll-mt-4 flex w-full items-center justify-between gap-4 rounded-lg p-5 text-left transition hover:bg-blue-50/50"
+              className="scroll-mt-4 flex w-full items-center justify-between gap-4 rounded-lg p-5 text-left transition hover:bg-teal-50/40"
             >
               <span>
-                <span className="block text-base font-semibold tracking-tight text-slate-950">
+                <span className={`block text-base font-semibold tracking-tight ${isOpen ? 'text-teal-900' : 'text-slate-950'}`}>
                   {questionnaire.title}
                 </span>
                 <span className="mt-1 block text-sm text-slate-500">{questionnaire.description}</span>
               </span>
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-50 text-xl font-semibold text-blue-700">
+              <span
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xl font-semibold transition ${
+                  isOpen ? 'bg-teal-600 text-white' : 'bg-teal-50 text-teal-700'
+                }`}
+              >
                 {isOpen ? '−' : '+'}
               </span>
             </button>
 
             {isOpen && (
-              <div className="border-t border-slate-100 p-5">
+              <div className="border-t border-teal-200/80 bg-white p-5">
                 {questionnaire.component || (
                   <p className="rounded-md border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-500">
                     Буде додано пізніше.

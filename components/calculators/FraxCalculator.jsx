@@ -90,19 +90,30 @@ function AccordionBlock({ id, title, openId, onToggle, children }) {
   const isOpen = openId === id;
 
   return (
-    <section className="overflow-hidden rounded-md border border-slate-200 bg-white">
+    <section
+      className={`overflow-hidden rounded-md border bg-white transition ${
+        isOpen
+          ? 'border-teal-300 bg-teal-50/20 shadow-sm shadow-teal-100/70'
+          : 'border-teal-200/80 shadow-sm shadow-slate-200/60 hover:border-teal-300 hover:shadow-md hover:shadow-teal-100/60'
+      }`}
+    >
       <button
         type="button"
-        className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left"
+        className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left transition hover:bg-teal-50/40"
         onClick={() => onToggle(isOpen ? null : id)}
         aria-expanded={isOpen}
       >
-        <span className="font-semibold text-slate-950">{title}</span>
-        <span className="text-2xl leading-none text-teal-700" aria-hidden="true">
+        <span className={`font-semibold ${isOpen ? 'text-teal-900' : 'text-slate-950'}`}>{title}</span>
+        <span
+          className={`grid h-8 w-8 place-items-center rounded-full text-2xl leading-none transition ${
+            isOpen ? 'bg-teal-600 text-white' : 'bg-teal-50 text-teal-700'
+          }`}
+          aria-hidden="true"
+        >
           {isOpen ? '−' : '+'}
         </span>
       </button>
-      {isOpen ? <div className="border-t border-slate-200 p-4">{children}</div> : null}
+      {isOpen ? <div className="border-t border-teal-200/80 bg-white p-4">{children}</div> : null}
     </section>
   );
 }

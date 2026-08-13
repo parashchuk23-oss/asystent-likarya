@@ -39,26 +39,37 @@ export default function DrugClassSection({
     : `${drugs.length} препаратів`;
 
   return (
-    <section className="overflow-hidden rounded-md border border-slate-200 bg-white">
+    <section
+      className={`overflow-hidden rounded-md border bg-white transition ${
+        isOpen
+          ? 'border-teal-300 bg-teal-50/20 shadow-sm shadow-teal-100/70'
+          : 'border-teal-200/80 shadow-sm shadow-slate-200/60 hover:border-teal-300 hover:shadow-md hover:shadow-teal-100/60'
+      }`}
+    >
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
         aria-controls={panelId}
-        className="flex w-full items-start justify-between gap-4 px-4 py-4 text-left transition hover:bg-slate-50 sm:px-5"
+        className="flex w-full items-start justify-between gap-4 px-4 py-4 text-left transition hover:bg-teal-50/40 sm:px-5"
       >
         <span className="min-w-0">
           <span className="block text-sm font-semibold text-teal-700">{eyebrow}</span>
-          <span className="mt-1 block text-base font-semibold text-slate-950 sm:text-lg">{title}</span>
+          <span className={`mt-1 block text-base font-semibold sm:text-lg ${isOpen ? 'text-teal-900' : 'text-slate-950'}`}>{title}</span>
           <span className="mt-1 block text-sm text-slate-500">{countLabel}</span>
         </span>
-        <span className="shrink-0 text-xl leading-none text-teal-700" aria-hidden="true">
+        <span
+          className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-xl leading-none transition ${
+            isOpen ? 'bg-teal-600 text-white' : 'bg-teal-50 text-teal-700'
+          }`}
+          aria-hidden="true"
+        >
           {isOpen ? '−' : '+'}
         </span>
       </button>
 
       {isOpen ? (
-        <div id={panelId} className="border-t border-slate-200 px-4 py-5 sm:px-5">
+        <div id={panelId} className="border-t border-teal-200/80 bg-white px-4 py-5 sm:px-5">
           <p className="max-w-4xl text-sm leading-6 text-slate-600">{description}</p>
 
           {filteredDrugs.length ? (
@@ -84,16 +95,21 @@ export default function DrugClassSection({
             </div>
           )}
 
-          <div className="mt-5 border-t border-slate-200 pt-4">
+          <div className="mt-5 border-t border-teal-100 pt-4">
             <button
               type="button"
               onClick={() => setNotesOpen((current) => !current)}
               aria-expanded={notesOpen}
               aria-controls={notesId}
-              className="flex w-full items-center justify-between gap-4 text-left text-sm font-semibold text-slate-800"
+              className="flex w-full items-center justify-between gap-4 rounded-md px-3 py-2 text-left text-sm font-semibold text-slate-800 transition hover:bg-teal-50/50"
             >
               <span>Клінічні застереження та моніторинг</span>
-              <span className="shrink-0 text-lg leading-none text-teal-700" aria-hidden="true">
+              <span
+                className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-lg leading-none transition ${
+                  notesOpen ? 'bg-teal-600 text-white' : 'bg-teal-50 text-teal-700'
+                }`}
+                aria-hidden="true"
+              >
                 {notesOpen ? '−' : '+'}
               </span>
             </button>

@@ -46,28 +46,38 @@ export default function RenalMedicationAdvice({ advice }) {
         </dl>
       </div>
 
-      <div className="divide-y divide-slate-200">
+      <div className="space-y-2">
         {sections.map((section) => {
           const isOpen = openSection === section.key;
           const panelId = `renal-medication-${section.key}`;
 
           return (
-            <div key={section.key}>
+            <div
+              key={section.key}
+              className={`overflow-hidden rounded-md border transition ${
+                isOpen ? 'border-teal-300 bg-teal-50/20' : 'border-teal-200/80 bg-white hover:border-teal-300'
+              }`}
+            >
               <button
                 type="button"
-                className="flex w-full items-center justify-between gap-4 py-4 text-left"
+                className="flex w-full items-center justify-between gap-4 px-3 py-3 text-left transition hover:bg-teal-50/40"
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => handleToggle(section.key)}
               >
-                <span className="text-sm font-semibold text-slate-900">{section.title}</span>
-                <span className="shrink-0 text-xl leading-none text-teal-700" aria-hidden="true">
+                <span className={`text-sm font-semibold ${isOpen ? 'text-teal-900' : 'text-slate-900'}`}>{section.title}</span>
+                <span
+                  className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-xl leading-none transition ${
+                    isOpen ? 'bg-teal-600 text-white' : 'bg-teal-50 text-teal-700'
+                  }`}
+                  aria-hidden="true"
+                >
                   {isOpen ? '−' : '+'}
                 </span>
               </button>
 
               {isOpen ? (
-                <div id={panelId} className="pb-4">
+                <div id={panelId} className="border-t border-teal-200/80 bg-white px-3 py-3">
                   <ul className="space-y-2 pl-5 text-sm leading-6 text-slate-700">
                     {advice[section.key].map((item) => (
                       <li key={item} className="list-disc">

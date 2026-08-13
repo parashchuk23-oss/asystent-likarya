@@ -5,17 +5,21 @@ export default function DrugCard({ drug, isOpen, onToggle }) {
   const displayName = drug.displayName ?? drug.ukrainianName;
 
   return (
-    <article className="overflow-hidden rounded-md border border-slate-200 bg-white">
+    <article
+      className={`overflow-hidden rounded-md border bg-white transition ${
+        isOpen ? 'border-teal-300 shadow-sm shadow-teal-100/70' : 'border-teal-200/70 hover:border-teal-300 hover:bg-teal-50/20'
+      }`}
+    >
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
         aria-controls={panelId}
-        className="flex w-full items-start justify-between gap-4 px-4 py-4 text-left transition hover:bg-slate-50 sm:px-5"
+        className="flex w-full items-start justify-between gap-4 px-4 py-4 text-left transition hover:bg-teal-50/40 sm:px-5"
       >
         <span className="grid min-w-0 flex-1 gap-3 sm:grid-cols-[minmax(0,1.1fr)_minmax(0,2.8fr)] sm:items-start">
           <span className="block">
-            <span className="block text-base font-semibold text-slate-950">{displayName}</span>
+            <span className={`block text-base font-semibold ${isOpen ? 'text-teal-900' : 'text-slate-950'}`}>{displayName}</span>
             <span className="mt-1 block text-sm text-slate-500">
               {drug.displayName ? `${drug.ukrainianName} · ` : ''}
               {drug.internationalName}
@@ -36,13 +40,18 @@ export default function DrugCard({ drug, isOpen, onToggle }) {
             </span>
           </span>
         </span>
-        <span className="shrink-0 text-xl leading-none text-teal-700" aria-hidden="true">
+        <span
+          className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-xl leading-none transition ${
+            isOpen ? 'bg-teal-600 text-white' : 'bg-teal-50 text-teal-700'
+          }`}
+          aria-hidden="true"
+        >
           {isOpen ? '−' : '+'}
         </span>
       </button>
 
       {isOpen ? (
-        <div id={panelId} className="border-t border-slate-200 px-4 py-5 sm:px-5">
+        <div id={panelId} className="border-t border-teal-200/80 bg-white px-4 py-5 sm:px-5">
           <dl className="grid gap-4 text-sm sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <dt className="font-semibold text-slate-600">Торгові назви, приклади</dt>
