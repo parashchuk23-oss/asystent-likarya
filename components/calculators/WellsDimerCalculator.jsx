@@ -17,11 +17,75 @@ import {
 } from '../../utils/calculations';
 
 const scenarioOptions = [
-  { id: 'dvt', title: 'Підозра на ТГВ' },
-  { id: 'pe', title: 'Підозра на ТЕЛА' },
-  { id: 'confirmedPe', title: 'Підтверджена ТЕЛА' },
-  { id: 'longTerm', title: 'Довгострокове ведення ВТЕ' },
+  {
+    id: 'dvt',
+    title: 'Підозра на ТГВ',
+    description: 'Біль / набряк кінцівки, оцінка до D-димеру або компресійного УЗД вен.',
+  },
+  {
+    id: 'pe',
+    title: 'Підозра на ТЕЛА',
+    description: 'Задишка, біль у грудях, тахікардія або інші ознаки можливої легеневої емболії.',
+  },
+  {
+    id: 'confirmedPe',
+    title: 'Підтверджена ТЕЛА',
+    description: 'Після підтвердження діагнозу: ризик ускладнень і можливість амбулаторної тактики.',
+  },
+  {
+    id: 'longTerm',
+    title: 'Довгострокове ведення ВТЕ',
+    description: 'Оцінка ризику кровотечі та рецидиву при тривалій або завершеній антикоагуляції.',
+  },
 ];
+
+const toolInfo = {
+  wellsDvt: {
+    purpose: 'Wells DVT оцінює клінічну ймовірність тромбозу глибоких вен до інструментальної верифікації.',
+    when: 'Використовуйте при болю, набряку або асиметрії нижньої кінцівки, коли ТГВ є одним із можливих діагнозів.',
+    action: 'Результат допомагає вирішити, чи достатньо D-димеру в алгоритмі, чи варто переходити до компресійного УЗД вен.',
+  },
+  wellsPe: {
+    purpose: 'Wells PE оцінює клінічну ймовірність ТЕЛА до D-димеру або КТ-ангіографії.',
+    when: 'Використовуйте при підозрі на ТЕЛА, якщо пацієнт гемодинамічно стабільний і немає очевидної потреби в невідкладній візуалізації.',
+    action: 'При високій імовірності D-димер не використовують як єдиний спосіб виключення ТЕЛА; доцільно розглядати візуалізацію.',
+  },
+  perc: {
+    purpose: 'PERC допомагає уникнути зайвого D-димеру у пацієнтів із низькою клінічною ймовірністю ТЕЛА.',
+    when: 'Застосовуйте лише після клінічного рішення, що ймовірність ТЕЛА низька.',
+    action: 'Якщо всі критерії “ні”, ТЕЛА менш імовірна; якщо хоча б один критерій “так”, переходьте до D-димеру або іншої оцінки.',
+  },
+  dimer: {
+    purpose: 'Age-adjusted D-димер порівнює D-димер із віковим порогом, щоб зменшити кількість хибнопозитивних результатів у старших пацієнтів.',
+    when: 'Корисний при низькій або проміжній клінічній імовірності. Не підтверджує ВТЕ самостійно.',
+    action: 'Негативний результат може підтримати виключення ВТЕ в межах алгоритму; позитивний результат є підставою розглянути візуалізацію.',
+  },
+  spesi: {
+    purpose: 'sPESI не діагностує ТЕЛА, а оцінює короткостроковий ризик після підтвердження ТЕЛА.',
+    when: 'Використовуйте після підтвердження ТЕЛА для первинної оцінки ризику ускладнень.',
+    action: '0 балів підтримує нижчий ризик; ≥1 бал підказує потребу уважнішої оцінки та часто стаціонарної тактики.',
+  },
+  hestia: {
+    purpose: 'Hestia визначає, чи є критерії, які роблять амбулаторне лікування ТЕЛА небажаним.',
+    when: 'Використовуйте після підтвердження ТЕЛА, коли розглядається можливість амбулаторного ведення.',
+    action: 'Якщо хоча б один критерій “так”, амбулаторне лікування за Hestia не рекомендується.',
+  },
+  vteBleed: {
+    purpose: 'VTE-BLEED оцінює ризик кровотечі під час антикоагулянтної терапії при ВТЕ.',
+    when: 'Корисний при плануванні або перегляді тривалої антикоагуляції.',
+    action: 'Вищий ризик не означає автоматичну відміну антикоагуляції, а підказує знайти модифіковані фактори кровотечі.',
+  },
+  herdoo2: {
+    purpose: 'HERDOO2 оцінює ризик рецидиву у жінок після першого неспровокованого епізоду ВТЕ.',
+    when: 'Не використовуйте для чоловіків як інструмент визначення низького ризику.',
+    action: '0–1 критерій у жінки може підтримувати нижчий ризик рецидиву; ≥2 критерії підказують вищий ризик.',
+  },
+  dash: {
+    purpose: 'DASH дає орієнтовну оцінку ризику рецидиву після завершення антикоагуляції.',
+    when: 'Використовуйте як допоміжну підказку при обговоренні тривалості терапії, а не як самостійне рішення.',
+    action: 'Результат потрібно поєднувати з причиною ВТЕ, ризиком кровотечі, побажаннями пацієнта та клінічним контекстом.',
+  },
+};
 
 const initialFormData = {
   scenario: 'dvt',
@@ -211,6 +275,42 @@ function ResultCard({ title, value, subtitle, children }) {
   );
 }
 
+function ToolIntro({ info }) {
+  return (
+    <div className="mt-2 rounded-md border border-teal-100 bg-teal-50/70 p-3 text-sm leading-6 text-slate-700">
+      <p>{info.purpose}</p>
+      <p className="mt-1">
+        <span className="font-semibold text-slate-900">Коли:</span> {info.when}
+      </p>
+      <p className="mt-1">
+        <span className="font-semibold text-slate-900">Як використати:</span> {info.action}
+      </p>
+    </div>
+  );
+}
+
+function ScenarioSummary({ scenario }) {
+  return (
+    <section className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-700">
+      <p className="font-semibold text-slate-950">{scenario.title}</p>
+      <p className="mt-1">{scenario.description}</p>
+    </section>
+  );
+}
+
+function ResultExplanation({ meaning, action }) {
+  return (
+    <div className="mt-3 space-y-2 rounded-md border border-white/70 bg-white/70 p-3 text-sm leading-6 text-slate-700">
+      <p>
+        <span className="font-semibold text-slate-900">Що означає:</span> {meaning}
+      </p>
+      <p>
+        <span className="font-semibold text-slate-900">Що робити далі:</span> {action}
+      </p>
+    </div>
+  );
+}
+
 function DimerInputs({ formData, onChange }) {
   return (
     <div className="grid gap-3 md:grid-cols-3">
@@ -267,6 +367,7 @@ function Chips({ items }) {
 export default function WellsDimerCalculator() {
   const [formData, setFormData] = useState(initialFormData);
   const [result, setResult] = useState(null);
+  const selectedScenario = scenarioOptions.find((scenario) => scenario.id === formData.scenario) || scenarioOptions[0];
 
   function handleChange(field, value) {
     setFormData((current) => ({
@@ -428,14 +529,20 @@ export default function WellsDimerCalculator() {
             }`}
           >
             {scenario.title}
+            <span className="mt-1 block text-xs font-medium leading-5 text-slate-500">
+              {scenario.description}
+            </span>
           </button>
         ))}
       </div>
+
+      <ScenarioSummary scenario={selectedScenario} />
 
       {formData.scenario === 'dvt' && (
         <section className="mt-3 space-y-3">
           <div className="rounded-md border border-slate-200 bg-white p-4">
             <h3 className="font-semibold text-slate-950">Wells DVT</h3>
+            <ToolIntro info={toolInfo.wellsDvt} />
             <div className="mt-4 grid gap-3 lg:grid-cols-2">
               {dvtFields.map((field) => (
                 <CheckboxCard
@@ -450,6 +557,7 @@ export default function WellsDimerCalculator() {
           </div>
           <div className="rounded-md border border-slate-200 bg-white p-4">
             <h3 className="font-semibold text-slate-950">Age-adjusted D-димер</h3>
+            <ToolIntro info={toolInfo.dimer} />
             <div className="mt-4">
               <DimerInputs formData={formData} onChange={handleChange} />
             </div>
@@ -461,6 +569,7 @@ export default function WellsDimerCalculator() {
         <section className="mt-3 space-y-3">
           <div className="rounded-md border border-slate-200 bg-white p-4">
             <h3 className="font-semibold text-slate-950">Wells PE</h3>
+            <ToolIntro info={toolInfo.wellsPe} />
             <div className="mt-4 grid gap-3 lg:grid-cols-2">
               {peFields.map((field) => (
                 <CheckboxCard
@@ -475,9 +584,7 @@ export default function WellsDimerCalculator() {
           </div>
           <div className="rounded-md border border-slate-200 bg-white p-4">
             <h3 className="font-semibold text-slate-950">PERC Rule</h3>
-            <p className="mt-1 text-sm text-slate-600">
-              Використовується лише при низькій клінічній ймовірності ТЕЛА.
-            </p>
+            <ToolIntro info={toolInfo.perc} />
             <div className="mt-4 grid gap-3 lg:grid-cols-2">
               {percFields.map((field) => (
                 <CheckboxCard
@@ -491,6 +598,7 @@ export default function WellsDimerCalculator() {
           </div>
           <div className="rounded-md border border-slate-200 bg-white p-4">
             <h3 className="font-semibold text-slate-950">Age-adjusted D-димер</h3>
+            <ToolIntro info={toolInfo.dimer} />
             <div className="mt-4">
               <DimerInputs formData={formData} onChange={handleChange} />
             </div>
@@ -502,6 +610,7 @@ export default function WellsDimerCalculator() {
         <section className="mt-3 grid gap-3 lg:grid-cols-2">
           <div className="rounded-md border border-slate-200 bg-white p-4">
             <h3 className="font-semibold text-slate-950">sPESI</h3>
+            <ToolIntro info={toolInfo.spesi} />
             <div className="mt-4 grid gap-3">
               {spesiFields.map((field) => (
                 <CheckboxCard
@@ -515,6 +624,7 @@ export default function WellsDimerCalculator() {
           </div>
           <div className="rounded-md border border-slate-200 bg-white p-4">
             <h3 className="font-semibold text-slate-950">Hestia criteria</h3>
+            <ToolIntro info={toolInfo.hestia} />
             <div className="mt-4 grid gap-3">
               {hestiaFields.map((field) => (
                 <CheckboxCard
@@ -533,6 +643,7 @@ export default function WellsDimerCalculator() {
         <section className="mt-3 space-y-3">
           <div className="rounded-md border border-slate-200 bg-white p-4">
             <h3 className="font-semibold text-slate-950">VTE-BLEED</h3>
+            <ToolIntro info={toolInfo.vteBleed} />
             <div className="mt-4 grid gap-3 lg:grid-cols-2">
               {vteBleedFields.map((field) => (
                 <CheckboxCard
@@ -547,9 +658,7 @@ export default function WellsDimerCalculator() {
           </div>
           <div className="rounded-md border border-slate-200 bg-white p-4">
             <h3 className="font-semibold text-slate-950">HERDOO2</h3>
-            <p className="mt-1 text-sm text-slate-600">
-              Лише для жінок після першого неспровокованого епізоду ВТЕ.
-            </p>
+            <ToolIntro info={toolInfo.herdoo2} />
             <div className="mt-3 grid gap-3 md:grid-cols-2">
               <FormField label="Стать для HERDOO2">
                 <select
@@ -575,6 +684,7 @@ export default function WellsDimerCalculator() {
           </div>
           <div className="rounded-md border border-slate-200 bg-white p-4">
             <h3 className="font-semibold text-slate-950">DASH Score</h3>
+            <ToolIntro info={toolInfo.dash} />
             <div className="mt-4 grid gap-3 lg:grid-cols-2">
               {dashFields.map((field) => (
                 <CheckboxCard
@@ -612,12 +722,30 @@ export default function WellsDimerCalculator() {
           <div className="grid gap-3 lg:grid-cols-3">
             {result.wellsDvt && (
               <ResultCard title="Wells DVT" value={result.wellsDvt.score} subtitle={result.wellsDvt.interpretation}>
-                <p>{result.wellsDvt.isLikely ? 'Клінічна ймовірність висока.' : 'Клінічна ймовірність низька.'}</p>
+                <ResultExplanation
+                  meaning={
+                    result.wellsDvt.isLikely
+                      ? 'Клінічна ймовірність ТГВ вища; шкала не підтверджує діагноз, але підвищує потребу у візуальній перевірці.'
+                      : 'Клінічна ймовірність ТГВ нижча; у поєднанні з негативним D-димером це може підтримати виключення ТГВ.'
+                  }
+                  action={
+                    result.wellsDvt.isLikely
+                      ? 'Розглянути компресійне УЗД вен або іншу діагностику згідно з клінічним контекстом.'
+                      : 'Оцінити D-димер; якщо він не перевищує віковий поріг, ТГВ менш імовірний у межах алгоритму.'
+                  }
+                />
               </ResultCard>
             )}
             {result.wellsPe && (
               <ResultCard title="Wells PE" value={result.wellsPe.score} subtitle={result.wellsPe.interpretation}>
-                <p>Дворівнева інтерпретація: ≤4 — ТЕЛА малоймовірна, &gt;4 — ТЕЛА ймовірна.</p>
+                <ResultExplanation
+                  meaning="Дворівнева інтерпретація: ≤4 — ТЕЛА малоймовірна, >4 — ТЕЛА ймовірна."
+                  action={
+                    result.wellsPe.score > 4
+                      ? 'Не використовувати D-димер як єдиний спосіб виключення; розглянути КТ-ангіографію або іншу візуалізацію.'
+                      : 'Якщо клінічна ймовірність низька, оцінити PERC; якщо PERC позитивний, перейти до D-димеру.'
+                  }
+                />
               </ResultCard>
             )}
             {result.perc && (
@@ -626,7 +754,14 @@ export default function WellsDimerCalculator() {
                 value={result.perc.isNegative ? '−' : '+'}
                 subtitle={result.perc.interpretation}
               >
-                <p>Позитивних критеріїв: {result.perc.positiveCriteria}.</p>
+                <ResultExplanation
+                  meaning={`Позитивних критеріїв: ${result.perc.positiveCriteria}. PERC корисний тільки при низькій клінічній ймовірності ТЕЛА.`}
+                  action={
+                    result.perc.isNegative
+                      ? 'За низької клінічної ймовірності ТЕЛА може бути менш імовірною, D-димер часто не потрібний.'
+                      : 'Перейти до D-димеру або іншої діагностики залежно від клінічного контексту.'
+                  }
+                />
               </ResultCard>
             )}
             {result.dimer && (
@@ -636,11 +771,30 @@ export default function WellsDimerCalculator() {
                 subtitle={result.dimer.exceedsThreshold ? 'Перевищує віковий поріг' : 'Не перевищує віковий поріг'}
               >
                 <p>Введене значення: {result.dimer.dimer} {result.dimer.unitLabel}.</p>
+                <ResultExplanation
+                  meaning={
+                    result.dimer.exceedsThreshold
+                      ? 'Позитивний D-димер не підтверджує ВТЕ, але не дозволяє її спокійно виключити в цьому алгоритмі.'
+                      : 'D-димер не перевищує віковий поріг і може підтримати виключення ВТЕ при низькій або проміжній імовірності.'
+                  }
+                  action={
+                    result.dimer.exceedsThreshold
+                      ? 'Розглянути компресійне УЗД вен, КТ-ангіографію або інший маршрут залежно від сценарію.'
+                      : 'Зіставити з клінічною ймовірністю; при високій імовірності не покладатися лише на D-димер.'
+                  }
+                />
               </ResultCard>
             )}
             {result.spesi && (
               <ResultCard title="sPESI" value={result.spesi.score} subtitle={result.spesi.interpretation}>
-                <p>{result.spesi.isLowRisk ? '0 балів.' : '≥1 бал.'}</p>
+                <ResultExplanation
+                  meaning={result.spesi.isLowRisk ? '0 балів відповідає нижчому короткостроковому ризику.' : '≥1 бал відповідає підвищеному короткостроковому ризику.'}
+                  action={
+                    result.spesi.isLowRisk
+                      ? 'Далі оцінити Hestia, гемодинаміку, сатурацію, кровотечі, функцію нирок і соціальну безпеку.'
+                      : 'Розглянути стаціонарну тактику або поглиблену оцінку ризику згідно з локальним протоколом.'
+                  }
+                />
               </ResultCard>
             )}
             {result.hestia && (
@@ -649,7 +803,14 @@ export default function WellsDimerCalculator() {
                 value={result.hestia.positiveCriteria}
                 subtitle={result.hestia.interpretation}
               >
-                <p>Позитивних критеріїв: {result.hestia.positiveCriteria}.</p>
+                <ResultExplanation
+                  meaning={`Позитивних критеріїв: ${result.hestia.positiveCriteria}. Hestia шукає причини, через які амбулаторне лікування ТЕЛА небажане.`}
+                  action={
+                    result.hestia.isEligibleForOutpatientConsideration
+                      ? 'Якщо sPESI низький і немає інших ризиків, можна розглянути амбулаторну тактику у відповідному клінічному контексті.'
+                      : 'Амбулаторне лікування за Hestia не рекомендується; оцінити потребу госпіталізації.'
+                  }
+                />
               </ResultCard>
             )}
             {result.vteBleed && (
@@ -658,7 +819,10 @@ export default function WellsDimerCalculator() {
                 value={result.vteBleed.score}
                 subtitle={result.vteBleed.interpretation}
               >
-                <p>Поріг вищого ризику: ≥2 бали.</p>
+                <ResultExplanation
+                  meaning="Поріг вищого ризику: ≥2 бали. Це оцінка ризику кровотечі під час антикоагуляції."
+                  action="Не скасовувати антикоагуляцію автоматично; перевірити модифіковані фактори кровотечі, АТ, Hb, ниркову функцію, НПЗП та взаємодії."
+                />
               </ResultCard>
             )}
             {result.herdoo2 && (
@@ -667,12 +831,18 @@ export default function WellsDimerCalculator() {
                 value={result.herdoo2.score}
                 subtitle={result.herdoo2.interpretation}
               >
-                <p>{result.herdoo2.isApplicable ? 'Інструмент застосований.' : 'Є попередження щодо застосування.'}</p>
+                <ResultExplanation
+                  meaning={result.herdoo2.isApplicable ? 'Інструмент застосований для жінки після першого неспровокованого епізоду ВТЕ.' : 'Для чоловіків HERDOO2 не є інструментом визначення низького ризику.'}
+                  action="Використати лише як допоміжну підказку при обговоренні ризику рецидиву та тривалості антикоагуляції."
+                />
               </ResultCard>
             )}
             {result.dash && (
               <ResultCard title="DASH" value={result.dash.score} subtitle={result.dash.recurrenceRisk}>
-                <p>{result.dash.interpretation}</p>
+                <ResultExplanation
+                  meaning={result.dash.interpretation}
+                  action="Поєднати з причиною ВТЕ, ризиком кровотечі, HERDOO2/VTE-BLEED за потреби та побажаннями пацієнта."
+                />
               </ResultCard>
             )}
           </div>
