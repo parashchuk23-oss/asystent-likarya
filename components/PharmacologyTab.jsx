@@ -237,7 +237,7 @@ function drugMatchesQuery(drug, query) {
 
 export default function PharmacologyTab() {
   const [query, setQuery] = useState('');
-  const [openClass, setOpenClass] = useState('arb');
+  const [openClass, setOpenClass] = useState(null);
   const [activeSection, setActiveSection] = useState('guide');
 
   const resultCount = useMemo(
