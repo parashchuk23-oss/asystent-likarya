@@ -367,6 +367,35 @@ function CheckboxCard({ title, points, checked, onChange }) {
   );
 }
 
+function RiskFactorDropdown({ group, formData, onChange }) {
+  const selectedCount = group.items.filter((item) => formData[item.key]).length;
+
+  return (
+    <details className="group rounded-md border border-slate-200 bg-white">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 text-sm font-semibold text-slate-900 transition hover:bg-teal-50/60">
+        <span>{group.title}</span>
+        <span className="flex items-center gap-3 text-xs font-semibold text-slate-500">
+          {selectedCount > 0 ? `${selectedCount} вибрано` : 'не вибрано'}
+          <span className="text-lg leading-none text-teal-700 group-open:hidden">+</span>
+          <span className="hidden text-lg leading-none text-teal-700 group-open:inline">−</span>
+        </span>
+      </summary>
+      <div className="border-t border-slate-100 p-3">
+        <div className="grid gap-3 lg:grid-cols-2">
+          {group.items.map((field) => (
+            <CheckboxCard
+              key={field.key}
+              title={field.title}
+              checked={formData[field.key]}
+              onChange={(value) => onChange(field.key, value)}
+            />
+          ))}
+        </div>
+      </div>
+    </details>
+  );
+}
+
 function ResultCard({ title, value, subtitle, children }) {
   return (
     <section className="rounded-md border border-blue-100 bg-blue-50 p-4 text-sm text-slate-900">
@@ -798,29 +827,26 @@ export default function WellsDimerCalculator() {
               </FormField>
             </div>
 
-            <div className="mt-4 space-y-4">
-              <p className="text-sm font-semibold text-slate-900">
-                1. Що могло спровокувати ВТЕ?
-              </p>
-              <p className="text-sm leading-6 text-slate-600">
-                Позначте конкретні ситуації. Програма сама віднесе їх до великого тимчасового,
-                малого тимчасового або сталого / високого фактора ризику.
-              </p>
-              {durationRiskFactorGroups.map((group) => (
-                <div key={group.title} className="rounded-md border border-slate-200 bg-slate-50 p-3">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">{group.title}</p>
-                  <div className="mt-3 grid gap-3 lg:grid-cols-2">
-                    {group.items.map((field) => (
-                      <CheckboxCard
-                        key={field.key}
-                        title={field.title}
-                        checked={formData[field.key]}
-                        onChange={(value) => handleChange(field.key, value)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              ))}
+            <div className="mt-4 rounded-md border border-teal-200 bg-teal-50/40 p-4">
+              <div>
+                <p className="text-sm font-semibold text-slate-950">
+                  1. Що могло спровокувати ВТЕ?
+                </p>
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  Позначте конкретні ситуації у випадаючих списках. Програма сама віднесе їх
+                  до великого тимчасового, малого тимчасового або сталого / високого фактора ризику.
+                </p>
+              </div>
+              <div className="mt-3 space-y-2">
+                {durationRiskFactorGroups.map((group) => (
+                  <RiskFactorDropdown
+                    key={group.title}
+                    group={group}
+                    formData={formData}
+                    onChange={handleChange}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 
