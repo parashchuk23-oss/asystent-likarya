@@ -8,6 +8,7 @@ function normalizeQuestions(questions, sharedOptions) {
     if (typeof question === 'string') {
       return {
         key: `q${index}`,
+        number: index + 1,
         text: question,
         options: sharedOptions,
       };
@@ -15,6 +16,7 @@ function normalizeQuestions(questions, sharedOptions) {
 
     return {
       key: question.key || `q${index}`,
+      number: index + 1,
       text: question.text,
       options: question.options || sharedOptions,
     };
@@ -86,7 +88,10 @@ export default function PrintableQuestionnaire({
       <ol className="print-question-list">
         {normalizedQuestions.map((question) => (
           <li key={question.key} className="print-question">
-            <p>{question.text}</p>
+            <p>
+              <span className="print-question-number">{question.number}. </span>
+              {question.text}
+            </p>
             <div className="print-options">
               {question.options.map((option) => {
                 const isSelected = isOptionSelected(question, option);

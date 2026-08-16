@@ -77,8 +77,9 @@ body {
   }
 
   .print-question-list {
+    list-style: none;
     margin: 0;
-    padding-left: 18px;
+    padding-left: 0;
   }
 
   .print-question {
@@ -90,6 +91,10 @@ body {
   .print-question p {
     margin: 0 0 5px;
     font-weight: 700;
+  }
+
+  .print-question-number {
+    font-weight: 800;
   }
 
   .print-options {
