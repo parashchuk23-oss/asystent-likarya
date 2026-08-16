@@ -392,15 +392,6 @@ function ToolIntro({ info }) {
   );
 }
 
-function ScenarioSummary({ scenario }) {
-  return (
-    <section className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-3 text-sm leading-6 text-slate-700">
-      <p className="font-semibold text-slate-950">{scenario.title}</p>
-      <p className="mt-1">{scenario.description}</p>
-    </section>
-  );
-}
-
 function ResultExplanation({ meaning, action }) {
   return (
     <div className="mt-3 space-y-2 rounded-md border border-white/70 bg-white/70 p-3 text-sm leading-6 text-slate-700">
@@ -481,7 +472,6 @@ function getSelectedDurationRiskFactors(data) {
 export default function WellsDimerCalculator() {
   const [formData, setFormData] = useState(initialFormData);
   const [result, setResult] = useState(null);
-  const selectedScenario = scenarioOptions.find((scenario) => scenario.id === formData.scenario) || scenarioOptions[0];
   const durationRiskFactorPreview = getVteAnticoagulationDurationAdvice({
     eventType: formData.vteDurationEventType,
     dvtLocation: formData.vteDurationDvtLocation,
@@ -675,8 +665,6 @@ export default function WellsDimerCalculator() {
           </button>
         ))}
       </div>
-
-      <ScenarioSummary scenario={selectedScenario} />
 
       {formData.scenario === 'dvt' && (
         <section className="mt-3 space-y-3">
