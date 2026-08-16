@@ -7,6 +7,7 @@ import { heartFailureDisease } from '../data/diseases/heartFailure';
 import { atrialFibrillationDisease } from '../data/diseases/atrialFibrillation';
 import { chronicPainDisease } from '../data/diseases/chronicPain';
 import DiseaseTemplateCard from './diseases/DiseaseTemplateCard';
+import RecommendationConstructor from './diseases/RecommendationConstructor';
 
 const diseases = [
   hypertensionDisease,
@@ -225,6 +226,17 @@ export default function DiseasesTab() {
     setGeneratedRecommendationsText(formatRecommendationText(groupedItems));
   }
 
+  function appendRecommendations(text) {
+    const normalizedText = text.trim();
+    if (!normalizedText) return;
+
+    setGeneratedRecommendationsText((current) => {
+      const normalizedCurrent = current.trim();
+      if (!normalizedCurrent) return normalizedText;
+      return `${normalizedCurrent}\n\n${normalizedText}`;
+    });
+  }
+
   async function copyGeneratedRecommendations() {
     const copiedToClipboard = await writeClipboardText(generatedRecommendationsText);
     if (!copiedToClipboard) {
@@ -397,6 +409,11 @@ export default function DiseasesTab() {
             ) : null}
           </div>
         </div>
+
+        <RecommendationConstructor
+          disease={activeDisease}
+          onAddRecommendations={appendRecommendations}
+        />
 
         <div className="mt-6 border-t border-slate-100 pt-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
