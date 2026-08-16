@@ -332,6 +332,17 @@ const additionalBleedingFactors = [
   { key: 'vteDurationFrequentFalls', title: 'Часті падіння / високий травматичний ризик' },
 ];
 
+const bleedingFactorGroups = [
+  {
+    title: 'VTE-BLEED',
+    items: vteBleedFields,
+  },
+  {
+    title: 'Додаткові фактори обережності',
+    items: additionalBleedingFactors,
+  },
+];
+
 const durationRiskFactorKeys = durationRiskFactorGroups.flatMap((group) => group.items.map((item) => item.key));
 
 const checkList = [
@@ -386,6 +397,7 @@ function RiskFactorDropdown({ group, formData, onChange }) {
             <CheckboxCard
               key={field.key}
               title={field.title}
+              points={field.points}
               checked={formData[field.key]}
               onChange={(value) => onChange(field.key, value)}
             />
@@ -883,34 +895,25 @@ export default function WellsDimerCalculator() {
             </div>
           </div>
 
-          <div className="rounded-md border border-slate-200 bg-white p-4">
-            <h3 className="font-semibold text-slate-950">VTE-BLEED</h3>
-            <ToolIntro info={toolInfo.vteBleed} />
-            <div className="mt-4 grid gap-3 lg:grid-cols-2">
-              {vteBleedFields.map((field) => (
-                <CheckboxCard
-                  key={field.key}
-                  title={field.title}
-                  points={field.points}
-                  checked={formData[field.key]}
-                  onChange={(value) => handleChange(field.key, value)}
+          <div className="rounded-md border border-teal-200 bg-teal-50/40 p-4">
+            <div>
+              <p className="text-sm font-semibold text-slate-950">
+                2. Ризик кровотечі
+              </p>
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Позначте фактори VTE-BLEED та додаткові фактори обережності. Програма врахує їх
+                у підсумку щодо тривалості антикоагуляції.
+              </p>
+            </div>
+            <div className="mt-3 space-y-2">
+              {bleedingFactorGroups.map((group) => (
+                <RiskFactorDropdown
+                  key={group.title}
+                  group={group}
+                  formData={formData}
+                  onChange={handleChange}
                 />
               ))}
-            </div>
-            <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 p-3">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                Додаткові фактори обережності
-              </p>
-              <div className="mt-3 grid gap-3 lg:grid-cols-2">
-                {additionalBleedingFactors.map((field) => (
-                  <CheckboxCard
-                    key={field.key}
-                    title={field.title}
-                    checked={formData[field.key]}
-                    onChange={(value) => handleChange(field.key, value)}
-                  />
-                ))}
-              </div>
             </div>
           </div>
           <div className="rounded-md border border-slate-200 bg-white p-4">
