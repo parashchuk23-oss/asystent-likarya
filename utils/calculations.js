@@ -1534,26 +1534,34 @@ export function calculatePhq9(answers) {
 export function calculateFindrisc(answers) {
   const score = sumNumericAnswers(answers);
 
-  let interpretation = 'Низький ризик розвитку цукрового діабету 2 типу протягом 10 років.';
+  let category = 'Низький ризик розвитку ЦД 2 типу.';
+  let tenYearRisk = 'близько 1% — приблизно 1 із 100';
 
   if (score >= 7 && score <= 11) {
-    interpretation = 'Помірно підвищений ризик розвитку цукрового діабету 2 типу.';
+    category = 'Помірно підвищений ризик розвитку ЦД 2 типу.';
+    tenYearRisk = 'близько 4% — приблизно 1 із 25';
   }
 
   if (score >= 12 && score <= 14) {
-    interpretation = 'Помірний ризик розвитку цукрового діабету 2 типу.';
+    category = 'Помірний ризик розвитку ЦД 2 типу.';
+    tenYearRisk = 'близько 17% — приблизно 1 із 6';
   }
 
   if (score >= 15 && score <= 20) {
-    interpretation = 'Високий ризик розвитку цукрового діабету 2 типу.';
+    category = 'Високий ризик розвитку ЦД 2 типу.';
+    tenYearRisk = 'близько 33% — приблизно 1 із 3';
   }
 
   if (score > 20) {
-    interpretation = 'Дуже високий ризик розвитку цукрового діабету 2 типу.';
+    category = 'Дуже високий ризик розвитку ЦД 2 типу.';
+    tenYearRisk = 'близько 50% — приблизно 1 із 2';
   }
+
+  const interpretation = `FINDRISC: ${score} балів. ${category} Для цієї категорії орієнтовний 10-річний ризик становить ${tenYearRisk}.`;
 
   return {
     score,
+    tenYearRisk,
     interpretation,
   };
 }
