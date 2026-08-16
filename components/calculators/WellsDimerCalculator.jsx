@@ -537,6 +537,19 @@ export default function WellsDimerCalculator() {
     renalDysfunction: formData.vteBleedRenalDysfunction,
   });
   const selectedBleedingFactors = getSelectedBleedingFactors(formData);
+  const herdoo2Preview = calculateHerdoo2({
+    sex: formData.herdoo2Sex,
+    legHyperpigmentationEdemaRedness: formData.herdoo2LegChanges,
+    elevatedDimer: formData.herdoo2ElevatedDimer,
+    bmiAtLeast30: formData.herdoo2BmiAtLeast30,
+    ageAtLeast65: formData.herdoo2AgeAtLeast65,
+  });
+  const dashPreview = calculateDashScore({
+    elevatedDimerAfterStopping: formData.dashElevatedDimerAfterStopping,
+    ageAtMost50: formData.dashAgeAtMost50,
+    maleSex: formData.dashMaleSex,
+    hormoneAssociatedVteInWomen: formData.dashHormoneAssociatedVteInWomen,
+  });
   const durationRiskFactorPreview = getVteAnticoagulationDurationAdvice({
     eventType: formData.vteDurationEventType,
     dvtLocation: formData.vteDurationDvtLocation,
@@ -550,7 +563,10 @@ export default function WellsDimerCalculator() {
     nsaidOrAntiplatelet: formData.vteDurationNsaidOrAntiplatelet,
     ageOver75: formData.vteDurationAgeOver75,
     frequentFalls: formData.vteDurationFrequentFalls,
+    herdoo2: herdoo2Preview,
+    dash: dashPreview,
   });
+  const showRecurrenceTools = durationRiskFactorPreview.riskFactorType === 'unprovoked';
 
   function handleChange(field, value) {
     setFormData((current) => ({
@@ -667,20 +683,6 @@ export default function WellsDimerCalculator() {
         ageAtLeast60: formData.vteBleedAgeAtLeast60,
         renalDysfunction: formData.vteBleedRenalDysfunction,
       });
-      const durationAdvice = getVteAnticoagulationDurationAdvice({
-        eventType: formData.vteDurationEventType,
-        dvtLocation: formData.vteDurationDvtLocation,
-        riskFactors: getSelectedDurationRiskFactors(formData),
-        vteBleedScore: vteBleed.score,
-        vteBleedHighRisk: vteBleed.isHighRisk,
-        previousBleeding: formData.vteBleedBleedingHistory,
-        lowHemoglobin: formData.vteBleedAnemia,
-        thrombocytopenia: formData.vteDurationThrombocytopenia,
-        crclBelow30: formData.vteDurationCrclBelow30,
-        nsaidOrAntiplatelet: formData.vteDurationNsaidOrAntiplatelet,
-        ageOver75: formData.vteDurationAgeOver75,
-        frequentFalls: formData.vteDurationFrequentFalls,
-      });
       const herdoo2 = calculateHerdoo2({
         sex: formData.herdoo2Sex,
         legHyperpigmentationEdemaRedness: formData.herdoo2LegChanges,
@@ -694,11 +696,27 @@ export default function WellsDimerCalculator() {
         maleSex: formData.dashMaleSex,
         hormoneAssociatedVteInWomen: formData.dashHormoneAssociatedVteInWomen,
       });
+      const durationAdvice = getVteAnticoagulationDurationAdvice({
+        eventType: formData.vteDurationEventType,
+        dvtLocation: formData.vteDurationDvtLocation,
+        riskFactors: getSelectedDurationRiskFactors(formData),
+        vteBleedScore: vteBleed.score,
+        vteBleedHighRisk: vteBleed.isHighRisk,
+        previousBleeding: formData.vteBleedBleedingHistory,
+        lowHemoglobin: formData.vteBleedAnemia,
+        thrombocytopenia: formData.vteDurationThrombocytopenia,
+        crclBelow30: formData.vteDurationCrclBelow30,
+        nsaidOrAntiplatelet: formData.vteDurationNsaidOrAntiplatelet,
+        ageOver75: formData.vteDurationAgeOver75,
+        frequentFalls: formData.vteDurationFrequentFalls,
+        herdoo2,
+        dash,
+      });
       nextResult = {
         durationAdvice,
         vteBleed,
-        herdoo2,
-        dash,
+        herdoo2: durationAdvice.riskFactorType === 'unprovoked' ? herdoo2 : null,
+        dash: durationAdvice.riskFactorType === 'unprovoked' ? dash : null,
         nextStep: getVteNextStep({ scenario: 'longTerm' }),
       };
     }
@@ -916,47 +934,81 @@ export default function WellsDimerCalculator() {
               ))}
             </div>
           </div>
-          <div className="rounded-md border border-slate-200 bg-white p-4">
-            <h3 className="font-semibold text-slate-950">HERDOO2</h3>
-            <ToolIntro info={toolInfo.herdoo2} />
-            <div className="mt-3 grid gap-3 md:grid-cols-2">
-              <FormField label="Стать для HERDOO2">
-                <select
-                  value={formData.herdoo2Sex}
-                  onChange={(event) => handleChange('herdoo2Sex', event.target.value)}
-                  className={inputClass}
-                >
-                  <option value="female">Жінка</option>
-                  <option value="male">Чоловік</option>
-                </select>
-              </FormField>
+          {showRecurrenceTools && (
+            <div className="rounded-md border border-blue-100 bg-blue-50/50 p-4">
+              <div>
+                <p className="text-sm font-semibold text-slate-950">
+                  Додаткове уточнення ризику рецидиву
+                </p>
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  HERDOO2 і DASH доречні переважно при першій неспровокованій ВТЕ, коли після
+                  первинних 3 місяців розглядається завершення або продовження антикоагуляції.
+                </p>
+              </div>
+              <div className="mt-3 space-y-3">
+                <details className="group rounded-md border border-slate-200 bg-white">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 text-sm font-semibold text-slate-900 transition hover:bg-blue-50">
+                    <span>HERDOO2</span>
+                    <span className="flex items-center gap-3 text-xs font-semibold text-slate-500">
+                      додатково
+                      <span className="text-lg leading-none text-blue-700 group-open:hidden">+</span>
+                      <span className="hidden text-lg leading-none text-blue-700 group-open:inline">−</span>
+                    </span>
+                  </summary>
+                  <div className="border-t border-slate-100 p-3">
+                    <ToolIntro info={toolInfo.herdoo2} />
+                    <div className="mt-3 grid gap-3 md:grid-cols-2">
+                      <FormField label="Стать для HERDOO2">
+                        <select
+                          value={formData.herdoo2Sex}
+                          onChange={(event) => handleChange('herdoo2Sex', event.target.value)}
+                          className={inputClass}
+                        >
+                          <option value="female">Жінка</option>
+                          <option value="male">Чоловік</option>
+                        </select>
+                      </FormField>
+                    </div>
+                    <div className="mt-4 grid gap-3 lg:grid-cols-2">
+                      {herdoo2Fields.map((field) => (
+                        <CheckboxCard
+                          key={field.key}
+                          title={field.title}
+                          checked={formData[field.key]}
+                          onChange={(value) => handleChange(field.key, value)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </details>
+
+                <details className="group rounded-md border border-slate-200 bg-white">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 text-sm font-semibold text-slate-900 transition hover:bg-blue-50">
+                    <span>DASH Score</span>
+                    <span className="flex items-center gap-3 text-xs font-semibold text-slate-500">
+                      додатково
+                      <span className="text-lg leading-none text-blue-700 group-open:hidden">+</span>
+                      <span className="hidden text-lg leading-none text-blue-700 group-open:inline">−</span>
+                    </span>
+                  </summary>
+                  <div className="border-t border-slate-100 p-3">
+                    <ToolIntro info={toolInfo.dash} />
+                    <div className="mt-4 grid gap-3 lg:grid-cols-2">
+                      {dashFields.map((field) => (
+                        <CheckboxCard
+                          key={field.key}
+                          title={field.title}
+                          points={field.points}
+                          checked={formData[field.key]}
+                          onChange={(value) => handleChange(field.key, value)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </details>
+              </div>
             </div>
-            <div className="mt-4 grid gap-3 lg:grid-cols-2">
-              {herdoo2Fields.map((field) => (
-                <CheckboxCard
-                  key={field.key}
-                  title={field.title}
-                  checked={formData[field.key]}
-                  onChange={(value) => handleChange(field.key, value)}
-                />
-              ))}
-            </div>
-          </div>
-          <div className="rounded-md border border-slate-200 bg-white p-4">
-            <h3 className="font-semibold text-slate-950">DASH Score</h3>
-            <ToolIntro info={toolInfo.dash} />
-            <div className="mt-4 grid gap-3 lg:grid-cols-2">
-              {dashFields.map((field) => (
-                <CheckboxCard
-                  key={field.key}
-                  title={field.title}
-                  points={field.points}
-                  checked={formData[field.key]}
-                  onChange={(value) => handleChange(field.key, value)}
-                />
-              ))}
-            </div>
-          </div>
+          )}
 
           <div className="rounded-md border border-teal-200 bg-teal-50/70 p-4 text-sm leading-6 text-slate-800">
             <h3 className="font-semibold text-slate-950">Тривалість антикоагуляції</h3>
@@ -970,6 +1022,16 @@ export default function WellsDimerCalculator() {
               <p className="mt-1">Позначені фактори: не вказані.</p>
             )}
             <p className="mt-1 text-slate-600">{durationRiskFactorPreview.riskFactorSummary.note}</p>
+            {durationRiskFactorPreview.recurrenceToolNotes.length > 0 && (
+              <div className="mt-3 border-t border-teal-100 pt-3">
+                <p className="font-semibold text-slate-900">Додаткові шкали ризику рецидиву:</p>
+                <ul className="mt-1 list-disc space-y-1 pl-5">
+                  {durationRiskFactorPreview.recurrenceToolNotes.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <div className="mt-3 border-t border-teal-100 pt-3">
               <p className="font-semibold text-slate-900">
                 VTE-BLEED: {vteBleedPreview.score} {vteBleedPreview.score === 1 ? 'бал' : 'балів'} —{' '}
@@ -1131,37 +1193,27 @@ export default function WellsDimerCalculator() {
                     </ul>
                   </div>
                 )}
+                {result.durationAdvice.recurrenceToolNotes.length > 0 && (
+                  <div className="rounded-md border border-blue-100 bg-white/80 p-3">
+                    <p className="font-semibold text-slate-900">Додаткові шкали ризику рецидиву:</p>
+                    <ul className="mt-2 list-disc space-y-1 pl-5">
+                      {result.durationAdvice.recurrenceToolNotes.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </ResultCard>
             )}
             {result.vteBleed && (
               <ResultCard
-                title="VTE-BLEED"
+                title="Ризик кровотечі"
                 value={result.vteBleed.score}
                 subtitle={result.vteBleed.interpretation}
               >
                 <ResultExplanation
                   meaning="Поріг вищого ризику: ≥2 бали. Це оцінка ризику кровотечі під час антикоагуляції."
                   action="Не скасовувати антикоагуляцію автоматично; перевірити модифіковані фактори кровотечі, АТ, Hb, ниркову функцію, НПЗП та взаємодії."
-                />
-              </ResultCard>
-            )}
-            {result.herdoo2 && (
-              <ResultCard
-                title="HERDOO2"
-                value={result.herdoo2.score}
-                subtitle={result.herdoo2.interpretation}
-              >
-                <ResultExplanation
-                  meaning={result.herdoo2.isApplicable ? 'Інструмент застосований для жінки після першого неспровокованого епізоду ВТЕ.' : 'Для чоловіків HERDOO2 не є інструментом визначення низького ризику.'}
-                  action="Використати лише як допоміжну підказку при обговоренні ризику рецидиву та тривалості антикоагуляції."
-                />
-              </ResultCard>
-            )}
-            {result.dash && (
-              <ResultCard title="DASH" value={result.dash.score} subtitle={result.dash.recurrenceRisk}>
-                <ResultExplanation
-                  meaning={result.dash.interpretation}
-                  action="Поєднати з причиною ВТЕ, ризиком кровотечі, HERDOO2/VTE-BLEED за потреби та побажаннями пацієнта."
                 />
               </ResultCard>
             )}

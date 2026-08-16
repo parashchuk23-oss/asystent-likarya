@@ -1102,6 +1102,16 @@ export function getVteAnticoagulationDurationAdvice(data) {
 
   const selectedRiskFactorLabels = riskFactors.map((factor) => factor.label);
   const riskFactorSummary = getVteRiskFactorSummary(riskFactorType, selectedRiskFactorLabels);
+  const recurrenceToolNotes = [];
+
+  if (riskFactorType === 'unprovoked') {
+    if (data.herdoo2) {
+      recurrenceToolNotes.push(`HERDOO2: ${data.herdoo2.score} — ${data.herdoo2.interpretation}`);
+    }
+    if (data.dash) {
+      recurrenceToolNotes.push(`DASH: ${data.dash.score} — ${data.dash.recurrenceRisk}`);
+    }
+  }
 
   const baseNextSteps = [
     'перевірити, чи подія була спровокована тимчасовим або сталим фактором ризику',
@@ -1146,7 +1156,7 @@ export function getVteAnticoagulationDurationAdvice(data) {
       'Неспровокована ВТЕ має вищий ризик рецидиву після припинення лікування, тому рішення після 3 місяців зазвичай потребує оцінки користі продовження.';
     nextSteps = [
       'оцінити ризик кровотечі та модифіковані фактори',
-      'використати VTE-BLEED, HERDOO2 або DASH як додаткові підказки за відповідним сценарієм',
+      'за потреби використати HERDOO2 або DASH як додаткові підказки ризику рецидиву',
       'обговорити з пацієнтом баланс ризику рецидиву та кровотечі',
     ];
   }
@@ -1200,11 +1210,13 @@ export function getVteAnticoagulationDurationAdvice(data) {
   }
 
   if (bleedingRisk === 'high') {
-    category = 'cautionHighBleeding';
-    summary = 'Високий ризик кровотечі: рішення щодо продовження потребує особливо обережної індивідуальної оцінки.';
-    explanation =
-      'Високий ризик кровотечі не означає автоматичну відміну антикоагуляції, але потребує активного пошуку модифікованих факторів і перегляду безпеки лікування.';
+    if (category !== 'stopAfterPrimary') {
+      category = 'cautionHighBleeding';
+    }
+    summary = `${summary} Високий ризик кровотечі потребує особливо обережної індивідуальної оцінки перед продовженням.`;
+    explanation = `${explanation} Високий ризик кровотечі не означає автоматичну відміну антикоагуляції, але потребує активного пошуку модифікованих факторів і перегляду безпеки лікування.`;
     nextSteps = [
+      ...nextSteps,
       'усунути або зменшити модифіковані фактори кровотечі, якщо це можливо',
       'перевірити Hb, тромбоцити, функцію нирок і печінки',
       'зіставити ризик кровотечі з ризиком рецидиву ВТЕ та клінічною тяжкістю попередньої події',
@@ -1224,6 +1236,7 @@ export function getVteAnticoagulationDurationAdvice(data) {
     riskFactorType,
     selectedRiskFactorLabels,
     riskFactorSummary,
+    recurrenceToolNotes,
   };
 }
 
