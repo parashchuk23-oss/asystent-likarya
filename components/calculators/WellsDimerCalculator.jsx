@@ -30,8 +30,8 @@ const scenarioOptions = [
   },
   {
     id: 'confirmedPe',
-    title: 'Підтверджена ТЕЛА',
-    description: 'Після підтвердження діагнозу: ризик ускладнень і можливість амбулаторної тактики.',
+    title: 'Підтверджена ВТЕ',
+    description: 'Після підтвердження ТГВ / ТЕЛА: ризик ускладнень, безпека та стартова антикоагуляція.',
   },
   {
     id: 'longTerm',
@@ -140,6 +140,16 @@ const initialFormData = {
   hestiaSevereLiverFailure: false,
   hestiaPregnancy: false,
   hestiaHistoryHit: false,
+  confirmedVteType: 'pe',
+  anticoagActiveBleeding: false,
+  anticoagPregnancy: false,
+  anticoagActiveCancer: false,
+  anticoagAps: false,
+  anticoagCrclBelow30: false,
+  anticoagSevereLiverDisease: false,
+  anticoagHighBleedingRisk: false,
+  anticoagNeedProceduralControl: false,
+  anticoagMajorInteractions: false,
   vteBleedActiveCancer: false,
   vteBleedMaleWithUncontrolledHypertension: false,
   vteBleedAnemia: false,
@@ -275,6 +285,34 @@ const durationDvtLocationOptions = [
   { value: 'notApplicable', label: 'Не застосовується / невідомо' },
   { value: 'distal', label: 'Дистальний ТГВ' },
   { value: 'proximal', label: 'Проксимальний ТГВ' },
+];
+
+const confirmedVteTypeOptions = [
+  { value: 'dvt', label: 'ТГВ' },
+  { value: 'pe', label: 'ТЕЛА' },
+  { value: 'dvtPe', label: 'ТГВ + ТЕЛА' },
+];
+
+const anticoagulationSafetyGroups = [
+  {
+    title: 'Що може обмежувати DOAC / НОАК',
+    items: [
+      { key: 'anticoagActiveBleeding', title: 'Активна кровотеча або невідкладна проблема гемостазу' },
+      { key: 'anticoagPregnancy', title: 'Вагітність' },
+      { key: 'anticoagAps', title: 'Антифосфоліпідний синдром' },
+      { key: 'anticoagCrclBelow30', title: 'CrCl <30 мл/хв або виражене зниження функції нирок' },
+      { key: 'anticoagSevereLiverDisease', title: 'Важке захворювання печінки / коагулопатія' },
+      { key: 'anticoagMajorInteractions', title: 'Значущі лікарські взаємодії' },
+    ],
+  },
+  {
+    title: 'Коли потрібна обережніша стартова тактика',
+    items: [
+      { key: 'anticoagHighBleedingRisk', title: 'Високий ризик кровотечі' },
+      { key: 'anticoagNeedProceduralControl', title: 'Може знадобитися процедура або швидке керування антикоагуляцією' },
+      { key: 'anticoagActiveCancer', title: 'Активне онкологічне захворювання' },
+    ],
+  },
 ];
 
 const durationRiskFactorGroups = [
@@ -525,9 +563,65 @@ function getSelectedBleedingFactors(data) {
   };
 }
 
+function getConfirmedVteAnticoagulationAdvice(data) {
+  const selectedFactors = anticoagulationSafetyGroups
+    .flatMap((group) => group.items)
+    .filter((item) => data[item.key])
+    .map((item) => item.title);
+
+  const notes = [
+    'DOAC / НОАК — прямі оральні антикоагулянти: апіксабан, ривароксабан, дабігатран, едоксабан.',
+    'НМГ — низькомолекулярні гепарини: еноксапарин, дальтепарин, надропарин.',
+    'НФГ — нефракціонований гепарин; зручний у стаціонарі, коли потрібне швидке керування ефектом.',
+    'АВК / варфарин потребує контролю INR і містка гепарином на старті.',
+  ];
+
+  const advice = [];
+
+  if (data.anticoagActiveBleeding) {
+    advice.push('При активній кровотечі спершу оцінюють безпеку антикоагуляції, джерело кровотечі та потребу невідкладної тактики.');
+  }
+  if (data.anticoagPregnancy) {
+    advice.push('При вагітності частіше розглядають НМГ; DOAC / НОАК зазвичай не є стартовим варіантом.');
+  }
+  if (data.anticoagAps) {
+    advice.push('При антифосфоліпідному синдромі частіше розглядають АВК / варфарин; DOAC / НОАК потребують особливої обережності.');
+  }
+  if (data.anticoagCrclBelow30) {
+    advice.push('При CrCl <30 мл/хв вибір антикоагулянта залежить від інструкції препарату; DOAC / НОАК можуть бути обмежені.');
+  }
+  if (data.anticoagSevereLiverDisease) {
+    advice.push('При важкому захворюванні печінки потрібна окрема оцінка коагуляції, взаємодій і безпеки препарату.');
+  }
+  if (data.anticoagNeedProceduralControl) {
+    advice.push('Якщо потрібне швидке керування ефектом або процедура, у стаціонарному контексті частіше розглядають НФГ / НМГ.');
+  }
+  if (data.anticoagHighBleedingRisk) {
+    advice.push('Високий ризик кровотечі не завжди означає відмову від антикоагуляції, але потребує корекції модифікованих факторів.');
+  }
+  if (data.anticoagActiveCancer) {
+    advice.push('При активному раку вибір між DOAC / НОАК і НМГ залежить від локалізації пухлини, ризику кровотечі, взаємодій і функції нирок.');
+  }
+  if (data.anticoagMajorInteractions) {
+    advice.push('При значущих лікарських взаємодіях потрібно перевірити інструкцію конкретного препарату або обрати альтернативну стратегію.');
+  }
+
+  if (advice.length === 0) {
+    advice.push('Якщо немає обмежень, DOAC / НОАК часто є зручним варіантом для лікування ВТЕ, але вибір препарату залежить від CrCl, ваги, кровотеч, взаємодій і клінічного контексту.');
+  }
+
+  return {
+    selectedFactors,
+    notes,
+    advice,
+  };
+}
+
 export default function WellsDimerCalculator() {
   const [formData, setFormData] = useState(initialFormData);
   const [result, setResult] = useState(null);
+  const hasConfirmedPe = formData.confirmedVteType === 'pe' || formData.confirmedVteType === 'dvtPe';
+  const confirmedVteAnticoagulationAdvice = getConfirmedVteAnticoagulationAdvice(formData);
   const vteBleedPreview = calculateVteBleed({
     activeCancer: formData.vteBleedActiveCancer,
     maleWithUncontrolledHypertension: formData.vteBleedMaleWithUncontrolledHypertension,
@@ -646,31 +740,38 @@ export default function WellsDimerCalculator() {
     }
 
     if (formData.scenario === 'confirmedPe') {
-      const spesi = calculateSpesi({
-        ageOver80: formData.spesiAgeOver80,
-        cancer: formData.spesiCancer,
-        chronicCardiopulmonaryDisease: formData.spesiChronicCardiopulmonaryDisease,
-        heartRateAtLeast110: formData.spesiHeartRateAtLeast110,
-        systolicBpBelow100: formData.spesiSystolicBpBelow100,
-        spo2Below90: formData.spesiSpo2Below90,
-      });
-      const hestia = calculateHestia({
-        hemodynamicInstability: formData.hestiaHemodynamicInstability,
-        needThrombolysisOrEmbolectomy: formData.hestiaNeedThrombolysisOrEmbolectomy,
-        activeBleedingOrHighRisk: formData.hestiaActiveBleedingOrHighRisk,
-        needOxygenMoreThan24h: formData.hestiaNeedOxygenMoreThan24h,
-        peDuringAnticoagulation: formData.hestiaPeDuringAnticoagulation,
-        severePainIvAnalgesia: formData.hestiaSeverePainIvAnalgesia,
-        medicalOrSocialAdmissionReason: formData.hestiaMedicalOrSocialAdmissionReason,
-        crclBelow30: formData.hestiaCrclBelow30,
-        severeLiverFailure: formData.hestiaSevereLiverFailure,
-        pregnancy: formData.hestiaPregnancy,
-        historyHit: formData.hestiaHistoryHit,
-      });
+      const spesi = hasConfirmedPe
+        ? calculateSpesi({
+            ageOver80: formData.spesiAgeOver80,
+            cancer: formData.spesiCancer,
+            chronicCardiopulmonaryDisease: formData.spesiChronicCardiopulmonaryDisease,
+            heartRateAtLeast110: formData.spesiHeartRateAtLeast110,
+            systolicBpBelow100: formData.spesiSystolicBpBelow100,
+            spo2Below90: formData.spesiSpo2Below90,
+          })
+        : null;
+      const hestia = hasConfirmedPe
+        ? calculateHestia({
+            hemodynamicInstability: formData.hestiaHemodynamicInstability,
+            needThrombolysisOrEmbolectomy: formData.hestiaNeedThrombolysisOrEmbolectomy,
+            activeBleedingOrHighRisk: formData.hestiaActiveBleedingOrHighRisk,
+            needOxygenMoreThan24h: formData.hestiaNeedOxygenMoreThan24h,
+            peDuringAnticoagulation: formData.hestiaPeDuringAnticoagulation,
+            severePainIvAnalgesia: formData.hestiaSeverePainIvAnalgesia,
+            medicalOrSocialAdmissionReason: formData.hestiaMedicalOrSocialAdmissionReason,
+            crclBelow30: formData.hestiaCrclBelow30,
+            severeLiverFailure: formData.hestiaSevereLiverFailure,
+            pregnancy: formData.hestiaPregnancy,
+            historyHit: formData.hestiaHistoryHit,
+          })
+        : null;
       nextResult = {
         spesi,
         hestia,
-        nextStep: getVteNextStep({ scenario: 'confirmedPe', spesi, hestia }),
+        anticoagulationAdvice: confirmedVteAnticoagulationAdvice,
+        nextStep: hasConfirmedPe
+          ? getVteNextStep({ scenario: 'confirmedPe', spesi, hestia })
+          : 'При ізольованому ТГВ sPESI та Hestia не застосовуються. Оцініть безпеку антикоагуляції, ризик кровотечі, CrCl, Hb, тромбоцити, взаємодії та клінічний контекст.',
       };
     }
 
@@ -827,33 +928,108 @@ export default function WellsDimerCalculator() {
       )}
 
       {formData.scenario === 'confirmedPe' && (
-        <section className="mt-3 grid gap-3 lg:grid-cols-2">
+        <section className="mt-3 space-y-3">
           <div className="rounded-md border border-slate-200 bg-white p-4">
-            <h3 className="font-semibold text-slate-950">sPESI</h3>
-            <ToolIntro info={toolInfo.spesi} />
-            <div className="mt-4 grid gap-3">
-              {spesiFields.map((field) => (
-                <CheckboxCard
-                  key={field.key}
-                  title={field.title}
-                  checked={formData[field.key]}
-                  onChange={(value) => handleChange(field.key, value)}
+            <h3 className="font-semibold text-slate-950">1. Тип підтвердженої ВТЕ</h3>
+            <p className="mt-1 text-sm leading-6 text-slate-600">
+              Виберіть, що саме підтверджено. Шкали sPESI та Hestia показуються тільки якщо є ТЕЛА.
+            </p>
+            <div className="mt-4 max-w-xl">
+              <FormField label="Підтверджена подія">
+                <select
+                  value={formData.confirmedVteType}
+                  onChange={(event) => handleChange('confirmedVteType', event.target.value)}
+                  className={inputClass}
+                >
+                  {confirmedVteTypeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </FormField>
+            </div>
+          </div>
+
+          {hasConfirmedPe ? (
+            <div className="grid gap-3 lg:grid-cols-2">
+              <div className="rounded-md border border-slate-200 bg-white p-4">
+                <h3 className="font-semibold text-slate-950">2. sPESI</h3>
+                <ToolIntro info={toolInfo.spesi} />
+                <div className="mt-4 grid gap-3">
+                  {spesiFields.map((field) => (
+                    <CheckboxCard
+                      key={field.key}
+                      title={field.title}
+                      checked={formData[field.key]}
+                      onChange={(value) => handleChange(field.key, value)}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-md border border-slate-200 bg-white p-4">
+                <h3 className="font-semibold text-slate-950">3. Hestia criteria</h3>
+                <ToolIntro info={toolInfo.hestia} />
+                <div className="mt-4 grid gap-3">
+                  {hestiaFields.map((field) => (
+                    <CheckboxCard
+                      key={field.key}
+                      title={field.title}
+                      checked={formData[field.key]}
+                      onChange={(value) => handleChange(field.key, value)}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-md border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-slate-700">
+              При ізольованому ТГВ блоки sPESI та Hestia приховані, тому що вони призначені
+              для оцінки пацієнтів із підтвердженою ТЕЛА.
+            </div>
+          )}
+
+          <div className="rounded-md border border-teal-200 bg-teal-50/40 p-4">
+            <h3 className="font-semibold text-slate-950">4. Стартова антикоагуляція</h3>
+            <p className="mt-1 text-sm leading-6 text-slate-600">
+              Це не призначення, а коротка довідкова підказка щодо класів препаратів і факторів,
+              які впливають на вибір.
+            </p>
+
+            <div className="mt-4 grid gap-3 lg:grid-cols-2">
+              {anticoagulationSafetyGroups.map((group) => (
+                <RiskFactorDropdown
+                  key={group.title}
+                  group={group}
+                  formData={formData}
+                  onChange={handleChange}
                 />
               ))}
             </div>
-          </div>
-          <div className="rounded-md border border-slate-200 bg-white p-4">
-            <h3 className="font-semibold text-slate-950">Hestia criteria</h3>
-            <ToolIntro info={toolInfo.hestia} />
-            <div className="mt-4 grid gap-3">
-              {hestiaFields.map((field) => (
-                <CheckboxCard
-                  key={field.key}
-                  title={field.title}
-                  checked={formData[field.key]}
-                  onChange={(value) => handleChange(field.key, value)}
-                />
-              ))}
+
+            <div className="mt-4 grid gap-3 lg:grid-cols-2">
+              <div className="rounded-md border border-white bg-white/80 p-3 text-sm leading-6 text-slate-700">
+                <p className="font-semibold text-slate-950">Що означають скорочення</p>
+                <ul className="mt-2 list-disc space-y-1 pl-5">
+                  {confirmedVteAnticoagulationAdvice.notes.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="rounded-md border border-white bg-white/80 p-3 text-sm leading-6 text-slate-700">
+                <p className="font-semibold text-slate-950">Підказка для вибору класу</p>
+                {confirmedVteAnticoagulationAdvice.selectedFactors.length > 0 ? (
+                  <p className="mt-2">
+                    <span className="font-semibold text-slate-900">Позначено:</span>{' '}
+                    {confirmedVteAnticoagulationAdvice.selectedFactors.join(', ')}.
+                  </p>
+                ) : (
+                  <p className="mt-2 text-slate-600">Обмеження не позначені.</p>
+                )}
+                <ul className="mt-2 list-disc space-y-1 pl-5">
+                  {confirmedVteAnticoagulationAdvice.advice.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </section>
@@ -1170,6 +1346,18 @@ export default function WellsDimerCalculator() {
                       ? 'Якщо sPESI низький і немає інших ризиків, можна розглянути амбулаторну тактику у відповідному клінічному контексті.'
                       : 'Амбулаторне лікування за Hestia не рекомендується; оцінити потребу госпіталізації.'
                   }
+                />
+              </ResultCard>
+            )}
+            {result.anticoagulationAdvice && (
+              <ResultCard
+                title="Стартова антикоагуляція"
+                value="Клас"
+                subtitle="Довідкова підказка щодо вибору групи"
+              >
+                <ResultExplanation
+                  meaning="НМГ, НФГ, DOAC / НОАК і варфарин мають різні обмеження за нирковою функцією, вагітністю, кровотечею, взаємодіями та клінічним контекстом."
+                  action={result.anticoagulationAdvice.advice.join(' ')}
                 />
               </ResultCard>
             )}
