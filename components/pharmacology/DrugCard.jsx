@@ -52,26 +52,14 @@ export default function DrugCard({ drug, isOpen, onToggle }) {
 
       {isOpen ? (
         <div id={panelId} className="border-t border-teal-300 bg-white px-4 py-5 sm:px-5">
-          <dl className="grid gap-4 text-sm sm:grid-cols-2 lg:grid-cols-4">
+          <dl className="grid gap-4 text-sm sm:grid-cols-2">
             <div>
               <dt className="font-semibold text-slate-600">Торгові назви, приклади</dt>
               <dd className="mt-1 text-slate-950">{drug.tradeNames.join(', ')}</dd>
             </div>
             <div>
-              <dt className="font-semibold text-slate-600">Звичайна доза</dt>
-              <dd className="mt-1 text-slate-950">{drug.usualDose}</dd>
-            </div>
-            <div>
               <dt className="font-semibold text-slate-600">Максимальна доза</dt>
               <dd className="mt-1 text-slate-950">{drug.maxDose}</dd>
-            </div>
-            <div>
-              <dt className="font-semibold text-slate-600">Кратність</dt>
-              <dd className="mt-1 text-slate-950">{drug.frequency}</dd>
-            </div>
-            <div>
-              <dt className="font-semibold text-slate-600">Період напіввиведення</dt>
-              <dd className="mt-1 text-slate-950">{drug.halfLife}</dd>
             </div>
           </dl>
 
