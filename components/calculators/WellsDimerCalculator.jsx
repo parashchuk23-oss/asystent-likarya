@@ -416,7 +416,7 @@ function CheckboxCard({ title, points, checked, onChange }) {
   );
 }
 
-function RiskFactorDropdown({ group, formData, onChange }) {
+function RiskFactorDropdown({ group, formData, onChange, intro }) {
   const selectedCount = group.items.filter((item) => formData[item.key]).length;
 
   return (
@@ -430,6 +430,11 @@ function RiskFactorDropdown({ group, formData, onChange }) {
         </span>
       </summary>
       <div className="border-t border-slate-100 p-3">
+        {intro ? (
+          <p className="mb-3 rounded-md border border-teal-100 bg-teal-50/70 p-3 text-sm leading-6 text-slate-700">
+            {intro}
+          </p>
+        ) : null}
         <div className="grid gap-3 lg:grid-cols-2">
           {group.items.map((field) => (
             <CheckboxCard
@@ -955,20 +960,14 @@ export default function WellsDimerCalculator() {
                 group={{ title: '2. sPESI', items: spesiFields }}
                 formData={formData}
                 onChange={handleChange}
+                intro={toolInfo.spesi.purpose}
               />
               <RiskFactorDropdown
                 group={{ title: '3. Hestia criteria', items: hestiaFields }}
                 formData={formData}
                 onChange={handleChange}
+                intro={toolInfo.hestia.purpose}
               />
-              <div className="rounded-md border border-teal-100 bg-teal-50/70 p-3 text-sm leading-6 text-slate-700">
-                <p>
-                  <span className="font-semibold text-slate-900">sPESI:</span> {toolInfo.spesi.purpose}
-                </p>
-                <p className="mt-1">
-                  <span className="font-semibold text-slate-900">Hestia:</span> {toolInfo.hestia.purpose}
-                </p>
-              </div>
             </div>
           ) : (
             <div className="rounded-md border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-slate-700">
