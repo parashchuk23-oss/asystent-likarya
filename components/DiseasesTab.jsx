@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { hypertensionDisease } from '../data/diseases/hypertension';
 import { ihdDisease } from '../data/diseases/ihd';
 import { heartFailureDisease } from '../data/diseases/heartFailure';
@@ -114,6 +114,13 @@ async function writeClipboardText(text) {
   }
 }
 
+function resizeTextarea(textarea) {
+  if (!textarea) return;
+
+  textarea.style.height = 'auto';
+  textarea.style.height = `${textarea.scrollHeight}px`;
+}
+
 export default function DiseasesTab() {
   const [diagnosisText, setDiagnosisText] = useState('');
   const [icdDiagnosisText, setIcdDiagnosisText] = useState('');
@@ -126,8 +133,18 @@ export default function DiseasesTab() {
   const [icdCopyError, setIcdCopyError] = useState(false);
   const [generatedRecommendationsCopyError, setGeneratedRecommendationsCopyError] = useState(false);
   const [activeDiseaseId, setActiveDiseaseId] = useState(diseases[0].id);
+  const diagnosisTextareaRef = useRef(null);
+  const icdDiagnosisTextareaRef = useRef(null);
 
   const activeDisease = diseases.find((disease) => disease.id === activeDiseaseId) ?? diseases[0];
+
+  useEffect(() => {
+    resizeTextarea(diagnosisTextareaRef.current);
+  }, [diagnosisText]);
+
+  useEffect(() => {
+    resizeTextarea(icdDiagnosisTextareaRef.current);
+  }, [icdDiagnosisText]);
 
   function appendDiagnosis(fragment, icd10Fragment = '', diseaseId = '') {
     const normalizedFragment = fragment.trim();
@@ -314,11 +331,12 @@ export default function DiseasesTab() {
         </div>
 
         <textarea
+          ref={diagnosisTextareaRef}
           value={diagnosisText}
           onChange={(event) => setDiagnosisText(event.target.value)}
-          rows={14}
+          rows={5}
           placeholder="Тут зʼявляться додані фрагменти діагнозу. Текст можна редагувати вручну."
-          className="mt-4 min-h-[320px] w-full rounded-md border border-slate-300 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+          className="mt-4 min-h-[132px] w-full resize-y overflow-hidden rounded-md border border-slate-300 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
         />
 
         <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -355,11 +373,12 @@ export default function DiseasesTab() {
           </div>
 
           <textarea
+            ref={icdDiagnosisTextareaRef}
             value={icdDiagnosisText}
             onChange={(event) => setIcdDiagnosisText(event.target.value)}
-            rows={7}
+            rows={3}
             placeholder="Тут зʼявляться коди МКХ-10 для доданих діагнозів."
-            className="mt-4 min-h-[180px] w-full rounded-md border border-slate-300 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+            className="mt-4 min-h-[84px] w-full resize-y overflow-hidden rounded-md border border-slate-300 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
           />
 
           <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
