@@ -9,3 +9,4 @@ npm-debug.log*
 tmp/availableMedicines/*.xlsx
 tmp/availableMedicines/*.pdf
 tmp/availableMedicines/report.txt
+.env*
