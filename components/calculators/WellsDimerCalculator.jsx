@@ -983,7 +983,7 @@ export default function WellsDimerCalculator() {
               які впливають на вибір.
             </p>
 
-            <div className="mt-4 grid gap-3 lg:grid-cols-2">
+            <div className="mt-4 space-y-2">
               {anticoagulationSafetyGroups.map((group) => (
                 <RiskFactorDropdown
                   key={group.title}
