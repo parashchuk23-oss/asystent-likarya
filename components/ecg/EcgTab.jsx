@@ -3,16 +3,12 @@
 import { useMemo, useState } from 'react';
 import { ecgModules } from '../../data/ecg/ecgModules';
 import EcgSidebar from './EcgSidebar';
-import AxisModule from './modules/AxisModule';
-import ComingSoonEcgModule from './modules/ComingSoonEcgModule';
 import EcgChecklistModule from './modules/EcgChecklistModule';
 import EcgSyndromesModule from './modules/EcgSyndromesModule';
 
 function renderModule(activeModule) {
-  if (activeModule.id === 'checklist') return <EcgChecklistModule />;
-  if (activeModule.id === 'axis') return <AxisModule />;
   if (activeModule.id === 'syndromes') return <EcgSyndromesModule />;
-  return <ComingSoonEcgModule module={activeModule} />;
+  return <EcgChecklistModule />;
 }
 
 export default function EcgTab() {
@@ -28,9 +24,8 @@ export default function EcgTab() {
         <p className="text-xs font-bold uppercase tracking-[0.24em] text-teal-700">ЕКГ-помічник</p>
         <h2 className="mt-2 text-xl font-bold text-slate-950">Цифровий помічник для структурованої інтерпретації ЕКГ</h2>
         <p className="mt-2 max-w-4xl text-sm leading-relaxed text-slate-600">
-          Модуль допомагає лікарю послідовно пройти логіку аналізу ЕКГ: від базового
-          чек-листа до інтервалів, електричної осі та майбутніх алгоритмів провідності,
-          STEMI, тахікардій і ЕКГ-синдромів.
+          Модуль допомагає лікарю послідовно пройти чек-лист аналізу ЕКГ і швидко
+          звірити типові ЕКГ-синдроми з критеріями, прикладами та клінічними підказками.
         </p>
       </section>
 
