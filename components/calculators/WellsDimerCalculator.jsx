@@ -13,6 +13,7 @@ import {
   calculateVteBleed,
   calculateWellsDvt,
   calculateWellsPe,
+  getVteAnticoagulationDurationAdvice,
   getVteNextStep,
 } from '../../utils/calculations';
 
@@ -85,6 +86,11 @@ const toolInfo = {
     when: 'Використовуйте як допоміжну підказку при обговоренні тривалості терапії, а не як самостійне рішення.',
     action: 'Результат потрібно поєднувати з причиною ВТЕ, ризиком кровотечі, побажаннями пацієнта та клінічним контекстом.',
   },
+  duration: {
+    purpose: 'Цей блок структурує рішення щодо тривалості антикоагуляції після первинної фази лікування ВТЕ.',
+    when: 'Використовуйте після встановленої ТГВ / ТЕЛА, коли потрібно переглянути терапію після перших 3 місяців.',
+    action: 'Результат показує клінічний орієнтир: завершення після 3 місяців, індивідуальний перегляд або розгляд продовженої терапії.',
+  },
 };
 
 const initialFormData = {
@@ -149,6 +155,18 @@ const initialFormData = {
   dashAgeAtMost50: false,
   dashMaleSex: false,
   dashHormoneAssociatedVteInWomen: false,
+  vteDurationEventType: 'pe',
+  vteDurationDvtLocation: 'notApplicable',
+  vteDurationRiskFactorType: 'unprovoked',
+  vteDurationRiskFactorResolved: 'unclear',
+  vteDurationBleedingRisk: 'low',
+  vteDurationPreviousBleeding: false,
+  vteDurationLowHemoglobin: false,
+  vteDurationThrombocytopenia: false,
+  vteDurationCrclBelow30: false,
+  vteDurationNsaidOrAntiplatelet: false,
+  vteDurationAgeOver75: false,
+  vteDurationFrequentFalls: false,
 };
 
 const dvtFields = [
@@ -229,6 +247,51 @@ const dashFields = [
   { key: 'dashAgeAtMost50', title: 'Вік ≤50 років', points: '+1' },
   { key: 'dashMaleSex', title: 'Чоловіча стать', points: '+1' },
   { key: 'dashHormoneAssociatedVteInWomen', title: 'ВТЕ, пов’язана з гормональною терапією у жінок', points: '−2' },
+];
+
+const durationEventTypeOptions = [
+  { value: 'dvt', label: 'ТГВ' },
+  { value: 'pe', label: 'ТЕЛА' },
+  { value: 'dvtPe', label: 'ТГВ + ТЕЛА' },
+  { value: 'recurrentVte', label: 'Рецидивна ВТЕ' },
+];
+
+const durationDvtLocationOptions = [
+  { value: 'notApplicable', label: 'Не застосовується / невідомо' },
+  { value: 'distal', label: 'Дистальний ТГВ' },
+  { value: 'proximal', label: 'Проксимальний ТГВ' },
+];
+
+const durationRiskFactorOptions = [
+  { value: 'majorTransient', label: 'Великий тимчасовий фактор ризику' },
+  { value: 'minorTransient', label: 'Малий тимчасовий фактор ризику' },
+  { value: 'unprovoked', label: 'Неспровокована ВТЕ' },
+  { value: 'persistentRiskFactor', label: 'Сталий фактор ризику' },
+  { value: 'activeCancer', label: 'Активне онкологічне захворювання' },
+  { value: 'antiphospholipidSyndrome', label: 'Антифосфоліпідний синдром' },
+  { value: 'recurrentVte', label: 'Рецидивна ВТЕ' },
+];
+
+const durationResolvedOptions = [
+  { value: 'yes', label: 'Так, фактор минув' },
+  { value: 'no', label: 'Ні, фактор зберігається' },
+  { value: 'unclear', label: 'Невідомо / потребує уточнення' },
+];
+
+const durationBleedingRiskOptions = [
+  { value: 'low', label: 'Низький / прийнятний' },
+  { value: 'increased', label: 'Підвищений' },
+  { value: 'high', label: 'Високий' },
+];
+
+const durationBleedingFactors = [
+  { key: 'vteDurationPreviousBleeding', title: 'Кровотеча в анамнезі' },
+  { key: 'vteDurationLowHemoglobin', title: 'Анемія або низький Hb' },
+  { key: 'vteDurationThrombocytopenia', title: 'Тромбоцитопенія' },
+  { key: 'vteDurationCrclBelow30', title: 'CrCl <30 мл/хв' },
+  { key: 'vteDurationNsaidOrAntiplatelet', title: 'НПЗП або антитромбоцитарні препарати' },
+  { key: 'vteDurationAgeOver75', title: 'Вік >75 років' },
+  { key: 'vteDurationFrequentFalls', title: 'Часті падіння / високий травматичний ризик' },
 ];
 
 const checkList = [
@@ -470,6 +533,20 @@ export default function WellsDimerCalculator() {
     }
 
     if (formData.scenario === 'longTerm') {
+      const durationAdvice = getVteAnticoagulationDurationAdvice({
+        eventType: formData.vteDurationEventType,
+        dvtLocation: formData.vteDurationDvtLocation,
+        riskFactorType: formData.vteDurationRiskFactorType,
+        riskFactorResolved: formData.vteDurationRiskFactorResolved,
+        bleedingRisk: formData.vteDurationBleedingRisk,
+        previousBleeding: formData.vteDurationPreviousBleeding,
+        lowHemoglobin: formData.vteDurationLowHemoglobin,
+        thrombocytopenia: formData.vteDurationThrombocytopenia,
+        crclBelow30: formData.vteDurationCrclBelow30,
+        nsaidOrAntiplatelet: formData.vteDurationNsaidOrAntiplatelet,
+        ageOver75: formData.vteDurationAgeOver75,
+        frequentFalls: formData.vteDurationFrequentFalls,
+      });
       const vteBleed = calculateVteBleed({
         activeCancer: formData.vteBleedActiveCancer,
         maleWithUncontrolledHypertension: formData.vteBleedMaleWithUncontrolledHypertension,
@@ -492,6 +569,7 @@ export default function WellsDimerCalculator() {
         hormoneAssociatedVteInWomen: formData.dashHormoneAssociatedVteInWomen,
       });
       nextResult = {
+        durationAdvice,
         vteBleed,
         herdoo2,
         dash,
@@ -641,6 +719,86 @@ export default function WellsDimerCalculator() {
 
       {formData.scenario === 'longTerm' && (
         <section className="mt-3 space-y-3">
+          <div className="rounded-md border border-slate-200 bg-white p-4">
+            <h3 className="font-semibold text-slate-950">Тривалість антикоагуляції після ВТЕ</h3>
+            <ToolIntro info={toolInfo.duration} />
+            <div className="mt-4 grid gap-3 lg:grid-cols-2">
+              <FormField label="Тип події">
+                <select
+                  value={formData.vteDurationEventType}
+                  onChange={(event) => handleChange('vteDurationEventType', event.target.value)}
+                  className={inputClass}
+                >
+                  {durationEventTypeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </FormField>
+
+              <FormField label="Локалізація ТГВ">
+                <select
+                  value={formData.vteDurationDvtLocation}
+                  onChange={(event) => handleChange('vteDurationDvtLocation', event.target.value)}
+                  className={inputClass}
+                >
+                  {durationDvtLocationOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </FormField>
+
+              <FormField label="Причина / фактор ризику ВТЕ">
+                <select
+                  value={formData.vteDurationRiskFactorType}
+                  onChange={(event) => handleChange('vteDurationRiskFactorType', event.target.value)}
+                  className={inputClass}
+                >
+                  {durationRiskFactorOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </FormField>
+
+              <FormField label="Чи минув фактор ризику">
+                <select
+                  value={formData.vteDurationRiskFactorResolved}
+                  onChange={(event) => handleChange('vteDurationRiskFactorResolved', event.target.value)}
+                  className={inputClass}
+                >
+                  {durationResolvedOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </FormField>
+
+              <FormField label="Ризик кровотечі">
+                <select
+                  value={formData.vteDurationBleedingRisk}
+                  onChange={(event) => handleChange('vteDurationBleedingRisk', event.target.value)}
+                  className={inputClass}
+                >
+                  {durationBleedingRiskOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </FormField>
+            </div>
+
+            <div className="mt-4">
+              <p className="text-sm font-semibold text-slate-900">Фактори, які підвищують ризик кровотечі</p>
+              <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                {durationBleedingFactors.map((field) => (
+                  <CheckboxCard
+                    key={field.key}
+                    title={field.title}
+                    checked={formData[field.key]}
+                    onChange={(value) => handleChange(field.key, value)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
           <div className="rounded-md border border-slate-200 bg-white p-4">
             <h3 className="font-semibold text-slate-950">VTE-BLEED</h3>
             <ToolIntro info={toolInfo.vteBleed} />
@@ -813,6 +971,28 @@ export default function WellsDimerCalculator() {
                 />
               </ResultCard>
             )}
+            {result.durationAdvice && (
+              <ResultCard
+                title="Тривалість антикоагуляції"
+                value={result.durationAdvice.minimumDuration}
+                subtitle={result.durationAdvice.summary}
+              >
+                <ResultExplanation
+                  meaning={result.durationAdvice.explanation}
+                  action={result.durationAdvice.nextSteps.join('; ')}
+                />
+                {result.durationAdvice.cautionItems.length > 0 && (
+                  <div className="rounded-md border border-blue-100 bg-white/80 p-3">
+                    <p className="font-semibold text-slate-900">Фактори обережності:</p>
+                    <ul className="mt-2 list-disc space-y-1 pl-5">
+                      {result.durationAdvice.cautionItems.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </ResultCard>
+            )}
             {result.vteBleed && (
               <ResultCard
                 title="VTE-BLEED"
@@ -867,10 +1047,11 @@ export default function WellsDimerCalculator() {
       <p className="mt-4 rounded-md border border-slate-200 bg-white p-4 text-xs leading-5 text-slate-600">
         Модуль оцінки венозної тромбоемболії є допоміжним інструментом для лікаря.
         Результати шкал Wells, PERC, sPESI, Hestia, VTE-BLEED, HERDOO2 та DASH не
-        встановлюють і не виключають діагноз самостійно. Остаточне рішення щодо
-        D-димеру, візуалізації, госпіталізації та антикоагулянтної терапії приймається
-        лікарем з урахуванням клінічного стану пацієнта, локальних протоколів та чинних
-        рекомендацій.
+        встановлюють і не виключають діагноз самостійно. Підказка щодо тривалості
+        антикоагуляції структурує клінічне рішення, але не є автоматичним призначенням
+        або відміною лікування. Остаточне рішення щодо D-димеру, візуалізації,
+        госпіталізації та антикоагулянтної терапії приймається лікарем з урахуванням
+        клінічного стану пацієнта, локальних протоколів та чинних рекомендацій.
       </p>
     </>
   );
