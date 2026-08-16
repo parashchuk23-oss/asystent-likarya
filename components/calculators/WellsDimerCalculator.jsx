@@ -950,34 +950,24 @@ export default function WellsDimerCalculator() {
           </div>
 
           {hasConfirmedPe ? (
-            <div className="grid gap-3 lg:grid-cols-2">
-              <div className="rounded-md border border-slate-200 bg-white p-4">
-                <h3 className="font-semibold text-slate-950">2. sPESI</h3>
-                <ToolIntro info={toolInfo.spesi} />
-                <div className="mt-4 grid gap-3">
-                  {spesiFields.map((field) => (
-                    <CheckboxCard
-                      key={field.key}
-                      title={field.title}
-                      checked={formData[field.key]}
-                      onChange={(value) => handleChange(field.key, value)}
-                    />
-                  ))}
-                </div>
-              </div>
-              <div className="rounded-md border border-slate-200 bg-white p-4">
-                <h3 className="font-semibold text-slate-950">3. Hestia criteria</h3>
-                <ToolIntro info={toolInfo.hestia} />
-                <div className="mt-4 grid gap-3">
-                  {hestiaFields.map((field) => (
-                    <CheckboxCard
-                      key={field.key}
-                      title={field.title}
-                      checked={formData[field.key]}
-                      onChange={(value) => handleChange(field.key, value)}
-                    />
-                  ))}
-                </div>
+            <div className="space-y-2">
+              <RiskFactorDropdown
+                group={{ title: '2. sPESI', items: spesiFields }}
+                formData={formData}
+                onChange={handleChange}
+              />
+              <RiskFactorDropdown
+                group={{ title: '3. Hestia criteria', items: hestiaFields }}
+                formData={formData}
+                onChange={handleChange}
+              />
+              <div className="rounded-md border border-teal-100 bg-teal-50/70 p-3 text-sm leading-6 text-slate-700">
+                <p>
+                  <span className="font-semibold text-slate-900">sPESI:</span> {toolInfo.spesi.purpose}
+                </p>
+                <p className="mt-1">
+                  <span className="font-semibold text-slate-900">Hestia:</span> {toolInfo.hestia.purpose}
+                </p>
               </div>
             </div>
           ) : (
