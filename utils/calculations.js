@@ -1085,10 +1085,11 @@ export function calculateDashScore(data) {
 }
 
 export function getVteAnticoagulationDurationAdvice(data) {
-  const riskFactorType = data.riskFactorType || 'unprovoked';
+  const riskFactors = Array.isArray(data.riskFactors) ? data.riskFactors : [];
+  const riskFactorType = data.riskFactorType || classifyVteRiskFactorType(riskFactors);
   const eventType = data.eventType || 'pe';
-  const bleedingRisk = data.bleedingRisk || 'low';
-  const riskFactorResolved = data.riskFactorResolved || 'unclear';
+  const bleedingRisk = data.bleedingRisk || inferVteBleedingRisk(data);
+  const riskFactorResolved = data.riskFactorResolved || (riskFactors.some((factor) => factor.resolved === false) ? 'no' : 'yes');
   const cautionItems = [];
 
   if (data.previousBleeding) cautionItems.push('кровотеча в анамнезі');
@@ -1098,6 +1099,9 @@ export function getVteAnticoagulationDurationAdvice(data) {
   if (data.nsaidOrAntiplatelet) cautionItems.push('НПЗП або антитромбоцитарні препарати');
   if (data.ageOver75) cautionItems.push('вік >75 років');
   if (data.frequentFalls) cautionItems.push('часті падіння або високий травматичний ризик');
+
+  const selectedRiskFactorLabels = riskFactors.map((factor) => factor.label);
+  const riskFactorSummary = getVteRiskFactorSummary(riskFactorType, selectedRiskFactorLabels);
 
   const baseNextSteps = [
     'перевірити, чи подія була спровокована тимчасовим або сталим фактором ризику',
@@ -1217,6 +1221,65 @@ export function getVteAnticoagulationDurationAdvice(data) {
     explanation,
     nextSteps,
     cautionItems,
+    riskFactorType,
+    selectedRiskFactorLabels,
+    riskFactorSummary,
+  };
+}
+
+function classifyVteRiskFactorType(riskFactors) {
+  if (riskFactors.some((factor) => factor.group === 'activeCancer')) return 'activeCancer';
+  if (riskFactors.some((factor) => factor.group === 'antiphospholipidSyndrome')) return 'antiphospholipidSyndrome';
+  if (riskFactors.some((factor) => factor.group === 'recurrentVte')) return 'recurrentVte';
+  if (riskFactors.some((factor) => factor.group === 'persistent')) return 'persistentRiskFactor';
+  if (riskFactors.some((factor) => factor.group === 'majorTransient')) return 'majorTransient';
+  if (riskFactors.some((factor) => factor.group === 'minorTransient')) return 'minorTransient';
+  return 'unprovoked';
+}
+
+function inferVteBleedingRisk(data) {
+  if (data.vteBleedHighRisk || data.vteBleedScore >= 2) return 'high';
+  if (
+    data.thrombocytopenia ||
+    data.crclBelow30 ||
+    data.nsaidOrAntiplatelet ||
+    data.ageOver75 ||
+    data.frequentFalls
+  ) {
+    return 'increased';
+  }
+  return 'low';
+}
+
+function getVteRiskFactorSummary(riskFactorType, selectedRiskFactorLabels) {
+  if (riskFactorType === 'persistentRiskFactor' || riskFactorType === 'activeCancer' || riskFactorType === 'antiphospholipidSyndrome' || riskFactorType === 'recurrentVte') {
+    return {
+      title: 'Є сталий або високий фактор ризику рецидиву ВТЕ.',
+      note: 'Сталий або високий фактор ризику має пріоритет при рішенні щодо продовженої антикоагуляції.',
+      selected: selectedRiskFactorLabels,
+    };
+  }
+
+  if (riskFactorType === 'majorTransient') {
+    return {
+      title: 'ВТЕ, ймовірно, спровокована великим тимчасовим фактором ризику.',
+      note: 'Якщо фактор минув і немає інших ризиків рецидиву, після 3 місяців часто можна розглядати завершення антикоагуляції.',
+      selected: selectedRiskFactorLabels,
+    };
+  }
+
+  if (riskFactorType === 'minorTransient') {
+    return {
+      title: 'ВТЕ, ймовірно, пов’язана з малим тимчасовим фактором ризику.',
+      note: 'Зазвичай потрібні щонайменше 3 місяці; рішення про продовження залежить від клінічного контексту та ризику кровотечі.',
+      selected: selectedRiskFactorLabels,
+    };
+  }
+
+  return {
+    title: 'Ймовірно, неспровокована ВТЕ.',
+    note: 'Очевидного тимчасового або сталого фактора ризику не позначено.',
+    selected: selectedRiskFactorLabels,
   };
 }
 

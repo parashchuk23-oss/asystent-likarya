@@ -157,11 +157,26 @@ const initialFormData = {
   dashHormoneAssociatedVteInWomen: false,
   vteDurationEventType: 'pe',
   vteDurationDvtLocation: 'notApplicable',
-  vteDurationRiskFactorType: 'unprovoked',
-  vteDurationRiskFactorResolved: 'unclear',
-  vteDurationBleedingRisk: 'low',
-  vteDurationPreviousBleeding: false,
-  vteDurationLowHemoglobin: false,
+  vteMajorSurgery: false,
+  vteMajorTrauma: false,
+  vteLowerLimbOrPelvicFracture: false,
+  vteHospitalImmobilization: false,
+  vteBedRestAcuteIllness: false,
+  vteLongTravel: false,
+  vteTemporaryReducedMobility: false,
+  vteEstrogenTherapy: false,
+  vtePregnancyPostpartum: false,
+  vteMinorSurgeryOrTrauma: false,
+  vteAcuteInfectionInflammation: false,
+  vteActiveCancerPersistent: false,
+  vteCancerTreatment: false,
+  vteAntiphospholipidSyndrome: false,
+  vteChronicImmobilization: false,
+  vteRecurrentVte: false,
+  vteVteDuringAnticoagulation: false,
+  vteStrongThrombophilia: false,
+  vteChronicInflammatoryDisease: false,
+  vteNoObviousFactor: false,
   vteDurationThrombocytopenia: false,
   vteDurationCrclBelow30: false,
   vteDurationNsaidOrAntiplatelet: false,
@@ -262,37 +277,62 @@ const durationDvtLocationOptions = [
   { value: 'proximal', label: 'Проксимальний ТГВ' },
 ];
 
-const durationRiskFactorOptions = [
-  { value: 'majorTransient', label: 'Великий тимчасовий фактор ризику' },
-  { value: 'minorTransient', label: 'Малий тимчасовий фактор ризику' },
-  { value: 'unprovoked', label: 'Неспровокована ВТЕ' },
-  { value: 'persistentRiskFactor', label: 'Сталий фактор ризику' },
-  { value: 'activeCancer', label: 'Активне онкологічне захворювання' },
-  { value: 'antiphospholipidSyndrome', label: 'Антифосфоліпідний синдром' },
-  { value: 'recurrentVte', label: 'Рецидивна ВТЕ' },
+const durationRiskFactorGroups = [
+  {
+    title: 'Велика тимчасова причина',
+    items: [
+      { key: 'vteMajorSurgery', title: 'Велика операція за останні 3 місяці', group: 'majorTransient' },
+      { key: 'vteMajorTrauma', title: 'Велика травма', group: 'majorTransient' },
+      { key: 'vteLowerLimbOrPelvicFracture', title: 'Перелом нижньої кінцівки / таза', group: 'majorTransient' },
+      { key: 'vteHospitalImmobilization', title: 'Госпіталізація з тривалою іммобілізацією', group: 'majorTransient' },
+      { key: 'vteBedRestAcuteIllness', title: 'Постільний режим ≥3 днів через гострий стан', group: 'majorTransient' },
+    ],
+  },
+  {
+    title: 'Мала тимчасова причина',
+    items: [
+      { key: 'vteLongTravel', title: 'Тривала подорож / сидіння >8 год', group: 'minorTransient' },
+      { key: 'vteTemporaryReducedMobility', title: 'Тимчасове зниження рухливості без госпіталізації', group: 'minorTransient' },
+      { key: 'vteEstrogenTherapy', title: 'Естрогенвмісна терапія', group: 'minorTransient' },
+      { key: 'vtePregnancyPostpartum', title: 'Вагітність / післяпологовий період', group: 'minorTransient' },
+      { key: 'vteMinorSurgeryOrTrauma', title: 'Мала операція / травма', group: 'minorTransient' },
+      { key: 'vteAcuteInfectionInflammation', title: 'Гостре інфекційне або запальне захворювання', group: 'minorTransient' },
+    ],
+  },
+  {
+    title: 'Сталий або високий фактор ризику',
+    items: [
+      { key: 'vteActiveCancerPersistent', title: 'Активне онкологічне захворювання', group: 'activeCancer' },
+      { key: 'vteCancerTreatment', title: 'Триває протипухлинне лікування', group: 'activeCancer' },
+      { key: 'vteAntiphospholipidSyndrome', title: 'Антифосфоліпідний синдром', group: 'antiphospholipidSyndrome' },
+      { key: 'vteChronicImmobilization', title: 'Хронічна іммобілізація', group: 'persistent' },
+      { key: 'vteRecurrentVte', title: 'Рецидивна ВТЕ', group: 'recurrentVte' },
+      { key: 'vteVteDuringAnticoagulation', title: 'ВТЕ на фоні попередньої антикоагуляції', group: 'recurrentVte' },
+      { key: 'vteStrongThrombophilia', title: 'Відомий сильний тромбофілічний фактор', group: 'persistent' },
+      { key: 'vteChronicInflammatoryDisease', title: 'Хронічне запальне / аутоімунне захворювання з активністю', group: 'persistent' },
+    ],
+  },
+  {
+    title: 'Очевидного фактора не було',
+    items: [
+      {
+        key: 'vteNoObviousFactor',
+        title: 'Не було операції, травми, іммобілізації, вагітності, естрогенів, активного раку або іншого очевидного фактора',
+        group: 'unprovoked',
+      },
+    ],
+  },
 ];
 
-const durationResolvedOptions = [
-  { value: 'yes', label: 'Так, фактор минув' },
-  { value: 'no', label: 'Ні, фактор зберігається' },
-  { value: 'unclear', label: 'Невідомо / потребує уточнення' },
-];
-
-const durationBleedingRiskOptions = [
-  { value: 'low', label: 'Низький / прийнятний' },
-  { value: 'increased', label: 'Підвищений' },
-  { value: 'high', label: 'Високий' },
-];
-
-const durationBleedingFactors = [
-  { key: 'vteDurationPreviousBleeding', title: 'Кровотеча в анамнезі' },
-  { key: 'vteDurationLowHemoglobin', title: 'Анемія або низький Hb' },
+const additionalBleedingFactors = [
   { key: 'vteDurationThrombocytopenia', title: 'Тромбоцитопенія' },
   { key: 'vteDurationCrclBelow30', title: 'CrCl <30 мл/хв' },
   { key: 'vteDurationNsaidOrAntiplatelet', title: 'НПЗП або антитромбоцитарні препарати' },
   { key: 'vteDurationAgeOver75', title: 'Вік >75 років' },
   { key: 'vteDurationFrequentFalls', title: 'Часті падіння / високий травматичний ризик' },
 ];
+
+const durationRiskFactorKeys = durationRiskFactorGroups.flatMap((group) => group.items.map((item) => item.key));
 
 const checkList = [
   'SpO₂',
@@ -427,14 +467,36 @@ function Chips({ items }) {
   );
 }
 
+function getSelectedDurationRiskFactors(data) {
+  return durationRiskFactorGroups
+    .flatMap((group) => group.items)
+    .filter((item) => data[item.key])
+    .map((item) => ({
+      group: item.group,
+      label: item.title,
+      resolved: item.group === 'majorTransient' || item.group === 'minorTransient',
+    }));
+}
+
 export default function WellsDimerCalculator() {
   const [formData, setFormData] = useState(initialFormData);
   const [result, setResult] = useState(null);
   const selectedScenario = scenarioOptions.find((scenario) => scenario.id === formData.scenario) || scenarioOptions[0];
+  const durationRiskFactorPreview = getVteAnticoagulationDurationAdvice({
+    eventType: formData.vteDurationEventType,
+    dvtLocation: formData.vteDurationDvtLocation,
+    riskFactors: getSelectedDurationRiskFactors(formData),
+  });
 
   function handleChange(field, value) {
     setFormData((current) => ({
       ...current,
+      ...(field === 'vteNoObviousFactor' && value
+        ? Object.fromEntries(durationRiskFactorKeys.filter((key) => key !== 'vteNoObviousFactor').map((key) => [key, false]))
+        : {}),
+      ...(field !== 'vteNoObviousFactor' && durationRiskFactorKeys.includes(field) && value
+        ? { vteNoObviousFactor: false }
+        : {}),
       [field]: value,
     }));
     setResult(null);
@@ -533,20 +595,6 @@ export default function WellsDimerCalculator() {
     }
 
     if (formData.scenario === 'longTerm') {
-      const durationAdvice = getVteAnticoagulationDurationAdvice({
-        eventType: formData.vteDurationEventType,
-        dvtLocation: formData.vteDurationDvtLocation,
-        riskFactorType: formData.vteDurationRiskFactorType,
-        riskFactorResolved: formData.vteDurationRiskFactorResolved,
-        bleedingRisk: formData.vteDurationBleedingRisk,
-        previousBleeding: formData.vteDurationPreviousBleeding,
-        lowHemoglobin: formData.vteDurationLowHemoglobin,
-        thrombocytopenia: formData.vteDurationThrombocytopenia,
-        crclBelow30: formData.vteDurationCrclBelow30,
-        nsaidOrAntiplatelet: formData.vteDurationNsaidOrAntiplatelet,
-        ageOver75: formData.vteDurationAgeOver75,
-        frequentFalls: formData.vteDurationFrequentFalls,
-      });
       const vteBleed = calculateVteBleed({
         activeCancer: formData.vteBleedActiveCancer,
         maleWithUncontrolledHypertension: formData.vteBleedMaleWithUncontrolledHypertension,
@@ -554,6 +602,20 @@ export default function WellsDimerCalculator() {
         bleedingHistory: formData.vteBleedBleedingHistory,
         ageAtLeast60: formData.vteBleedAgeAtLeast60,
         renalDysfunction: formData.vteBleedRenalDysfunction,
+      });
+      const durationAdvice = getVteAnticoagulationDurationAdvice({
+        eventType: formData.vteDurationEventType,
+        dvtLocation: formData.vteDurationDvtLocation,
+        riskFactors: getSelectedDurationRiskFactors(formData),
+        vteBleedScore: vteBleed.score,
+        vteBleedHighRisk: vteBleed.isHighRisk,
+        previousBleeding: formData.vteBleedBleedingHistory,
+        lowHemoglobin: formData.vteBleedAnemia,
+        thrombocytopenia: formData.vteDurationThrombocytopenia,
+        crclBelow30: formData.vteDurationCrclBelow30,
+        nsaidOrAntiplatelet: formData.vteDurationNsaidOrAntiplatelet,
+        ageOver75: formData.vteDurationAgeOver75,
+        frequentFalls: formData.vteDurationFrequentFalls,
       });
       const herdoo2 = calculateHerdoo2({
         sex: formData.herdoo2Sex,
@@ -746,56 +808,31 @@ export default function WellsDimerCalculator() {
                   ))}
                 </select>
               </FormField>
-
-              <FormField label="Причина / фактор ризику ВТЕ">
-                <select
-                  value={formData.vteDurationRiskFactorType}
-                  onChange={(event) => handleChange('vteDurationRiskFactorType', event.target.value)}
-                  className={inputClass}
-                >
-                  {durationRiskFactorOptions.map((option) => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
-                  ))}
-                </select>
-              </FormField>
-
-              <FormField label="Чи минув фактор ризику">
-                <select
-                  value={formData.vteDurationRiskFactorResolved}
-                  onChange={(event) => handleChange('vteDurationRiskFactorResolved', event.target.value)}
-                  className={inputClass}
-                >
-                  {durationResolvedOptions.map((option) => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
-                  ))}
-                </select>
-              </FormField>
-
-              <FormField label="Ризик кровотечі">
-                <select
-                  value={formData.vteDurationBleedingRisk}
-                  onChange={(event) => handleChange('vteDurationBleedingRisk', event.target.value)}
-                  className={inputClass}
-                >
-                  {durationBleedingRiskOptions.map((option) => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
-                  ))}
-                </select>
-              </FormField>
             </div>
 
-            <div className="mt-4">
-              <p className="text-sm font-semibold text-slate-900">Фактори, які підвищують ризик кровотечі</p>
-              <div className="mt-3 grid gap-3 lg:grid-cols-2">
-                {durationBleedingFactors.map((field) => (
-                  <CheckboxCard
-                    key={field.key}
-                    title={field.title}
-                    checked={formData[field.key]}
-                    onChange={(value) => handleChange(field.key, value)}
-                  />
-                ))}
-              </div>
+            <div className="mt-4 space-y-4">
+              <p className="text-sm font-semibold text-slate-900">
+                1. Що могло спровокувати ВТЕ?
+              </p>
+              <p className="text-sm leading-6 text-slate-600">
+                Позначте конкретні ситуації. Програма сама віднесе їх до великого тимчасового,
+                малого тимчасового або сталого / високого фактора ризику.
+              </p>
+              {durationRiskFactorGroups.map((group) => (
+                <div key={group.title} className="rounded-md border border-slate-200 bg-slate-50 p-3">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">{group.title}</p>
+                  <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                    {group.items.map((field) => (
+                      <CheckboxCard
+                        key={field.key}
+                        title={field.title}
+                        checked={formData[field.key]}
+                        onChange={(value) => handleChange(field.key, value)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -812,6 +849,21 @@ export default function WellsDimerCalculator() {
                   onChange={(value) => handleChange(field.key, value)}
                 />
               ))}
+            </div>
+            <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 p-3">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+                Додаткові фактори обережності
+              </p>
+              <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                {additionalBleedingFactors.map((field) => (
+                  <CheckboxCard
+                    key={field.key}
+                    title={field.title}
+                    checked={formData[field.key]}
+                    onChange={(value) => handleChange(field.key, value)}
+                  />
+                ))}
+              </div>
             </div>
           </div>
           <div className="rounded-md border border-slate-200 bg-white p-4">
@@ -854,6 +906,20 @@ export default function WellsDimerCalculator() {
                 />
               ))}
             </div>
+          </div>
+
+          <div className="rounded-md border border-teal-200 bg-teal-50/70 p-4 text-sm leading-6 text-slate-800">
+            <h3 className="font-semibold text-slate-950">Автоматична оцінка факторів ризику</h3>
+            <p className="mt-2 font-semibold text-teal-900">{durationRiskFactorPreview.riskFactorSummary.title}</p>
+            {durationRiskFactorPreview.riskFactorSummary.selected.length > 0 ? (
+              <p className="mt-1">
+                <span className="font-semibold text-slate-900">Позначені фактори:</span>{' '}
+                {durationRiskFactorPreview.riskFactorSummary.selected.join(', ')}.
+              </p>
+            ) : (
+              <p className="mt-1">Позначені фактори: не вказані.</p>
+            )}
+            <p className="mt-1 text-slate-600">{durationRiskFactorPreview.riskFactorSummary.note}</p>
           </div>
         </section>
       )}
