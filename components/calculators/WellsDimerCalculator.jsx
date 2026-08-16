@@ -498,13 +498,46 @@ function getSelectedDurationRiskFactors(data) {
     }));
 }
 
+function getSelectedBleedingFactors(data) {
+  const vteBleedItems = vteBleedFields
+    .filter((item) => data[item.key])
+    .map((item) => item.title);
+  const additionalItems = additionalBleedingFactors
+    .filter((item) => data[item.key])
+    .map((item) => item.title);
+
+  return {
+    vteBleedItems,
+    additionalItems,
+    allItems: [...vteBleedItems, ...additionalItems],
+  };
+}
+
 export default function WellsDimerCalculator() {
   const [formData, setFormData] = useState(initialFormData);
   const [result, setResult] = useState(null);
+  const vteBleedPreview = calculateVteBleed({
+    activeCancer: formData.vteBleedActiveCancer,
+    maleWithUncontrolledHypertension: formData.vteBleedMaleWithUncontrolledHypertension,
+    anemia: formData.vteBleedAnemia,
+    bleedingHistory: formData.vteBleedBleedingHistory,
+    ageAtLeast60: formData.vteBleedAgeAtLeast60,
+    renalDysfunction: formData.vteBleedRenalDysfunction,
+  });
+  const selectedBleedingFactors = getSelectedBleedingFactors(formData);
   const durationRiskFactorPreview = getVteAnticoagulationDurationAdvice({
     eventType: formData.vteDurationEventType,
     dvtLocation: formData.vteDurationDvtLocation,
     riskFactors: getSelectedDurationRiskFactors(formData),
+    vteBleedScore: vteBleedPreview.score,
+    vteBleedHighRisk: vteBleedPreview.isHighRisk,
+    previousBleeding: formData.vteBleedBleedingHistory,
+    lowHemoglobin: formData.vteBleedAnemia,
+    thrombocytopenia: formData.vteDurationThrombocytopenia,
+    crclBelow30: formData.vteDurationCrclBelow30,
+    nsaidOrAntiplatelet: formData.vteDurationNsaidOrAntiplatelet,
+    ageOver75: formData.vteDurationAgeOver75,
+    frequentFalls: formData.vteDurationFrequentFalls,
   });
 
   function handleChange(field, value) {
@@ -923,7 +956,7 @@ export default function WellsDimerCalculator() {
           </div>
 
           <div className="rounded-md border border-teal-200 bg-teal-50/70 p-4 text-sm leading-6 text-slate-800">
-            <h3 className="font-semibold text-slate-950">Автоматична оцінка факторів ризику</h3>
+            <h3 className="font-semibold text-slate-950">Тривалість антикоагуляції</h3>
             <p className="mt-2 font-semibold text-teal-900">{durationRiskFactorPreview.riskFactorSummary.title}</p>
             {durationRiskFactorPreview.riskFactorSummary.selected.length > 0 ? (
               <p className="mt-1">
@@ -934,6 +967,30 @@ export default function WellsDimerCalculator() {
               <p className="mt-1">Позначені фактори: не вказані.</p>
             )}
             <p className="mt-1 text-slate-600">{durationRiskFactorPreview.riskFactorSummary.note}</p>
+            <div className="mt-3 border-t border-teal-100 pt-3">
+              <p className="font-semibold text-slate-900">
+                VTE-BLEED: {vteBleedPreview.score} {vteBleedPreview.score === 1 ? 'бал' : 'балів'} —{' '}
+                {vteBleedPreview.isHighRisk ? 'вищий ризик кровотечі' : 'нижчий ризик кровотечі'}.
+              </p>
+              {selectedBleedingFactors.allItems.length > 0 ? (
+                <div className="mt-1 space-y-1">
+                  {selectedBleedingFactors.vteBleedItems.length > 0 ? (
+                    <p>
+                      <span className="font-semibold text-slate-900">Фактори VTE-BLEED:</span>{' '}
+                      {selectedBleedingFactors.vteBleedItems.join(', ')}.
+                    </p>
+                  ) : null}
+                  {selectedBleedingFactors.additionalItems.length > 0 ? (
+                    <p>
+                      <span className="font-semibold text-slate-900">Додаткові фактори кровотечі:</span>{' '}
+                      {selectedBleedingFactors.additionalItems.join(', ')}.
+                    </p>
+                  ) : null}
+                </div>
+              ) : (
+                <p className="mt-1 text-slate-600">Фактори кровотечі: не позначені.</p>
+              )}
+            </div>
           </div>
         </section>
       )}
