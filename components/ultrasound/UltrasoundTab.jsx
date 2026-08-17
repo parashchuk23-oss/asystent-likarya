@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import AbdomenUltrasoundModule from './abdomen/AbdomenUltrasoundModule';
+import EchoUltrasoundModule from './echo/EchoUltrasoundModule';
 import RenalUltrasoundModule from './renal/RenalUltrasoundModule';
 import ThyroidUltrasoundModule from './ThyroidUltrasoundModule';
 
@@ -26,6 +27,13 @@ const ultrasoundModules = [
     title: 'Нирки та сечовидільна система',
     description:
       'Конструктор протоколу УЗД нирок, наднирників, сечоводів і сечового міхура з автоматичним текстом для копіювання.',
+  },
+  {
+    id: 'echo',
+    label: 'Ехокардіографія',
+    title: 'Ехокардіографія',
+    description:
+      'Структурований протокол трансторакального УЗД серця з режимами стандартного ЕхоКГ та швидкого Ехо / POCUS для практичної роботи з SonoSite Edge / Edge II.',
   },
 ];
 
@@ -65,6 +73,8 @@ export default function UltrasoundTab() {
             <AbdomenUltrasoundModule />
           ) : activeModuleId === 'renal' ? (
             <RenalUltrasoundModule />
+          ) : activeModuleId === 'echo' ? (
+            <EchoUltrasoundModule />
           ) : (
             <ThyroidUltrasoundModule />
           )}
