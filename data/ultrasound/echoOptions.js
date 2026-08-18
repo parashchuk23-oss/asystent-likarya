@@ -3,11 +3,6 @@ export const echoOptions = {
     { value: 'standard', label: 'Стандартне ЕхоКГ' },
     { value: 'focused', label: 'Швидке Ехо / POCUS' },
   ],
-  transducer: [
-    { value: 'p21x', label: 'P21x phased-array' },
-    { value: 'other-phased-array', label: 'Інший phased-array cardiac transducer' },
-    { value: 'other', label: 'Інший датчик' },
-  ],
   availability: [
     { value: 'available', label: 'є на апараті' },
     { value: 'optional', label: 'за наявності опції на апараті' },

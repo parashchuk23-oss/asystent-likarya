@@ -21,104 +21,103 @@ import {
 const initialData = {
   basic: {
     mode: 'standard',
-    transducer: 'p21x',
     sex: 'male',
-    height: '',
-    weight: '',
+    height: '170',
+    weight: '75',
     cwDoppler: 'optional',
     tdi: 'optional',
     ecg: 'optional',
   },
   focused: {
-    lvFunction: '',
-    rvDilation: '',
-    pericardialFluid: '',
-    ivcComment: '',
-    valveComment: '',
+    lvFunction: 'preserved',
+    rvDilation: 'notDilated',
+    pericardialFluid: 'none',
+    ivcComment: 'не розширена, колабує на вдиху',
+    valveComment: 'грубої клапанної патології не виявлено',
     otherFindings: '',
   },
   views: {
-    plax: '',
-    psax: '',
-    a4c: '',
-    a2c: '',
-    a3c: '',
-    subcostal: '',
+    plax: 'Візуалізація достатня для оцінки кореня аорти, ЛП, ЛШ, АК, МК та перикарда.',
+    psax: 'ЛШ округлої форми, скоротливість симетрична, ПШ без очевидної дилатації.',
+    a4c: 'Камери серця без очевидної дилатації, глобальна скоротливість ЛШ збережена.',
+    a2c: 'Додаткова оцінка ЛШ і ЛП без суттєвих особливостей.',
+    a3c: 'Вихідний тракт ЛШ, АК та МК без грубих структурних змін.',
+    subcostal: 'Перикардіальна рідина не візуалізується, НПВ не розширена.',
   },
   leftVentricle: {
-    lvidd: '',
-    lvids: '',
-    ivsd: '',
-    lvpwd: '',
-    visualEf: '',
-    manualEf: '',
-    edv: '',
-    esv: '',
+    lvidd: '48',
+    lvids: '31',
+    ivsd: '9',
+    lvpwd: '9',
+    visualEf: 'preserved',
+    manualEf: '60',
+    edv: '110',
+    esv: '44',
     teichholzEdv: '',
     teichholzEsv: '',
-    regionalMotion: '',
+    regionalMotion: 'normal',
     regionalDetails: '',
   },
   diastolic: {
-    e: '',
-    a: '',
-    dt: '',
-    ePrimeSeptal: '',
-    ePrimeLateral: '',
-    trVmax: '',
-    comment: '',
+    e: '75',
+    a: '60',
+    dt: '190',
+    ePrimeSeptal: '8',
+    ePrimeLateral: '12',
+    trVmax: '2.4',
+    comment: 'Дані не свідчать про явне підвищення тиску наповнення ЛШ; інтерпретувати разом з клінікою.',
   },
   rightVentricle: {
-    basalDiameter: '',
-    tapse: '',
-    fac: '',
-    sPrime: '',
-    visualFunction: '',
-    comment: '',
+    basalDiameter: '35',
+    tapse: '22',
+    fac: '40',
+    sPrime: '12',
+    visualFunction: 'preserved',
+    comment: 'ПШ не дилатований, систолічна функція збережена.',
   },
   leftAtrium: {
-    apSize: '',
-    volume: '',
+    apSize: '36',
+    volume: '50',
   },
   rightAtrium: {
-    area: '',
-    visualDilation: '',
+    area: '16',
+    visualDilation: 'notDilated',
   },
   aorta: {
-    annulus: '',
-    sinuses: '',
-    stj: '',
-    ascending: '',
+    annulus: '22',
+    sinuses: '32',
+    stj: '28',
+    ascending: '34',
   },
   aorticValve: {
-    type: '',
-    morphology: '',
-    regurgitation: '',
-    vmax: '',
-    lvotDiameter: '',
-    lvotVti: '',
-    avVti: '',
+    type: 'tricuspid',
+    morphology: 'normal',
+    regurgitation: 'none',
+    vmax: '1.3',
+    lvotDiameter: '20',
+    lvotVti: '20',
+    avVti: '25',
   },
   mitralValve: {
-    morphology: '',
-    regurgitation: '',
+    morphology: 'normal',
+    regurgitation: 'none',
   },
   tricuspidValve: {
-    regurgitation: '',
-    trVmax: '',
+    regurgitation: 'trivial',
+    trVmax: '2.4',
   },
   pulmonaryValve: {
-    regurgitation: '',
+    regurgitation: 'none',
   },
   pericardium: {
-    fluid: '',
-    separation: '',
+    fluid: 'none',
+    separation: '0',
     tamponadeSigns: '',
   },
   ivc: {
-    maxDiameter: '',
-    minDiameter: '',
-    rap: '',
+    maxDiameter: '18',
+    minDiameter: '8',
+    rap: '3',
   },
   conclusionManual: '',
 };
@@ -162,8 +161,8 @@ export default function EchoUltrasoundModule() {
             <div>
               <h3 className="text-lg font-bold text-slate-950">Ехокардіографія</h3>
               <p className="mt-1 text-sm text-slate-600">
-                Структурований протокол трансторакального УЗД серця. Орієнтовано на практичну роботу
-                з SonoSite Edge / Edge II без обовʼязкових advanced-функцій.
+                Структурований протокол трансторакального УЗД серця з локальними розрахунками та
+                короткими орієнтирами норми під показниками.
               </p>
             </div>
             <button type="button" onClick={regenerate} className="rounded-md bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white">
@@ -175,7 +174,7 @@ export default function EchoUltrasoundModule() {
           </div>
         </div>
 
-        <AccordionSection id="echo-basic" title="1. Основні дані" subtitle="Режим, датчик, BSA, опції апарата" isOpen={openSection === 'basic'} onToggle={() => toggleSection('basic')}>
+        <AccordionSection id="echo-basic" title="1. Основні дані" subtitle="Режим, BSA, опції апарата" isOpen={openSection === 'basic'} onToggle={() => toggleSection('basic')}>
           <EchoBasicDataSection data={data.basic} onChange={updateData} derived={derived} />
         </AccordionSection>
 

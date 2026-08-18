@@ -29,7 +29,6 @@ export function generateEchoOverview(data) {
 
   lines.push('Ехокардіографія виконана трансторакально.');
   lines.push(`Режим: ${echoOptionLabel('mode', data.basic.mode)}.`);
-  lines.push(`Датчик: ${echoOptionLabel('transducer', data.basic.transducer)}.`);
   lines.push(formatOptionalFeature('CW Doppler', data.basic.cwDoppler));
   lines.push(formatOptionalFeature('TDI', data.basic.tdi));
   lines.push(formatOptionalFeature('ECG', data.basic.ecg));
