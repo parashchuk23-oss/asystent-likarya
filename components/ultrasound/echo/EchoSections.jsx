@@ -1,6 +1,6 @@
 import { echoOptions } from '../../../data/ultrasound/echoOptions';
 import { echoReferenceRanges } from '../../../data/ultrasound/echoReferenceRanges';
-import { DerivedValue, EchoNumberField, EchoSelectField, EchoTextareaField } from './EchoFormControls';
+import { DerivedValue, EchoNumberField, EchoReadonlyField, EchoSelectField, EchoTextareaField } from './EchoFormControls';
 
 function Grid({ children }) {
   return <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{children}</div>;
@@ -18,7 +18,7 @@ export function EchoBasicDataSection({ data, onChange, derived }) {
         <EchoSelectField label="Стать" value={data.sex} onChange={(value) => onChange('basic', { ...data, sex: value })} options={[{ value: 'male', label: 'чоловіча' }, { value: 'female', label: 'жіноча' }]} />
         <EchoNumberField label="Зріст" unit="см" value={data.height} onChange={(value) => update('basic', data, onChange, 'height', value)} />
         <EchoNumberField label="Маса" unit="кг" value={data.weight} onChange={(value) => update('basic', data, onChange, 'weight', value)} />
-        <DerivedValue label="BSA" value={derived.bsa} unit=" м²" />
+        <EchoReadonlyField label="BSA" value={derived.bsa} unit=" м²" />
       </Grid>
       <Grid>
         <EchoSelectField label="CW Doppler" value={data.cwDoppler} onChange={(value) => update('basic', data, onChange, 'cwDoppler', value)} options={echoOptions.availability} />

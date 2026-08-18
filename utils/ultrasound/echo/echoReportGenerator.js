@@ -16,22 +16,12 @@ function qualitative(group, value) {
   return label;
 }
 
-function formatOptionalFeature(name, value) {
-  if (value === 'optional') return `${name}: за наявності відповідної опції на апараті.`;
-  if (value === 'available') return `${name}: доступно / використовується.`;
-  if (value === 'notAvailable') return `${name}: не використовується.`;
-  return '';
-}
-
 export function generateEchoOverview(data) {
   const derived = calculateEchoDerived(data);
   const lines = [];
 
   lines.push('Ехокардіографія виконана трансторакально.');
   lines.push(`Режим: ${echoOptionLabel('mode', data.basic.mode)}.`);
-  lines.push(formatOptionalFeature('CW Doppler', data.basic.cwDoppler));
-  lines.push(formatOptionalFeature('TDI', data.basic.tdi));
-  lines.push(formatOptionalFeature('ECG', data.basic.ecg));
   if (derived.bsa) lines.push(`BSA ${derived.bsa} м².`);
 
   if (data.basic.mode === 'focused') {
