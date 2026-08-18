@@ -34,7 +34,7 @@ export function EchoNumberField({ label, value, onChange, unit = '', norm = '', 
 export function EchoReadonlyField({ label, value, unit = '' }) {
   return (
     <FormField className="mb-2" label={label}>
-      <div className="flex min-h-[56px] w-full items-center rounded-md border border-slate-200 bg-slate-100 px-4 text-base font-semibold text-slate-950 shadow-sm">
+      <div className={`${inputClass} flex items-center bg-slate-100 font-semibold text-slate-950`}>
         {value === null || value === undefined || value === '' ? '—' : `${value}${unit}`}
       </div>
     </FormField>
