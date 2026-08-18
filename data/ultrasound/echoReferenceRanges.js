@@ -1,6 +1,6 @@
 export const echoReferenceNotes = {
-  sonosite:
-    'SonoSite Edge / Edge II є компактною системою. CW Doppler, TDI, ECG та частина cardiac calculations можуть залежати від конфігурації та активованих опцій.',
+  deviceOptions:
+    'Доступність CW Doppler, TDI, ECG та автоматичних cardiac calculations залежить від конкретного апарата, конфігурації та активованих опцій.',
   chamberQuantification:
     'Референсні підходи: ASE/EACVI chamber quantification для камер серця, LV mass, LVMI, RWT та LAVI.',
   diastolic:

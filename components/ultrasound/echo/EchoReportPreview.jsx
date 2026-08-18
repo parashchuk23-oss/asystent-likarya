@@ -107,7 +107,7 @@ export default function EchoReportPreview({
       <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-900">
         Модуль формує чернетку протоколу ЕхоКГ. Автоматичний текст не встановлює діагноз
         самостійно і потребує перевірки лікарем з урахуванням якості візуалізації,
-        можливостей конкретного SonoSite Edge / Edge II та клінічного контексту.
+        можливостей конкретного апарата УЗД та клінічного контексту.
       </div>
     </aside>
   );

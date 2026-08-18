@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import AccordionSection from '../../AccordionSection';
-import { echoReferenceNotes } from '../../../data/ultrasound/echoReferenceRanges';
 import { calculateEchoDerived } from '../../../utils/ultrasound/echo/echoCalculations';
 import { buildEchoReport } from '../../../utils/ultrasound/echo/echoReportGenerator';
 import EchoReportPreview from './EchoReportPreview';
@@ -168,9 +167,6 @@ export default function EchoUltrasoundModule() {
             <button type="button" onClick={regenerate} className="rounded-md bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white">
               Сформувати протокол
             </button>
-          </div>
-          <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900">
-            {echoReferenceNotes.sonosite} Поля CW Doppler, TDI та ECG позначаються як опційні.
           </div>
         </div>
 
