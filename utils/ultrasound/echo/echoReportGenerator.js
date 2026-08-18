@@ -25,9 +25,25 @@ export function generateEchoOverview(data) {
   if (derived.bsa) lines.push(`BSA ${derived.bsa} м².`);
 
   if (data.basic.mode === 'focused') {
+    const linear = derived.focusedLinear;
     lines.push(
       compact([
         qualitative('visualFunction', data.focused.lvFunction) && `Глобальна функція ЛШ: ${qualitative('visualFunction', data.focused.lvFunction)}.`,
+        line('КДР ЛШ', data.focused.lvidd, ' мм'),
+        line('КСР ЛШ', data.focused.lvids, ' мм'),
+        line('МШП', data.focused.ivsd, ' мм'),
+        line('Задня стінка ЛШ', data.focused.lvpwd, ' мм'),
+        line('ЧСС', data.focused.heartRate, '/хв'),
+        linear.teichholzEdv !== null && `КДО за Teichholz ${linear.teichholzEdv} мл.`,
+        linear.teichholzEsv !== null && `КСО за Teichholz ${linear.teichholzEsv} мл.`,
+        linear.teichholzEf !== null && `ФВ ЛШ за Teichholz ${linear.teichholzEf}%.`,
+        linear.fs !== null && `FS ${linear.fs}%.`,
+        linear.strokeVolume !== null && `УО ${linear.strokeVolume} мл.`,
+        linear.cardiacOutput !== null && `ХОК ${linear.cardiacOutput} л/хв.`,
+        linear.lvMass !== null && `Маса ЛШ ${linear.lvMass} г.`,
+        linear.lvMassIndex !== null && `Індекс маси ЛШ ${linear.lvMassIndex} г/м².`,
+        linear.rwt !== null && `RWT ${linear.rwt}.`,
+        linear.lvGeometry && `Геометрія ЛШ: ${linear.lvGeometry}.`,
         qualitative('chamberSize', data.focused.rvDilation) && `ПШ: ${qualitative('chamberSize', data.focused.rvDilation)}.`,
         qualitative('pericardialFluid', data.focused.pericardialFluid) && `Перикард: ${qualitative('pericardialFluid', data.focused.pericardialFluid)}.`,
         data.focused.ivcComment && `НПВ: ${data.focused.ivcComment}.`,
@@ -46,7 +62,7 @@ export function generateEchoOverview(data) {
       line('Задня стінка ЛШ', data.leftVentricle.lvpwd, ' мм'),
       qualitative('visualFunction', data.leftVentricle.visualEf) && `Візуально глобальна систолічна функція ЛШ: ${qualitative('visualFunction', data.leftVentricle.visualEf)}.`,
       derived.simpsonEf !== null && `ФВ ЛШ за Simpson ${derived.simpsonEf}%.`,
-      derived.teichholzEf !== null && `ФВ ЛШ за Teichholz ${derived.teichholzEf}% (метод доречний лише при придатній геометрії ЛШ).`,
+      derived.teichholzEf !== null && `ФВ ЛШ за Teichholz ${derived.teichholzEf}%.`,
       derived.fs !== null && `FS ${derived.fs}%.`,
       derived.lvMass !== null && `Маса ЛШ ${derived.lvMass} г.`,
       derived.lvMassIndex !== null && `Індекс маси ЛШ ${derived.lvMassIndex} г/м².`,

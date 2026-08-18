@@ -26,6 +26,11 @@ const initialData = {
   },
   focused: {
     lvFunction: 'preserved',
+    lvidd: '48',
+    lvids: '31',
+    ivsd: '9',
+    lvpwd: '9',
+    heartRate: '76',
     rvDilation: 'notDilated',
     pericardialFluid: 'none',
     ivcComment: 'не розширена, колабує на вдиху',
@@ -167,13 +172,13 @@ export default function EchoUltrasoundModule() {
           </div>
         </div>
 
-        <AccordionSection id="echo-basic" title="1. Основні дані" subtitle="Режим, BSA, опції апарата" isOpen={openSection === 'basic'} onToggle={() => toggleSection('basic')}>
+          <AccordionSection id="echo-basic" title="1. Основні дані" subtitle="Режим, стать, зріст, маса, BSA" isOpen={openSection === 'basic'} onToggle={() => toggleSection('basic')}>
           <EchoBasicDataSection data={data.basic} onChange={updateData} derived={derived} />
         </AccordionSection>
 
         {isFocused ? (
           <AccordionSection id="echo-focused" title="2. Швидке Ехо / POCUS" subtitle="Глобальна функція ЛШ, ПШ, перикард, НПВ, груба клапанна патологія" isOpen={openSection === 'focused'} onToggle={() => toggleSection('focused')}>
-            <EchoFocusedSection data={data.focused} onChange={updateData} />
+            <EchoFocusedSection data={data.focused} onChange={updateData} derived={derived} />
           </AccordionSection>
         ) : (
           <>

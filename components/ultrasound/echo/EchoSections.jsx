@@ -24,16 +24,44 @@ export function EchoBasicDataSection({ data, onChange, derived }) {
   );
 }
 
-export function EchoFocusedSection({ data, onChange }) {
+export function EchoFocusedSection({ data, onChange, derived }) {
   return (
-    <Grid>
-      <EchoSelectField label="Глобальна функція ЛШ" value={data.lvFunction} onChange={(value) => update('focused', data, onChange, 'lvFunction', value)} options={echoOptions.visualFunction} />
-      <EchoSelectField label="Дилатація ПШ" value={data.rvDilation} onChange={(value) => update('focused', data, onChange, 'rvDilation', value)} options={echoOptions.chamberSize} />
-      <EchoSelectField label="Перикардіальна рідина" value={data.pericardialFluid} onChange={(value) => update('focused', data, onChange, 'pericardialFluid', value)} options={echoOptions.pericardialFluid} />
-      <EchoTextareaField label="НПВ" value={data.ivcComment} onChange={(value) => update('focused', data, onChange, 'ivcComment', value)} placeholder="Наприклад: не розширена, колабує на вдиху" />
-      <EchoTextareaField label="Груба клапанна патологія" value={data.valveComment} onChange={(value) => update('focused', data, onChange, 'valveComment', value)} />
-      <EchoTextareaField label="Інші суттєві знахідки" value={data.otherFindings} onChange={(value) => update('focused', data, onChange, 'otherFindings', value)} />
-    </Grid>
+    <div className="space-y-4">
+      <div>
+        <p className="mb-2 text-sm font-bold uppercase tracking-[0.14em] text-teal-700">Лінійні розміри ЛШ / Teichholz</p>
+        <Grid>
+          <EchoNumberField label="КДР / LVIDd" unit="мм" norm={echoReferenceRanges.lvidd} value={data.lvidd} onChange={(value) => update('focused', data, onChange, 'lvidd', value)} />
+          <EchoNumberField label="КСР / LVIDs" unit="мм" norm={echoReferenceRanges.lvids} value={data.lvids} onChange={(value) => update('focused', data, onChange, 'lvids', value)} />
+          <EchoNumberField label="МШП / IVSd" unit="мм" norm={echoReferenceRanges.ivsd} value={data.ivsd} onChange={(value) => update('focused', data, onChange, 'ivsd', value)} />
+          <EchoNumberField label="ЗСЛШ / LVPWd" unit="мм" norm={echoReferenceRanges.lvpwd} value={data.lvpwd} onChange={(value) => update('focused', data, onChange, 'lvpwd', value)} />
+          <EchoNumberField label="ЧСС" unit="/хв" value={data.heartRate} onChange={(value) => update('focused', data, onChange, 'heartRate', value)} step="1" />
+          <EchoSelectField label="Візуальна функція ЛШ" value={data.lvFunction} onChange={(value) => update('focused', data, onChange, 'lvFunction', value)} options={echoOptions.visualFunction} />
+        </Grid>
+      </div>
+
+      <Grid>
+        <DerivedValue label="КДО Teichholz" value={derived.focusedLinear.teichholzEdv} unit=" мл" />
+        <DerivedValue label="КСО Teichholz" value={derived.focusedLinear.teichholzEsv} unit=" мл" />
+        <DerivedValue label="ФВ Teichholz" value={derived.focusedLinear.teichholzEf} unit="%" note="Допоміжний розрахунок із лінійних розмірів ЛШ." />
+        <DerivedValue label="FS" value={derived.focusedLinear.fs} unit="%" note={echoReferenceRanges.fs} />
+        <DerivedValue label="УО" value={derived.focusedLinear.strokeVolume} unit=" мл" />
+        <DerivedValue label="ХОК" value={derived.focusedLinear.cardiacOutput} unit=" л/хв" />
+        <DerivedValue label="КДІ" value={derived.focusedLinear.edvi} unit=" мл/м²" />
+        <DerivedValue label="КСІ" value={derived.focusedLinear.esvi} unit=" мл/м²" />
+        <DerivedValue label="Маса ЛШ" value={derived.focusedLinear.lvMass} unit=" г" />
+        <DerivedValue label="LVMI" value={derived.focusedLinear.lvMassIndex} unit=" г/м²" note={echoReferenceRanges.lvmi} />
+        <DerivedValue label="RWT" value={derived.focusedLinear.rwt} note={echoReferenceRanges.rwt} />
+        <DerivedValue label="Геометрія" value={derived.focusedLinear.lvGeometry} />
+      </Grid>
+
+      <Grid>
+        <EchoSelectField label="Дилатація ПШ" value={data.rvDilation} onChange={(value) => update('focused', data, onChange, 'rvDilation', value)} options={echoOptions.chamberSize} />
+        <EchoSelectField label="Перикардіальна рідина" value={data.pericardialFluid} onChange={(value) => update('focused', data, onChange, 'pericardialFluid', value)} options={echoOptions.pericardialFluid} />
+        <EchoTextareaField label="НПВ" value={data.ivcComment} onChange={(value) => update('focused', data, onChange, 'ivcComment', value)} placeholder="Наприклад: не розширена, колабує на вдиху" />
+        <EchoTextareaField label="Груба клапанна патологія" value={data.valveComment} onChange={(value) => update('focused', data, onChange, 'valveComment', value)} />
+        <EchoTextareaField label="Інші суттєві знахідки" value={data.otherFindings} onChange={(value) => update('focused', data, onChange, 'otherFindings', value)} />
+      </Grid>
+    </div>
   );
 }
 

@@ -24,6 +24,12 @@ export function calculateEf(edv, esv) {
   return round(((endDiastolicVolume - endSystolicVolume) / endDiastolicVolume) * 100);
 }
 
+export function calculateTeichholzVolume(lvDimensionMm) {
+  const dimensionCm = numberOrNull(lvDimensionMm) / 10;
+  if (!dimensionCm) return null;
+  return round((7 * dimensionCm ** 3) / (2.4 + dimensionCm));
+}
+
 export function calculateFractionalShortening(lvidd, lvids) {
   const diastole = numberOrNull(lvidd);
   const systole = numberOrNull(lvids);
@@ -51,6 +57,20 @@ export function calculateIndexedValue(value, bsa) {
   const bodySurfaceArea = numberOrNull(bsa);
   if (!numericValue || !bodySurfaceArea) return null;
   return round(numericValue / bodySurfaceArea);
+}
+
+export function calculateStrokeVolume(edv, esv) {
+  const endDiastolicVolume = numberOrNull(edv);
+  const endSystolicVolume = numberOrNull(esv);
+  if (!endDiastolicVolume || endSystolicVolume === null || endSystolicVolume >= endDiastolicVolume) return null;
+  return round(endDiastolicVolume - endSystolicVolume);
+}
+
+export function calculateCardiacOutput(strokeVolume, heartRate) {
+  const sv = numberOrNull(strokeVolume);
+  const hr = numberOrNull(heartRate);
+  if (!sv || !hr) return null;
+  return round((sv * hr) / 1000, 2);
 }
 
 export function calculateGradient(velocity) {
@@ -100,6 +120,33 @@ export function getLvGeometry({ lvMassIndex, rwt, sex }) {
   return 'ексцентрична гіпертрофія ЛШ';
 }
 
+function calculateLinearLvDerived(values, bsa, sex) {
+  const teichholzEdv = calculateTeichholzVolume(values.lvidd);
+  const teichholzEsv = calculateTeichholzVolume(values.lvids);
+  const teichholzEf = calculateEf(teichholzEdv, teichholzEsv);
+  const strokeVolume = calculateStrokeVolume(teichholzEdv, teichholzEsv);
+  const cardiacOutput = calculateCardiacOutput(strokeVolume, values.heartRate);
+  const fs = calculateFractionalShortening(values.lvidd, values.lvids);
+  const lvMass = calculateLvMass(values);
+  const lvMassIndex = calculateIndexedValue(lvMass, bsa);
+  const rwt = calculateRwt(values);
+
+  return {
+    teichholzEdv,
+    teichholzEsv,
+    teichholzEf,
+    strokeVolume,
+    cardiacOutput,
+    edvi: calculateIndexedValue(teichholzEdv, bsa),
+    esvi: calculateIndexedValue(teichholzEsv, bsa),
+    fs,
+    lvMass,
+    lvMassIndex,
+    rwt,
+    lvGeometry: getLvGeometry({ lvMassIndex, rwt, sex }),
+  };
+}
+
 export function calculateEchoDerived(data) {
   const bsa = calculateBsa(data.basic.height, data.basic.weight);
   const simpsonEf = calculateEf(data.leftVentricle.edv, data.leftVentricle.esv);
@@ -139,5 +186,6 @@ export function calculateEchoDerived(data) {
     ivcCollapse,
     avPeakGradient,
     ava,
+    focusedLinear: calculateLinearLvDerived(data.focused || {}, bsa, data.basic.sex),
   };
 }
