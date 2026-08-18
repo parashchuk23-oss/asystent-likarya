@@ -60,11 +60,36 @@ export function generateAbdomenConclusion(data) {
 }
 
 export function generateAbdomenRecommendations(data) {
+  const hasStructuralChanges =
+    data.liver.echogenicity !== 'medium' ||
+    data.liver.structure !== 'homogeneous' ||
+    data.liver.changes.length ||
+    isLiverEnlarged(data.liver) ||
+    data.gallbladder.content !== 'anechoic' ||
+    data.gallbladder.stones.length ||
+    data.gallbladder.polyps.length ||
+    isGallbladderWallThickened(data.gallbladder.wall) ||
+    data.commonBileDuct.lumen !== 'free' ||
+    isCommonBileDuctDilated(data.commonBileDuct.diameter) ||
+    data.pancreas.echogenicity !== 'medium' ||
+    data.pancreas.structure !== 'homogeneous' ||
+    isPancreaticDuctDilated(data.pancreas.wirsung) ||
+    data.pancreas.lesions.length ||
+    isSpleenEnlarged(data.spleen) ||
+    data.spleen.lesions.length ||
+    data.freeFluid.status === 'yes' ||
+    data.lymphNodes.status === 'yes';
+
+  if (!hasStructuralChanges) {
+    return 'Додаткові рекомендації — за клінічним контекстом.';
+  }
+
   const recommendations = ['Консультація гастроентеролога.'];
 
   if (
     data.liver.echogenicity !== 'medium' ||
     data.liver.structure !== 'homogeneous' ||
+    data.liver.changes.length ||
     data.gallbladder.content !== 'anechoic' ||
     data.gallbladder.stones.length ||
     data.gallbladder.polyps.length ||
