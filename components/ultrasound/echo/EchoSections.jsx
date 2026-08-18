@@ -20,11 +20,6 @@ export function EchoBasicDataSection({ data, onChange, derived }) {
         <EchoNumberField label="Маса" unit="кг" value={data.weight} onChange={(value) => update('basic', data, onChange, 'weight', value)} />
         <EchoReadonlyField label="BSA" value={derived.bsa} unit=" м²" />
       </Grid>
-      <Grid>
-        <EchoSelectField label="CW Doppler" value={data.cwDoppler} onChange={(value) => update('basic', data, onChange, 'cwDoppler', value)} options={echoOptions.availability} />
-        <EchoSelectField label="TDI" value={data.tdi} onChange={(value) => update('basic', data, onChange, 'tdi', value)} options={echoOptions.availability} />
-        <EchoSelectField label="ECG" value={data.ecg} onChange={(value) => update('basic', data, onChange, 'ecg', value)} options={echoOptions.availability} />
-      </Grid>
     </div>
   );
 }

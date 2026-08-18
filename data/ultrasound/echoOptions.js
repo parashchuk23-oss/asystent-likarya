@@ -3,11 +3,6 @@ export const echoOptions = {
     { value: 'standard', label: 'Стандартне ЕхоКГ' },
     { value: 'focused', label: 'Швидке Ехо / POCUS' },
   ],
-  availability: [
-    { value: 'available', label: 'є на апараті' },
-    { value: 'optional', label: 'за наявності опції на апараті' },
-    { value: 'notAvailable', label: 'немає / не використовується' },
-  ],
   visualFunction: [
     { value: '', label: 'не оцінено' },
     { value: 'preserved', label: 'збережена' },

@@ -23,9 +23,6 @@ const initialData = {
     sex: 'male',
     height: '170',
     weight: '75',
-    cwDoppler: 'optional',
-    tdi: 'optional',
-    ecg: 'optional',
   },
   focused: {
     lvFunction: 'preserved',
@@ -186,7 +183,7 @@ export default function EchoUltrasoundModule() {
             <AccordionSection id="echo-lv" title="3. Лівий шлуночок" subtitle="Розміри, ФВ, Simpson, Teichholz, маса ЛШ, геометрія, регіональна скоротливість" isOpen={openSection === 'lv'} onToggle={() => toggleSection('lv')}>
               <EchoLeftVentricleSection data={data.leftVentricle} onChange={updateData} derived={derived} />
             </AccordionSection>
-            <AccordionSection id="echo-diastolic" title="4. Діастолічна функція" subtitle="PW Doppler, TDI за наявності опції, E/A, E/eʼ" isOpen={openSection === 'diastolic'} onToggle={() => toggleSection('diastolic')}>
+            <AccordionSection id="echo-diastolic" title="4. Діастолічна функція" subtitle="E/A, eʼ, E/eʼ, DT та TR Vmax" isOpen={openSection === 'diastolic'} onToggle={() => toggleSection('diastolic')}>
               <EchoDiastolicSection data={data.diastolic} onChange={updateData} derived={derived} />
             </AccordionSection>
             <AccordionSection id="echo-rv" title="5. Правий шлуночок" subtitle="Розмір, TAPSE, FAC, TDI Sʼ, візуальна функція" isOpen={openSection === 'rv'} onToggle={() => toggleSection('rv')}>
@@ -195,7 +192,7 @@ export default function EchoUltrasoundModule() {
             <AccordionSection id="echo-atria-aorta" title="6. Передсердя та аорта" subtitle="ЛП, LAVI, ПП, кільце АК, синуси, висхідна аорта" isOpen={openSection === 'atriaAorta'} onToggle={() => toggleSection('atriaAorta')}>
               <EchoAtriaAortaSection data={data} onChange={updateData} derived={derived} />
             </AccordionSection>
-            <AccordionSection id="echo-valves" title="7. Клапани" subtitle="АК, МК, ТК, клапан ЛА, Doppler за наявності опції" isOpen={openSection === 'valves'} onToggle={() => toggleSection('valves')}>
+            <AccordionSection id="echo-valves" title="7. Клапани" subtitle="АК, МК, ТК, клапан ЛА, морфологія та гемодинаміка" isOpen={openSection === 'valves'} onToggle={() => toggleSection('valves')}>
               <EchoValvesSection data={data} onChange={updateData} derived={derived} />
             </AccordionSection>
             <AccordionSection id="echo-pericardium-ivc" title="8. Перикард і НПВ" subtitle="Рідина, ознаки гемодинамічної значущості, НПВ, RAP" isOpen={openSection === 'pericardiumIvc'} onToggle={() => toggleSection('pericardiumIvc')}>
