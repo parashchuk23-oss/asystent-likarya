@@ -84,8 +84,20 @@ export const chronicPainDisease = {
   },
   recommendationGroups: {
     labs: [],
-    instrumental: [],
-    consultations: [],
+    instrumental: [
+      { id: 'abdominal-ultrasound', text: 'УЗД ОЧП' },
+      { id: 'pelvic-ultrasound', text: 'УЗД ОМТ' },
+      { id: 'thyroid-ultrasound', text: 'УЗД ЩЗ' },
+      { id: 'mammography', text: 'мамографія' },
+      { id: 'fgds', text: 'ФГДС' },
+      { id: 'colonoscopy', text: 'ФКС' },
+    ],
+    consultations: [
+      { id: 'neurologist-if-needed', text: 'невролог за потреби' },
+      { id: 'gynecologist-if-needed', text: 'гінеколог за потреби' },
+      { id: 'urologist-if-needed', text: 'уролог за потреби' },
+      { id: 'rehabilitation-specialist-if-needed', text: 'фахівець з реабілітації за потреби' },
+    ],
     lifestyle: [
       {
         id: 'pain-goal-function',

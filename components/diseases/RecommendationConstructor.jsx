@@ -12,24 +12,27 @@ const sections = [
 
 const labItemReplacements = {
   'creatinine-egfr': [{ id: 'creatinine', text: 'креатинін' }],
+  alt: [{ id: 'alt-ast', text: 'АЛТ / АСТ' }],
+  ast: [{ id: 'alt-ast', text: 'АЛТ / АСТ' }],
   'liver-tests': [
-    { id: 'alt', text: 'АЛТ' },
-    { id: 'ast', text: 'АСТ' },
-    { id: 'bilirubin-total', text: 'білірубін загальний' },
+    { id: 'alt-ast', text: 'АЛТ / АСТ' },
+    { id: 'bilirubin', text: 'білірубін' },
     { id: 'ggt', text: 'ГГТ' },
     { id: 'alkaline-phosphatase', text: 'лужна фосфатаза' },
   ],
+  'bilirubin-total': [{ id: 'bilirubin', text: 'білірубін' }],
   'glucose-hba1c': [
     { id: 'glucose', text: 'глюкоза крові' },
     { id: 'hba1c', text: 'HbA1c' },
   ],
   tsh: [
     { id: 'tsh', text: 'ТТГ' },
-    { id: 'free-t3', text: 'вільний Т3' },
-    { id: 'free-t4', text: 'вільний Т4' },
+    { id: 'free-t3-t4', text: 'вільний Т3 / вільний Т4' },
     { id: 'anti-tpo', text: 'АТ-ТПО' },
     { id: 'anti-tg', text: 'АТ-ТГ' },
   ],
+  'free-t3': [{ id: 'free-t3-t4', text: 'вільний Т3 / вільний Т4' }],
+  'free-t4': [{ id: 'free-t3-t4', text: 'вільний Т3 / вільний Т4' }],
 };
 
 function uniqueById(items) {

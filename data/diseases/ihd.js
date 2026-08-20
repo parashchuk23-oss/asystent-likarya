@@ -140,9 +140,8 @@ export const ihdDisease = {
     labs: [
       { id: 'cbc', text: 'ЗАК' },
       { id: 'creatinine', text: 'креатинін' },
-      { id: 'alt', text: 'АЛТ' },
-      { id: 'ast', text: 'АСТ' },
-      { id: 'bilirubin-total', text: 'білірубін загальний' },
+      { id: 'alt-ast', text: 'АЛТ / АСТ' },
+      { id: 'bilirubin', text: 'білірубін' },
       { id: 'ggt', text: 'ГГТ' },
       { id: 'alkaline-phosphatase', text: 'лужна фосфатаза' },
       { id: 'glucose', text: 'глюкоза крові' },
@@ -154,6 +153,8 @@ export const ihdDisease = {
       { id: 'ecg', text: 'ЕКГ' },
       { id: 'echo', text: 'ЕхоКГ' },
       { id: 'holter', text: 'Холтер-ЕКГ за показами' },
+      { id: 'carotid-ultrasound', text: 'УЗД судин шиї' },
+      { id: 'abdominal-ultrasound', text: 'УЗД ОЧП' },
       {
         id: 'ischemia-testing',
         text: 'тест з фізичним навантаженням / стрес-візуалізація / КТ-коронарографія за показами',
@@ -165,6 +166,7 @@ export const ihdDisease = {
         id: 'revascularization-consult',
         text: 'кардіохірург / інтервенційний кардіолог при показах до реваскуляризації',
       },
+      { id: 'endocrinologist-if-needed', text: 'ендокринолог за потреби' },
     ],
     lifestyle: [
       { id: 'mediterranean-diet', text: 'середземноморська дієта' },
