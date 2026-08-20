@@ -93,10 +93,10 @@ export const chronicPainDisease = {
       { id: 'colonoscopy', text: 'ФКС' },
     ],
     consultations: [
-      { id: 'neurologist-if-needed', text: 'невролог' },
-      { id: 'gynecologist-if-needed', text: 'гінеколог' },
-      { id: 'urologist-if-needed', text: 'уролог' },
-      { id: 'rehabilitation-specialist-if-needed', text: 'фахівець з реабілітації' },
+      { id: 'neurologist', text: 'невролог' },
+      { id: 'gynecologist', text: 'гінеколог' },
+      { id: 'urologist', text: 'уролог' },
+      { id: 'rehabilitation-specialist', text: 'фахівець з реабілітації' },
     ],
     lifestyle: [
       {
@@ -112,7 +112,7 @@ export const chronicPainDisease = {
         text: 'обговорити сон, стрес і тригери посилення болю',
       },
       {
-        id: 'rehabilitation-if-needed',
+        id: 'rehabilitation-support',
         text: 'фізична терапія, реабілітація або психологічна підтримка',
       },
     ],
@@ -122,8 +122,8 @@ export const chronicPainDisease = {
         text: 'знеболювальна терапія відповідно до типу болю, інтенсивності, віку, супутніх захворювань, функції нирок/печінки та ризиків',
       },
       {
-        id: 'neuropathic-pain-medication-if-needed',
-        text: 'при підозрі на нейропатичний біль — оцінити доцільність терапії нейропатичного болю згідно з чинними рекомендаціями',
+        id: 'neuropathic-pain-medication',
+        text: 'терапія нейропатичного болю згідно з чинними рекомендаціями',
       },
       {
         id: 'pain-therapy-reassessment',
