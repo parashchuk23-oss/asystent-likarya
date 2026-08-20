@@ -139,9 +139,14 @@ export const ihdDisease = {
   recommendationGroups: {
     labs: [
       { id: 'cbc', text: 'ЗАК' },
-      { id: 'creatinine-egfr', text: 'креатинін/eGFR' },
-      { id: 'liver-tests', text: 'печінкові проби' },
-      { id: 'glucose-hba1c', text: 'глюкоза / HbA1c' },
+      { id: 'creatinine', text: 'креатинін' },
+      { id: 'alt', text: 'АЛТ' },
+      { id: 'ast', text: 'АСТ' },
+      { id: 'bilirubin-total', text: 'білірубін загальний' },
+      { id: 'ggt', text: 'ГГТ' },
+      { id: 'alkaline-phosphatase', text: 'лужна фосфатаза' },
+      { id: 'glucose', text: 'глюкоза крові' },
+      { id: 'hba1c', text: 'HbA1c' },
       { id: 'lipid-panel', text: 'ліпідограма' },
       { id: 'electrolytes-na-k', text: 'електроліти (Na, K)' },
     ],

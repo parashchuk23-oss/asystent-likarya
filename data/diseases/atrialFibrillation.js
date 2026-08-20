@@ -104,11 +104,20 @@ export const atrialFibrillationDisease = {
   recommendationGroups: {
     labs: [
       { id: 'cbc', text: 'ЗАК' },
-      { id: 'creatinine-egfr', text: 'креатинін/eGFR' },
+      { id: 'creatinine', text: 'креатинін' },
       { id: 'electrolytes-na-k-mg', text: 'електроліти (Na, K, Mg за показами)' },
-      { id: 'liver-tests', text: 'печінкові проби' },
+      { id: 'alt', text: 'АЛТ' },
+      { id: 'ast', text: 'АСТ' },
+      { id: 'bilirubin-total', text: 'білірубін загальний' },
+      { id: 'ggt', text: 'ГГТ' },
+      { id: 'alkaline-phosphatase', text: 'лужна фосфатаза' },
       { id: 'tsh', text: 'ТТГ' },
-      { id: 'glucose-hba1c', text: 'глюкоза / HbA1c' },
+      { id: 'free-t3', text: 'вільний Т3' },
+      { id: 'free-t4', text: 'вільний Т4' },
+      { id: 'anti-tpo', text: 'АТ-ТПО' },
+      { id: 'anti-tg', text: 'АТ-ТГ' },
+      { id: 'glucose', text: 'глюкоза крові' },
+      { id: 'hba1c', text: 'HbA1c' },
     ],
     instrumental: [
       { id: 'ecg', text: 'ЕКГ' },

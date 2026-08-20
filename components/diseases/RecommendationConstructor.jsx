@@ -10,8 +10,47 @@ const sections = [
   { key: 'lifestyle', title: 'Режим і спосіб життя' },
 ];
 
+const labItemReplacements = {
+  'creatinine-egfr': [{ id: 'creatinine', text: 'креатинін' }],
+  'liver-tests': [
+    { id: 'alt', text: 'АЛТ' },
+    { id: 'ast', text: 'АСТ' },
+    { id: 'bilirubin-total', text: 'білірубін загальний' },
+    { id: 'ggt', text: 'ГГТ' },
+    { id: 'alkaline-phosphatase', text: 'лужна фосфатаза' },
+  ],
+  'glucose-hba1c': [
+    { id: 'glucose', text: 'глюкоза крові' },
+    { id: 'hba1c', text: 'HbA1c' },
+  ],
+  tsh: [
+    { id: 'tsh', text: 'ТТГ' },
+    { id: 'free-t3', text: 'вільний Т3' },
+    { id: 'free-t4', text: 'вільний Т4' },
+    { id: 'anti-tpo', text: 'АТ-ТПО' },
+    { id: 'anti-tg', text: 'АТ-ТГ' },
+  ],
+};
+
+function uniqueById(items) {
+  const seen = new Set();
+  return items.filter((item) => {
+    if (seen.has(item.id)) return false;
+    seen.add(item.id);
+    return true;
+  });
+}
+
+function normalizeItems(items, key) {
+  if (key !== 'labs') return items;
+
+  return uniqueById(
+    items.flatMap((item) => labItemReplacements[item.id] ?? [item]),
+  );
+}
+
 function getItems(disease, key) {
-  return disease?.recommendationGroups?.[key] ?? [];
+  return normalizeItems(disease?.recommendationGroups?.[key] ?? [], key);
 }
 
 function formatSelectedRecommendations({ disease, selectedIds, medicationChoices, medicationSelects }) {
@@ -130,9 +169,12 @@ export default function RecommendationConstructor({ disease, onAddRecommendation
                 if (!items.length) return null;
 
                 return (
-                  <details key={section.key} open className="rounded-lg border border-slate-200 bg-slate-50">
-                    <summary className="cursor-pointer px-3 py-2 text-sm font-semibold text-slate-800">
-                      {section.title}
+                  <details key={section.key} className="rounded-lg border border-slate-200 bg-slate-50">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 text-sm font-semibold text-slate-800">
+                      <span>{section.title}</span>
+                      <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-teal-700">
+                        {items.filter((item) => selectedIds.includes(item.id)).length} вибрано
+                      </span>
                     </summary>
                     <div className="grid gap-2 border-t border-slate-200 p-3 sm:grid-cols-2">
                       {items.map((item) => (
