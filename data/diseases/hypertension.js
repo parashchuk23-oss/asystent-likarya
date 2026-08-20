@@ -115,10 +115,10 @@ export const hypertensionDisease = {
     ],
     consultations: [
       { id: 'ophthalmologist-fundus', text: 'офтальмолог (огляд очного дна)' },
-      { id: 'cardiologist-if-needed', text: 'кардіолог за потреби' },
-      { id: 'endocrinologist-if-needed', text: 'ендокринолог за потреби' },
-      { id: 'nephrologist-if-needed', text: 'нефролог за потреби' },
-      { id: 'urologist-if-needed', text: 'уролог за потреби' },
+      { id: 'cardiologist-if-needed', text: 'кардіолог' },
+      { id: 'endocrinologist-if-needed', text: 'ендокринолог' },
+      { id: 'nephrologist-if-needed', text: 'нефролог' },
+      { id: 'urologist-if-needed', text: 'уролог' },
     ],
     lifestyle: [
       { id: 'salt-restriction', text: 'обмеження солі' },
@@ -166,12 +166,12 @@ export const hypertensionDisease = {
 - калій, натрій
 - ліпідограма
 - АЛТ, АСТ
-- ТТГ за показами
-- альбумін/креатинін сечі за показами
+- ТТГ
+- альбумін/креатинін сечі
 - ЕКГ
 - ЕхоКГ
-- огляд офтальмолога за показами
-- ДМАТ або домашній моніторинг АТ за потреби
+- огляд офтальмолога
+- ДМАТ або домашній моніторинг АТ
 
 4. Спосіб життя:
 - обмежити споживання солі;

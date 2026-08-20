@@ -105,7 +105,7 @@ export const atrialFibrillationDisease = {
     labs: [
       { id: 'cbc', text: 'ЗАК' },
       { id: 'creatinine', text: 'креатинін' },
-      { id: 'electrolytes-na-k-mg', text: 'електроліти (Na, K, Mg за показами)' },
+      { id: 'electrolytes-na-k-mg', text: 'електроліти (Na, K, Mg)' },
       { id: 'alt-ast', text: 'АЛТ / АСТ' },
       { id: 'bilirubin', text: 'білірубін' },
       { id: 'ggt', text: 'ГГТ' },
@@ -121,22 +121,22 @@ export const atrialFibrillationDisease = {
       { id: 'ecg', text: 'ЕКГ' },
       {
         id: 'holter-long-monitoring',
-        text: 'Холтер-ЕКГ / тривале моніторування ритму за показами',
+        text: 'Холтер-ЕКГ / тривале моніторування ритму',
       },
       { id: 'echo', text: 'ЕхоКГ' },
       { id: 'thyroid-ultrasound', text: 'УЗД ЩЗ' },
       { id: 'abdominal-ultrasound', text: 'УЗД ОЧП' },
     ],
     consultations: [
-      { id: 'arrhythmologist-if-needed', text: 'кардіолог / аритмолог за показами' },
-      { id: 'endocrinologist-if-needed', text: 'ендокринолог за потреби' },
+      { id: 'arrhythmologist-if-needed', text: 'кардіолог / аритмолог' },
+      { id: 'endocrinologist-if-needed', text: 'ендокринолог' },
     ],
     lifestyle: [
       { id: 'bp-control', text: 'контроль АТ' },
       { id: 'weight-control', text: 'контроль маси тіла' },
       { id: 'alcohol-limit', text: 'обмеження алкоголю' },
       { id: 'risk-factor-correction', text: 'корекція факторів ризику' },
-      { id: 'sleep-apnea-if-needed', text: 'оцінка апное сну за показами' },
+      { id: 'sleep-apnea-if-needed', text: 'оцінка апное сну' },
     ],
     medications: [
       {
@@ -149,13 +149,13 @@ export const atrialFibrillationDisease = {
 
 1. Підтвердити ФП за ЕКГ або даними тривалого моніторування ритму, якщо епізод не зафіксований на стандартній ЕКГ.
 
-2. Обстеження за клінічними показами:
+2. Обстеження за клінічною ситуацією:
 - ЕКГ у 12 відведеннях
-- Холтер-ЕКГ / тривале моніторування ритму за потреби
+- Холтер-ЕКГ / тривале моніторування ритму
 - ЕхоКГ
 - ЗАК
 - креатинін, eGFR / CrCl
-- калій, натрій, магній за показами
+- калій, натрій, магній
 - АЛТ, АСТ
 - ТТГ
 - глюкоза крові / HbA1c

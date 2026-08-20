@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import { getRecommendationConstructorConfig } from '../../data/diseases/recommendationConstructor';
 
 const sections = [
@@ -56,6 +56,10 @@ function getItems(disease, key) {
   return normalizeItems(disease?.recommendationGroups?.[key] ?? [], key);
 }
 
+function getDefaultSelectedIds(disease) {
+  return sections.flatMap((section) => getItems(disease, section.key).map((item) => item.id));
+}
+
 function formatSelectedRecommendations({ disease, selectedIds, medicationChoices, medicationSelects }) {
   const lines = [];
   const selectedSectionTexts = {};
@@ -74,6 +78,16 @@ function formatSelectedRecommendations({ disease, selectedIds, medicationChoices
     })
     .filter(Boolean)
     .map((option) => option.text);
+
+  if (
+    !selectedSectionTexts.labs?.length &&
+    !selectedSectionTexts.instrumental?.length &&
+    !selectedSectionTexts.consultations?.length &&
+    !selectedSectionTexts.lifestyle?.length &&
+    !selectedMedications.length
+  ) {
+    return '';
+  }
 
   lines.push(`Рекомендації (${disease.title}):`);
 
@@ -106,7 +120,10 @@ function formatSelectedRecommendations({ disease, selectedIds, medicationChoices
   return lines.join('\n').trim();
 }
 
-export default function RecommendationConstructor({ disease, onAddRecommendations }) {
+const RecommendationConstructor = forwardRef(function RecommendationConstructor(
+  { disease, onAddRecommendations, onGenerateRecommendations },
+  ref,
+) {
   const config = useMemo(() => getRecommendationConstructorConfig(disease.id), [disease.id]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [medicationChoices, setMedicationChoices] = useState({});
@@ -114,9 +131,25 @@ export default function RecommendationConstructor({ disease, onAddRecommendation
   const selectedCount = selectedIds.length + Object.values(medicationChoices).filter(Boolean).length;
 
   useEffect(() => {
-    setSelectedIds([]);
+    setSelectedIds(getDefaultSelectedIds(disease));
     setMedicationChoices({});
   }, [disease.id]);
+
+  function buildSelectedRecommendations() {
+    return formatSelectedRecommendations({
+      disease,
+      selectedIds,
+      medicationChoices,
+      medicationSelects: config.medicationSelects,
+    });
+  }
+
+  useImperativeHandle(ref, () => ({
+    generateRecommendations() {
+      const text = buildSelectedRecommendations();
+      onGenerateRecommendations(text);
+    },
+  }));
 
   function toggleItem(itemId) {
     setSelectedIds((current) => {
@@ -133,12 +166,7 @@ export default function RecommendationConstructor({ disease, onAddRecommendation
   }
 
   function addSelectedRecommendations() {
-    const text = formatSelectedRecommendations({
-      disease,
-      selectedIds,
-      medicationChoices,
-      medicationSelects: config.medicationSelects,
-    });
+    const text = buildSelectedRecommendations();
 
     if (!text) return;
     onAddRecommendations(text);
@@ -264,4 +292,6 @@ export default function RecommendationConstructor({ disease, onAddRecommendation
       </div>
     </div>
   );
-}
+});
+
+export default RecommendationConstructor;

@@ -141,14 +141,14 @@ export const heartFailureDisease = {
     instrumental: [
       { id: 'ecg', text: 'ЕКГ' },
       { id: 'echo', text: 'ЕхоКГ' },
-      { id: 'chest-xray-if-needed', text: 'рентген ОГК за показами' },
+      { id: 'chest-xray-if-needed', text: 'рентген ОГК' },
       { id: 'abdominal-ultrasound', text: 'УЗД ОЧП' },
       { id: 'thyroid-ultrasound', text: 'УЗД ЩЗ' },
     ],
     consultations: [
-      { id: 'cardiologist-if-needed', text: 'кардіолог за показами' },
-      { id: 'endocrinologist-if-needed', text: 'ендокринолог за потреби' },
-      { id: 'nephrologist-if-needed', text: 'нефролог за потреби' },
+      { id: 'cardiologist-if-needed', text: 'кардіолог' },
+      { id: 'endocrinologist-if-needed', text: 'ендокринолог' },
+      { id: 'nephrologist-if-needed', text: 'нефролог' },
     ],
     lifestyle: [
       { id: 'weight-control', text: 'контроль маси тіла' },
@@ -157,7 +157,7 @@ export const heartFailureDisease = {
         text: 'щоденне зважування при набряках / затримці рідини',
       },
       { id: 'salt-restriction', text: 'обмеження солі' },
-      { id: 'fluid-control-if-needed', text: 'контроль рідини за показами' },
+      { id: 'fluid-control-if-needed', text: 'контроль рідини' },
       {
         id: 'physical-activity',
         text: 'дозовані навантаження в межах переносимості',
@@ -190,7 +190,7 @@ export const heartFailureDisease = {
 
 1. Оцінити симптоми серцевої недостатності, наявність застою, масу тіла, АТ, ЧСС, сатурацію та толерантність до навантаження.
 
-2. Обстеження за клінічними показами:
+2. Обстеження за клінічною ситуацією:
 - ЕКГ у 12 відведеннях
 - ЕхоКГ з оцінкою ФВ ЛШ, камер серця, клапанів і тиску в легеневій артерії
 - ЗАК
@@ -199,9 +199,9 @@ export const heartFailureDisease = {
 - АЛТ, АСТ
 - глюкоза крові / HbA1c
 - ліпідограма
-- ТТГ за показами
+- ТТГ
 - NT-proBNP / BNP за наявності та клінічної потреби
-- рентгенографія ОГК або інша візуалізація за показами
+- рентгенографія ОГК або інша візуалізація
 
 3. Уточнити причину СН: ІХС, артеріальна гіпертензія, клапанна патологія, аритмія, кардіоміопатія, токсичні або інші фактори.
 

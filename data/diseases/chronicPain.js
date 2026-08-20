@@ -93,10 +93,10 @@ export const chronicPainDisease = {
       { id: 'colonoscopy', text: 'ФКС' },
     ],
     consultations: [
-      { id: 'neurologist-if-needed', text: 'невролог за потреби' },
-      { id: 'gynecologist-if-needed', text: 'гінеколог за потреби' },
-      { id: 'urologist-if-needed', text: 'уролог за потреби' },
-      { id: 'rehabilitation-specialist-if-needed', text: 'фахівець з реабілітації за потреби' },
+      { id: 'neurologist-if-needed', text: 'невролог' },
+      { id: 'gynecologist-if-needed', text: 'гінеколог' },
+      { id: 'urologist-if-needed', text: 'уролог' },
+      { id: 'rehabilitation-specialist-if-needed', text: 'фахівець з реабілітації' },
     ],
     lifestyle: [
       {
@@ -113,7 +113,7 @@ export const chronicPainDisease = {
       },
       {
         id: 'rehabilitation-if-needed',
-        text: 'за потреби — фізична терапія, реабілітація або психологічна підтримка',
+        text: 'фізична терапія, реабілітація або психологічна підтримка',
       },
     ],
     medications: [
