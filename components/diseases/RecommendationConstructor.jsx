@@ -60,68 +60,39 @@ function getDefaultSelectedIds(disease) {
   return sections.flatMap((section) => getItems(disease, section.key).map((item) => item.id));
 }
 
-function formatSelectedRecommendations({ disease, selectedIds, medicationChoices, medicationSelects }) {
-  const lines = [];
-  const selectedSectionTexts = {};
+function getSelectedRecommendationPayload({ disease, selectedIds, medicationChoices, medicationSelects }) {
+  const selectedSections = {};
 
   sections.forEach((section) => {
     const selectedItems = getItems(disease, section.key).filter((item) => selectedIds.includes(item.id));
     if (selectedItems.length) {
-      selectedSectionTexts[section.key] = selectedItems.map((item) => item.text);
+      selectedSections[section.key] = selectedItems;
     }
   });
 
   const selectedMedications = medicationSelects
     .map((select) => {
       const selectedValue = medicationChoices[select.id];
-      return select.options.find((option) => option.value === selectedValue);
+      const selectedOption = select.options.find((option) => option.value === selectedValue);
+      if (!selectedOption) return null;
+
+      return {
+        id: `${select.id}-${selectedOption.value}`,
+        text: selectedOption.text,
+      };
     })
-    .filter(Boolean)
-    .map((option) => option.text);
+    .filter(Boolean);
 
-  if (
-    !selectedSectionTexts.labs?.length &&
-    !selectedSectionTexts.instrumental?.length &&
-    !selectedSectionTexts.consultations?.length &&
-    !selectedSectionTexts.lifestyle?.length &&
-    !selectedMedications.length
-  ) {
-    return '';
-  }
-
-  lines.push(`Рекомендації (${disease.title}):`);
-
-  if (selectedSectionTexts.labs?.length || selectedSectionTexts.instrumental?.length || selectedSectionTexts.consultations?.length) {
-    lines.push('');
-    lines.push('1. Дообстеження');
-    if (selectedSectionTexts.labs?.length) {
-      lines.push(`Лабораторні: ${selectedSectionTexts.labs.join(', ')}.`);
-    }
-    if (selectedSectionTexts.instrumental?.length) {
-      lines.push(`Інструментальні: ${selectedSectionTexts.instrumental.join(', ')}.`);
-    }
-    if (selectedSectionTexts.consultations?.length) {
-      lines.push(`Консультації: ${selectedSectionTexts.consultations.join(', ')}.`);
-    }
-  }
-
-  if (selectedSectionTexts.lifestyle?.length) {
-    lines.push('');
-    lines.push('2. Режим і спосіб життя');
-    selectedSectionTexts.lifestyle.forEach((item) => lines.push(`- ${item};`));
-  }
-
-  if (selectedMedications.length) {
-    lines.push('');
-    lines.push('3. Лікарські призначення');
-    selectedMedications.forEach((item) => lines.push(`- ${item}`));
-  }
-
-  return lines.join('\n').trim();
+  return {
+    diseaseId: disease.id,
+    diseaseTitle: disease.title,
+    sections: selectedSections,
+    medications: selectedMedications,
+  };
 }
 
 const RecommendationConstructor = forwardRef(function RecommendationConstructor(
-  { disease, onAddRecommendations, onGenerateRecommendations },
+  { disease, onAddRecommendations },
   ref,
 ) {
   const config = useMemo(() => getRecommendationConstructorConfig(disease.id), [disease.id]);
@@ -135,8 +106,8 @@ const RecommendationConstructor = forwardRef(function RecommendationConstructor(
     setMedicationChoices({});
   }, [disease.id]);
 
-  function buildSelectedRecommendations() {
-    return formatSelectedRecommendations({
+  function buildSelectedRecommendationPayload() {
+    return getSelectedRecommendationPayload({
       disease,
       selectedIds,
       medicationChoices,
@@ -145,9 +116,8 @@ const RecommendationConstructor = forwardRef(function RecommendationConstructor(
   }
 
   useImperativeHandle(ref, () => ({
-    generateRecommendations() {
-      const text = buildSelectedRecommendations();
-      onGenerateRecommendations(text);
+    getSelectedRecommendationPayload() {
+      return buildSelectedRecommendationPayload();
     },
   }));
 
@@ -166,10 +136,10 @@ const RecommendationConstructor = forwardRef(function RecommendationConstructor(
   }
 
   function addSelectedRecommendations() {
-    const text = buildSelectedRecommendations();
+    const payload = buildSelectedRecommendationPayload();
 
-    if (!text) return;
-    onAddRecommendations(text);
+    if (!selectedCount) return;
+    onAddRecommendations(payload);
   }
 
   const labItems = getItems(disease, 'labs');

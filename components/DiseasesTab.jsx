@@ -17,6 +17,12 @@ const diseases = [
   chronicPainDisease,
 ];
 
+const recommendationSections = [
+  { key: 'labs', title: 'Лабораторні' },
+  { key: 'instrumental', title: 'Інструментальні' },
+  { key: 'consultations', title: 'Консультації' },
+];
+
 async function writeClipboardText(text) {
   try {
     await navigator.clipboard.writeText(text);
@@ -43,10 +49,103 @@ function resizeTextarea(textarea) {
   textarea.style.height = `${textarea.scrollHeight}px`;
 }
 
+function getRecommendationEntryId(sectionKey, itemId) {
+  return `${sectionKey}:${itemId}`;
+}
+
+function getFilteredRecommendationPayload(payload, existingIds) {
+  const sections = {};
+  const addedIds = [];
+
+  recommendationSections.forEach((section) => {
+    const filteredItems = (payload.sections?.[section.key] ?? []).filter((item) => {
+      const entryId = getRecommendationEntryId(section.key, item.id);
+      return !existingIds.has(entryId);
+    });
+
+    if (filteredItems.length) {
+      sections[section.key] = filteredItems;
+      filteredItems.forEach((item) => {
+        addedIds.push(getRecommendationEntryId(section.key, item.id));
+      });
+    }
+  });
+
+  const lifestyleItems = (payload.sections?.lifestyle ?? []).filter((item) => {
+    const entryId = getRecommendationEntryId('lifestyle', item.id);
+    return !existingIds.has(entryId);
+  });
+
+  if (lifestyleItems.length) {
+    sections.lifestyle = lifestyleItems;
+    lifestyleItems.forEach((item) => {
+      addedIds.push(getRecommendationEntryId('lifestyle', item.id));
+    });
+  }
+
+  const medications = (payload.medications ?? []).filter((item) => {
+    const entryId = getRecommendationEntryId('medications', item.id);
+    return !existingIds.has(entryId);
+  });
+
+  if (medications.length) {
+    medications.forEach((item) => {
+      addedIds.push(getRecommendationEntryId('medications', item.id));
+    });
+  }
+
+  return {
+    payload: {
+      ...payload,
+      sections,
+      medications,
+    },
+    addedIds,
+  };
+}
+
+function formatRecommendationPayload(payload) {
+  const lines = [];
+  const hasDiagnostics = recommendationSections.some(
+    (section) => payload.sections?.[section.key]?.length,
+  );
+  const hasLifestyle = Boolean(payload.sections?.lifestyle?.length);
+  const hasMedications = Boolean(payload.medications?.length);
+
+  if (!hasDiagnostics && !hasLifestyle && !hasMedications) return '';
+
+  lines.push(`Рекомендації (${payload.diseaseTitle}):`);
+
+  if (hasDiagnostics) {
+    lines.push('');
+    lines.push('1. Дообстеження');
+    recommendationSections.forEach((section) => {
+      const items = payload.sections?.[section.key] ?? [];
+      if (!items.length) return;
+      lines.push(`${section.title}: ${items.map((item) => item.text).join(', ')}.`);
+    });
+  }
+
+  if (hasLifestyle) {
+    lines.push('');
+    lines.push('2. Режим і спосіб життя');
+    payload.sections.lifestyle.forEach((item) => lines.push(`- ${item.text};`));
+  }
+
+  if (hasMedications) {
+    lines.push('');
+    lines.push('3. Лікарські призначення');
+    payload.medications.forEach((item) => lines.push(`- ${item.text}`));
+  }
+
+  return lines.join('\n').trim();
+}
+
 export default function DiseasesTab() {
   const [diagnosisText, setDiagnosisText] = useState('');
   const [icdDiagnosisText, setIcdDiagnosisText] = useState('');
   const [generatedRecommendationsText, setGeneratedRecommendationsText] = useState('');
+  const [addedRecommendationIds, setAddedRecommendationIds] = useState([]);
   const [copied, setCopied] = useState(false);
   const [copiedIcd, setCopiedIcd] = useState(false);
   const [copiedGeneratedRecommendations, setCopiedGeneratedRecommendations] = useState(false);
@@ -68,6 +167,29 @@ export default function DiseasesTab() {
     resizeTextarea(icdDiagnosisTextareaRef.current);
   }, [icdDiagnosisText]);
 
+  function appendRecommendationPayload(payload) {
+    if (!payload) return;
+
+    setAddedRecommendationIds((currentIds) => {
+      const existingIds = new Set(currentIds);
+      const { payload: filteredPayload, addedIds } = getFilteredRecommendationPayload(
+        payload,
+        existingIds,
+      );
+      const recommendationText = formatRecommendationPayload(filteredPayload);
+
+      if (!recommendationText || !addedIds.length) return currentIds;
+
+      setGeneratedRecommendationsText((current) => {
+        const normalizedCurrent = current.trim();
+        if (!normalizedCurrent) return recommendationText;
+        return `${normalizedCurrent}\n\n${recommendationText}`;
+      });
+
+      return [...currentIds, ...addedIds];
+    });
+  }
+
   function appendDiagnosis(fragment, icd10Fragment = '') {
     const normalizedFragment = fragment.trim();
     if (!normalizedFragment) return;
@@ -86,6 +208,8 @@ export default function DiseasesTab() {
       if (!normalizedCurrent) return normalizedIcd10Fragment;
       return `${normalizedCurrent}\n${normalizedIcd10Fragment}`;
     });
+
+    appendRecommendationPayload(recommendationConstructorRef.current?.getSelectedRecommendationPayload());
   }
 
   async function copyDiagnosis() {
@@ -112,17 +236,6 @@ export default function DiseasesTab() {
     setIcdCopyError(false);
     setCopiedIcd(true);
     window.setTimeout(() => setCopiedIcd(false), 1600);
-  }
-
-  function appendRecommendations(text) {
-    const normalizedText = text.trim();
-    if (!normalizedText) return;
-
-    setGeneratedRecommendationsText((current) => {
-      const normalizedCurrent = current.trim();
-      if (!normalizedCurrent) return normalizedText;
-      return `${normalizedCurrent}\n\n${normalizedText}`;
-    });
   }
 
   async function copyGeneratedRecommendations() {
@@ -218,10 +331,11 @@ export default function DiseasesTab() {
           </div>
           <button
             type="button"
-            onClick={() => {
+          onClick={() => {
               setDiagnosisText('');
               setIcdDiagnosisText('');
               setGeneratedRecommendationsText('');
+              setAddedRecommendationIds([]);
             }}
             className="rounded-md border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-rose-200 hover:text-rose-700"
           >
@@ -300,8 +414,7 @@ export default function DiseasesTab() {
         <RecommendationConstructor
           ref={recommendationConstructorRef}
           disease={activeDisease}
-          onAddRecommendations={appendRecommendations}
-          onGenerateRecommendations={setGeneratedRecommendationsText}
+          onAddRecommendations={appendRecommendationPayload}
         />
 
         <div className="mt-6 border-t border-slate-100 pt-5">
@@ -317,16 +430,25 @@ export default function DiseasesTab() {
             </div>
             <button
               type="button"
-              onClick={() => recommendationConstructorRef.current?.generateRecommendations()}
+              onClick={() =>
+                appendRecommendationPayload(
+                  recommendationConstructorRef.current?.getSelectedRecommendationPayload(),
+                )
+              }
               className="rounded-md bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-slate-300"
             >
-              Сформувати рекомендації
+              Додати вибране
             </button>
           </div>
 
           <textarea
             value={generatedRecommendationsText}
-            onChange={(event) => setGeneratedRecommendationsText(event.target.value)}
+            onChange={(event) => {
+              setGeneratedRecommendationsText(event.target.value);
+              if (!event.target.value.trim()) {
+                setAddedRecommendationIds([]);
+              }
+            }}
             rows={12}
             placeholder="Тут зʼявиться зведений шаблон рекомендацій після натискання кнопки."
             className="mt-4 min-h-[260px] w-full rounded-md border border-slate-300 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"

@@ -198,6 +198,10 @@ export default function DiseaseTemplateCard({ disease, onAddDiagnosis }) {
     });
   }
 
+  function resetConstructor() {
+    setConstructorState(getInitialConstructorState(disease));
+  }
+
   return (
     <article>
       <div className="p-5">
@@ -296,13 +300,22 @@ export default function DiseaseTemplateCard({ disease, onAddDiagnosis }) {
                   </div>
                 ) : null}
               </div>
-              <button
-                type="button"
-                onClick={() => onAddDiagnosis(constructedDiagnosis, constructedIcd10, disease.id)}
-                className="rounded-md bg-blue-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-800"
-              >
-                Додати до діагнозу
-              </button>
+              <div className="flex shrink-0 flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => onAddDiagnosis(constructedDiagnosis, constructedIcd10, disease.id)}
+                  className="rounded-md bg-blue-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-800"
+                >
+                  Додати до діагнозу
+                </button>
+                <button
+                  type="button"
+                  onClick={resetConstructor}
+                  className="rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-rose-200 hover:text-rose-700"
+                >
+                  Очистити
+                </button>
+              </div>
             </div>
           </div>
         </section>
