@@ -6,6 +6,7 @@ import { ihdDisease } from '../data/diseases/ihd';
 import { heartFailureDisease } from '../data/diseases/heartFailure';
 import { atrialFibrillationDisease } from '../data/diseases/atrialFibrillation';
 import { chronicPainDisease } from '../data/diseases/chronicPain';
+import { lipidDisorderDisease } from '../data/diseases/lipidDisorder';
 import DiseaseTemplateCard from './diseases/DiseaseTemplateCard';
 import RecommendationConstructor from './diseases/RecommendationConstructor';
 
@@ -14,6 +15,7 @@ const diseases = [
   ihdDisease,
   heartFailureDisease,
   atrialFibrillationDisease,
+  lipidDisorderDisease,
   chronicPainDisease,
 ];
 

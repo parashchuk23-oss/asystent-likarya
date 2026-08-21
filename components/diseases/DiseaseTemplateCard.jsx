@@ -155,6 +155,20 @@ function buildDiagnosisFromState(disease, state) {
     return `${constructor.textPrefix}, ${detailParts.join(', ')}.`;
   }
 
+  if (disease.id === 'lipidDisorder') {
+    const measurements = [
+      state.ldl?.trim() ? `ЛПНЩ ${state.ldl.trim()} ммоль/л` : '',
+      state.triglycerides?.trim() ? `ТГ ${state.triglycerides.trim()} ммоль/л` : '',
+    ].filter(Boolean);
+    const measurementsPart = measurements.length ? ` (${measurements.join(', ')})` : '';
+    const riskPart = state.cvRisk?.trim()
+      ? ` Серцево-судинний ризик ${state.cvRisk.trim()}.`
+      : '';
+    const scorePart = state.score?.trim() ? ` SCORE ${state.score.trim()}.` : '';
+
+    return `${state.lipidType}${measurementsPart}.${riskPart}${scorePart}`.trim();
+  }
+
   const fallbackParts = constructor.selectFields
     .map((field) => state[field.id])
     .filter(Boolean);
