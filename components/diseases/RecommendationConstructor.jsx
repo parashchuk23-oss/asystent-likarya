@@ -290,6 +290,10 @@ const RecommendationConstructor = forwardRef(function RecommendationConstructor(
                   </label>
                 ))}
               </div>
+              <p className="mt-3 text-xs leading-5 text-slate-500">
+                Наведені схеми є прикладами для редагування лікарем. Остаточна схема, доза,
+                кратність і цілі лікування визначаються індивідуально.
+              </p>
             </div>
           ) : null}
 
