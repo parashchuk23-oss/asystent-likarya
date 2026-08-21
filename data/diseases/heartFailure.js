@@ -134,8 +134,6 @@ export const heartFailureDisease = {
       { id: 'lipid-panel', text: 'ліпідограма' },
       { id: 'tsh', text: 'ТТГ' },
       { id: 'free-t3-t4', text: 'вільний Т3 / вільний Т4' },
-      { id: 'anti-tpo', text: 'АТ-ТПО' },
-      { id: 'anti-tg', text: 'АТ-ТГ' },
       { id: 'nt-probnp-bnp', text: 'NT-proBNP / BNP' },
     ],
     instrumental: [

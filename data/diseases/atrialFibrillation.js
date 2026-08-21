@@ -112,8 +112,6 @@ export const atrialFibrillationDisease = {
       { id: 'alkaline-phosphatase', text: 'лужна фосфатаза' },
       { id: 'tsh', text: 'ТТГ' },
       { id: 'free-t3-t4', text: 'вільний Т3 / вільний Т4' },
-      { id: 'anti-tpo', text: 'АТ-ТПО' },
-      { id: 'anti-tg', text: 'АТ-ТГ' },
       { id: 'glucose', text: 'глюкоза крові' },
       { id: 'hba1c', text: 'HbA1c' },
     ],

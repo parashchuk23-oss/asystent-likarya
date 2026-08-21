@@ -28,8 +28,6 @@ const labItemReplacements = {
   tsh: [
     { id: 'tsh', text: 'ТТГ' },
     { id: 'free-t3-t4', text: 'вільний Т3 / вільний Т4' },
-    { id: 'anti-tpo', text: 'АТ-ТПО' },
-    { id: 'anti-tg', text: 'АТ-ТГ' },
   ],
   'free-t3': [{ id: 'free-t3-t4', text: 'вільний Т3 / вільний Т4' }],
   'free-t4': [{ id: 'free-t3-t4', text: 'вільний Т3 / вільний Т4' }],
