@@ -196,16 +196,16 @@ function CarotidForm({ title, data, onChange }) {
           <h4 className="mb-3 text-sm font-bold text-slate-950">{title}: загальна сонна артерія</h4>
           <div className="grid gap-3 sm:grid-cols-3">
             <SelectField label="Кровотік" value={data.ccaFlow} onChange={(value) => update('ccaFlow', value)} items={options.flow} />
-            <TextField label="PSV, см/с" value={data.ccaPsv} onChange={(value) => update('ccaPsv', value)} />
-            <TextField label="EDV, см/с" value={data.ccaEdv} onChange={(value) => update('ccaEdv', value)} />
+            <TextField label="PSV, см/с" value={data.ccaPsv} onChange={(value) => update('ccaPsv', value)} hint="Орієнтир ЗСА: приблизно 50-125 см/с" />
+            <TextField label="EDV, см/с" value={data.ccaEdv} onChange={(value) => update('ccaEdv', value)} hint="Орієнтир ЗСА: приблизно 10-40 см/с" />
           </div>
         </div>
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
           <h4 className="mb-3 text-sm font-bold text-slate-950">{title}: внутрішня сонна артерія</h4>
           <div className="grid gap-3 sm:grid-cols-3">
             <SelectField label="Кровотік" value={data.icaFlow} onChange={(value) => update('icaFlow', value)} items={options.flow} />
-            <TextField label="PSV, см/с" value={data.icaPsv} onChange={(value) => update('icaPsv', value)} />
-            <TextField label="EDV, см/с" value={data.icaEdv} onChange={(value) => update('icaEdv', value)} />
+            <TextField label="PSV, см/с" value={data.icaPsv} onChange={(value) => update('icaPsv', value)} hint="Орієнтир ВСА: <125 см/с без значущого стенозу" />
+            <TextField label="EDV, см/с" value={data.icaEdv} onChange={(value) => update('icaEdv', value)} hint="Орієнтир ВСА: <40 см/с" />
             <TextField label="Мінімальний просвіт, мм" value={data.icaMinimalLumen} onChange={(value) => update('icaMinimalLumen', value)} />
             <TextField label="Дистальний нормальний просвіт, мм" value={data.icaDistalLumen} onChange={(value) => update('icaDistalLumen', value)} />
             <div className="rounded-md border border-teal-200 bg-teal-50 px-3 py-2">
@@ -223,7 +223,7 @@ function CarotidForm({ title, data, onChange }) {
           <h4 className="mb-3 text-sm font-bold text-slate-950">{title}: зовнішня сонна артерія</h4>
           <div className="grid gap-3 sm:grid-cols-2">
             <SelectField label="Кровотік" value={data.ecaFlow} onChange={(value) => update('ecaFlow', value)} items={options.flow} />
-            <TextField label="PSV, см/с" value={data.ecaPsv} onChange={(value) => update('ecaPsv', value)} />
+            <TextField label="PSV, см/с" value={data.ecaPsv} onChange={(value) => update('ecaPsv', value)} hint="Орієнтир ЗовСА: часто 70-150 см/с; важливий спектр і локальне прискорення" />
           </div>
         </div>
       </div>
@@ -307,7 +307,7 @@ function VertebralForm({ right, left, onRightChange, onLeftChange }) {
           <div className="grid gap-3">
             <TextField label="Діаметр, мм" value={data.diameter} onChange={(value) => update('diameter', value)} hint="Орієнтир: приблизно 3-4 мм; асиметрію оцінює лікар" />
             <SelectField label="Напрямок кровотоку" value={data.direction} onChange={(value) => update('direction', value)} items={options.vertebralDirection} />
-            <TextField label="PSV, см/с" value={data.psv} onChange={(value) => update('psv', value)} />
+            <TextField label="PSV, см/с" value={data.psv} onChange={(value) => update('psv', value)} hint="Орієнтир хребтової артерії: приблизно 20-60 см/с" />
             <TextField label="Додатково" value={data.notes} onChange={(value) => update('notes', value)} />
           </div>
         </div>
