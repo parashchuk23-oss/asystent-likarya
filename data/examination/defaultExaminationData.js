@@ -71,6 +71,13 @@ export const defaultExaminationData = {
   pediatricPediculosis: 'ознак педикульозу не виявлено',
   pediatricPhysicalEducationGroup: 'основна група',
   pediatricConclusion: 'Ознак гострого захворювання на момент огляду не виявлено.',
+  gynExternalGenitals: 'зовнішні статеві органи без особливостей',
+  gynSpeculumExam: 'шийка матки без видимих патологічних змін',
+  gynDischarge: 'виділення фізіологічні',
+  gynUterus: 'матка нормальних розмірів, рухома, безболісна',
+  gynAdnexa: 'придатки без особливостей',
+  gynTenderness: 'болючість при зміщенні шийки матки відсутня',
+  gynExamNote: '',
   customTitle: 'Додатковий статус',
   customText: '',
 };

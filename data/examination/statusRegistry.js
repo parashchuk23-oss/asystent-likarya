@@ -20,6 +20,13 @@ export const implementedExaminationStatuses = [
     defaultMode: 'expanded',
     modes: ['standard', 'expanded'],
   },
+  {
+    id: 'gynecological',
+    title: 'Гінекологічний статус',
+    description: 'Зовнішні статеві органи, огляд у дзеркалах, виділення, бімануальне дослідження.',
+    defaultMode: 'expanded',
+    modes: ['standard', 'expanded'],
+  },
 ];
 
 export const plannedExaminationStatuses = [

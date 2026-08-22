@@ -1,11 +1,13 @@
 import AccordionSection from '../AccordionSection';
 import { examinationStatusMap } from '../../data/examination/statusRegistry';
 import GeneralStatusForm from './statuses/GeneralStatusForm';
+import GynecologicalStatusForm from './statuses/GynecologicalStatusForm';
 import NeurologicalStatusForm from './statuses/NeurologicalStatusForm';
 import PediatricPreventiveStatusForm from './statuses/PediatricPreventiveStatusForm';
 
 const statusForms = {
   general: GeneralStatusForm,
+  gynecological: GynecologicalStatusForm,
   neurological: NeurologicalStatusForm,
   'pediatric-preventive': PediatricPreventiveStatusForm,
 };

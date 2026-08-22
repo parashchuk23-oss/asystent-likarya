@@ -97,6 +97,21 @@ function buildNeurologicalStatus(formData, mode) {
   return rows.filter(hasValue);
 }
 
+function buildGynecologicalStatus(formData) {
+  const rows = [
+    'гінекологічний статус',
+    formData.gynExternalGenitals,
+    formData.gynSpeculumExam,
+    formData.gynDischarge,
+    formData.gynUterus,
+    formData.gynAdnexa,
+    formData.gynTenderness,
+    formData.gynExamNote,
+  ];
+
+  return rows.filter(hasValue);
+}
+
 function buildPediatricPreventiveStatus(formData) {
   const pediatricVision = joinParts([
     formData.pediatricVisionOd && `OD ${formData.pediatricVisionOd}`,
@@ -172,6 +187,7 @@ function buildPediatricPreventiveStatus(formData) {
 
 const statusBuilders = {
   general: buildGeneralStatus,
+  gynecological: buildGynecologicalStatus,
   neurological: buildNeurologicalStatus,
   'pediatric-preventive': buildPediatricPreventiveStatus,
 };
