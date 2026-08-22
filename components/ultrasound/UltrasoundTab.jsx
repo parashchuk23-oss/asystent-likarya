@@ -4,6 +4,7 @@ import { useState } from 'react';
 import AbdomenUltrasoundModule from './abdomen/AbdomenUltrasoundModule';
 import BreastUltrasoundModule from './breast/BreastUltrasoundModule';
 import EchoUltrasoundModule from './echo/EchoUltrasoundModule';
+import NeckVesselsUltrasoundModule from './neck-vessels/NeckVesselsUltrasoundModule';
 import RenalUltrasoundModule from './renal/RenalUltrasoundModule';
 import ThyroidUltrasoundModule from './ThyroidUltrasoundModule';
 
@@ -42,6 +43,13 @@ const ultrasoundModules = [
     title: 'Молочні залози',
     description:
       'Конструктор протоколу УЗД молочних залоз з описом утворень, регіонарних лімфовузлів, ACR BI-RADS, висновком і рекомендаціями.',
+  },
+  {
+    id: 'neckVessels',
+    label: 'Судини шиї',
+    title: 'Судини шиї',
+    description:
+      'Конструктор протоколу УЗД судин шиї: сонні артерії, хребтові артерії, внутрішні яремні вени, бляшки, стенози, висновок і рекомендації.',
   },
 ];
 
@@ -85,6 +93,8 @@ export default function UltrasoundTab() {
             <EchoUltrasoundModule />
           ) : activeModuleId === 'breast' ? (
             <BreastUltrasoundModule />
+          ) : activeModuleId === 'neckVessels' ? (
+            <NeckVesselsUltrasoundModule />
           ) : (
             <ThyroidUltrasoundModule />
           )}
