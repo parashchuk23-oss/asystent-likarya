@@ -206,9 +206,15 @@ function CarotidForm({ title, data, onChange }) {
             <SelectField label="Кровотік" value={data.icaFlow} onChange={(value) => update('icaFlow', value)} items={options.flow} />
             <TextField label="PSV, см/с" value={data.icaPsv} onChange={(value) => update('icaPsv', value)} hint="Орієнтир ВСА: <125 см/с без значущого стенозу" />
             <TextField label="EDV, см/с" value={data.icaEdv} onChange={(value) => update('icaEdv', value)} hint="Орієнтир ВСА: <40 см/с" />
-            <TextField label="Мінімальний просвіт, мм" value={data.icaMinimalLumen} onChange={(value) => update('icaMinimalLumen', value)} />
-            <TextField label="Дистальний нормальний просвіт, мм" value={data.icaDistalLumen} onChange={(value) => update('icaDistalLumen', value)} />
-            <div className="rounded-md border border-teal-200 bg-teal-50 px-3 py-2">
+            <label className="block">
+              <span className="mb-1 flex min-h-[2.5rem] items-end text-sm font-semibold leading-5 text-slate-700">Мінімальний просвіт, мм</span>
+              <input value={data.icaMinimalLumen} onChange={(event) => update('icaMinimalLumen', event.target.value)} className={inputClass} />
+            </label>
+            <label className="block">
+              <span className="mb-1 flex min-h-[2.5rem] items-end text-sm font-semibold leading-5 text-slate-700">Дистальний нормальний просвіт, мм</span>
+              <input value={data.icaDistalLumen} onChange={(event) => update('icaDistalLumen', event.target.value)} className={inputClass} />
+            </label>
+            <div className="mt-[2.75rem] rounded-md border border-teal-200 bg-teal-50 px-3 py-2">
               <span className="block text-xs font-bold uppercase tracking-[0.14em] text-teal-700">NASCET</span>
               <span className="mt-1 block text-sm font-bold text-slate-950">
                 {icaStenosis === null ? 'введіть 2 діаметри' : `${icaStenosis}%`}
