@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import AbdomenUltrasoundModule from './abdomen/AbdomenUltrasoundModule';
+import BreastUltrasoundModule from './breast/BreastUltrasoundModule';
 import EchoUltrasoundModule from './echo/EchoUltrasoundModule';
 import RenalUltrasoundModule from './renal/RenalUltrasoundModule';
 import ThyroidUltrasoundModule from './ThyroidUltrasoundModule';
@@ -34,6 +35,13 @@ const ultrasoundModules = [
     title: 'Ехокардіографія',
     description:
       'Структурований протокол трансторакального УЗД серця з режимами стандартного ЕхоКГ та швидкого Ехо / POCUS для практичної роботи.',
+  },
+  {
+    id: 'breast',
+    label: 'Молочні залози',
+    title: 'Молочні залози',
+    description:
+      'Конструктор протоколу УЗД молочних залоз з описом утворень, регіонарних лімфовузлів, ACR BI-RADS, висновком і рекомендаціями.',
   },
 ];
 
@@ -75,6 +83,8 @@ export default function UltrasoundTab() {
             <RenalUltrasoundModule />
           ) : activeModuleId === 'echo' ? (
             <EchoUltrasoundModule />
+          ) : activeModuleId === 'breast' ? (
+            <BreastUltrasoundModule />
           ) : (
             <ThyroidUltrasoundModule />
           )}
