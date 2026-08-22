@@ -91,6 +91,14 @@ function formatSpeed(value) {
   return value ? `${value} см/с` : '';
 }
 
+export function calculateNascetStenosis(minimalLumen, distalLumen) {
+  const minimal = Number(minimalLumen);
+  const distal = Number(distalLumen);
+
+  if (!minimal || !distal || minimal <= 0 || distal <= 0 || minimal > distal) return null;
+  return Math.round((1 - minimal / distal) * 100);
+}
+
 function stenosisText(value) {
   const stenosis = Number(value);
   if (!stenosis) return '';
@@ -99,17 +107,27 @@ function stenosisText(value) {
 }
 
 function hasSignificantStenosis(plaque) {
-  return Number(plaque.stenosis) >= 50;
+  return Number(getPlaqueStenosis(plaque)) >= 50;
 }
 
 function sideHasAtherosclerosis(side) {
-  return side.bifurcation === 'plaque' || Number(side.icaStenosis) > 0;
+  return side.bifurcation === 'plaque' || Number(getSideIcaStenosis(side)) > 0;
+}
+
+function getSideIcaStenosis(side) {
+  return calculateNascetStenosis(side.icaMinimalLumen, side.icaDistalLumen);
+}
+
+function getPlaqueStenosis(plaque) {
+  return calculateNascetStenosis(plaque.minimalLumen, plaque.distalLumen);
 }
 
 function generateCarotidSide(sideName, side) {
+  const icaStenosis = getSideIcaStenosis(side);
+
   return [
     sentence([
-      `${sideName} сонна система`,
+      `${sideName}: сонні артерії`,
       label('course', side.course),
       label('intima', side.intima),
       side.imt ? `КІМ ${formatMm(side.imt)}` : '',
@@ -126,13 +144,20 @@ function generateCarotidSide(sideName, side) {
       label('flow', side.icaFlow),
       side.icaPsv ? `PSV ${formatSpeed(side.icaPsv)}` : '',
       side.icaEdv ? `EDV ${formatSpeed(side.icaEdv)}` : '',
-      stenosisText(side.icaStenosis),
+      icaStenosis !== null ? `${stenosisText(icaStenosis)} за NASCET` : '',
+    ]),
+    sentence([
+      'Зовнішня сонна артерія',
+      label('flow', side.ecaFlow),
+      side.ecaPsv ? `PSV ${formatSpeed(side.ecaPsv)}` : '',
     ]),
     side.notes ? sentence([side.notes]) : '',
   ].filter(Boolean).join('\n');
 }
 
 function generatePlaque(plaque, index) {
+  const stenosis = getPlaqueStenosis(plaque);
+
   return sentence([
     `Бляшка ${index + 1}`,
     plaque.side,
@@ -140,7 +165,7 @@ function generatePlaque(plaque, index) {
     plaque.size ? `розмір ${formatMm(plaque.size)}` : '',
     label('plaqueStructure', plaque.structure),
     label('plaqueSurface', plaque.surface),
-    stenosisText(plaque.stenosis),
+    stenosis !== null ? `${stenosisText(stenosis)} за NASCET` : '',
   ]);
 }
 
@@ -187,16 +212,16 @@ export function generateNeckVesselsConclusion(data) {
   const lines = [];
   const plaques = data.plaques;
   const significantPlaques = plaques.filter(hasSignificantStenosis);
-  const rightIcaStenosis = Number(data.rightCarotid.icaStenosis);
-  const leftIcaStenosis = Number(data.leftCarotid.icaStenosis);
+  const rightIcaStenosis = getSideIcaStenosis(data.rightCarotid);
+  const leftIcaStenosis = getSideIcaStenosis(data.leftCarotid);
   const manualSignificantStenoses = [
-    rightIcaStenosis >= 50 ? `УЗ-ознаки стенозу правої внутрішньої сонної артерії орієнтовно ${rightIcaStenosis}%.` : '',
-    leftIcaStenosis >= 50 ? `УЗ-ознаки стенозу лівої внутрішньої сонної артерії орієнтовно ${leftIcaStenosis}%.` : '',
+    rightIcaStenosis >= 50 ? `УЗ-ознаки стенозу правої внутрішньої сонної артерії орієнтовно ${rightIcaStenosis}% за NASCET.` : '',
+    leftIcaStenosis >= 50 ? `УЗ-ознаки стенозу лівої внутрішньої сонної артерії орієнтовно ${leftIcaStenosis}% за NASCET.` : '',
   ].filter(Boolean);
 
   if (plaques.length && significantPlaques.length) {
     significantPlaques.forEach((plaque) => {
-      lines.push(`УЗ-ознаки атеросклеротичного стенозу ${plaque.location} ${plaque.side} орієнтовно ${plaque.stenosis}%.`);
+      lines.push(`УЗ-ознаки атеросклеротичного стенозу ${plaque.location} ${plaque.side} орієнтовно ${getPlaqueStenosis(plaque)}% за NASCET.`);
     });
     manualSignificantStenoses.forEach((item) => lines.push(item));
   } else if (manualSignificantStenoses.length) {
@@ -213,8 +238,8 @@ export function generateNeckVesselsConclusion(data) {
     lines.push('УЗ-ознаки потовщення комплексу інтима-медіа сонних артерій.');
   }
 
-  if (data.rightCarotid.course !== 'straight') lines.push(`Деформація ходу правої сонної системи: ${label('course', data.rightCarotid.course)}.`);
-  if (data.leftCarotid.course !== 'straight') lines.push(`Деформація ходу лівої сонної системи: ${label('course', data.leftCarotid.course)}.`);
+  if (data.rightCarotid.course !== 'straight') lines.push(`Деформація ходу правих сонних артерій: ${label('course', data.rightCarotid.course)}.`);
+  if (data.leftCarotid.course !== 'straight') lines.push(`Деформація ходу лівих сонних артерій: ${label('course', data.leftCarotid.course)}.`);
 
   if (data.rightVertebral.direction !== 'antegrade' || data.leftVertebral.direction !== 'antegrade') {
     lines.push('Змінений напрямок кровотоку по хребтовій артерії / артеріях.');
@@ -231,12 +256,14 @@ export function generateNeckVesselsConclusion(data) {
 
 export function generateNeckVesselsRecommendations(data) {
   const recommendations = ['Подальша тактика визначається лікарем з урахуванням клінічної ситуації та факторів серцево-судинного ризику.'];
+  const hasSignificantIcaStenosis =
+    Number(getSideIcaStenosis(data.rightCarotid)) >= 50 || Number(getSideIcaStenosis(data.leftCarotid)) >= 50;
 
   if (data.plaques.length) {
     recommendations.push('Контроль ліпідограми та корекція серцево-судинного ризику відповідно до чинних рекомендацій.');
   }
 
-  if (data.plaques.some(hasSignificantStenosis)) {
+  if (data.plaques.some(hasSignificantStenosis) || hasSignificantIcaStenosis) {
     recommendations.push('Консультація судинного хірурга / невролога для уточнення подальшої тактики.');
   }
 

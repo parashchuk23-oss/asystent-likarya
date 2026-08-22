@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import AccordionSection from '../../AccordionSection';
 import { inputClass, textareaClass } from '../../formStyles';
-import { buildNeckVesselsReport } from '../../../utils/ultrasound/neck-vessels/neckVesselsReportGenerator';
+import { buildNeckVesselsReport, calculateNascetStenosis } from '../../../utils/ultrasound/neck-vessels/neckVesselsReportGenerator';
 import NeckVesselsReportPreview from './NeckVesselsReportPreview';
 
 const options = {
@@ -97,7 +97,10 @@ function createCarotidSide(imt = '0.7') {
     icaFlow: 'normal',
     icaPsv: '',
     icaEdv: '',
-    icaStenosis: '',
+    icaMinimalLumen: '',
+    icaDistalLumen: '',
+    ecaFlow: 'normal',
+    ecaPsv: '',
     notes: '',
   };
 }
@@ -142,7 +145,8 @@ function createPlaque() {
     size: '',
     structure: 'heterogeneous',
     surface: 'smooth',
-    stenosis: '',
+    minimalLumen: '',
+    distalLumen: '',
   };
 }
 
@@ -173,6 +177,7 @@ function TextField({ label, value, onChange, placeholder = '', hint = '' }) {
 
 function CarotidForm({ title, data, onChange }) {
   const update = (field, value) => onChange({ ...data, [field]: value });
+  const icaStenosis = calculateNascetStenosis(data.icaMinimalLumen, data.icaDistalLumen);
 
   return (
     <div className="space-y-4">
@@ -181,11 +186,14 @@ function CarotidForm({ title, data, onChange }) {
         <SelectField label="Інтима / КІМ" value={data.intima} onChange={(value) => update('intima', value)} items={options.intima} />
         <TextField label="КІМ, мм" value={data.imt} onChange={(value) => update('imt', value)} hint="Орієнтир: до 0,9 мм" />
       </div>
+      <div className="rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-xs leading-5 text-slate-700">
+        <span className="font-semibold text-slate-900">Деформації:</span> звивистість — плавні вигини без гострого кута; kink — кутовий перегин судини; coil — петлеподібний хід. Гемодинамічне значення оцінюється за кровотоком і клінічним контекстом.
+      </div>
       <SelectField label="Біфуркація" value={data.bifurcation} onChange={(value) => update('bifurcation', value)} items={options.bifurcation} />
 
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className="grid gap-3">
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-          <h4 className="mb-3 text-sm font-bold text-slate-950">{title}: ЗСА</h4>
+          <h4 className="mb-3 text-sm font-bold text-slate-950">{title}: загальна сонна артерія</h4>
           <div className="grid gap-3 sm:grid-cols-3">
             <SelectField label="Кровотік" value={data.ccaFlow} onChange={(value) => update('ccaFlow', value)} items={options.flow} />
             <TextField label="PSV, см/с" value={data.ccaPsv} onChange={(value) => update('ccaPsv', value)} />
@@ -193,12 +201,29 @@ function CarotidForm({ title, data, onChange }) {
           </div>
         </div>
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-          <h4 className="mb-3 text-sm font-bold text-slate-950">{title}: ВСА</h4>
-          <div className="grid gap-3 sm:grid-cols-4">
+          <h4 className="mb-3 text-sm font-bold text-slate-950">{title}: внутрішня сонна артерія</h4>
+          <div className="grid gap-3 sm:grid-cols-3">
             <SelectField label="Кровотік" value={data.icaFlow} onChange={(value) => update('icaFlow', value)} items={options.flow} />
-            <TextField label="PSV" value={data.icaPsv} onChange={(value) => update('icaPsv', value)} />
-            <TextField label="EDV" value={data.icaEdv} onChange={(value) => update('icaEdv', value)} />
-            <TextField label="Стеноз, %" value={data.icaStenosis} onChange={(value) => update('icaStenosis', value)} />
+            <TextField label="PSV, см/с" value={data.icaPsv} onChange={(value) => update('icaPsv', value)} />
+            <TextField label="EDV, см/с" value={data.icaEdv} onChange={(value) => update('icaEdv', value)} />
+            <TextField label="Мінімальний просвіт, мм" value={data.icaMinimalLumen} onChange={(value) => update('icaMinimalLumen', value)} />
+            <TextField label="Дистальний нормальний просвіт, мм" value={data.icaDistalLumen} onChange={(value) => update('icaDistalLumen', value)} />
+            <div className="rounded-md border border-teal-200 bg-teal-50 px-3 py-2">
+              <span className="block text-xs font-bold uppercase tracking-[0.14em] text-teal-700">NASCET</span>
+              <span className="mt-1 block text-sm font-bold text-slate-950">
+                {icaStenosis === null ? 'введіть 2 діаметри' : `${icaStenosis}%`}
+              </span>
+            </div>
+          </div>
+          <p className="mt-2 text-xs leading-5 text-slate-500">
+            NASCET: (1 - мінімальний просвіт у стенозі / нормальний дистальний просвіт ВСА) x 100%.
+          </p>
+        </div>
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <h4 className="mb-3 text-sm font-bold text-slate-950">{title}: зовнішня сонна артерія</h4>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <SelectField label="Кровотік" value={data.ecaFlow} onChange={(value) => update('ecaFlow', value)} items={options.flow} />
+            <TextField label="PSV, см/с" value={data.ecaPsv} onChange={(value) => update('ecaPsv', value)} />
           </div>
         </div>
       </div>
@@ -245,7 +270,16 @@ function PlaquesForm({ plaques, onChange }) {
               <TextField label="Розмір, мм" value={plaque.size} onChange={(value) => updatePlaque(plaque.id, 'size', value)} />
               <SelectField label="Структура" value={plaque.structure} onChange={(value) => updatePlaque(plaque.id, 'structure', value)} items={options.plaqueStructure} />
               <SelectField label="Поверхня" value={plaque.surface} onChange={(value) => updatePlaque(plaque.id, 'surface', value)} items={options.plaqueSurface} />
-              <TextField label="Стеноз, %" value={plaque.stenosis} onChange={(value) => updatePlaque(plaque.id, 'stenosis', value)} />
+              <TextField label="Мінімальний просвіт, мм" value={plaque.minimalLumen} onChange={(value) => updatePlaque(plaque.id, 'minimalLumen', value)} />
+              <TextField label="Дистальний нормальний просвіт, мм" value={plaque.distalLumen} onChange={(value) => updatePlaque(plaque.id, 'distalLumen', value)} />
+              <div className="rounded-md border border-teal-200 bg-teal-50 px-3 py-2">
+                <span className="block text-xs font-bold uppercase tracking-[0.14em] text-teal-700">NASCET</span>
+                <span className="mt-1 block text-sm font-bold text-slate-950">
+                  {calculateNascetStenosis(plaque.minimalLumen, plaque.distalLumen) === null
+                    ? 'введіть 2 діаметри'
+                    : `${calculateNascetStenosis(plaque.minimalLumen, plaque.distalLumen)}%`}
+                </span>
+              </div>
             </div>
           </div>
         ))
@@ -340,11 +374,11 @@ export default function NeckVesselsUltrasoundModule() {
           </label>
         </AccordionSection>
 
-        <AccordionSection id="neck-right-carotid" title="2. Права сонна система" subtitle="ЗСА, біфуркація, ВСА, КІМ, швидкості" isOpen={openSection === 'rightCarotid'} onToggle={() => toggleSection('rightCarotid')}>
+        <AccordionSection id="neck-right-carotid" title="2. Праві сонні артерії" subtitle="Загальна, внутрішня і зовнішня сонна артерія, КІМ, біфуркація, швидкості" isOpen={openSection === 'rightCarotid'} onToggle={() => toggleSection('rightCarotid')}>
           <CarotidForm title="Права" data={data.rightCarotid} onChange={(value) => updateData('rightCarotid', value)} />
         </AccordionSection>
 
-        <AccordionSection id="neck-left-carotid" title="3. Ліва сонна система" subtitle="ЗСА, біфуркація, ВСА, КІМ, швидкості" isOpen={openSection === 'leftCarotid'} onToggle={() => toggleSection('leftCarotid')}>
+        <AccordionSection id="neck-left-carotid" title="3. Ліві сонні артерії" subtitle="Загальна, внутрішня і зовнішня сонна артерія, КІМ, біфуркація, швидкості" isOpen={openSection === 'leftCarotid'} onToggle={() => toggleSection('leftCarotid')}>
           <CarotidForm title="Ліва" data={data.leftCarotid} onChange={(value) => updateData('leftCarotid', value)} />
         </AccordionSection>
 
