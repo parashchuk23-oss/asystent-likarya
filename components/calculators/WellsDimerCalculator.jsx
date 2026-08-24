@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import FormField from '../FormField';
 import { inputClass } from '../formStyles';
 import {
@@ -838,7 +839,19 @@ export default function WellsDimerCalculator() {
   return (
     <>
       <div className="mb-5 rounded-md border border-blue-100 bg-blue-50/50 p-4 text-sm leading-relaxed text-slate-700">
-        <h2 className="text-base font-semibold text-slate-950">Венозна тромбоемболія</h2>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <h2 className="text-base font-semibold text-slate-950">Венозна тромбоемболія</h2>
+          <div className="rounded-md border border-slate-200 bg-white p-1 text-xs font-semibold">
+            <span className="rounded bg-blue-50 px-2 py-1 text-blue-700">UA</span>
+            <span className="text-slate-300">|</span>
+            <Link
+              href="/en/calculators/venous-thromboembolism"
+              className="rounded px-2 py-1 text-slate-600 hover:bg-slate-50"
+            >
+              EN
+            </Link>
+          </div>
+        </div>
         <p className="mt-1">
           Оцінка ймовірності ТГВ / ТЕЛА, D-димер та подальший клінічний маршрут.
         </p>

@@ -62,6 +62,15 @@ Sitemap реалізовано через App Router:
 
 Sitemap містить головну сторінку та окремі SEO-сторінки популярних інструментів.
 
+## Локалізація
+
+Перший MVP англійської локалізації реалізовано тільки для модуля венозної тромбоемболії. Додано окремі URL:
+
+* `/calculators/venous-thromboembolism` — українська SEO-сторінка VTE-модуля;
+* `/en/calculators/venous-thromboembolism` — англомовна сторінка `Venous Thromboembolism`.
+
+Англомовна сторінка містить PERC Rule, Wells Score for Pulmonary Embolism, Age-Adjusted D-Dimer, sPESI, Hestia Criteria, VTE-BLEED, HERDOO2 і DASH Score. Розрахунки використовують спільні функції з `utils/calculations.js`, а не окремі формули. Для сторінок додано canonical та hreflang `uk/en`. Інші розділи сайту англійською поки не перекладаються.
+
 ## Robots.txt
 
 Robots.txt реалізовано через App Router:
