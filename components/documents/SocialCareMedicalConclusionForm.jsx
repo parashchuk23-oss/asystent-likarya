@@ -120,11 +120,19 @@ function escapeHtml(value) {
     .replaceAll("'", '&#039;');
 }
 
-function buildPrintHtml(text) {
-  const paragraphs = text
-    .split('\n')
-    .map((line) => (line.trim() ? `<p>${escapeHtml(line)}</p>` : '<br />'))
-    .join('');
+function printValue(value, fallback = '&nbsp;') {
+  const safeValue = value?.toString().trim();
+  return safeValue ? escapeHtml(safeValue) : fallback;
+}
+
+function underlineOption(label, isSelected) {
+  return `<span class="${isSelected ? 'selected-option' : 'option'}">${escapeHtml(label)}</span>`;
+}
+
+function buildPrintHtml(form) {
+  const hasContraindications = form.contraindications === 'є';
+  const canStayInCollective = form.collectiveStay === 'так';
+  const birthAndResidence = [formatDate(form.birthDate), form.residence].filter(Boolean).join(', ');
 
   return `<!doctype html>
 <html lang="uk">
@@ -132,36 +140,85 @@ function buildPrintHtml(text) {
   <meta charset="utf-8" />
   <title>Медичний висновок</title>
   <style>
-    @page { margin: 14mm; }
+    @page { size: A4 portrait; margin: 15mm 17mm; }
     body {
-      color: #111827;
+      color: #000000;
       font-family: "Times New Roman", Times, serif;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+    .approval {
+      margin-left: auto;
+      width: 265px;
       font-size: 12px;
-      line-height: 1.35;
+      line-height: 1.2;
+    }
+    .approval p {
+      margin: 0 0 2px;
     }
     h1 {
-      margin: 18px 0 0;
+      margin: 18px 0 2px;
       text-align: center;
       font-size: 16px;
       letter-spacing: 0.02em;
     }
     h2 {
-      margin: 4px 0 14px;
+      margin: 0 0 14px;
       text-align: center;
-      font-size: 12px;
+      font-size: 13px;
     }
-    p { margin: 7px 0; }
-    .approval {
-      margin-left: auto;
-      width: 290px;
-      font-size: 11px;
-      line-height: 1.25;
+    p {
+      margin: 7px 0;
+    }
+    .line {
+      display: block;
+      min-height: 18px;
+      border-bottom: 1px solid #000000;
+      padding: 0 6px 1px;
+      text-align: center;
+    }
+    .inline-line {
+      display: inline-block;
+      min-width: 230px;
+      border-bottom: 1px solid #000000;
+      padding: 0 6px 1px;
+      vertical-align: baseline;
+    }
+    .free-line {
+      display: inline-block;
+      min-width: 340px;
+      border-bottom: 1px solid #000000;
+      padding: 0 6px 1px;
+      vertical-align: baseline;
+    }
+    .hint {
+      margin-top: 1px;
+      font-size: 10px;
+      text-align: center;
+    }
+    .section-title {
+      margin-top: 12px;
+      font-weight: 700;
+    }
+    .option {
+      white-space: nowrap;
+    }
+    .selected-option {
+      border-bottom: 1px solid #000000;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .signatures {
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      gap: 18px;
+      margin-top: 18px;
+      align-items: start;
     }
     .note {
       border-top: 1px solid #d1d5db;
       margin-top: 18px;
       padding-top: 8px;
-      color: #374151;
       font-size: 10px;
     }
   </style>
@@ -172,8 +229,82 @@ function buildPrintHtml(text) {
     <p>Наказ Міністерства соціальної політики України</p>
     <p>14.07.2016 № 762</p>
   </div>
-  ${paragraphs}
-  <p class="note">Примітка. Висновок формується як шаблон для перевірки та редагування лікарем перед друком.</p>
+  <h1>МЕДИЧНИЙ ВИСНОВОК</h1>
+  <h2>про здатність до самообслуговування та потребу в сторонній допомозі</h2>
+
+  <div>
+    <span class="line">${printValue(form.facility)}</span>
+    <div class="hint">(найменування закладу охорони здоров’я, що видав висновок)</div>
+  </div>
+
+  <div>
+    <span class="line">${printValue(form.patientName)}</span>
+    <div class="hint">(прізвище, ім’я та по батькові громадянина, який потребує надання соціальних послуг)</div>
+  </div>
+
+  <div>
+    <span class="line">${printValue(birthAndResidence)}</span>
+    <div class="hint">(дата народження, місце проживання/перебування)</div>
+  </div>
+
+  <div>
+    <span class="line">${printValue(form.disabilityGroup)}</span>
+    <div class="hint">(група інвалідності - за наявності)</div>
+  </div>
+
+  <p class="section-title">1. Наявність вад, що перешкоджають самообслуговуванню:</p>
+  <p>
+    ${underlineOption('відсутність кінцівок', form.impairments.includes('відсутність кінцівок'))};
+    ${underlineOption('інші вади опорно-рухового апарату', form.impairments.includes('інші вади опорно-рухового апарату'))};
+    ${underlineOption('вади зору', form.impairments.includes('вади зору'))};
+    ${underlineOption('вади слуху', form.impairments.includes('вади слуху'))};
+    ${underlineOption('інтелектуальні порушення', form.impairments.includes('інтелектуальні порушення'))};
+    ${underlineOption('порушення мови', form.impairments.includes('порушення мови'))};
+    інше <span class="free-line">${printValue(form.impairmentOther)}</span>
+  </p>
+
+  <p class="section-title">2. Здатність до самообслуговування:</p>
+  <p>
+    ${underlineOption('здатний', form.selfCareStatus === 'здатний')} /
+    ${underlineOption('частково не здатний', form.selfCareStatus === 'частково не здатний')} /
+    ${underlineOption('не здатний', form.selfCareStatus === 'не здатний')}.
+  </p>
+  <p>
+    Обмеження самообслуговування:
+    <span class="free-line">${printValue(form.limitedTasks.join(', '))}</span>
+  </p>
+
+  <p class="section-title">3. Висновок:</p>
+  <p>
+    Протипоказання для надання соціальних послуг у територіальному центрі соціального обслуговування
+    ${underlineOption('немає', !hasContraindications)} /
+    ${underlineOption('є', hasContraindications)}
+    <span class="free-line">${printValue(form.contraindicationDetails)}</span>.
+  </p>
+  <p>
+    Може перебувати в колективі:
+    ${underlineOption('так', canStayInCollective)} /
+    ${underlineOption('ні', !canStayInCollective)}.
+  </p>
+
+  <p>Дата оформлення: <span class="inline-line">${printValue(formatDate(form.conclusionDate))}</span></p>
+
+  <div class="signatures">
+    <p>МП</p>
+    <div>
+      <p>Керівник медичного закладу ____________________ <span class="inline-line">${printValue(form.chiefName)}</span></p>
+      <div class="hint">(підпис) (прізвище, ініціали)</div>
+      <p>Лікар загальної практики - сімейний лікар ____________________ <span class="inline-line">${printValue(form.doctorName)}</span></p>
+      <div class="hint">(підпис) (прізвище, ініціали)</div>
+    </div>
+  </div>
+
+  <p class="note">
+    Примітка. Бланк медичного висновку направляється до закладу охорони здоров’я структурним підрозділом
+    з питань соціального захисту населення або виконавчим органом місцевого самоврядування за місцем
+    проживання/перебування громадянина та оформляється протягом 5 днів з дати його надходження.
+    Висновок переоформляється за необхідності, але не рідше 1 разу на рік.
+  </p>
 </body>
 </html>`;
 }
@@ -269,7 +400,7 @@ export default function SocialCareMedicalConclusionForm() {
     }
 
     printDocument.open();
-    printDocument.write(buildPrintHtml(conclusionText));
+    printDocument.write(buildPrintHtml(form));
     printDocument.close();
 
     window.setTimeout(() => {
