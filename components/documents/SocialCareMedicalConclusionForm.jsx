@@ -174,11 +174,6 @@ function buildPrintHtml(text) {
   </div>
   ${paragraphs}
   <p class="note">Примітка. Висновок формується як шаблон для перевірки та редагування лікарем перед друком.</p>
-  <script>
-    window.addEventListener('load', () => {
-      window.print();
-    });
-  </script>
 </body>
 </html>`;
 }
@@ -255,14 +250,35 @@ export default function SocialCareMedicalConclusionForm() {
   };
 
   const handlePrint = () => {
-    const printWindow = window.open('', '_blank', 'noopener,noreferrer');
-    if (!printWindow) {
-      window.print();
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+    iframe.setAttribute('aria-hidden', 'true');
+
+    document.body.appendChild(iframe);
+
+    const printDocument = iframe.contentWindow?.document;
+    if (!printDocument) {
+      document.body.removeChild(iframe);
+      window.alert('Не вдалося підготувати документ до друку. Спробуйте скопіювати текст і надрукувати вручну.');
       return;
     }
 
-    printWindow.document.write(buildPrintHtml(conclusionText));
-    printWindow.document.close();
+    printDocument.open();
+    printDocument.write(buildPrintHtml(conclusionText));
+    printDocument.close();
+
+    window.setTimeout(() => {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      window.setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 1000);
+    }, 250);
   };
 
   return (
