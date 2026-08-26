@@ -184,6 +184,21 @@ function buildPrintHtml(form) {
       padding: 0 6px 1px;
       vertical-align: baseline;
     }
+    .wide-line {
+      display: block;
+      min-height: 17px;
+      border-bottom: 1px solid #000000;
+      margin: 2px 0 8px;
+      padding: 0 6px 1px;
+    }
+    .date-line {
+      display: inline-block;
+      min-width: 280px;
+      border-bottom: 1px solid #000000;
+      padding: 0 6px 1px;
+      text-align: center;
+      vertical-align: baseline;
+    }
     .free-line {
       display: inline-block;
       min-width: 340px;
@@ -214,6 +229,28 @@ function buildPrintHtml(form) {
       gap: 18px;
       margin-top: 18px;
       align-items: start;
+    }
+    .signature-row {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      column-gap: 8px;
+      align-items: end;
+      margin-bottom: 12px;
+    }
+    .signature-label {
+      white-space: nowrap;
+    }
+    .signature-line {
+      min-height: 18px;
+      border-bottom: 1px solid #000000;
+      text-align: center;
+      padding: 0 6px 1px;
+    }
+    .signature-hint {
+      grid-column: 2;
+      margin-top: -10px;
+      font-size: 10px;
+      text-align: center;
     }
     .note {
       border-top: 1px solid #d1d5db;
@@ -279,23 +316,29 @@ function buildPrintHtml(form) {
     Протипоказання для надання соціальних послуг у територіальному центрі соціального обслуговування
     ${underlineOption('немає', !hasContraindications)} /
     ${underlineOption('є', hasContraindications)}
-    <span class="free-line">${printValue(form.contraindicationDetails)}</span>.
   </p>
+  <span class="wide-line">${printValue(form.contraindicationDetails)}</span>
   <p>
     Може перебувати в колективі:
     ${underlineOption('так', canStayInCollective)} /
     ${underlineOption('ні', !canStayInCollective)}.
   </p>
 
-  <p>Дата оформлення: <span class="inline-line">${printValue(formatDate(form.conclusionDate))}</span></p>
+  <p>Дата оформлення: <span class="date-line">${printValue(formatDate(form.conclusionDate))}</span></p>
 
   <div class="signatures">
     <p>МП</p>
     <div>
-      <p>Керівник медичного закладу ____________________ <span class="inline-line">${printValue(form.chiefName)}</span></p>
-      <div class="hint">(підпис) (прізвище, ініціали)</div>
-      <p>Лікар загальної практики - сімейний лікар ____________________ <span class="inline-line">${printValue(form.doctorName)}</span></p>
-      <div class="hint">(підпис) (прізвище, ініціали)</div>
+      <div class="signature-row">
+        <span class="signature-label">Керівник медичного закладу</span>
+        <span class="signature-line">${printValue(form.chiefName)}</span>
+        <span class="signature-hint">(підпис) (прізвище, ініціали)</span>
+      </div>
+      <div class="signature-row">
+        <span class="signature-label">Лікар загальної практики - сімейний лікар</span>
+        <span class="signature-line">${printValue(form.doctorName)}</span>
+        <span class="signature-hint">(підпис) (прізвище, ініціали)</span>
+      </div>
     </div>
   </div>
 
