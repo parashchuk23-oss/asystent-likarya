@@ -7,6 +7,7 @@ export default function sitemap() {
     { path: '/egfr', priority: 0.9 },
     { path: '/score2', priority: 0.9 },
     { path: '/en/calculators/score2', priority: 0.8 },
+    { path: '/en/calculators/bmi', priority: 0.8 },
     { path: '/gad7', priority: 0.8 },
     { path: '/phq9', priority: 0.8 },
     { path: '/findrisk', priority: 0.8 },

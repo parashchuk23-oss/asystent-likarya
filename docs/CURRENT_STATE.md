@@ -73,10 +73,13 @@ Sitemap містить головну сторінку та окремі SEO-с�
 * `/calculators/venous-thromboembolism` — українська SEO-сторінка VTE-модуля;
 * `/en/calculators/venous-thromboembolism` — англомовна сторінка `Venous Thromboembolism`.
 * `/en/calculators/score2` — англомовна сторінка `SCORE2 Cardiovascular Risk Calculator`.
+* `/en/calculators/bmi` — англомовна сторінка `BMI and Body Weight Assessment Calculator`.
 
 Англомовна сторінка містить PERC Rule, Wells Score for Pulmonary Embolism, Age-Adjusted D-Dimer, sPESI, Hestia Criteria, VTE-BLEED, HERDOO2 і DASH Score. Розрахунки використовують спільні функції з `utils/calculations.js`, а не окремі формули. Для сторінок додано canonical та hreflang `uk/en`. Інші розділи сайту англійською поки не перекладаються.
 
 Англомовна SCORE2-сторінка містить SCORE2 / SCORE2-OP, SCORE2-Diabetes, SMART Risk Score і CKD risk modifiers. Розрахунки використовують спільну функцію `calculateScore2Risk` з `utils/score2.js`; українська логіка розрахунку не дублюється.
+
+Англомовна BMI-сторінка містить розрахунок BMI, waist circumference, cardiometabolic-risk orientation, approximate initial weight goal and practical next steps. Розрахунок використовує спільні функції `calculateBMI`, `getBMICategory`, `getWaistRisk`, `getCardiometabolicRisk` і `getBMIRecommendations` з `utils/calculations.js`.
 
 ## Robots.txt
 
