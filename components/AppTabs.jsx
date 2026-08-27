@@ -10,6 +10,7 @@ import HomeTab from './HomeTab';
 import PharmacologyTab from './PharmacologyTab';
 import QuestionnairesTab from './QuestionnairesTab';
 import UltrasoundTab from './ultrasound/UltrasoundTab';
+import VaccinationTab from './VaccinationTab';
 
 const tabs = [
   {
@@ -31,6 +32,11 @@ const tabs = [
     id: 'questionnaires',
     label: 'Опитувальники',
     description: 'GAD-7, PHQ-9, FINDRISC, AUDIT-C, STOP-Bang',
+  },
+  {
+    id: 'vaccination',
+    label: 'Вакцинація',
+    description: 'Календар щеплень, catch-up, рекомендовані вакцини та робота із запереченнями',
   },
   {
     id: 'ultrasound',
@@ -93,6 +99,7 @@ export default function AppTabs() {
         {activeTab === 'assistant' && <CardioAssistantTab />}
         {activeTab === 'calculators' && <CalculatorsTab />}
         {activeTab === 'questionnaires' && <QuestionnairesTab />}
+        {activeTab === 'vaccination' && <VaccinationTab />}
         {activeTab === 'ultrasound' && <UltrasoundTab />}
         {activeTab === 'ecg' && <EcgTab />}
         {activeTab === 'drugs' && <PharmacologyTab />}

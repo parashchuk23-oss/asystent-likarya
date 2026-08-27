@@ -26,6 +26,7 @@
 4. Перевірити, що `https://www.asystentlikarya.com.ua` дивиться на найновіший production deployment.
 5. Якщо production-домен дивиться на старий deployment, переприв'язати його через Vercel CLI.
 6. Для змін, пов'язаних із Google Analytics, перевірити production HTML і Network-запити до `googletagmanager.com` та `google-analytics.com`.
+7. Після кожної суттєвої користувацької зміни перевірити, чи потрібно оновити `CONTENT_LOG.md`. Якщо зміна має практичну цінність для лікаря або може бути темою для публікації — додати запис.
 
 ## Заборони без прямого запиту
 

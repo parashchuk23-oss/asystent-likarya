@@ -17,6 +17,11 @@ const productSections = [
     description: 'GAD-7, PHQ-9, FINDRISC, AUDIT-C, STOP-Bang та інші шкали.',
   },
   {
+    tabId: 'vaccination',
+    title: 'Вакцинація',
+    description: 'Календар щеплень, catch-up і рекомендовані вакцини за факторами ризику.',
+  },
+  {
     tabId: 'drugs',
     title: 'Препарати',
     description: 'Практичний довідник лікаря з короткими клінічними відмінностями препаратів.',
