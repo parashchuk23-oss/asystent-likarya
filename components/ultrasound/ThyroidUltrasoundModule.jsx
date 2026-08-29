@@ -59,7 +59,6 @@ const initialData = {
     left: { length: '', thickness: '', width: '' },
     isthmus: { thickness: '', status: 'notThickened' },
     totalVolumeStatus: 'notEnlarged',
-    enlargementPercent: '',
   },
   appearance: {
     contour: 'smooth',

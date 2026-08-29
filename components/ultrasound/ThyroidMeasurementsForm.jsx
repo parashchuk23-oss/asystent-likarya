@@ -102,16 +102,6 @@ export default function ThyroidMeasurementsForm({ data, onChange }) {
             ))}
           </select>
         </FormField>
-        <FormField className="mb-2" label="Збільшена приблизно на" hint="% від обраної норми, необов’язково">
-          <input
-            type="number"
-            min="0"
-            step="1"
-            value={data.enlargementPercent}
-            onChange={(event) => update('enlargementPercent', event.target.value)}
-            className={inputClass}
-          />
-        </FormField>
       </div>
     </div>
   );

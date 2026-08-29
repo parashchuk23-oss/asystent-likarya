@@ -91,12 +91,10 @@ function generateMeasurementsText(data) {
       data.measurements.totalVolumeStatus !== 'notAssessed'
         ? optionLabel('volumeStatus', data.measurements.totalVolumeStatus)
         : '';
-    const percent = parsePositiveNumber(data.measurements.enlargementPercent);
     lines.push(
       sentence([
         `Сумарний об’єм ${formatDecimal(totalVolume)} см³`,
         status ? `(${status})` : '',
-        percent ? `Збільшена приблизно на ${formatDecimal(percent, 0)}% від обраної норми` : '',
       ]),
     );
   }
