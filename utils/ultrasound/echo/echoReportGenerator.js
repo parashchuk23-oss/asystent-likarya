@@ -1,5 +1,6 @@
 import { echoOptionLabel } from '../../../data/ultrasound/echoOptions';
 import { calculateEchoDerived } from './echoCalculations';
+import { addComplaintsToOverview } from '../reportComplaints';
 
 function compact(items) {
   return items.filter(Boolean);
@@ -198,7 +199,7 @@ export function generateEchoRecommendations(data) {
 
 export function buildEchoReport(data) {
   return {
-    overview: generateEchoOverview(data),
+    overview: addComplaintsToOverview(generateEchoOverview(data), data.complaints),
     conclusion: generateEchoConclusion(data),
     recommendations: generateEchoRecommendations(data),
   };

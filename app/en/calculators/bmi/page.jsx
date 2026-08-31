@@ -2,6 +2,7 @@ import BmiCalculatorEnglish from '../../../../components/calculators/BmiCalculat
 
 const siteUrl = 'https://www.asystentlikarya.com.ua';
 const pagePath = '/en/calculators/bmi';
+const ukrainianPath = '/calculators/bmi';
 
 export const metadata = {
   title: 'BMI and Body Weight Assessment Calculator | Asystent Likarya',
@@ -11,6 +12,7 @@ export const metadata = {
     canonical: `${siteUrl}${pagePath}`,
     languages: {
       en: `${siteUrl}${pagePath}`,
+      uk: `${siteUrl}${ukrainianPath}`,
     },
   },
   openGraph: {

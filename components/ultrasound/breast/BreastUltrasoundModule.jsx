@@ -5,6 +5,7 @@ import AccordionSection from '../../AccordionSection';
 import { inputClass, textareaClass } from '../../formStyles';
 import { buildBreastReport, getBreastBirads, getBiradsText } from '../../../utils/ultrasound/breast/breastReportGenerator';
 import BreastReportPreview from './BreastReportPreview';
+import UltrasoundComplaintsField from '../UltrasoundComplaintsField';
 
 const selectOptions = {
   indication: [
@@ -94,6 +95,7 @@ function createNormalBreast() {
 
 function createInitialData() {
   return {
+    complaints: '',
     general: {
       indication: 'screening',
       menstrualStatus: 'notSpecified',
@@ -264,6 +266,7 @@ export default function BreastUltrasoundModule() {
   return (
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(420px,0.9fr)]">
       <div className="space-y-4">
+        <UltrasoundComplaintsField value={data.complaints} onChange={(value) => updateData('complaints', value)} />
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>

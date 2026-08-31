@@ -11,8 +11,11 @@ import GallbladderForm from './GallbladderForm';
 import LiverForm from './LiverForm';
 import PancreasForm from './PancreasForm';
 import SpleenForm from './SpleenForm';
+import UltrasoundComplaintsField from '../UltrasoundComplaintsField';
+import { addComplaintsToOverview } from '../../../utils/ultrasound/reportComplaints';
 
 const initialData = {
+  complaints: '',
   liver: {
     rightLobeLength: '140',
     rightLobeAp: '110',
@@ -20,6 +23,10 @@ const initialData = {
     caudateLobe: '25',
     contours: 'smooth',
     echogenicity: 'medium',
+    vascularPattern: 'preserved',
+    posteriorAttenuation: 'none',
+    diaphragmVisualization: 'clear',
+    steatosisGrade: '',
     structure: 'homogeneous',
     changes: [],
     otherChange: '',
@@ -28,14 +35,18 @@ const initialData = {
     bileDucts: 'notDilated',
   },
   gallbladder: {
+    notVisualized: false,
     shape: 'ovoid',
     inflection: 'none',
     length: '80',
     width: '30',
     wall: '2',
+    wallThickeningType: 'diffuse',
     content: 'anechoic',
     stones: [],
     polyps: [],
+    stoneDescription: '',
+    projectionTenderness: 'no',
   },
   commonBileDuct: {
     diameter: '4',
@@ -51,6 +62,8 @@ const initialData = {
     wirsung: '2',
     peripancreaticTissue: 'без особливостей',
     lesions: [],
+    diffuseChangeType: '',
+    additionalDescription: '',
   },
   spleen: {
     length: '105',
@@ -72,11 +85,15 @@ const initialData = {
   hollowOrgans: {
     text: 'без видимих патологічних змін у доступних для огляду відділах',
   },
+  stomach: {
+    enabled: false,
+    text: '',
+  },
 };
 
 function buildReport(data) {
   return {
-    overview: generateAbdomenOverview(data),
+    overview: addComplaintsToOverview(generateAbdomenOverview(data), data.complaints),
     conclusion: generateAbdomenConclusion(data),
     recommendations: generateAbdomenRecommendations(data),
   };
@@ -110,6 +127,7 @@ export default function AbdomenUltrasoundModule() {
   return (
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(420px,0.9fr)]">
       <div className="space-y-4">
+        <UltrasoundComplaintsField value={data.complaints} onChange={(value) => updateData('complaints', value)} />
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -152,9 +170,11 @@ export default function AbdomenUltrasoundModule() {
             freeFluid={data.freeFluid}
             lymphNodes={data.lymphNodes}
             hollowOrgans={data.hollowOrgans}
+            stomach={data.stomach}
             onFreeFluidChange={(value) => updateData('freeFluid', value)}
             onLymphNodesChange={(value) => updateData('lymphNodes', value)}
             onHollowOrgansChange={(value) => updateData('hollowOrgans', value)}
+            onStomachChange={(value) => updateData('stomach', value)}
           />
         </AccordionSection>
       </div>

@@ -5,6 +5,7 @@ import AccordionSection from '../../AccordionSection';
 import { inputClass, textareaClass } from '../../formStyles';
 import { buildNeckVesselsReport, calculateNascetStenosis } from '../../../utils/ultrasound/neck-vessels/neckVesselsReportGenerator';
 import NeckVesselsReportPreview from './NeckVesselsReportPreview';
+import UltrasoundComplaintsField from '../UltrasoundComplaintsField';
 
 const options = {
   indication: [
@@ -116,6 +117,7 @@ function createVertebralSide() {
 
 function createInitialData() {
   return {
+    complaints: '',
     general: {
       indication: 'screening',
       visualization: 'good',
@@ -350,6 +352,7 @@ export default function NeckVesselsUltrasoundModule() {
   return (
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(420px,0.9fr)]">
       <div className="space-y-4">
+        <UltrasoundComplaintsField value={data.complaints} onChange={(value) => updateData('complaints', value)} />
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>

@@ -20,6 +20,13 @@ export default function LiverForm({ data, onChange }) {
           <SelectField label="Структура" value={data.structure} onChange={(value) => update('structure', value)} options={abdomenOptions.structure} />
         </div>
 
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <SelectField label="Судинний малюнок" value={data.vascularPattern} onChange={(value) => update('vascularPattern', value)} options={abdomenOptions.liverVascularPattern} />
+          <SelectField label="Заднє затухання ультразвуку" value={data.posteriorAttenuation} onChange={(value) => update('posteriorAttenuation', value)} options={abdomenOptions.posteriorAttenuation} />
+          <SelectField label="Візуалізація діафрагми" value={data.diaphragmVisualization} onChange={(value) => update('diaphragmVisualization', value)} options={abdomenOptions.diaphragmVisualization} />
+          <SelectField label="Ступінь стеатозу (обирає лікар)" value={data.steatosisGrade} onChange={(value) => update('steatosisGrade', value)} options={abdomenOptions.steatosisGrade} />
+        </div>
+
         {data.structure === 'heterogeneous' ? (
           <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
             <h4 className="mb-2 text-sm font-bold text-slate-950">Ознаки неоднорідності</h4>

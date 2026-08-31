@@ -18,13 +18,22 @@ export default function GallbladderForm({ data, onChange }) {
 
   return (
     <div>
+      <label className="mb-4 flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-800">
+        <input type="checkbox" checked={data.notVisualized} onChange={(event) => update('notVisualized', event.target.checked)} className="h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500" />
+        Жовчний міхур не візуалізується
+      </label>
+
+      {!data.notVisualized ? (
+        <>
       <div className="grid gap-3 md:grid-cols-2">
         <SelectField label="Форма" value={data.shape} onChange={(value) => update('shape', value)} options={abdomenOptions.gallbladderShape} />
         <SelectField label="Перегин" value={data.inflection} onChange={(value) => update('inflection', value)} options={abdomenOptions.gallbladderInflection} />
         <NumberField label="Довжина" value={data.length} onChange={(value) => update('length', value)} norm="70–120 мм" />
         <NumberField label="Ширина" value={data.width} onChange={(value) => update('width', value)} norm="до 40 мм" />
         <NumberField label="Стінка" value={data.wall} onChange={(value) => update('wall', value)} norm="до 3 мм" />
+        <SelectField label="Характер потовщення стінки" value={data.wallThickeningType} onChange={(value) => update('wallThickeningType', value)} options={[{ value: 'diffuse', label: 'дифузне' }, { value: 'local', label: 'локальне' }]} />
         <SelectField label="Вміст" value={data.content} onChange={(value) => update('content', value)} options={abdomenOptions.gallbladderContent} />
+        <SelectField label="Болючість у точці проєкції ЖМ" value={data.projectionTenderness} onChange={(value) => update('projectionTenderness', value)} options={abdomenOptions.yesNo} />
       </div>
 
       <div className="mt-3 grid gap-3 lg:grid-cols-2">
@@ -77,6 +86,11 @@ export default function GallbladderForm({ data, onChange }) {
           </div>
         </section>
       </div>
+      <div className="mt-3">
+        <TextField label="Додатковий опис конкрементів" value={data.stoneDescription} onChange={(value) => update('stoneDescription', value)} />
+      </div>
+        </>
+      ) : null}
     </div>
   );
 }

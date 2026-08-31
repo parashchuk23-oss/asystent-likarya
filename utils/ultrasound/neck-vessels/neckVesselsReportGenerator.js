@@ -1,3 +1,5 @@
+import { addComplaintsToOverview } from '../reportComplaints';
+
 const labels = {
   indication: {
     screening: 'профілактичний огляд',
@@ -280,7 +282,7 @@ export function generateNeckVesselsRecommendations(data) {
 
 export function buildNeckVesselsReport(data) {
   return {
-    overview: generateNeckVesselsOverview(data),
+    overview: addComplaintsToOverview(generateNeckVesselsOverview(data), data.complaints),
     conclusion: generateNeckVesselsConclusion(data),
     recommendations: generateNeckVesselsRecommendations(data),
   };

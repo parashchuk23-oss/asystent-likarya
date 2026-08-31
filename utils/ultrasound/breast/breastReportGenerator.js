@@ -1,3 +1,5 @@
+import { addComplaintsToOverview } from '../reportComplaints';
+
 const optionLabels = {
   indication: {
     screening: 'профілактичний огляд',
@@ -273,7 +275,7 @@ export function generateBreastRecommendations(data) {
 
 export function buildBreastReport(data) {
   return {
-    overview: generateBreastOverview(data),
+    overview: addComplaintsToOverview(generateBreastOverview(data), data.complaints),
     conclusion: generateBreastConclusion(data),
     recommendations: generateBreastRecommendations(data),
   };

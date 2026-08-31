@@ -27,6 +27,17 @@ export default function PancreasForm({ data, onChange }) {
             onChange={(value) => update('peripancreaticTissue', value)}
           />
         </div>
+        <SelectField
+          label="Характер дифузних змін"
+          value={data.diffuseChangeType}
+          onChange={(value) => update('diffuseChangeType', value)}
+          options={[
+            { value: '', label: 'не вказувати' },
+            { value: 'fatty', label: 'жирова інфільтрація' },
+            { value: 'fibrotic', label: 'фіброзні зміни' },
+          ]}
+        />
+        <TextField label="Додатковий опис підшлункової залози" value={data.additionalDescription} onChange={(value) => update('additionalDescription', value)} />
         <LesionListForm title="Об’ємні утворення" items={data.lesions} onChange={(items) => update('lesions', items)} />
       </div>
     </div>

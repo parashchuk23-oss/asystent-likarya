@@ -11,6 +11,8 @@ import {
   generateRenalOverview,
   generateRenalRecommendations,
 } from '../../../utils/ultrasound/renal/renalReportGenerator';
+import UltrasoundComplaintsField from '../UltrasoundComplaintsField';
+import { addComplaintsToOverview } from '../../../utils/ultrasound/reportComplaints';
 
 const normalKidney = {
   position: 'typical',
@@ -33,6 +35,7 @@ const normalKidney = {
 };
 
 const initialData = {
+  complaints: '',
   rightKidney: { ...normalKidney, length: '105', width: '50' },
   leftKidney: { ...normalKidney, length: '106', width: '51' },
   rightAdrenal: {
@@ -66,7 +69,7 @@ const initialData = {
 
 function buildReport(data) {
   return {
-    overview: generateRenalOverview(data),
+    overview: addComplaintsToOverview(generateRenalOverview(data), data.complaints),
     conclusion: generateRenalConclusion(data),
     recommendations: generateRenalRecommendations(data),
   };
@@ -105,6 +108,7 @@ export default function RenalUltrasoundModule() {
   return (
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(420px,0.9fr)]">
       <div className="space-y-4">
+        <UltrasoundComplaintsField value={data.complaints} onChange={(value) => updateData('complaints', value)} />
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>

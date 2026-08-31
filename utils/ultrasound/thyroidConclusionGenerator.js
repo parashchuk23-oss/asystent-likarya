@@ -1,14 +1,8 @@
 import { getCalculatedVolumes } from './thyroidCalculations';
 import { getEffectiveTirads } from './thyroidTirads';
 
-function hasDiffuseChanges(data) {
-  return (
-    data.parenchyma.structure === 'diffuselyHeterogeneous' ||
-    data.appearance.echogenicity !== 'medium' ||
-    data.parenchyma.features.length > 0 ||
-    data.vascularization === 'moderatelyIncreased' ||
-    data.vascularization === 'significantlyIncreased'
-  );
+function hasThyroiditisPattern(data) {
+  return data.parenchyma.structure === 'diffuselyHeterogeneous';
 }
 
 function hasNormalPattern(data) {
@@ -52,12 +46,8 @@ export function generateThyroidConclusion(data) {
 
   const lines = [];
 
-  if (hasDiffuseChanges(data)) {
-    lines.push(
-      data.diffuseInterpretation === 'thyroiditis'
-        ? 'УЗ-ознаки дифузних змін щитоподібної залози, які можуть відповідати тиреоїдиту.'
-        : 'УЗ-ознаки дифузних змін паренхіми щитоподібної залози.',
-    );
+  if (hasThyroiditisPattern(data)) {
+    lines.push('УЗ-ознаки дифузних змін ЩЗ по типу тиреоїдиту.');
   }
 
   const noduleConclusion = getNoduleConclusion(data);
@@ -74,13 +64,11 @@ export function generateThyroidConclusion(data) {
 }
 
 export function generateThyroidRecommendations(data) {
-  const recommendations = [
-    'Консультація ендокринолога.',
-    'ТТГ; вільний Т4.',
-  ];
+  const recommendations = [];
 
-  if (hasDiffuseChanges(data)) {
-    recommendations.push('Антитіла до ТПО з урахуванням клінічної картини.');
+  if (hasThyroiditisPattern(data)) {
+    recommendations.push('Консультація ендокринолога.');
+    recommendations.push('ТТГ, Т4, АТ-ТПО, АТ-ТГ.');
   }
 
   if (data.perithyroidFormations.length) {

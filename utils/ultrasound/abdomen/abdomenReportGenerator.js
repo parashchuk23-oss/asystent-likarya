@@ -62,6 +62,12 @@ function generateLiver(data) {
       changes ? `(${changes})` : '',
     ]),
     commaSentence([
+      `Судинний малюнок ${abdomenOptionLabel('liverVascularPattern', liver.vascularPattern)}`,
+      `заднє затухання ультразвуку: ${abdomenOptionLabel('posteriorAttenuation', liver.posteriorAttenuation)}`,
+      `візуалізація діафрагми ${abdomenOptionLabel('diaphragmVisualization', liver.diaphragmVisualization)}`,
+      liver.steatosisGrade ? `обраний лікарем ступінь стеатозу: ${abdomenOptionLabel('steatosisGrade', liver.steatosisGrade)}` : '',
+    ]),
+    commaSentence([
       liver.portalVein ? `Портальна вена ${formatMm(liver.portalVein)}` : '',
       liver.portalVein ? (isPortalVeinDilated(liver.portalVein) ? 'розширена' : 'не розширена') : '',
       `Печінкові вени ${liver.hepaticVeins === 'dilated' ? 'розширені' : 'не розширені'}`,
@@ -89,6 +95,7 @@ function generatePolypText(polyp, index) {
 
 function generateGallbladder(data) {
   const gb = data.gallbladder;
+  if (gb.notVisualized) return 'Жовчний міхур: не візуалізується.';
   const stoneText = gb.stones.map(generateStoneText).join('\n');
   const polypText = gb.polyps.map(generatePolypText).join('\n');
 
@@ -105,6 +112,8 @@ function generateGallbladder(data) {
       `вміст ${abdomenOptionLabel('gallbladderContent', gb.content)}`,
     ]),
     stoneText,
+    gb.stoneDescription ? sentence([`Додатковий опис конкрементів: ${gb.stoneDescription}`]) : '',
+    sentence([`Болючість у точці проєкції жовчного міхура: ${gb.projectionTenderness === 'yes' ? 'є' : 'немає'}`]),
     polypText,
   ].filter(Boolean).join('\n');
 }
@@ -144,6 +153,7 @@ function generatePancreas(data) {
       `контури ${abdomenOptionLabel('contours', pancreas.contours)}`,
       `ехогенність ${abdomenOptionLabel('echogenicity', pancreas.echogenicity)}`,
       `структура ${abdomenOptionLabel('structure', pancreas.structure)}`,
+      pancreas.additionalDescription,
     ]),
     commaSentence([
       pancreas.wirsung ? `Вірсунгова протока ${formatMm(pancreas.wirsung)}` : '',
@@ -185,6 +195,12 @@ function generateOther(data) {
         : 'не збільшені',
     ]),
     data.hollowOrgans.text ? commaSentence(['Порожнисті органи:', data.hollowOrgans.text]) : '',
+    data.stomach?.enabled
+      ? commaSentence(['Шлунок:', data.stomach.text || 'опис не вказано'])
+      : '',
+    data.stomach?.enabled
+      ? 'Трансабдомінальне УЗД шлунка не замінює ендоскопічне дослідження за наявності показань.'
+      : '',
   ].filter(Boolean).join('\n');
 }
 

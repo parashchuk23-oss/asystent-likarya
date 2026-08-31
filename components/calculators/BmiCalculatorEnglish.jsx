@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import FormField from '../FormField';
 import { inputClass } from '../formStyles';
+import LanguageSwitch from '../LanguageSwitch';
 import {
   calculateBMI,
   calculateWeightLossGoal,
@@ -171,13 +172,14 @@ export default function BmiCalculatorEnglish() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-6 text-slate-900 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
-        <a href="/" className="text-sm font-semibold text-blue-700 hover:text-blue-800">
-          ← Ukrainian interface
-        </a>
-
-        <section className="mt-4 rounded-lg border border-slate-200 bg-white p-5">
-          <p className="text-xs font-bold uppercase tracking-[0.24em] text-teal-700">Clinical calculator</p>
-          <h1 className="mt-2 text-2xl font-bold text-slate-950">Body Weight Assessment</h1>
+        <section className="rounded-lg border border-slate-200 bg-white p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-teal-700">Clinical calculator</p>
+              <h1 className="mt-2 text-2xl font-bold text-slate-950">Body Weight Assessment</h1>
+            </div>
+            <LanguageSwitch current="en" ukrainianHref="/calculators/bmi" englishHref="/en/calculators/bmi" />
+          </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
             BMI, target weight, waist circumference, and cardiometabolic-risk orientation for clinical use.
           </p>

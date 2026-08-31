@@ -6,7 +6,28 @@ export const abdomenOptions = {
   echogenicity: [
     { value: 'medium', label: 'середня' },
     { value: 'increased', label: 'підвищена' },
+    { value: 'markedlyIncreased', label: 'виражено підвищена' },
     { value: 'decreased', label: 'знижена' },
+  ],
+  liverVascularPattern: [
+    { value: 'preserved', label: 'збережений' },
+    { value: 'reduced', label: 'збіднений' },
+  ],
+  posteriorAttenuation: [
+    { value: 'none', label: 'немає' },
+    { value: 'moderate', label: 'помірне' },
+    { value: 'marked', label: 'виражене' },
+  ],
+  diaphragmVisualization: [
+    { value: 'clear', label: 'чітка' },
+    { value: 'reduced', label: 'знижена' },
+    { value: 'indistinct', label: 'нечітка' },
+  ],
+  steatosisGrade: [
+    { value: '', label: 'не вказувати' },
+    { value: 'mild', label: 'легкий' },
+    { value: 'moderate', label: 'помірний' },
+    { value: 'severe', label: 'виражений' },
   ],
   structure: [
     { value: 'homogeneous', label: 'однорідна' },

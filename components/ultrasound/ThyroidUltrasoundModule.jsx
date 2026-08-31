@@ -4,8 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { generateThyroidConclusion, generateThyroidRecommendations } from '../../utils/ultrasound/thyroidConclusionGenerator';
 import { generateThyroidOverview } from '../../utils/ultrasound/thyroidReportGenerator';
 import AccordionSection from '../AccordionSection';
-import FormField from '../FormField';
-import { inputClass } from '../formStyles';
 import ThyroidGeneralForm from './ThyroidGeneralForm';
 import ThyroidLymphNodesForm from './ThyroidLymphNodesForm';
 import ThyroidMeasurementsForm from './ThyroidMeasurementsForm';
@@ -14,6 +12,8 @@ import ThyroidOptionalVascularForm from './ThyroidOptionalVascularForm';
 import ThyroidParenchymaForm from './ThyroidParenchymaForm';
 import ThyroidPerithyroidForm from './ThyroidPerithyroidForm';
 import UltrasoundReportPreview from './UltrasoundReportPreview';
+import UltrasoundComplaintsField from './UltrasoundComplaintsField';
+import { addComplaintsToOverview } from '../../utils/ultrasound/reportComplaints';
 
 const createNodule = (lobe = 'right') => ({
   id: `nodule-${Date.now()}-${Math.random().toString(16).slice(2)}`,
@@ -48,6 +48,7 @@ const createPerithyroidFormation = () => ({
 });
 
 const initialData = {
+  complaints: '',
   general: {
     surgeryStatus: 'notOperated',
     location: 'typical',
@@ -73,7 +74,6 @@ const initialData = {
     fibroticSize: '',
     other: '',
   },
-  diffuseInterpretation: 'diffuseChanges',
   vascularization: 'normal',
   nodules: [],
   perithyroidFormations: [],
@@ -108,7 +108,7 @@ const initialData = {
 
 function buildReport(data) {
   return {
-    overview: generateThyroidOverview(data),
+    overview: addComplaintsToOverview(generateThyroidOverview(data), data.complaints),
     conclusion: generateThyroidConclusion(data),
     recommendations: generateThyroidRecommendations(data),
   };
@@ -153,6 +153,7 @@ export default function ThyroidUltrasoundModule() {
   return (
     <div className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(420px,0.9fr)]">
       <div className="space-y-4">
+        <UltrasoundComplaintsField value={data.complaints} onChange={(value) => updateData('complaints', value)} />
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -204,14 +205,6 @@ export default function ThyroidUltrasoundModule() {
             onParenchymaChange={(value) => updateData('parenchyma', value)}
             onVascularizationChange={(value) => updateData('vascularization', value)}
           />
-          <div className="mt-4">
-            <FormField className="mb-2" label="Як формувати дифузні зміни у висновку">
-              <select value={data.diffuseInterpretation} onChange={(event) => updateData('diffuseInterpretation', event.target.value)} className={inputClass}>
-                <option value="diffuseChanges">УЗ-ознаки дифузних змін</option>
-                <option value="thyroiditis">УЗ-ознаки, які можуть відповідати тиреоїдиту</option>
-              </select>
-            </FormField>
-          </div>
         </AccordionSection>
 
         <AccordionSection

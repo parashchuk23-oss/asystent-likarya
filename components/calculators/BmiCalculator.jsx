@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import FormField from '../FormField';
 import { inputClass } from '../formStyles';
+import LanguageSwitch from '../LanguageSwitch';
 import {
   calculateBMI,
   calculateWeightLossGoal,
@@ -121,7 +122,10 @@ export default function BmiCalculator() {
   return (
     <>
       <div className="mb-3 rounded-md border border-blue-100 bg-blue-50/50 p-3 text-sm leading-relaxed text-slate-700">
-        <h2 className="text-base font-semibold text-slate-950">Оцінка маси тіла</h2>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <h2 className="text-base font-semibold text-slate-950">Оцінка маси тіла</h2>
+          <LanguageSwitch current="uk" ukrainianHref="/calculators/bmi" englishHref="/en/calculators/bmi" />
+        </div>
         <p className="mt-1">
           ІМТ, цільова вага, окружність талії та кардіометаболічний ризик.
         </p>
