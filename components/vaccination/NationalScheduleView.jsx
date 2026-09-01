@@ -29,8 +29,7 @@ const stageFilters = [
 const vaccineRowDefinitions = [
   { id: 'bcg', title: 'БЦЖ', vaccineIds: ['bcg'] },
   { id: 'hepb', title: 'Гепатит B', vaccineIds: ['hepb'] },
-  { id: 'diphtheria-tetanus', title: 'Дифтерія, правець', vaccineIds: ['dtap', 'dt'] },
-  { id: 'pertussis', title: 'Кашлюк', vaccineIds: ['dtap'] },
+  { id: 'dtap-dt', title: 'Кашлюк, дифтерія, правець', vaccineIds: ['dtap', 'dt'] },
   { id: 'polio', title: 'Поліомієліт', vaccineIds: ['polio'] },
   { id: 'hib', title: 'Hib', vaccineIds: ['hib'] },
   { id: 'mmr', title: 'КПК', vaccineIds: ['mmr'] },
@@ -38,9 +37,9 @@ const vaccineRowDefinitions = [
 ];
 
 function getDoseLabel(dose) {
-  if (dose.id === 'dt-adult') return '10 р.';
-  if (dose.type.includes('ревакцинація') && dose.vaccineId === 'dt') return 'РВ';
-  return dose.doseNumber ? String(dose.doseNumber) : '•';
+  if (dose.vaccineId === 'dt') return { main: 'ДП', sub: null };
+  if (dose.doseNumber) return { main: String(dose.doseNumber), sub: 'доза' };
+  return { main: '•', sub: null };
 }
 
 function getDoseAccessibleLabel(dose) {
@@ -166,7 +165,7 @@ export default function NationalScheduleView() {
                               <button
                                 type="button"
                                 onClick={() => setSelectedDose(dose)}
-                                className={`relative z-10 flex h-9 min-w-9 items-center justify-center rounded-full border-2 px-1 text-xs font-extrabold transition focus:outline-none focus:ring-4 focus:ring-teal-200 lg:h-10 lg:min-w-10 lg:text-sm ${
+                                className={`relative z-10 flex h-10 min-w-10 items-center justify-center rounded-full border-2 px-1 text-xs font-extrabold transition focus:outline-none focus:ring-4 focus:ring-teal-200 lg:h-11 lg:min-w-11 lg:text-sm ${
                                   isSelected
                                     ? 'scale-110 border-teal-700 bg-teal-600 text-white shadow-md shadow-teal-200'
                                     : 'border-teal-200 bg-teal-50 text-teal-800 hover:scale-105 hover:border-teal-500 hover:bg-teal-100'
@@ -174,7 +173,14 @@ export default function NationalScheduleView() {
                                 aria-label={getDoseAccessibleLabel(dose)}
                                 aria-pressed={isSelected}
                               >
-                                {getDoseLabel(dose)}
+                                <span className="flex flex-col items-center leading-none">
+                                  <span>{getDoseLabel(dose).main}</span>
+                                  {getDoseLabel(dose).sub && (
+                                    <span className="mt-0.5 text-[8px] font-bold leading-none lg:text-[9px]">
+                                      {getDoseLabel(dose).sub}
+                                    </span>
+                                  )}
+                                </span>
                               </button>
                             )}
                           </div>
@@ -277,8 +283,8 @@ export default function NationalScheduleView() {
 
           <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-slate-500">
             <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-full bg-teal-500" />Календарна доза</span>
-            <span>РВ — ревакцинація</span>
-            <span>10 р. — повторювати кожні 10 років</span>
+            <span>ДП — дифтерія, правець</span>
+            <span>Дорослим — повторювати кожні 10 років</span>
           </div>
         </div>
       </section>
