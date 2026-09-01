@@ -20,7 +20,7 @@ const ageColumns = [
 ];
 
 const stageFilters = [
-  { id: 'all', label: 'Увесь календар' },
+  { id: 'children', label: 'До 18 років' },
   { id: 'infancy', label: 'До 18 місяців' },
   { id: 'childhood', label: '4–16 років' },
   { id: 'adult', label: 'Дорослі' },
@@ -42,10 +42,12 @@ function getDoseAccessibleLabel(dose) {
 
 export default function NationalScheduleView() {
   const [view, setView] = useState('chart');
-  const [stage, setStage] = useState('all');
+  const [stage, setStage] = useState('children');
   const [selectedDose, setSelectedDose] = useState(nationalSchedule[0]);
 
-  const visibleColumns = stage === 'all' ? ageColumns : ageColumns.filter((column) => column.group === stage);
+  const visibleColumns = stage === 'children'
+    ? ageColumns.filter((column) => column.group !== 'adult')
+    : ageColumns.filter((column) => column.group === stage);
   const visibleDoses = nationalSchedule.filter((dose) => visibleColumns.some((column) => column.matches(dose)));
 
   const vaccineRows = useMemo(
@@ -60,7 +62,9 @@ export default function NationalScheduleView() {
   );
 
   const selectStage = (stageId) => {
-    const nextColumns = stageId === 'all' ? ageColumns : ageColumns.filter((column) => column.group === stageId);
+    const nextColumns = stageId === 'children'
+      ? ageColumns.filter((column) => column.group !== 'adult')
+      : ageColumns.filter((column) => column.group === stageId);
     const firstDose = nationalSchedule.find((dose) => nextColumns.some((column) => column.matches(dose)));
     setStage(stageId);
     if (firstDose) setSelectedDose(firstDose);
@@ -120,25 +124,25 @@ export default function NationalScheduleView() {
 
           {view === 'chart' && (
             <>
-              <div className="mt-5 hidden overflow-x-auto rounded-xl border border-slate-200 md:block">
+              <div className="mt-5 hidden overflow-hidden rounded-xl border border-slate-200 md:block">
                 <div
-                  className="min-w-max bg-white"
-                  style={{ display: 'grid', gridTemplateColumns: `minmax(190px, 1.5fr) repeat(${visibleColumns.length}, minmax(82px, 1fr))` }}
+                  className="min-w-0 bg-white"
+                  style={{ display: 'grid', gridTemplateColumns: `minmax(140px, 1.45fr) repeat(${visibleColumns.length}, minmax(0, 1fr))` }}
                 >
-                  <div className="sticky left-0 z-20 flex items-end border-b border-r border-slate-200 bg-slate-50 p-3 text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+                  <div className="flex min-w-0 items-end border-b border-r border-slate-200 bg-slate-50 p-2 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500 lg:p-3 lg:text-xs">
                     Інфекція / вакцина
                   </div>
                   {visibleColumns.map((column) => (
-                    <div key={column.key} className="flex min-h-16 items-end justify-center border-b border-slate-200 bg-slate-50 px-2 py-3 text-center text-xs font-bold text-slate-700">
+                    <div key={column.key} className="flex min-h-14 min-w-0 items-end justify-center border-b border-slate-200 bg-slate-50 px-0.5 py-2 text-center text-[10px] font-bold leading-4 text-slate-700 lg:min-h-16 lg:px-1 lg:py-3 lg:text-xs">
                       {column.shortLabel}
                     </div>
                   ))}
 
                   {vaccineRows.map((row, rowIndex) => (
                     <div key={row.vaccineId} className="contents">
-                      <div className={`sticky left-0 z-10 flex items-center border-r border-slate-200 px-3 py-3 ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-slate-50/80'}`}>
-                        <span className="mr-3 h-2.5 w-2.5 shrink-0 rounded-full bg-teal-500" aria-hidden="true" />
-                        <span className="text-sm font-bold leading-5 text-slate-900">{row.title}</span>
+                      <div className={`flex min-w-0 items-center border-r border-slate-200 px-2 py-2 lg:px-3 ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-slate-50/80'}`}>
+                        <span className="mr-2 h-2 w-2 shrink-0 rounded-full bg-teal-500 lg:mr-3 lg:h-2.5 lg:w-2.5" aria-hidden="true" />
+                        <span className="min-w-0 text-xs font-bold leading-4 text-slate-900 lg:text-sm lg:leading-5">{row.title}</span>
                       </div>
                       {visibleColumns.map((column) => {
                         const dose = row.doses.find((item) => column.matches(item));
@@ -147,14 +151,14 @@ export default function NationalScheduleView() {
                         return (
                           <div
                             key={`${row.vaccineId}-${column.key}`}
-                            className={`relative flex min-h-20 items-center justify-center px-2 py-3 ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-slate-50/80'}`}
+                            className={`relative flex min-h-16 min-w-0 items-center justify-center px-0.5 py-2 lg:min-h-20 lg:px-1 lg:py-3 ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-slate-50/80'}`}
                           >
                             <span className="absolute left-0 right-0 top-1/2 h-px bg-slate-200" aria-hidden="true" />
                             {dose && (
                               <button
                                 type="button"
                                 onClick={() => setSelectedDose(dose)}
-                                className={`relative z-10 flex h-11 min-w-11 items-center justify-center rounded-full border-2 px-2 text-sm font-extrabold transition focus:outline-none focus:ring-4 focus:ring-teal-200 ${
+                                className={`relative z-10 flex h-9 min-w-9 items-center justify-center rounded-full border-2 px-1 text-xs font-extrabold transition focus:outline-none focus:ring-4 focus:ring-teal-200 lg:h-10 lg:min-w-10 lg:text-sm ${
                                   isSelected
                                     ? 'scale-110 border-teal-700 bg-teal-600 text-white shadow-md shadow-teal-200'
                                     : 'border-teal-200 bg-teal-50 text-teal-800 hover:scale-105 hover:border-teal-500 hover:bg-teal-100'
