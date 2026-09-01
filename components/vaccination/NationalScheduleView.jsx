@@ -42,7 +42,6 @@ function getDoseAccessibleLabel(dose) {
 }
 
 export default function NationalScheduleView() {
-  const [view, setView] = useState('chart');
   const [selectedDose, setSelectedDose] = useState(nationalSchedule[0]);
 
   const visibleColumns = ageColumns.filter((column) => column.group !== 'adult');
@@ -63,38 +62,16 @@ export default function NationalScheduleView() {
       <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm shadow-slate-200/60">
         <div className="border-b border-slate-200 bg-gradient-to-r from-slate-950 via-slate-900 to-teal-950 p-5 text-white">
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-300">Національний календар України</p>
-          <div className="mt-2 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <h3 className="text-xl font-bold">Календар профілактичних щеплень</h3>
-              <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-300">
-                Оберіть віковий етап і натисніть на маркер дози, щоб переглянути деталі.
-              </p>
-            </div>
-            <div className="inline-flex w-fit rounded-lg border border-white/15 bg-white/10 p-1" aria-label="Спосіб відображення календаря">
-              {[
-                { id: 'chart', label: 'Графік' },
-                { id: 'list', label: 'Список' },
-              ].map((option) => (
-                <button
-                  key={option.id}
-                  type="button"
-                  onClick={() => setView(option.id)}
-                  className={`rounded-md px-3 py-2 text-sm font-bold transition ${
-                    view === option.id ? 'bg-white text-slate-950 shadow-sm' : 'text-slate-200 hover:bg-white/10 hover:text-white'
-                  }`}
-                  aria-pressed={view === option.id}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
+          <div className="mt-2">
+            <h3 className="text-xl font-bold">Календар профілактичних щеплень</h3>
+            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-300">
+              Натисніть на маркер дози, щоб переглянути деталі.
+            </p>
           </div>
         </div>
 
         <div className="p-4 sm:p-5">
-          {view === 'chart' && (
-            <>
-              <div className="hidden overflow-hidden rounded-xl border border-slate-200 md:block">
+          <div className="hidden overflow-hidden rounded-xl border border-slate-200 md:block">
                 <div
                   className="min-w-0 bg-white"
                   style={{ display: 'grid', gridTemplateColumns: `minmax(140px, 1.45fr) repeat(${visibleColumns.length}, minmax(0, 1fr))` }}
@@ -152,9 +129,9 @@ export default function NationalScheduleView() {
                     </div>
                   ))}
                 </div>
-              </div>
+          </div>
 
-              <div className="space-y-5 md:hidden">
+          <div className="space-y-5 md:hidden">
                 {visibleColumns.map((column) => {
                   const doses = visibleDoses.filter((dose) => column.matches(dose));
                   if (doses.length === 0) return null;
@@ -190,33 +167,7 @@ export default function NationalScheduleView() {
                     </section>
                   );
                 })}
-              </div>
-            </>
-          )}
-
-          {view === 'list' && (
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {visibleDoses.map((dose) => (
-                <button
-                  key={dose.id}
-                  type="button"
-                  onClick={() => setSelectedDose(dose)}
-                  className={`rounded-lg border p-4 text-left transition ${
-                    dose.id === selectedDose?.id
-                      ? 'border-teal-500 bg-teal-50 ring-2 ring-teal-100'
-                      : 'border-slate-200 bg-white hover:border-teal-300'
-                  }`}
-                  aria-pressed={dose.id === selectedDose?.id}
-                >
-                  <span className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">{dose.ageLabel}</span>
-                  <span className="mt-2 block text-base font-bold text-slate-950">{getVaccineTitle(dose.vaccineId)}</span>
-                  <span className="mt-1 block text-sm leading-6 text-slate-600">
-                    {dose.type}{dose.doseNumber ? `, доза ${dose.doseNumber}` : ''}{dose.sex === 'female' ? ', дівчата' : ''}.
-                  </span>
-                </button>
-              ))}
-            </div>
-          )}
+          </div>
 
           {selectedDose && (
             <aside className="mt-5 rounded-xl border border-sky-200 bg-sky-50/70 p-4" aria-live="polite">
