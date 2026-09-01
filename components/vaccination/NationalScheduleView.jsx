@@ -26,7 +26,16 @@ const stageFilters = [
   { id: 'adult', label: 'Дорослі' },
 ];
 
-const vaccineOrder = ['bcg', 'hepb', 'dtap', 'polio', 'hib', 'mmr', 'hpv', 'dt'];
+const vaccineRowDefinitions = [
+  { id: 'bcg', title: 'БЦЖ', vaccineIds: ['bcg'] },
+  { id: 'hepb', title: 'Гепатит B', vaccineIds: ['hepb'] },
+  { id: 'diphtheria-tetanus', title: 'Дифтерія, правець', vaccineIds: ['dtap', 'dt'] },
+  { id: 'pertussis', title: 'Кашлюк', vaccineIds: ['dtap'] },
+  { id: 'polio', title: 'Поліомієліт', vaccineIds: ['polio'] },
+  { id: 'hib', title: 'Hib', vaccineIds: ['hib'] },
+  { id: 'mmr', title: 'КПК', vaccineIds: ['mmr'] },
+  { id: 'hpv', title: 'ВПЛ', vaccineIds: ['hpv'] },
+];
 
 function getDoseLabel(dose) {
   if (dose.id === 'dt-adult') return '10 р.';
@@ -51,11 +60,10 @@ export default function NationalScheduleView() {
   const visibleDoses = nationalSchedule.filter((dose) => visibleColumns.some((column) => column.matches(dose)));
 
   const vaccineRows = useMemo(
-    () => vaccineOrder
-      .map((vaccineId) => ({
-        vaccineId,
-        title: getVaccineTitle(vaccineId),
-        doses: nationalSchedule.filter((dose) => dose.vaccineId === vaccineId),
+    () => vaccineRowDefinitions
+      .map((row) => ({
+        ...row,
+        doses: nationalSchedule.filter((dose) => row.vaccineIds.includes(dose.vaccineId)),
       }))
       .filter((row) => row.doses.length > 0),
     [],
@@ -139,7 +147,7 @@ export default function NationalScheduleView() {
                   ))}
 
                   {vaccineRows.map((row, rowIndex) => (
-                    <div key={row.vaccineId} className="contents">
+                    <div key={row.id} className="contents">
                       <div className={`flex min-w-0 items-center border-r border-slate-200 px-2 py-2 lg:px-3 ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-slate-50/80'}`}>
                         <span className="mr-2 h-2 w-2 shrink-0 rounded-full bg-teal-500 lg:mr-3 lg:h-2.5 lg:w-2.5" aria-hidden="true" />
                         <span className="min-w-0 text-xs font-bold leading-4 text-slate-900 lg:text-sm lg:leading-5">{row.title}</span>
@@ -150,7 +158,7 @@ export default function NationalScheduleView() {
 
                         return (
                           <div
-                            key={`${row.vaccineId}-${column.key}`}
+                            key={`${row.id}-${column.key}`}
                             className={`relative flex min-h-16 min-w-0 items-center justify-center px-0.5 py-2 lg:min-h-20 lg:px-1 lg:py-3 ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-slate-50/80'}`}
                           >
                             <span className="absolute left-0 right-0 top-1/2 h-px bg-slate-200" aria-hidden="true" />
