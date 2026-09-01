@@ -19,13 +19,6 @@ const ageColumns = [
   { key: 'adult', label: 'Дорослі', shortLabel: 'Дорослі', group: 'adult', matches: (dose) => dose.id === 'dt-adult' },
 ];
 
-const stageFilters = [
-  { id: 'children', label: 'До 18 років' },
-  { id: 'infancy', label: 'До 18 місяців' },
-  { id: 'childhood', label: '4–16 років' },
-  { id: 'adult', label: 'Дорослі' },
-];
-
 const vaccineRowDefinitions = [
   { id: 'bcg', title: 'БЦЖ', vaccineIds: ['bcg'] },
   { id: 'hepb', title: 'Гепатит B', vaccineIds: ['hepb'] },
@@ -50,12 +43,9 @@ function getDoseAccessibleLabel(dose) {
 
 export default function NationalScheduleView() {
   const [view, setView] = useState('chart');
-  const [stage, setStage] = useState('children');
   const [selectedDose, setSelectedDose] = useState(nationalSchedule[0]);
 
-  const visibleColumns = stage === 'children'
-    ? ageColumns.filter((column) => column.group !== 'adult')
-    : ageColumns.filter((column) => column.group === stage);
+  const visibleColumns = ageColumns.filter((column) => column.group !== 'adult');
   const visibleDoses = nationalSchedule.filter((dose) => visibleColumns.some((column) => column.matches(dose)));
 
   const vaccineRows = useMemo(
@@ -67,15 +57,6 @@ export default function NationalScheduleView() {
       .filter((row) => row.doses.length > 0),
     [],
   );
-
-  const selectStage = (stageId) => {
-    const nextColumns = stageId === 'children'
-      ? ageColumns.filter((column) => column.group !== 'adult')
-      : ageColumns.filter((column) => column.group === stageId);
-    const firstDose = nationalSchedule.find((dose) => nextColumns.some((column) => column.matches(dose)));
-    setStage(stageId);
-    if (firstDose) setSelectedDose(firstDose);
-  };
 
   return (
     <div className="space-y-4">
@@ -111,27 +92,9 @@ export default function NationalScheduleView() {
         </div>
 
         <div className="p-4 sm:p-5">
-          <div className="flex flex-wrap gap-2" aria-label="Фільтр за віковим етапом">
-            {stageFilters.map((filter) => (
-              <button
-                key={filter.id}
-                type="button"
-                onClick={() => selectStage(filter.id)}
-                className={`rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
-                  stage === filter.id
-                    ? 'border-teal-600 bg-teal-600 text-white shadow-sm'
-                    : 'border-slate-200 bg-white text-slate-600 hover:border-teal-400 hover:text-teal-800'
-                }`}
-                aria-pressed={stage === filter.id}
-              >
-                {filter.label}
-              </button>
-            ))}
-          </div>
-
           {view === 'chart' && (
             <>
-              <div className="mt-5 hidden overflow-hidden rounded-xl border border-slate-200 md:block">
+              <div className="hidden overflow-hidden rounded-xl border border-slate-200 md:block">
                 <div
                   className="min-w-0 bg-white"
                   style={{ display: 'grid', gridTemplateColumns: `minmax(140px, 1.45fr) repeat(${visibleColumns.length}, minmax(0, 1fr))` }}
@@ -191,7 +154,7 @@ export default function NationalScheduleView() {
                 </div>
               </div>
 
-              <div className="mt-5 space-y-5 md:hidden">
+              <div className="space-y-5 md:hidden">
                 {visibleColumns.map((column) => {
                   const doses = visibleDoses.filter((dose) => column.matches(dose));
                   if (doses.length === 0) return null;
@@ -232,7 +195,7 @@ export default function NationalScheduleView() {
           )}
 
           {view === 'list' && (
-            <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {visibleDoses.map((dose) => (
                 <button
                   key={dose.id}
