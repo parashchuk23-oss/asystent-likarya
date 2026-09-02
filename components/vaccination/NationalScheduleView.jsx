@@ -111,6 +111,59 @@ function getHepBCatchUpRecommendation(dose, ageMonths) {
   };
 }
 
+function getDtpDoseName(dose) {
+  if (dose.id === 'dt-72') return 'ДП у 6 років';
+  if (dose.id === 'dt-192') return 'ДП у 16 років';
+  return `доза ${dose.doseNumber}`;
+}
+
+function getDtpCatchUpRecommendation(ageMonths, missingDoses) {
+  const markedDoses = missingDoses.map(getDtpDoseName).join(', ');
+
+  if (ageMonths < 12) {
+    return {
+      ageGroup: 'Дитина молодше 1 року',
+      markedDoses,
+      paragraphs: [
+        'Позначені дози вакцини проти кашлюку, дифтерії та правця не проведені. Рекомендовано продовжити вакцинацію найближчим часом після огляду дитини та виключення протипоказань. Розпочинати серію спочатку не потрібно.',
+        'Мінімальний інтервал між першою та другою дозами — 4 тижні, між другою та третьою — 4 тижні, між третьою та четвертою — 6 місяців. Подальші щеплення проводити з урахуванням віку дитини, кількості та дат зарахованих доз.',
+      ],
+    };
+  }
+
+  if (ageMonths < 84) {
+    return {
+      ageGroup: 'Дитина від 1 року до 6 років 11 місяців',
+      markedDoses,
+      paragraphs: [
+        'Якщо дитина не отримала жодної дози, рекомендовано провести серію з трьох доз вакцини, що містить кашлюковий компонент, дифтерійний і правцевий анатоксини: мінімальний інтервал між першою та другою дозами — 4 тижні, між другою та третьою — 6 місяців.',
+        'Якщо окремі дози вже отримані, серію спочатку не розпочинати — необхідно ввести лише дози, яких не вистачає, з дотриманням мінімальних інтервалів.',
+        'Якщо третю дозу введено після досягнення 5 років, вона зараховується як ревакцинація у 6 років. Якщо третю дозу введено раніше 5 років, ревакцинація у 6 років залишається необхідною.',
+      ],
+    };
+  }
+
+  if (ageMonths < 216) {
+    return {
+      ageGroup: 'Дитина від 7 до 17 років 11 місяців',
+      markedDoses,
+      paragraphs: [
+        'Для надолуження вакцинації проти дифтерії та правця рекомендовано ввести дози, яких не вистачає. Якщо попередні щеплення відсутні, проводять серію з трьох доз: мінімальний інтервал між першою та другою — 4 тижні, між другою та третьою — 6 місяців. Розпочинати раніше проведену серію спочатку не потрібно.',
+        'Вакцина з ацелюлярним кашлюковим компонентом може застосовуватися після 7 років, якщо це дозволено інструкцією до конкретної вакцини. Вакцину з цільноклітинним кашлюковим компонентом після досягнення 7 років не застосовують.',
+      ],
+    };
+  }
+
+  return {
+    ageGroup: 'Особа віком 18 років і старше',
+    markedDoses,
+    paragraphs: [
+      'Якщо первинна вакцинація проти дифтерії та правця відсутня або документально не підтверджена, рекомендована серія з трьох доз: друга доза — не раніше ніж через 4 тижні після першої, третя — не раніше ніж через 6 місяців після другої. Розпочинати раніше проведену серію спочатку не потрібно.',
+      'Після завершення первинної серії проводити ревакцинацію проти дифтерії та правця кожні 10 років. Застосування вакцини з ацелюлярним кашлюковим компонентом можливе відповідно до віку та інструкції конкретної вакцини.',
+    ],
+  };
+}
+
 export default function NationalScheduleView() {
   const [selectedDose, setSelectedDose] = useState(nationalSchedule[0]);
   const [ageValue, setAgeValue] = useState('');
@@ -159,12 +212,21 @@ export default function NationalScheduleView() {
       .map((dose) => ({ dose, recommendation: getHepBCatchUpRecommendation(dose, ageMonths) }))
     : [];
 
+  const dtpMissingDoses = ageIsValid
+    ? nationalSchedule.filter(
+      (dose) => ['dtap', 'dt'].includes(dose.vaccineId) && missingDoseIds.includes(dose.id),
+    )
+    : [];
+  const dtpCatchUpRecommendation = dtpMissingDoses.length > 0
+    ? getDtpCatchUpRecommendation(ageMonths, dtpMissingDoses)
+    : null;
+
   const handleDoseClick = (dose) => {
     setSelectedDose(dose);
     if (
       !ageIsValid
       || dose.minAgeMonths > ageMonths
-      || !['bcg', 'hepb'].includes(dose.vaccineId)
+      || !['bcg', 'hepb', 'dtap', 'dt'].includes(dose.vaccineId)
     ) return;
 
     setMissingDoseIds((current) => (
@@ -432,6 +494,31 @@ export default function NationalScheduleView() {
               </p>
             </section>
           ))}
+
+          {dtpCatchUpRecommendation && (
+            <section className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4" aria-live="polite">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-800">Рекомендації з надолуження</p>
+              <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h4 className="text-lg font-bold text-slate-950">Кашлюк, дифтерія, правець</h4>
+                  <p className="mt-1 text-xs font-semibold text-amber-900">
+                    Позначено як неотримані: {dtpCatchUpRecommendation.markedDoses}
+                  </p>
+                </div>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-amber-900 ring-1 ring-amber-200">
+                  {dtpCatchUpRecommendation.ageGroup}
+                </span>
+              </div>
+              <div className="mt-3 space-y-3 text-sm leading-6 text-slate-700">
+                {dtpCatchUpRecommendation.paragraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+              <p className="mt-3 border-t border-amber-200 pt-3 text-xs font-semibold leading-5 text-amber-900">
+                Конкретна календарна дата не розраховується без документованих дат попередніх щеплень. Джерело: Календар профілактичних щеплень України, наказ МОЗ України №595 у чинній редакції.
+              </p>
+            </section>
+          )}
 
           <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-slate-500">
             <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-full bg-teal-600" />Активна за введеним віком</span>
