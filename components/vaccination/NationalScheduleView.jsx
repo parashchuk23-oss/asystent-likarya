@@ -45,10 +45,40 @@ function getDoseAccessibleLabel(dose) {
   return `${getCalendarVaccineTitle(dose.vaccineId)}, ${dose.ageLabel}${dosePart}${sexPart}`;
 }
 
+function getBcgCatchUpRecommendation(ageMonths) {
+  if (ageMonths < 7) {
+    return {
+      ageGroup: 'Дитина молодше 7 місяців',
+      paragraphs: [
+        'БЦЖ у пологовому стаціонарі не проведена. Рекомендована вакцинація БЦЖ найближчим часом без попередньої діагностики туберкульозної інфекції після огляду дитини та виключення протипоказань.',
+        'Якщо був відомий контакт із хворим на туберкульоз: у зв’язку з відомим контактом вакцинацію БЦЖ не проводити до обстеження дитини, виключення активного туберкульозу та визначення подальшої тактики. Рекомендована консультація фтизіопедіатра/фтизіатра та обстеження відповідно до чинних стандартів ведення контактних осіб.',
+      ],
+    };
+  }
+
+  if (ageMonths < 216) {
+    return {
+      ageGroup: 'Дитина від 7 місяців до 17 років 11 місяців 29 днів',
+      paragraphs: [
+        'Перед вакцинацією БЦЖ рекомендовано провести діагностику туберкульозної інфекції: пробу Манту, шкірний тест на основі антигенів туберкульозу або IGRA. За негативного результату, відсутності симптомів активного туберкульозу та протипоказань — провести вакцинацію БЦЖ.',
+        'При позитивному або сумнівному результаті БЦЖ не проводити. Позитивний або сумнівний результат тесту не підтверджує активний туберкульоз, але потребує оцінки на туберкульозну інфекцію та виключення активного захворювання. Рекомендована консультація фтизіатра/фтизіопедіатра.',
+      ],
+    };
+  }
+
+  return {
+    ageGroup: 'Особа віком 18 років і старше',
+    paragraphs: [
+      'Планове надолуження БЦЖ після досягнення 18 років Календарем профілактичних щеплень України не передбачене. За наявності контакту, симптомів або факторів ризику провести обстеження на туберкульозну інфекцію та активний туберкульоз відповідно до чинних стандартів.',
+    ],
+  };
+}
+
 export default function NationalScheduleView() {
   const [selectedDose, setSelectedDose] = useState(nationalSchedule[0]);
   const [ageValue, setAgeValue] = useState('');
   const [ageUnit, setAgeUnit] = useState('years');
+  const [missingDoseIds, setMissingDoseIds] = useState([]);
 
   const visibleColumns = ageColumns.filter((column) => column.group !== 'adult');
   const visibleDoses = nationalSchedule.filter((dose) => visibleColumns.some((column) => column.matches(dose)));
@@ -82,6 +112,21 @@ export default function NationalScheduleView() {
     [],
   );
 
+  const bcgCatchUpRecommendation = ageIsValid && missingDoseIds.includes('bcg-birth')
+    ? getBcgCatchUpRecommendation(ageMonths)
+    : null;
+
+  const handleDoseClick = (dose) => {
+    setSelectedDose(dose);
+    if (!ageIsValid || dose.minAgeMonths > ageMonths || dose.vaccineId !== 'bcg') return;
+
+    setMissingDoseIds((current) => (
+      current.includes(dose.id)
+        ? current.filter((id) => id !== dose.id)
+        : [...current, dose.id]
+    ));
+  };
+
   return (
     <div className="space-y-4">
       <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm shadow-slate-200/60">
@@ -90,7 +135,7 @@ export default function NationalScheduleView() {
           <div className="mt-2">
             <h3 className="text-xl font-bold">Календар профілактичних щеплень</h3>
             <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-300">
-              Натисніть на маркер дози, щоб переглянути деталі.
+              Введіть вік і натисніть на відсутню дозу, щоб отримати рекомендації з надолуження.
             </p>
           </div>
         </div>
@@ -188,6 +233,8 @@ export default function NationalScheduleView() {
                       {visibleColumns.map((column) => {
                         const dose = row.doses.find((item) => column.matches(item));
                         const isSelected = dose?.id === selectedDose?.id;
+                        const isAgeRelevant = Boolean(dose && ageIsValid && dose.minAgeMonths <= ageMonths);
+                        const isMissing = Boolean(dose && missingDoseIds.includes(dose.id));
 
                         return (
                           <div
@@ -198,14 +245,18 @@ export default function NationalScheduleView() {
                             {dose && (
                               <button
                                 type="button"
-                                onClick={() => setSelectedDose(dose)}
+                                onClick={() => handleDoseClick(dose)}
                                 className={`relative z-10 flex h-10 min-w-10 items-center justify-center rounded-full border-2 px-1 text-xs font-extrabold transition focus:outline-none focus:ring-4 focus:ring-teal-200 lg:h-11 lg:min-w-11 lg:text-sm ${
-                                  isSelected
-                                    ? 'scale-110 border-teal-700 bg-teal-600 text-white shadow-md shadow-teal-200'
+                                  isMissing
+                                    ? 'scale-110 border-amber-700 bg-amber-500 text-slate-950 shadow-md shadow-amber-200'
+                                    : isAgeRelevant
+                                      ? 'border-teal-700 bg-teal-600 text-white shadow-sm shadow-teal-200'
+                                      : isSelected
+                                        ? 'scale-105 border-sky-600 bg-sky-50 text-sky-800 shadow-sm'
                                     : 'border-teal-200 bg-teal-50 text-teal-800 hover:scale-105 hover:border-teal-500 hover:bg-teal-100'
                                 }`}
-                                aria-label={getDoseAccessibleLabel(dose)}
-                                aria-pressed={isSelected}
+                                aria-label={`${getDoseAccessibleLabel(dose)}${isMissing ? ', позначено як не отримано' : ''}`}
+                                aria-pressed={isMissing}
                               >
                                 <span className="flex flex-col items-center leading-none">
                                   <span>{getDoseLabel(dose).main}</span>
@@ -238,17 +289,23 @@ export default function NationalScheduleView() {
                       <div className="mt-2 grid gap-2">
                         {doses.map((dose) => {
                           const isSelected = dose.id === selectedDose?.id;
+                          const isAgeRelevant = ageIsValid && dose.minAgeMonths <= ageMonths;
+                          const isMissing = missingDoseIds.includes(dose.id);
                           return (
                             <button
                               key={dose.id}
                               type="button"
-                              onClick={() => setSelectedDose(dose)}
+                              onClick={() => handleDoseClick(dose)}
                               className={`rounded-lg border p-3 text-left transition ${
-                                isSelected
-                                  ? 'border-teal-500 bg-teal-50 ring-2 ring-teal-100'
+                                isMissing
+                                  ? 'border-amber-500 bg-amber-50 ring-2 ring-amber-100'
+                                  : isAgeRelevant
+                                    ? 'border-teal-500 bg-teal-50'
+                                    : isSelected
+                                      ? 'border-sky-400 bg-sky-50 ring-2 ring-sky-100'
                                   : 'border-slate-200 bg-white hover:border-teal-300'
                               }`}
-                              aria-pressed={isSelected}
+                              aria-pressed={isMissing}
                             >
                               <span className="block text-sm font-bold text-slate-950">{getCalendarVaccineTitle(dose.vaccineId)}</span>
                               <span className="mt-1 block text-xs leading-5 text-slate-600">
@@ -289,8 +346,29 @@ export default function NationalScheduleView() {
             </aside>
           )}
 
+          {bcgCatchUpRecommendation && (
+            <section className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4" aria-live="polite">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-800">Рекомендації з надолуження</p>
+              <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                <h4 className="text-lg font-bold text-slate-950">БЦЖ не проведена</h4>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-amber-900 ring-1 ring-amber-200">
+                  {bcgCatchUpRecommendation.ageGroup}
+                </span>
+              </div>
+              <div className="mt-3 space-y-3 text-sm leading-6 text-slate-700">
+                {bcgCatchUpRecommendation.paragraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+              <p className="mt-3 border-t border-amber-200 pt-3 text-xs font-semibold leading-5 text-amber-900">
+                Джерело: Календар профілактичних щеплень України, наказ МОЗ України №595 у чинній редакції.
+              </p>
+            </section>
+          )}
+
           <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-slate-500">
-            <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-full bg-teal-500" />Календарна доза</span>
+            <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-full bg-teal-600" />Активна за введеним віком</span>
+            <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-full bg-amber-500" />Позначена як не отримана</span>
             <span>ДП — дифтерія, правець</span>
             <span>Дорослим — повторювати кожні 10 років</span>
           </div>
