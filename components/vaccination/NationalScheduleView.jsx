@@ -74,6 +74,43 @@ function getBcgCatchUpRecommendation(ageMonths) {
   };
 }
 
+function getHepBCatchUpRecommendation(dose, ageMonths) {
+  if (ageMonths >= 216) {
+    return {
+      ageGroup: 'Особа віком 18 років і старше',
+      title: `Не отримана доза ${dose.doseNumber}`,
+      paragraphs: [
+        'Планове надолуження дитячої схеми вакцинації проти вірусного гепатиту B після досягнення 18 років не визначається лише за віком. Необхідно перевірити документовані дози та оцінити показання до вакцинації дорослого відповідно до факторів ризику, стану здоров’я, чинних рекомендацій та інструкції до вакцини.',
+      ],
+    };
+  }
+
+  const recommendationsByDose = {
+    1: [
+      'Вакцинація проти вірусного гепатиту B не розпочата або документально підтверджена перша доза відсутня. Рекомендовано розпочати вакцинацію найближчим часом після огляду дитини та виключення протипоказань.',
+      'Подальші дози вводити з дотриманням мінімальних інтервалів. У разі порушення графіка розпочинати серію спочатку не потрібно.',
+    ],
+    2: [
+      'Другу дозу вакцини проти вірусного гепатиту B пропущено. Розпочинати серію вакцинації спочатку не потрібно.',
+      'Рекомендовано ввести пропущену дозу найближчим часом, якщо після першої дози минув мінімально допустимий інтервал — 4 тижні. Наступну дозу планувати з урахуванням дати фактично проведеного щеплення.',
+    ],
+    3: [
+      'Третю дозу вакцини проти вірусного гепатиту B пропущено. Розпочинати серію вакцинації спочатку не потрібно.',
+      'Рекомендовано ввести пропущену дозу найближчим часом, якщо після другої дози минув мінімально допустимий інтервал — 4 тижні. Подальшу схему визначати за кількістю, датами та складом фактично введених вакцин.',
+    ],
+    4: [
+      'Необхідно перевірити кількість, дати та склад раніше введених вакцин. Якщо дитина вже отримала щонайменше три зараховані дози вакцини проти вірусного гепатиту B із дотриманням мінімальних інтервалів, курс вакцинації проти гепатиту B може вважатися завершеним.',
+      'Четверта доза передбачена схемою комбінованої вакцинації у 18 місяців і проводиться відповідно до Календаря профілактичних щеплень та інструкції до використаної вакцини. Раніше отримані валідні дози не анулюються, а серію спочатку не розпочинають.',
+    ],
+  };
+
+  return {
+    ageGroup: 'Дитина віком до 18 років',
+    title: `Не отримана доза ${dose.doseNumber}`,
+    paragraphs: recommendationsByDose[dose.doseNumber] || [],
+  };
+}
+
 export default function NationalScheduleView() {
   const [selectedDose, setSelectedDose] = useState(nationalSchedule[0]);
   const [ageValue, setAgeValue] = useState('');
@@ -116,9 +153,19 @@ export default function NationalScheduleView() {
     ? getBcgCatchUpRecommendation(ageMonths)
     : null;
 
+  const hepBCatchUpRecommendations = ageIsValid
+    ? nationalSchedule
+      .filter((dose) => dose.vaccineId === 'hepb' && missingDoseIds.includes(dose.id))
+      .map((dose) => ({ dose, recommendation: getHepBCatchUpRecommendation(dose, ageMonths) }))
+    : [];
+
   const handleDoseClick = (dose) => {
     setSelectedDose(dose);
-    if (!ageIsValid || dose.minAgeMonths > ageMonths || dose.vaccineId !== 'bcg') return;
+    if (
+      !ageIsValid
+      || dose.minAgeMonths > ageMonths
+      || !['bcg', 'hepb'].includes(dose.vaccineId)
+    ) return;
 
     setMissingDoseIds((current) => (
       current.includes(dose.id)
@@ -365,6 +412,26 @@ export default function NationalScheduleView() {
               </p>
             </section>
           )}
+
+          {hepBCatchUpRecommendations.map(({ dose, recommendation }) => (
+            <section key={dose.id} className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4" aria-live="polite">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-800">Рекомендації з надолуження</p>
+              <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                <h4 className="text-lg font-bold text-slate-950">Гепатит B: {recommendation.title.toLowerCase()}</h4>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-amber-900 ring-1 ring-amber-200">
+                  {recommendation.ageGroup}
+                </span>
+              </div>
+              <div className="mt-3 space-y-3 text-sm leading-6 text-slate-700">
+                {recommendation.paragraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+              <p className="mt-3 border-t border-amber-200 pt-3 text-xs font-semibold leading-5 text-amber-900">
+                Конкретна календарна дата не розраховується без документованих дат попередніх щеплень. Джерело: Календар профілактичних щеплень України, наказ МОЗ України №595 у чинній редакції.
+              </p>
+            </section>
+          ))}
 
           <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-slate-500">
             <span className="inline-flex items-center gap-2"><span className="h-3 w-3 rounded-full bg-teal-600" />Активна за введеним віком</span>
