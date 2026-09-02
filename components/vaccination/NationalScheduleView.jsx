@@ -35,17 +35,42 @@ function getDoseLabel(dose) {
   return { main: '•', sub: null };
 }
 
+function getCalendarVaccineTitle(vaccineId) {
+  return vaccineId === 'dtap' ? 'Кашлюк, дифтерія, правець' : getVaccineTitle(vaccineId);
+}
+
 function getDoseAccessibleLabel(dose) {
   const dosePart = dose.doseNumber ? `, доза ${dose.doseNumber}` : '';
   const sexPart = dose.sex === 'female' ? ', дівчата' : '';
-  return `${getVaccineTitle(dose.vaccineId)}, ${dose.ageLabel}${dosePart}${sexPart}`;
+  return `${getCalendarVaccineTitle(dose.vaccineId)}, ${dose.ageLabel}${dosePart}${sexPart}`;
 }
 
 export default function NationalScheduleView() {
   const [selectedDose, setSelectedDose] = useState(nationalSchedule[0]);
+  const [ageValue, setAgeValue] = useState('');
+  const [ageUnit, setAgeUnit] = useState('years');
 
   const visibleColumns = ageColumns.filter((column) => column.group !== 'adult');
   const visibleDoses = nationalSchedule.filter((dose) => visibleColumns.some((column) => column.matches(dose)));
+
+  const numericAge = ageValue === '' ? null : Number(ageValue);
+  const maximumAge = ageUnit === 'years' ? 120 : 216;
+  const ageMonths = numericAge === null ? null : numericAge * (ageUnit === 'years' ? 12 : 1);
+  const ageIsValid = numericAge !== null
+    && Number.isInteger(numericAge)
+    && numericAge >= 0
+    && numericAge <= maximumAge;
+
+  const ageRecommendations = useMemo(() => {
+    if (!ageIsValid) return [];
+
+    const latestDoseByVaccine = new Map();
+    nationalSchedule.forEach((dose) => {
+      if (dose.minAgeMonths <= ageMonths) latestDoseByVaccine.set(dose.vaccineId, dose);
+    });
+
+    return Array.from(latestDoseByVaccine.values());
+  }, [ageIsValid, ageMonths]);
 
   const vaccineRows = useMemo(
     () => vaccineRowDefinitions
@@ -71,6 +96,75 @@ export default function NationalScheduleView() {
         </div>
 
         <div className="p-4 sm:p-5">
+          <section className="mb-5 rounded-xl border border-teal-200 bg-teal-50/60 p-4">
+            <div className="grid gap-4 lg:grid-cols-[minmax(240px,0.8fr)_minmax(0,1.7fr)] lg:items-start">
+              <div>
+                <h4 className="text-base font-bold text-slate-950">Рекомендації за віком</h4>
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  Введіть вік, щоб побачити, які календарні щеплення потрібно перевірити в медичній документації.
+                </p>
+                <div className="mt-3 grid grid-cols-[minmax(0,1fr)_120px] gap-2">
+                  <label>
+                    <span className="sr-only">Вік</span>
+                    <input
+                      type="number"
+                      min="0"
+                      max={ageUnit === 'years' ? '120' : '216'}
+                      step="1"
+                      inputMode="numeric"
+                      value={ageValue}
+                      onChange={(event) => setAgeValue(event.target.value)}
+                      placeholder="Введіть вік"
+                      className="h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                    />
+                  </label>
+                  <label>
+                    <span className="sr-only">Одиниця віку</span>
+                    <select
+                      value={ageUnit}
+                      onChange={(event) => setAgeUnit(event.target.value)}
+                      className="h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-900 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+                    >
+                      <option value="years">років</option>
+                      <option value="months">місяців</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+
+              <div className="rounded-lg border border-white bg-white p-3 shadow-sm">
+                {ageValue === '' && (
+                  <p className="text-sm leading-6 text-slate-500">Після введення віку тут з’явиться перелік для перевірки.</p>
+                )}
+
+                {ageValue !== '' && !ageIsValid && (
+                  <p className="text-sm font-semibold leading-6 text-rose-700">
+                    Вкажіть цілий вік від 0 до {maximumAge} {ageUnit === 'years' ? 'років' : 'місяців'}.
+                  </p>
+                )}
+
+                {ageIsValid && ageRecommendations.length > 0 && (
+                  <>
+                    <p className="text-sm font-bold text-slate-900">До цього віку перевірте виконання:</p>
+                    <ul className="mt-2 grid gap-2 sm:grid-cols-2">
+                      {ageRecommendations.map((dose) => (
+                        <li key={dose.vaccineId} className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
+                          <span className="block text-sm font-bold text-slate-900">{getCalendarVaccineTitle(dose.vaccineId)}</span>
+                          <span className="mt-0.5 block text-xs leading-5 text-slate-600">
+                            {dose.ageLabel}{dose.doseNumber ? ` · доза ${dose.doseNumber}` : ''}{dose.sex === 'female' ? ' · дівчата' : ''}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="mt-3 text-xs leading-5 text-slate-500">
+                      Без даних про попередні щеплення програма не визначає пропуск. Звірте дози та інтервали з документами пацієнта.
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+          </section>
+
           <div className="hidden overflow-hidden rounded-xl border border-slate-200 md:block">
                 <div
                   className="min-w-0 bg-white"
@@ -156,7 +250,7 @@ export default function NationalScheduleView() {
                               }`}
                               aria-pressed={isSelected}
                             >
-                              <span className="block text-sm font-bold text-slate-950">{getVaccineTitle(dose.vaccineId)}</span>
+                              <span className="block text-sm font-bold text-slate-950">{getCalendarVaccineTitle(dose.vaccineId)}</span>
                               <span className="mt-1 block text-xs leading-5 text-slate-600">
                                 {dose.type}{dose.doseNumber ? ` · доза ${dose.doseNumber}` : ''}{dose.sex === 'female' ? ' · дівчата' : ''}
                               </span>
@@ -174,7 +268,7 @@ export default function NationalScheduleView() {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.18em] text-sky-700">Вибране щеплення</p>
-                  <h4 className="mt-1 text-lg font-bold text-slate-950">{getVaccineTitle(selectedDose.vaccineId)}</h4>
+                  <h4 className="mt-1 text-lg font-bold text-slate-950">{getCalendarVaccineTitle(selectedDose.vaccineId)}</h4>
                 </div>
                 <span className="w-fit rounded-full bg-white px-3 py-1 text-sm font-bold text-sky-800 ring-1 ring-sky-200">
                   {selectedDose.ageLabel}
