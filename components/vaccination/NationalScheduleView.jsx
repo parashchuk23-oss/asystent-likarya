@@ -240,6 +240,45 @@ function getHibCatchUpRecommendation(ageMonths, missingDoses) {
   };
 }
 
+function getMmrDoseName(dose) {
+  return `доза ${dose.doseNumber} (${dose.ageLabel})`;
+}
+
+function getMmrCatchUpRecommendation(ageMonths, missingDoses) {
+  const markedDoses = missingDoses.map(getMmrDoseName).join(', ');
+
+  if (ageMonths >= 216) {
+    return {
+      ageGroup: 'Особа віком 18 років і старше',
+      markedDoses,
+      paragraphs: [
+        'Планове надолуження дитячої схеми вакцинації проти кору, епідемічного паротиту та краснухи після досягнення 18 років не визначається лише за введеним віком.',
+        'Необхідно перевірити документовані дози та оцінити показання до вакцинації відповідно до епідемічної ситуації, професійного ризику, стану здоров’я, чинних нормативних документів та інструкції до вакцини КПК.',
+      ],
+    };
+  }
+
+  const firstDoseMissing = missingDoses.some((dose) => dose.doseNumber === 1);
+  const ageGroup = ageMonths < 48
+    ? 'Дитина від 12 місяців до 3 років 11 місяців'
+    : 'Дитина від 4 до 17 років 11 місяців';
+
+  const scheduleParagraph = firstDoseMissing
+    ? 'Якщо немає двох документованих валідних доз, вакцинацію потрібно розпочати або продовжити так, щоб дитина отримала дві дози КПК. Мінімальний інтервал між першою та другою дозами — 28 днів. Розпочинати серію спочатку після тривалої перерви не потрібно.'
+    : 'Якщо документована лише одна валідна доза КПК, рекомендовано ввести другу дозу з мінімальним інтервалом 28 днів після першої. Розпочинати серію спочатку після тривалої перерви не потрібно.';
+
+  return {
+    ageGroup,
+    markedDoses,
+    paragraphs: [
+      scheduleParagraph,
+      'Курс вважається завершеним після двох валідних доз: першу введено у віці 12 місяців або пізніше, а інтервал між дозами становить щонайменше 28 днів. Другу дозу, введену не раніше 24-го дня після першої, допускається зарахувати.',
+      'Якщо першу дозу введено до 12 місяців, її зазвичай не зараховують. Як виняток, дозу, введену після досягнення 11 місяців, можна зарахувати, якщо другу дозу введено після 12 місяців і не раніше ніж через 3 місяці після першої.',
+      'Якщо дві валідні дози вже введено до досягнення 4 років із дотриманням мінімального інтервалу, додаткова планова доза у 4 роки не потрібна.',
+    ],
+  };
+}
+
 export default function NationalScheduleView() {
   const [selectedDose, setSelectedDose] = useState(nationalSchedule[0]);
   const [ageValue, setAgeValue] = useState('');
@@ -315,12 +354,21 @@ export default function NationalScheduleView() {
     ? getHibCatchUpRecommendation(ageMonths, hibMissingDoses)
     : null;
 
+  const mmrMissingDoses = ageIsValid
+    ? nationalSchedule.filter(
+      (dose) => dose.vaccineId === 'mmr' && missingDoseIds.includes(dose.id),
+    )
+    : [];
+  const mmrCatchUpRecommendation = mmrMissingDoses.length > 0
+    ? getMmrCatchUpRecommendation(ageMonths, mmrMissingDoses)
+    : null;
+
   const handleDoseClick = (dose) => {
     setSelectedDose(dose);
     if (
       !ageIsValid
       || dose.minAgeMonths > ageMonths
-      || !['bcg', 'hepb', 'dtap', 'dt', 'polio', 'hib'].includes(dose.vaccineId)
+      || !['bcg', 'hepb', 'dtap', 'dt', 'polio', 'hib', 'mmr'].includes(dose.vaccineId)
     ) return;
 
     setMissingDoseIds((current) => (
@@ -655,6 +703,31 @@ export default function NationalScheduleView() {
               </div>
               <div className="mt-3 space-y-3 text-sm leading-6 text-slate-700">
                 {hibCatchUpRecommendation.paragraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+              <p className="mt-3 border-t border-amber-200 pt-3 text-xs font-semibold leading-5 text-amber-900">
+                Конкретна календарна дата не розраховується без документованих дат попередніх щеплень. Джерело: Календар профілактичних щеплень України, наказ МОЗ України №595 у чинній редакції від 01.01.2026.
+              </p>
+            </section>
+          )}
+
+          {mmrCatchUpRecommendation && (
+            <section className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4" aria-live="polite">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-800">Рекомендації з надолуження</p>
+              <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h4 className="text-lg font-bold text-slate-950">КПК — кір, епідемічний паротит, краснуха</h4>
+                  <p className="mt-1 text-xs font-semibold text-amber-900">
+                    Позначено як неотримані: {mmrCatchUpRecommendation.markedDoses}
+                  </p>
+                </div>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-amber-900 ring-1 ring-amber-200">
+                  {mmrCatchUpRecommendation.ageGroup}
+                </span>
+              </div>
+              <div className="mt-3 space-y-3 text-sm leading-6 text-slate-700">
+                {mmrCatchUpRecommendation.paragraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
               </div>
