@@ -164,6 +164,41 @@ function getDtpCatchUpRecommendation(ageMonths, missingDoses) {
   };
 }
 
+function getPolioDoseName(dose) {
+  return `доза ${dose.doseNumber} (${dose.ageLabel})`;
+}
+
+function getPolioCatchUpRecommendation(ageMonths, missingDoses) {
+  const markedDoses = missingDoses.map(getPolioDoseName).join(', ');
+
+  if (ageMonths >= 216) {
+    return {
+      ageGroup: 'Особа віком 18 років і старше',
+      markedDoses,
+      paragraphs: [
+        'Планове надолуження дитячої вакцинації проти поліомієліту після досягнення 18 років Календарем профілактичних щеплень України не передбачене. Особам віком від 18 років вакцинацію проводять за епідемічними показаннями.',
+        'Необхідно перевірити документовані дози та визначити подальшу тактику з урахуванням епідемічних показань, чинних нормативних документів та інструкції до інактивованої поліомієлітної вакцини.',
+      ],
+    };
+  }
+
+  const ageGroup = ageMonths < 12
+    ? 'Дитина молодше 1 року'
+    : ageMonths < 72
+      ? 'Дитина від 1 року до 5 років 11 місяців'
+      : 'Дитина від 6 до 17 років 11 місяців';
+
+  return {
+    ageGroup,
+    markedDoses,
+    paragraphs: [
+      'Позначені дози вакцини проти поліомієліту не проведені. Для надолуження незалежно від віку застосовується інактивована поліомієлітна вакцина (ІПВ). Розпочинати серію спочатку не потрібно — необхідно ввести дози, яких не вистачає.',
+      'Мінімальний інтервал між першою та другою дозами — 4 тижні, між другою та третьою — 4 тижні, між третьою та четвертою — 6 місяців. Схему визначають за кількістю і датами документованих валідних доз та інструкцією до використаної вакцини.',
+      'Дитина з порушенням Календаря має отримати чотири дози проти поліомієліту до віку 17 років 11 місяців 29 днів. Якщо остання доза вакцинального комплексу — перша ревакцинація — проводиться у віці планової ревакцинації в 6 років, її зараховують як ревакцинацію у 6 років.',
+    ],
+  };
+}
+
 export default function NationalScheduleView() {
   const [selectedDose, setSelectedDose] = useState(nationalSchedule[0]);
   const [ageValue, setAgeValue] = useState('');
@@ -221,12 +256,21 @@ export default function NationalScheduleView() {
     ? getDtpCatchUpRecommendation(ageMonths, dtpMissingDoses)
     : null;
 
+  const polioMissingDoses = ageIsValid
+    ? nationalSchedule.filter(
+      (dose) => dose.vaccineId === 'polio' && missingDoseIds.includes(dose.id),
+    )
+    : [];
+  const polioCatchUpRecommendation = polioMissingDoses.length > 0
+    ? getPolioCatchUpRecommendation(ageMonths, polioMissingDoses)
+    : null;
+
   const handleDoseClick = (dose) => {
     setSelectedDose(dose);
     if (
       !ageIsValid
       || dose.minAgeMonths > ageMonths
-      || !['bcg', 'hepb', 'dtap', 'dt'].includes(dose.vaccineId)
+      || !['bcg', 'hepb', 'dtap', 'dt', 'polio'].includes(dose.vaccineId)
     ) return;
 
     setMissingDoseIds((current) => (
@@ -516,6 +560,31 @@ export default function NationalScheduleView() {
               </div>
               <p className="mt-3 border-t border-amber-200 pt-3 text-xs font-semibold leading-5 text-amber-900">
                 Конкретна календарна дата не розраховується без документованих дат попередніх щеплень. Джерело: Календар профілактичних щеплень України, наказ МОЗ України №595 у чинній редакції.
+              </p>
+            </section>
+          )}
+
+          {polioCatchUpRecommendation && (
+            <section className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4" aria-live="polite">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-800">Рекомендації з надолуження</p>
+              <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h4 className="text-lg font-bold text-slate-950">Поліомієліт</h4>
+                  <p className="mt-1 text-xs font-semibold text-amber-900">
+                    Позначено як неотримані: {polioCatchUpRecommendation.markedDoses}
+                  </p>
+                </div>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-amber-900 ring-1 ring-amber-200">
+                  {polioCatchUpRecommendation.ageGroup}
+                </span>
+              </div>
+              <div className="mt-3 space-y-3 text-sm leading-6 text-slate-700">
+                {polioCatchUpRecommendation.paragraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+              <p className="mt-3 border-t border-amber-200 pt-3 text-xs font-semibold leading-5 text-amber-900">
+                Конкретна календарна дата не розраховується без документованих дат попередніх щеплень. Джерело: Календар профілактичних щеплень України, наказ МОЗ України №595 у чинній редакції від 01.01.2026.
               </p>
             </section>
           )}
