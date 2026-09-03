@@ -45,6 +45,11 @@ function getDoseAccessibleLabel(dose) {
   return `${getCalendarVaccineTitle(dose.vaccineId)}, ${dose.ageLabel}${dosePart}${sexPart}`;
 }
 
+function isDoseRelevantForAge(dose, ageMonths) {
+  return dose.minAgeMonths <= ageMonths
+    && (dose.maxAgeMonths == null || ageMonths <= dose.maxAgeMonths);
+}
+
 function getBcgCatchUpRecommendation(ageMonths) {
   if (ageMonths < 7) {
     return {
@@ -279,6 +284,17 @@ function getMmrCatchUpRecommendation(ageMonths, missingDoses) {
   };
 }
 
+function getHpvCatchUpRecommendation() {
+  return {
+    ageGroup: 'Дівчата віком 12–13 років',
+    paragraphs: [
+      'Якщо планове щеплення проти ВПЛ не проведене, рекомендовано ввести одну дозу 9-валентної вакцини після огляду та виключення протипоказань. У 2026 році безоплатна вакцинація за Національним календарем передбачена для дівчат віком 12–13 років включно.',
+      'Імунокомпетентній дитині після однієї календарної дози друга доза не потрібна. Окремі схеми застосовують для спеціальних груп: дівчатам, які живуть із ВІЛ або мають первинний імунодефіцит, вакцинацію проводять за тридозною схемою; дітям з історією сексуального насильства вакцинацію починають якомога раніше з 9 років, а для імунокомпетентних дітей цієї групи застосовують однодозову схему.',
+      'Заплановане з 2027 року надолуження для дівчат до 15 років не застосовується як чинне правило календаря 2026 року. Схему для спеціальної групи визначають відповідно до чинних нормативних документів та інструкції до конкретної вакцини.',
+    ],
+  };
+}
+
 export default function NationalScheduleView() {
   const [selectedDose, setSelectedDose] = useState(nationalSchedule[0]);
   const [ageValue, setAgeValue] = useState('');
@@ -301,7 +317,7 @@ export default function NationalScheduleView() {
 
     const latestDoseByVaccine = new Map();
     nationalSchedule.forEach((dose) => {
-      if (dose.minAgeMonths <= ageMonths) latestDoseByVaccine.set(dose.vaccineId, dose);
+      if (isDoseRelevantForAge(dose, ageMonths)) latestDoseByVaccine.set(dose.vaccineId, dose);
     });
 
     return Array.from(latestDoseByVaccine.values());
@@ -363,12 +379,21 @@ export default function NationalScheduleView() {
     ? getMmrCatchUpRecommendation(ageMonths, mmrMissingDoses)
     : null;
 
+  const hpvDoseIsMissing = ageIsValid && nationalSchedule.some(
+    (dose) => dose.vaccineId === 'hpv'
+      && missingDoseIds.includes(dose.id)
+      && isDoseRelevantForAge(dose, ageMonths),
+  );
+  const hpvCatchUpRecommendation = hpvDoseIsMissing
+    ? getHpvCatchUpRecommendation()
+    : null;
+
   const handleDoseClick = (dose) => {
     setSelectedDose(dose);
     if (
       !ageIsValid
-      || dose.minAgeMonths > ageMonths
-      || !['bcg', 'hepb', 'dtap', 'dt', 'polio', 'hib', 'mmr'].includes(dose.vaccineId)
+      || !isDoseRelevantForAge(dose, ageMonths)
+      || !['bcg', 'hepb', 'dtap', 'dt', 'polio', 'hib', 'mmr', 'hpv'].includes(dose.vaccineId)
     ) return;
 
     setMissingDoseIds((current) => (
@@ -484,7 +509,7 @@ export default function NationalScheduleView() {
                       {visibleColumns.map((column) => {
                         const dose = row.doses.find((item) => column.matches(item));
                         const isSelected = dose?.id === selectedDose?.id;
-                        const isAgeRelevant = Boolean(dose && ageIsValid && dose.minAgeMonths <= ageMonths);
+                        const isAgeRelevant = Boolean(dose && ageIsValid && isDoseRelevantForAge(dose, ageMonths));
                         const isMissing = Boolean(dose && missingDoseIds.includes(dose.id));
 
                         return (
@@ -540,7 +565,7 @@ export default function NationalScheduleView() {
                       <div className="mt-2 grid gap-2">
                         {doses.map((dose) => {
                           const isSelected = dose.id === selectedDose?.id;
-                          const isAgeRelevant = ageIsValid && dose.minAgeMonths <= ageMonths;
+                          const isAgeRelevant = ageIsValid && isDoseRelevantForAge(dose, ageMonths);
                           const isMissing = missingDoseIds.includes(dose.id);
                           return (
                             <button
@@ -733,6 +758,26 @@ export default function NationalScheduleView() {
               </div>
               <p className="mt-3 border-t border-amber-200 pt-3 text-xs font-semibold leading-5 text-amber-900">
                 Конкретна календарна дата не розраховується без документованих дат попередніх щеплень. Джерело: Календар профілактичних щеплень України, наказ МОЗ України №595 у чинній редакції від 01.01.2026.
+              </p>
+            </section>
+          )}
+
+          {hpvCatchUpRecommendation && (
+            <section className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4" aria-live="polite">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-800">Рекомендації з надолуження</p>
+              <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                <h4 className="text-lg font-bold text-slate-950">ВПЛ-інфекція: щеплення не проведене</h4>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-amber-900 ring-1 ring-amber-200">
+                  {hpvCatchUpRecommendation.ageGroup}
+                </span>
+              </div>
+              <div className="mt-3 space-y-3 text-sm leading-6 text-slate-700">
+                {hpvCatchUpRecommendation.paragraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+              <p className="mt-3 border-t border-amber-200 pt-3 text-xs font-semibold leading-5 text-amber-900">
+                Джерело: Календар профілактичних щеплень України, наказ МОЗ України №595 у чинній редакції від 01.01.2026, роз’яснення МОЗ і ЦГЗ щодо календаря 2026 року.
               </p>
             </section>
           )}
