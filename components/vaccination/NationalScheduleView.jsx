@@ -199,6 +199,47 @@ function getPolioCatchUpRecommendation(ageMonths, missingDoses) {
   };
 }
 
+function getHibDoseName(dose) {
+  return `доза ${dose.doseNumber} (${dose.ageLabel})`;
+}
+
+function getHibCatchUpRecommendation(ageMonths, missingDoses) {
+  const markedDoses = missingDoses.map(getHibDoseName).join(', ');
+
+  if (ageMonths < 12) {
+    return {
+      ageGroup: 'Дитина молодше 12 місяців',
+      markedDoses,
+      paragraphs: [
+        'Позначені дози вакцини проти Hib-інфекції не проведені. Розпочинати серію спочатку не потрібно — необхідно продовжити вакцинацію з урахуванням кількості та дат документованих валідних доз.',
+        'Мінімальний інтервал між першою та другою дозами — 4 тижні, між другою та третьою — 4 тижні, між третьою та четвертою — 6 місяців. Остаточну схему визначають за віком на момент введення кожної дози та інструкцією до використаної вакцини.',
+      ],
+    };
+  }
+
+  if (ageMonths < 60) {
+    return {
+      ageGroup: 'Дитина від 12 місяців до 4 років 11 місяців',
+      markedDoses,
+      paragraphs: [
+        'Якщо вакцинація проти Hib-інфекції не розпочата або курс не завершений, рекомендовано ввести одну дозу вакцини найближчим часом після огляду дитини та виключення протипоказань. Розпочинати серію спочатку не потрібно.',
+        'Якщо чергову дозу Hib-вакцини введено у віці від 12 місяців до 4 років 11 місяців 29 днів, наступні дози для планового надолуження не вводять. Необхідно врахувати документовані попередні дози та інструкцію до конкретної вакцини.',
+      ],
+    };
+  }
+
+  return {
+    ageGroup: ageMonths < 216
+      ? 'Дитина від 5 до 17 років 11 місяців'
+      : 'Особа віком 18 років і старше',
+    markedDoses,
+    paragraphs: [
+      'Планове надолуження вакцинації проти Hib-інфекції після досягнення 5 років Календарем профілактичних щеплень України не передбачене.',
+      'Вакцинацію в цьому віці проводять лише особам із визначених груп ризику за окремими показаннями. Необхідно оцінити стан здоров’я, документовану історію щеплень і застосувати схему відповідно до чинного Календаря та інструкції до конкретної вакцини.',
+    ],
+  };
+}
+
 export default function NationalScheduleView() {
   const [selectedDose, setSelectedDose] = useState(nationalSchedule[0]);
   const [ageValue, setAgeValue] = useState('');
@@ -265,12 +306,21 @@ export default function NationalScheduleView() {
     ? getPolioCatchUpRecommendation(ageMonths, polioMissingDoses)
     : null;
 
+  const hibMissingDoses = ageIsValid
+    ? nationalSchedule.filter(
+      (dose) => dose.vaccineId === 'hib' && missingDoseIds.includes(dose.id),
+    )
+    : [];
+  const hibCatchUpRecommendation = hibMissingDoses.length > 0
+    ? getHibCatchUpRecommendation(ageMonths, hibMissingDoses)
+    : null;
+
   const handleDoseClick = (dose) => {
     setSelectedDose(dose);
     if (
       !ageIsValid
       || dose.minAgeMonths > ageMonths
-      || !['bcg', 'hepb', 'dtap', 'dt', 'polio'].includes(dose.vaccineId)
+      || !['bcg', 'hepb', 'dtap', 'dt', 'polio', 'hib'].includes(dose.vaccineId)
     ) return;
 
     setMissingDoseIds((current) => (
@@ -580,6 +630,31 @@ export default function NationalScheduleView() {
               </div>
               <div className="mt-3 space-y-3 text-sm leading-6 text-slate-700">
                 {polioCatchUpRecommendation.paragraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+              <p className="mt-3 border-t border-amber-200 pt-3 text-xs font-semibold leading-5 text-amber-900">
+                Конкретна календарна дата не розраховується без документованих дат попередніх щеплень. Джерело: Календар профілактичних щеплень України, наказ МОЗ України №595 у чинній редакції від 01.01.2026.
+              </p>
+            </section>
+          )}
+
+          {hibCatchUpRecommendation && (
+            <section className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4" aria-live="polite">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-800">Рекомендації з надолуження</p>
+              <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h4 className="text-lg font-bold text-slate-950">Hib-інфекція</h4>
+                  <p className="mt-1 text-xs font-semibold text-amber-900">
+                    Позначено як неотримані: {hibCatchUpRecommendation.markedDoses}
+                  </p>
+                </div>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-amber-900 ring-1 ring-amber-200">
+                  {hibCatchUpRecommendation.ageGroup}
+                </span>
+              </div>
+              <div className="mt-3 space-y-3 text-sm leading-6 text-slate-700">
+                {hibCatchUpRecommendation.paragraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
               </div>
