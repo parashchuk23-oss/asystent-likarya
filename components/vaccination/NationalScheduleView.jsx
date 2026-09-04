@@ -331,6 +331,17 @@ export default function NationalScheduleView() {
       .filter((dose) => dose.vaccineId === 'hepb' && missingDoseIds.includes(dose.id))
       .map((dose) => ({ dose, recommendation: getHepBCatchUpRecommendation(dose, ageMonths) }))
     : [];
+  const hepBCatchUpSummary = hepBCatchUpRecommendations.length > 0
+    ? {
+      ageGroup: hepBCatchUpRecommendations[0].recommendation.ageGroup,
+      markedDoses: hepBCatchUpRecommendations
+        .map(({ dose }) => `доза ${dose.doseNumber} (${dose.ageLabel})`)
+        .join(', '),
+      paragraphs: [...new Set(
+        hepBCatchUpRecommendations.flatMap(({ recommendation }) => recommendation.paragraphs),
+      )],
+    }
+    : null;
 
   const dtpMissingDoses = ageIsValid
     ? nationalSchedule.filter(
@@ -605,17 +616,22 @@ export default function NationalScheduleView() {
             </section>
           )}
 
-          {hepBCatchUpRecommendations.map(({ dose, recommendation }) => (
-            <section key={dose.id} className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4" aria-live="polite">
+          {hepBCatchUpSummary && (
+            <section className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4" aria-live="polite">
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-800">Рекомендації з надолуження</p>
               <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-                <h4 className="text-lg font-bold text-slate-950">Гепатит B: {recommendation.title.toLowerCase()}</h4>
+                <div>
+                  <h4 className="text-lg font-bold text-slate-950">Гепатит B</h4>
+                  <p className="mt-1 text-xs font-semibold text-amber-900">
+                    Позначено як неотримані: {hepBCatchUpSummary.markedDoses}
+                  </p>
+                </div>
                 <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-amber-900 ring-1 ring-amber-200">
-                  {recommendation.ageGroup}
+                  {hepBCatchUpSummary.ageGroup}
                 </span>
               </div>
               <div className="mt-3 space-y-3 text-sm leading-6 text-slate-700">
-                {recommendation.paragraphs.map((paragraph) => (
+                {hepBCatchUpSummary.paragraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
               </div>
@@ -623,7 +639,7 @@ export default function NationalScheduleView() {
                 Конкретна календарна дата не розраховується без документованих дат попередніх щеплень. Джерело: Календар профілактичних щеплень України, наказ МОЗ України №595 у чинній редакції.
               </p>
             </section>
-          ))}
+          )}
 
           {dtpCatchUpRecommendation && (
             <section className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4" aria-live="polite">
