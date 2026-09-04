@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import NationalScheduleView from './vaccination/NationalScheduleView';
-import RecommendedVaccines from './vaccination/RecommendedVaccines';
 import VaccinationChecker from './vaccination/VaccinationChecker';
 import VaccineCounseling from './vaccination/VaccineCounseling';
 import VaccineReference from './vaccination/VaccineReference';
@@ -10,8 +9,7 @@ import VaccineReference from './vaccination/VaccineReference';
 const sections = [
   { id: 'checker', title: 'Перевірити вакцинацію', description: 'Вік, історія доз, календарні щеплення, catch-up і додаткові вакцини.' },
   { id: 'calendar', title: 'Календар щеплень', description: 'Національний календар України у форматі швидкого перегляду.' },
-  { id: 'recommended', title: 'Рекомендовані вакцини', description: 'Позакалендарні вакцини за віком, ризиками і клінічним контекстом.' },
-  { id: 'reference', title: 'Довідник вакцин', description: 'Короткі практичні картки без каталогу торгових назв.' },
+  { id: 'reference', title: 'Довідник вакцин', description: 'Календарні й рекомендовані вакцини у форматі практичних карток.' },
   { id: 'counseling', title: 'Заперечення', description: 'Короткі відповіді для розмови з пацієнтом.' },
 ];
 
@@ -29,7 +27,7 @@ export default function VaccinationTab() {
         </p>
       </section>
 
-      <div className="grid gap-2 md:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-4">
         {sections.map((section) => (
           <button
             key={section.id}
@@ -49,7 +47,6 @@ export default function VaccinationTab() {
 
       {activeSection === 'checker' && <VaccinationChecker />}
       {activeSection === 'calendar' && <NationalScheduleView />}
-      {activeSection === 'recommended' && <RecommendedVaccines />}
       {activeSection === 'reference' && <VaccineReference />}
       {activeSection === 'counseling' && <VaccineCounseling />}
 
