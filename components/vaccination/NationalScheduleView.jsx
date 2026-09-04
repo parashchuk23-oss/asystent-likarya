@@ -312,17 +312,6 @@ export default function NationalScheduleView() {
     && numericAge >= 0
     && numericAge <= maximumAge;
 
-  const ageRecommendations = useMemo(() => {
-    if (!ageIsValid) return [];
-
-    const latestDoseByVaccine = new Map();
-    nationalSchedule.forEach((dose) => {
-      if (isDoseRelevantForAge(dose, ageMonths)) latestDoseByVaccine.set(dose.vaccineId, dose);
-    });
-
-    return Array.from(latestDoseByVaccine.values());
-  }, [ageIsValid, ageMonths]);
-
   const vaccineRows = useMemo(
     () => vaccineRowDefinitions
       .map((row) => ({
@@ -418,11 +407,11 @@ export default function NationalScheduleView() {
 
         <div className="p-4 sm:p-5">
           <section className="mb-5 rounded-xl border border-teal-200 bg-teal-50/60 p-4">
-            <div className="grid gap-4 lg:grid-cols-[minmax(240px,0.8fr)_minmax(0,1.7fr)] lg:items-start">
+            <div className="max-w-xl">
               <div>
                 <h4 className="text-base font-bold text-slate-950">Рекомендації за віком</h4>
                 <p className="mt-1 text-sm leading-6 text-slate-600">
-                  Введіть вік, щоб побачити, які календарні щеплення потрібно перевірити в медичній документації.
+                  Введіть вік, щоб виділити актуальні дози в календарі та позначити пропущені щеплення.
                 </p>
                 <div className="mt-3 grid grid-cols-[minmax(0,1fr)_120px] gap-2">
                   <label>
@@ -451,36 +440,10 @@ export default function NationalScheduleView() {
                     </select>
                   </label>
                 </div>
-              </div>
-
-              <div className="rounded-lg border border-white bg-white p-3 shadow-sm">
-                {ageValue === '' && (
-                  <p className="text-sm leading-6 text-slate-500">Після введення віку тут з’явиться перелік для перевірки.</p>
-                )}
-
                 {ageValue !== '' && !ageIsValid && (
-                  <p className="text-sm font-semibold leading-6 text-rose-700">
+                  <p className="mt-2 text-sm font-semibold leading-6 text-rose-700">
                     Вкажіть цілий вік від 0 до {maximumAge} {ageUnit === 'years' ? 'років' : 'місяців'}.
                   </p>
-                )}
-
-                {ageIsValid && ageRecommendations.length > 0 && (
-                  <>
-                    <p className="text-sm font-bold text-slate-900">До цього віку перевірте виконання:</p>
-                    <ul className="mt-2 grid gap-2 sm:grid-cols-2">
-                      {ageRecommendations.map((dose) => (
-                        <li key={dose.vaccineId} className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
-                          <span className="block text-sm font-bold text-slate-900">{getCalendarVaccineTitle(dose.vaccineId)}</span>
-                          <span className="mt-0.5 block text-xs leading-5 text-slate-600">
-                            {dose.ageLabel}{dose.doseNumber ? ` · доза ${dose.doseNumber}` : ''}{dose.sex === 'female' ? ' · дівчата' : ''}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                    <p className="mt-3 text-xs leading-5 text-slate-500">
-                      Без даних про попередні щеплення програма не визначає пропуск. Звірте дози та інтервали з документами пацієнта.
-                    </p>
-                  </>
                 )}
               </div>
             </div>
