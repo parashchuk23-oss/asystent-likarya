@@ -4,6 +4,7 @@ import { useState } from 'react';
 import FormField from './FormField';
 import { inputClass } from './formStyles';
 import RenalMedicationAdvice from './RenalMedicationAdvice';
+import RenalProtectionClasses from './RenalProtectionClasses';
 import {
   calculateCKDEPI,
   calculateCockcroftGault,
@@ -229,6 +230,8 @@ export default function EgfrTab() {
             Очистити
           </button>
         </div>
+
+        <RenalProtectionClasses />
       </section>
 
       <section className="rounded-lg border border-blue-100 bg-white p-3.5 shadow-sm shadow-slate-200/60">
