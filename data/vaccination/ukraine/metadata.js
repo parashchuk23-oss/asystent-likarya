@@ -3,7 +3,7 @@ export const vaccinationMetadata = {
   title: 'Календар профілактичних щеплень України',
   version: '2026-mvp',
   validFrom: '2026-01-01',
-  checkedAt: '2026-08-27',
+  checkedAt: '2026-09-04',
   source: [
     {
       title: 'МОЗ України. Календар профілактичних щеплень',
@@ -20,6 +20,18 @@ export const vaccinationMetadata = {
     {
       title: 'ЦГЗ МОЗ України. Пояснення змін календаря щеплень з 2026 року',
       url: 'https://phc.org.ua/news/kraschiy-zakhist-dityam-zruchnishe-batkam-yak-zminivsya-kalendar-profilaktichnikh-scheplen-z',
+    },
+    {
+      title: 'ВООЗ. Програма імунізації та вакцинокеровані інфекції',
+      url: 'https://www.who.int/teams/immunization-vaccines-and-biologicals/essential-programme-on-immunization/',
+    },
+    {
+      title: 'CDC. Типові побічні реакції після вакцинації',
+      url: 'https://www.cdc.gov/vaccines/basics/possible-side-effects.html',
+    },
+    {
+      title: 'Tabletki.ua. Каталог вакцин та інструкції препаратів',
+      url: 'https://tabletki.ua/uk/category/2550/',
     },
   ],
   note:

@@ -216,35 +216,6 @@ function SecondaryPreventionDropdown({ riskData, onChange }) {
         </div>
       </div>
 
-      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-        <a
-          href="https://www.escardio.org/Education/ESC-Prevention-of-CVD-Programme/Risk-assessment/SMART-Risk-Score"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700"
-        >
-          Відкрити SMART Risk Score
-        </a>
-
-        <a
-          href="https://u-prevent.com/"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center justify-center rounded-md border border-blue-200 bg-white px-4 py-2 text-sm font-semibold text-blue-700 transition hover:bg-blue-50"
-        >
-          Відкрити U-Prevent
-        </a>
-      </div>
-
-      <div className="mt-3 rounded-md border border-amber-100 bg-amber-50 px-3 py-2 text-xs leading-5 text-slate-700">
-        <p>
-          Локальний розрахунок є довідковою реалізацією SMART Risk Score за опублікованою моделлю
-          Dorresteijn et al., Heart 2013. Це не офіційний калькулятор ESC або U-Prevent.
-        </p>
-        <p className="mt-1">
-          Для альтернативної зовнішньої оцінки можна скористатися U-Prevent.
-        </p>
-      </div>
     </div>
   );
 }
