@@ -55,7 +55,11 @@ export default function DrugCard({ drug, isOpen, onToggle }) {
           <dl className="grid gap-4 text-sm sm:grid-cols-2">
             <div>
               <dt className="font-semibold text-slate-600">Торгові назви, приклади</dt>
-              <dd className="mt-1 text-slate-950">{drug.tradeNames.join(', ')}</dd>
+              <dd className="mt-1 text-slate-950">
+                {drug.tradeNames.length
+                  ? drug.tradeNames.join(', ')
+                  : 'Не наведені — перевірте чинну реєстрацію в ДРЛЗ України.'}
+              </dd>
             </div>
             <div>
               <dt className="font-semibold text-slate-600">Максимальна доза</dt>
