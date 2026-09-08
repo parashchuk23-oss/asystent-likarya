@@ -55,7 +55,11 @@ function getItems(disease, key) {
 }
 
 function getDefaultSelectedIds(disease) {
-  return sections.flatMap((section) => getItems(disease, section.key).map((item) => item.id));
+  return sections.flatMap((section) =>
+    getItems(disease, section.key)
+      .filter((item) => item.defaultSelected !== false)
+      .map((item) => item.id),
+  );
 }
 
 function getSelectedRecommendationPayload({ disease, selectedIds, medicationChoices, medicationSelects }) {

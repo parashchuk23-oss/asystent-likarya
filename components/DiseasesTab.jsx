@@ -7,6 +7,7 @@ import { heartFailureDisease } from '../data/diseases/heartFailure';
 import { atrialFibrillationDisease } from '../data/diseases/atrialFibrillation';
 import { chronicPainDisease } from '../data/diseases/chronicPain';
 import { lipidDisorderDisease } from '../data/diseases/lipidDisorder';
+import { obesityDisease } from '../data/diseases/obesity';
 import DiseaseTemplateCard from './diseases/DiseaseTemplateCard';
 import RecommendationConstructor from './diseases/RecommendationConstructor';
 
@@ -16,6 +17,7 @@ const diseases = [
   heartFailureDisease,
   atrialFibrillationDisease,
   lipidDisorderDisease,
+  obesityDisease,
   chronicPainDisease,
 ];
 

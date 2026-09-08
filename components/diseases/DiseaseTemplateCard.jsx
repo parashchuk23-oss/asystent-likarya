@@ -1,6 +1,12 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import {
+  calculateBmi,
+  calculateWaistToHeightRatio,
+  calculateWeightGoals,
+  getAdultBmiClassification,
+} from '../../utils/obesity';
 
 function getInitialConstructorState(disease) {
   const constructor = disease.diagnosisConstructor;
@@ -33,6 +39,11 @@ function formatIcd10Items(items) {
 
 function getIcd10FromState(disease, state) {
   const constructor = disease.diagnosisConstructor;
+
+  if (disease.id === 'obesity') {
+    const bmi = calculateBmi(state.weight, state.height);
+    if (bmi === null || bmi < 30) return '';
+  }
 
   if (constructor.icd10) {
     return formatIcd10Items([constructor.icd10]);
@@ -169,6 +180,25 @@ function buildDiagnosisFromState(disease, state) {
     return `${state.lipidType}${measurementsPart}.${riskPart}${scorePart}`.trim();
   }
 
+  if (disease.id === 'obesity') {
+    const bmi = calculateBmi(state.weight, state.height);
+    const classification = getAdultBmiClassification(bmi);
+    const ratio = calculateWaistToHeightRatio(state.waist, state.height);
+    const additionalText = state.additionalText?.trim() ?? '';
+    const base = classification
+      ? `${classification.diagnosis} (ІМТ ${bmi.toFixed(1)} кг/м²)`
+      : 'Ожиріння (антропометричні дані не заповнені)';
+    const distributionPart = ratio !== null && ratio >= 0.5
+      ? `центральне накопичення жирової тканини (ОТ/зріст ${ratio.toFixed(2)})`
+      : ratio !== null
+        ? `ОТ/зріст ${ratio.toFixed(2)}`
+        : '';
+    const detailParts = [distributionPart, ...checkboxParts, additionalText].filter(Boolean);
+
+    if (!detailParts.length) return `${base}.`;
+    return `${base}. ${detailParts.join('. ')}.`;
+  }
+
   const fallbackParts = constructor.selectFields
     .map((field) => state[field.id])
     .filter(Boolean);
@@ -196,6 +226,19 @@ export default function DiseaseTemplateCard({ disease, onAddDiagnosis }) {
     () => getIcd10FromState(disease, constructorState),
     [disease, constructorState],
   );
+  const obesityMetrics = useMemo(() => {
+    if (disease.id !== 'obesity') return null;
+
+    const bmi = calculateBmi(constructorState.weight, constructorState.height);
+    const classification = getAdultBmiClassification(bmi);
+    const waistToHeightRatio = calculateWaistToHeightRatio(
+      constructorState.waist,
+      constructorState.height,
+    );
+    const weightGoals = calculateWeightGoals(constructorState.weight);
+
+    return { bmi, classification, waistToHeightRatio, weightGoals };
+  }, [disease.id, constructorState]);
 
   function updateConstructorValue(field, value) {
     setConstructorState((current) => ({ ...current, [field]: value }));
@@ -278,6 +321,48 @@ export default function DiseaseTemplateCard({ disease, onAddDiagnosis }) {
               </fieldset>
             ))}
           </div>
+
+          {obesityMetrics ? (
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-md border border-teal-200 bg-teal-50/50 px-3 py-3">
+                <p className="text-xs font-semibold text-slate-500">ІМТ</p>
+                <p className="mt-1 text-sm font-semibold text-slate-950">
+                  {obesityMetrics.bmi !== null
+                    ? `${obesityMetrics.bmi.toFixed(1)} кг/м²`
+                    : 'Заповніть зріст і масу'}
+                </p>
+              </div>
+              <div className="rounded-md border border-teal-200 bg-teal-50/50 px-3 py-3">
+                <p className="text-xs font-semibold text-slate-500">Категорія</p>
+                <p className="mt-1 text-sm font-semibold text-slate-950">
+                  {obesityMetrics.classification?.label ?? 'Не визначена'}
+                </p>
+              </div>
+              <div className="rounded-md border border-teal-200 bg-teal-50/50 px-3 py-3">
+                <p className="text-xs font-semibold text-slate-500">ОТ / зріст</p>
+                <p className="mt-1 text-sm font-semibold text-slate-950">
+                  {obesityMetrics.waistToHeightRatio !== null
+                    ? obesityMetrics.waistToHeightRatio.toFixed(2)
+                    : 'Не визначено'}
+                </p>
+                {obesityMetrics.waistToHeightRatio !== null ? (
+                  <p className="mt-1 text-xs text-slate-500">
+                    {obesityMetrics.waistToHeightRatio >= 0.5
+                      ? 'Підвищений кардіометаболічний ризик'
+                      : 'Нижче порогу 0,5'}
+                  </p>
+                ) : null}
+              </div>
+              <div className="rounded-md border border-teal-200 bg-teal-50/50 px-3 py-3">
+                <p className="text-xs font-semibold text-slate-500">Орієнтир −5% / −10%</p>
+                <p className="mt-1 text-sm font-semibold text-slate-950">
+                  {obesityMetrics.weightGoals
+                    ? `${obesityMetrics.weightGoals.fivePercent.toFixed(1)} / ${obesityMetrics.weightGoals.tenPercent.toFixed(1)} кг`
+                    : 'Не визначено'}
+                </p>
+              </div>
+            </div>
+          ) : null}
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {disease.diagnosisConstructor.freeTextFields.map((field) => (
