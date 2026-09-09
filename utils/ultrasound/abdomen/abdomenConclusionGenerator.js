@@ -4,6 +4,7 @@ import {
   isLiverEnlarged,
   isPancreaticDuctDilated,
   isSpleenEnlarged,
+  assessGallbladderPolypSru,
 } from './abdomenCalculations';
 
 export function generateAbdomenConclusion(data) {
@@ -37,7 +38,12 @@ export function generateAbdomenConclusion(data) {
     lines.push(`УЗ-ознаки ${data.gallbladder.wallThickeningType === 'local' ? 'локального' : 'дифузного'} потовщення стінки жовчного міхура.`);
   }
   if (!data.gallbladder.notVisualized && data.gallbladder.polyps.length) {
-    lines.push('Поліпоподібні утворення жовчного міхура.');
+    data.gallbladder.polyps.forEach((polyp, index) => {
+      const assessment = assessGallbladderPolypSru(polyp);
+      const sizeText = polyp.size ? ` розміром ${String(polyp.size).replace('.', ',')} мм` : '';
+      const numberText = data.gallbladder.polyps.length > 1 ? ` №${index + 1}` : '';
+      lines.push(`Поліпоподібне утворення жовчного міхура${numberText}${sizeText}, категорія ${assessment.riskLabel} за SRU 2022.`);
+    });
   }
   if (isCommonBileDuctDilated(data.commonBileDuct.diameter) || data.commonBileDuct.lumen === 'stone') {
     lines.push('УЗ-ознаки змін холедоха; потребує клініко-лабораторної кореляції.');
@@ -81,14 +87,13 @@ export function generateAbdomenRecommendations(data) {
     data.liver.echogenicity === 'increased' ||
     data.liver.echogenicity === 'markedlyIncreased' ||
     Boolean(data.liver.steatosisGrade);
-  const hasStructuralChanges =
+  const hasNonPolypStructuralChanges =
     data.liver.echogenicity !== 'medium' ||
     data.liver.structure !== 'homogeneous' ||
     data.liver.changes.length ||
     isLiverEnlarged(data.liver) ||
     (!data.gallbladder.notVisualized && data.gallbladder.content !== 'anechoic') ||
     (!data.gallbladder.notVisualized && data.gallbladder.stones.length) ||
-    (!data.gallbladder.notVisualized && data.gallbladder.polyps.length) ||
     (!data.gallbladder.notVisualized && isGallbladderWallThickened(data.gallbladder.wall)) ||
     data.commonBileDuct.lumen !== 'free' ||
     isCommonBileDuctDilated(data.commonBileDuct.diameter) ||
@@ -101,12 +106,15 @@ export function generateAbdomenRecommendations(data) {
     data.spleen.lesions.length ||
     data.freeFluid.status === 'yes' ||
     data.lymphNodes.status === 'yes';
+  const hasStructuralChanges =
+    hasNonPolypStructuralChanges ||
+    (!data.gallbladder.notVisualized && data.gallbladder.polyps.length);
 
   if (!hasStructuralChanges) {
     return 'Додаткові рекомендації — за клінічним контекстом.';
   }
 
-  const recommendations = ['Консультація гастроентеролога.'];
+  const recommendations = hasNonPolypStructuralChanges ? ['Консультація гастроентеролога.'] : [];
 
   if (hasSteatosis) {
     recommendations.push('АЛТ, АСТ, ГГТ, ЛФ, загальний білірубін; HbA1c; ліпідограма; ТТГ.');
@@ -120,7 +128,6 @@ export function generateAbdomenRecommendations(data) {
     data.liver.changes.length ||
     (!data.gallbladder.notVisualized && data.gallbladder.content !== 'anechoic') ||
     (!data.gallbladder.notVisualized && data.gallbladder.stones.length) ||
-    (!data.gallbladder.notVisualized && data.gallbladder.polyps.length) ||
     data.commonBileDuct.lumen !== 'free' ||
     data.pancreas.echogenicity !== 'medium' ||
     data.pancreas.structure !== 'homogeneous' ||
@@ -134,6 +141,14 @@ export function generateAbdomenRecommendations(data) {
     recommendations.push('ФГДС та консультація профільного спеціаліста.');
   }
 
+  if (!data.gallbladder.notVisualized && data.gallbladder.polyps.length) {
+    data.gallbladder.polyps.forEach((polyp, index) => {
+      const assessment = assessGallbladderPolypSru(polyp);
+      const prefix = data.gallbladder.polyps.length > 1 ? `Поліп №${index + 1}: ` : 'Поліп ЖМ: ';
+      recommendations.push(`${prefix}за SRU 2022: ${assessment.recommendation}`);
+    });
+  }
+
   if (data.commonBileDuct.lumen === 'stone' || isCommonBileDuctDilated(data.commonBileDuct.diameter)) {
     recommendations.push('МРХПГ / КТ / МРТ для уточнення стану жовчних проток.');
   }
@@ -142,7 +157,7 @@ export function generateAbdomenRecommendations(data) {
     recommendations.push('КТ або МРТ з контрастуванням для уточнення виявлених змін.');
   }
 
-  recommendations.push('Повторне УЗД у динаміці.');
+  if (hasNonPolypStructuralChanges) recommendations.push('Повторне УЗД у динаміці.');
 
   return recommendations.join('\n');
 }

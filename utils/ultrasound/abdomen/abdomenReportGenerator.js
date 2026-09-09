@@ -8,6 +8,7 @@ import {
   isPancreaticDuctDilated,
   isPortalVeinDilated,
   isSpleenEnlarged,
+  assessGallbladderPolypSru,
 } from './abdomenCalculations';
 
 function compact(items) {
@@ -86,10 +87,16 @@ function generateStoneText(stone, index) {
 }
 
 function generatePolypText(polyp, index) {
+  const assessment = assessGallbladderPolypSru(polyp);
   return commaSentence([
     `${index + 1}. Пристінкове утворення / поліп`,
     polyp.size ? `розміром ${formatMm(polyp.size)}` : '',
     polyp.localization ? `локалізація: ${polyp.localization}` : '',
+    `морфологія: ${abdomenOptionLabel('gallbladderPolypMorphology', polyp.morphology)}`,
+    polyp.adjacentWallThickness ? `прилегла стінка ${formatMm(polyp.adjacentWallThickness)}` : '',
+    `кровотік: ${abdomenOptionLabel('gallbladderPolypVascularity', polyp.vascularity)}`,
+    polyp.previousSize ? `попередній розмір ${formatMm(polyp.previousSize)}${polyp.previousDate ? ` від ${polyp.previousDate}` : ''}` : '',
+    `категорія ${assessment.riskLabel} за SRU 2022`,
   ]);
 }
 

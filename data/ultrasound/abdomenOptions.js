@@ -57,6 +57,17 @@ export const abdomenOptions = {
     { value: 'sludge', label: 'сладж' },
     { value: 'denseSludge', label: 'густий сладж' },
   ],
+  gallbladderPolypMorphology: [
+    { value: 'ballOnWall', label: 'на тонкій ніжці / «кулька на стінці»' },
+    { value: 'wideStalk', label: 'на широкій або товстій ніжці' },
+    { value: 'sessile', label: 'сидячий, із широкою основою' },
+    { value: 'uncertain', label: 'морфологія не визначена' },
+  ],
+  gallbladderPolypVascularity: [
+    { value: 'notDetected', label: 'кровотік не визначається' },
+    { value: 'detected', label: 'кровотік визначається' },
+    { value: 'notAssessed', label: 'не оцінено' },
+  ],
   commonBileDuctLumen: [
     { value: 'free', label: 'вільний' },
     { value: 'heterogeneous', label: 'неоднорідний' },

@@ -1,12 +1,22 @@
 import { abdomenOptions } from '../../../data/ultrasound/abdomenOptions';
 import { NumberField, SelectField, TextField } from './AbdomenFormControls';
+import { assessGallbladderPolypSru } from '../../../utils/ultrasound/abdomen/abdomenCalculations';
 
 function createStone() {
   return { id: `stone-${Date.now()}-${Math.random().toString(16).slice(2)}`, size: '', shadow: 'yes', mobile: 'yes' };
 }
 
 function createPolyp() {
-  return { id: `polyp-${Date.now()}-${Math.random().toString(16).slice(2)}`, size: '', localization: '' };
+  return {
+    id: `polyp-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    size: '',
+    localization: '',
+    morphology: 'uncertain',
+    adjacentWallThickness: '',
+    vascularity: 'notAssessed',
+    previousSize: '',
+    previousDate: '',
+  };
 }
 
 export default function GallbladderForm({ data, onChange }) {
@@ -79,8 +89,19 @@ export default function GallbladderForm({ data, onChange }) {
                     Видалити
                   </button>
                 </div>
-                <NumberField label="Розмір" value={polyp.size} onChange={(value) => updatePolyp(polyp.id, { ...polyp, size: value })} />
-                <TextField label="Локалізація" value={polyp.localization} onChange={(value) => updatePolyp(polyp.id, { ...polyp, localization: value })} />
+                <div className="grid gap-2 md:grid-cols-2">
+                  <NumberField label="Розмір" value={polyp.size} onChange={(value) => updatePolyp(polyp.id, { ...polyp, size: value })} />
+                  <TextField label="Локалізація" value={polyp.localization} onChange={(value) => updatePolyp(polyp.id, { ...polyp, localization: value })} />
+                  <SelectField label="Морфологія" value={polyp.morphology} onChange={(value) => updatePolyp(polyp.id, { ...polyp, morphology: value })} options={abdomenOptions.gallbladderPolypMorphology} />
+                  <NumberField label="Прилегла стінка" value={polyp.adjacentWallThickness} onChange={(value) => updatePolyp(polyp.id, { ...polyp, adjacentWallThickness: value })} />
+                  <SelectField label="Кровотік" value={polyp.vascularity} onChange={(value) => updatePolyp(polyp.id, { ...polyp, vascularity: value })} options={abdomenOptions.gallbladderPolypVascularity} />
+                  <NumberField label="Попередній розмір" value={polyp.previousSize} onChange={(value) => updatePolyp(polyp.id, { ...polyp, previousSize: value })} />
+                  <TextField label="Дата попереднього УЗД" value={polyp.previousDate} onChange={(value) => updatePolyp(polyp.id, { ...polyp, previousDate: value })} placeholder="Наприклад: 01.09.2025" />
+                </div>
+                <div className="mt-2 rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-xs leading-5 text-slate-700">
+                  <span className="font-semibold">SRU 2022: {assessGallbladderPolypSru(polyp).riskLabel}.</span>{' '}
+                  {assessGallbladderPolypSru(polyp).recommendation}
+                </div>
               </div>
             ))}
           </div>
