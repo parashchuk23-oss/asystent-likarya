@@ -22,8 +22,8 @@ const questions = [
     text: 'ІМТ',
     options: [
       { value: 0, label: '<25 кг/м²' },
-      { value: 1, label: '25-30 кг/м²' },
-      { value: 3, label: '>30 кг/м²' },
+      { value: 1, label: '25–<30 кг/м²' },
+      { value: 3, label: '≥30 кг/м²' },
     ],
   },
   {
@@ -96,12 +96,16 @@ function parsePositiveNumber(value) {
 }
 
 function getFindriscBmiScore(weight, height) {
-  const bmi = calculateBMI(weight, height);
-  const numericBmi = parsePositiveNumber(bmi);
+  const numericWeight = parsePositiveNumber(weight);
+  const numericHeight = parsePositiveNumber(height);
 
-  if (numericBmi === null) return null;
+  if (numericWeight === null || numericHeight === null) return null;
+
+  const heightInMeters = numericHeight / 100;
+  const numericBmi = numericWeight / (heightInMeters * heightInMeters);
+
   if (numericBmi < 25) return 0;
-  if (numericBmi <= 30) return 1;
+  if (numericBmi < 30) return 1;
   return 3;
 }
 
