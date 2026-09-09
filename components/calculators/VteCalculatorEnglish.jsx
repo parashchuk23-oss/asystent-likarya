@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import FormField from '../FormField';
 import { inputClass } from '../formStyles';
+import LanguageSwitch from '../LanguageSwitch';
 import {
   calculateAgeAdjustedDimer,
   calculateDashScore,
@@ -412,11 +413,11 @@ export default function VteCalculatorEnglish() {
           <span className="mx-2">/</span>
           <span className="font-semibold text-slate-800">Venous Thromboembolism</span>
         </div>
-        <div className="rounded-md border border-slate-200 bg-white p-1 text-xs font-semibold">
-          <Link href="/calculators/venous-thromboembolism" className="rounded px-2 py-1 text-slate-600 hover:bg-slate-50">UA</Link>
-          <span className="text-slate-300">|</span>
-          <span className="rounded bg-blue-50 px-2 py-1 text-blue-700">EN</span>
-        </div>
+        <LanguageSwitch
+          current="en"
+          ukrainianHref="/calculators/venous-thromboembolism"
+          englishHref="/en/calculators/venous-thromboembolism"
+        />
       </nav>
 
       <header className="rounded-lg border border-teal-300 bg-white p-5 shadow-sm shadow-slate-200/60">

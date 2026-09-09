@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { calculateScore2Risk } from '../../utils/score2';
 import FormField from '../FormField';
 import { inputClass } from '../formStyles';
+import LanguageSwitch from '../LanguageSwitch';
 
 const initialRiskData = {
   patientScenario: '',
@@ -593,8 +594,13 @@ export default function Score2CalculatorEnglish() {
   return (
     <div className="space-y-4">
       <section className="rounded-lg border border-teal-200 bg-white p-4 shadow-sm shadow-slate-200/60">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700">Cardiovascular risk</p>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">SCORE2 / SCORE2-OP</h1>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-teal-700">Cardiovascular risk</p>
+            <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">SCORE2 / SCORE2-OP</h1>
+          </div>
+          <LanguageSwitch current="en" ukrainianHref="/score2" englishHref="/en/calculators/score2" />
+        </div>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
           SCORE2, SCORE2-OP, SCORE2-Diabetes, SMART Risk Score, and CKD risk modifiers for clinical
           cardiovascular-risk discussion.

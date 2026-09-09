@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { calculateScore2Risk } from '../utils/score2';
 import FormField from './FormField';
 import { inputClass } from './formStyles';
+import LanguageSwitch from './LanguageSwitch';
 
 const initialRiskData = {
   patientScenario: '',
@@ -439,6 +440,9 @@ export default function Score2Tab() {
   return (
     <div className="grid gap-3 lg:grid-cols-[minmax(0,1.38fr)_minmax(0,1fr)]">
       <section className="rounded-lg border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-200/60">
+        <div className="mb-3 flex justify-end">
+          <LanguageSwitch current="uk" ukrainianHref="/score2" englishHref="/en/calculators/score2" />
+        </div>
         <div className="space-y-3">
           <div>
             <p className="mb-2 text-sm font-semibold text-slate-800">Клінічний сценарій</p>

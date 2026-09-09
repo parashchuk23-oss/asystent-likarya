@@ -63,11 +63,31 @@ const calculators = [
 
 export default function CalculatorsTab() {
   const [openId, setOpenId] = useState(null);
+  const [mountedIds, setMountedIds] = useState(() => new Set());
+
+  function toggleCalculator(id) {
+    const nextOpenId = openId === id ? null : id;
+
+    if (nextOpenId) {
+      setMountedIds((currentMountedIds) => {
+        if (currentMountedIds.has(id)) {
+          return currentMountedIds;
+        }
+
+        const nextMountedIds = new Set(currentMountedIds);
+        nextMountedIds.add(id);
+        return nextMountedIds;
+      });
+    }
+
+    setOpenId(nextOpenId);
+  }
 
   return (
     <div className="space-y-3 rounded-lg bg-slate-50/70 p-3">
       {calculators.map((calculator) => {
         const isOpen = openId === calculator.id;
+        const isMounted = mountedIds.has(calculator.id);
 
         return (
           <article
@@ -83,7 +103,7 @@ export default function CalculatorsTab() {
               className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left"
               aria-expanded={isOpen}
               aria-controls={`${calculator.id}-calculator`}
-              onClick={() => setOpenId(isOpen ? null : calculator.id)}
+              onClick={() => toggleCalculator(calculator.id)}
             >
               <span className="min-w-0">
                 <span className={`block font-semibold ${isOpen ? 'text-teal-900' : 'text-slate-950'}`}>
@@ -101,8 +121,13 @@ export default function CalculatorsTab() {
               </span>
             </button>
 
-            {isOpen ? (
-              <div id={`${calculator.id}-calculator`} className="border-t border-teal-300 bg-white p-4">
+            {isMounted ? (
+              <div
+                id={`${calculator.id}-calculator`}
+                className={`border-t border-teal-300 bg-white p-4 ${isOpen ? '' : 'hidden'}`}
+                hidden={!isOpen}
+                aria-hidden={!isOpen}
+              >
                 {calculator.component}
               </div>
             ) : null}
