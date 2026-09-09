@@ -1,0 +1,38 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Асистент лікаря — презентаційний допис</title>
+  <desc id="desc">Фірмове зображення проєкту Асистент лікаря для першого допису у Facebook.</desc>
+  <defs>
+    <linearGradient id="background" x1="76" y1="20" x2="1010" y2="1060" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EEF4FB"/>
+      <stop offset="0.5" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#ECFDF5"/>
+    </linearGradient>
+    <radialGradient id="softLight" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(260 260) rotate(47) scale(640)">
+      <stop stop-color="#38BDF8" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#38BDF8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="navyShape" x1="784" y1="778" x2="1050" y2="1032" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#17243B"/>
+    </linearGradient>
+    <linearGradient id="tealShape" x1="884" y1="704" x2="1060" y2="972" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#14B8A6"/>
+      <stop offset="1" stop-color="#0D9488"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1080" height="1080" fill="url(#background)"/>
+  <rect width="1080" height="1080" fill="url(#softLight)"/>
+
+  <image href="youtube-watermark.png" x="365" y="112" width="350" height="350" preserveAspectRatio="xMidYMid meet"/>
+
+  <rect x="502" y="478" width="76" height="7" rx="3.5" fill="#14B8A6"/>
+  <g text-anchor="middle" font-family="Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+    <text x="540" y="613" fill="#0F172A" font-size="84" font-weight="750" letter-spacing="-2.8">Асистент лікаря</text>
+    <text x="540" y="685" fill="#475569" font-size="37" font-weight="550" letter-spacing="-0.6">Цифровий робочий простір лікаря</text>
+  </g>
+
+  <path d="M847 1080H1080V820L1011 755C994 739 967 745 958 767L833 1037C823 1058 829 1075 847 1080Z" fill="url(#tealShape)" opacity="0.10"/>
+  <path d="M705 1080H903C920 1080 934 1070 941 1055L1022 875C1030 857 1017 837 997 837H909C893 837 878 846 871 861L681 1043C664 1059 676 1080 705 1080Z" fill="url(#navyShape)" opacity="0.07"/>
+  <path d="M0 937V1080H139C159 1080 171 1058 161 1041L77 906C66 888 39 888 28 906L0 950Z" fill="#14B8A6" opacity="0.08"/>
+</svg>

@@ -1,0 +1,41 @@
+<svg width="1640" height="624" viewBox="0 0 1640 624" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Facebook cover — Асистент лікаря</title>
+  <desc id="desc">Фірмова обкладинка проєкту Асистент лікаря у стилі сучасного медичного SaaS.</desc>
+
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1640" y2="624" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FAFC"/>
+      <stop offset="0.56" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EEF4FB"/>
+    </linearGradient>
+    <radialGradient id="accentGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(820 310) rotate(90) scale(360 740)">
+      <stop stop-color="#38BDF8" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#38BDF8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1640" height="624" fill="url(#background)"/>
+  <rect width="1640" height="624" fill="url(#accentGlow)"/>
+
+  <!-- Делікатні фонові модулі повторюють геометрію чинного знака Modular A. -->
+  <g opacity="0.055">
+    <path d="M20 8H258C286 8 305 36 295 61L204 291C194 316 173 330 145 330H-74C-102 330-121 302-111 277L-20 47C-10 22-7 8 20 8Z" fill="#0F172A"/>
+    <path d="M1421 342L1570 677C1582 704 1564 734 1534 734H1382C1360 734 1341 720 1332 699L1256 531C1250 518 1250 502 1256 490L1361 350C1377 327 1411 319 1421 342Z" fill="#14B8A6"/>
+    <path d="M1470 -86H1693C1722 -86 1741 -58 1731 -32L1640 198C1630 223 1609 238 1581 238H1370C1342 238 1323 210 1333 184L1424 -46C1434 -71 1443 -86 1470 -86Z" fill="#38BDF8"/>
+  </g>
+
+  <!-- Центральна safe-zone: основний контент залишається видимим при desktop і mobile crop. -->
+  <g transform="translate(446 191)">
+    <!-- Прозорий канонічний PNG вставлено без трасування, перемальовування або зміни кольорів. -->
+    <image href="favicon-v3-512.png" x="0" y="22" width="160" height="160" preserveAspectRatio="xMidYMid meet"/>
+
+    <g transform="translate(184 0)">
+      <text x="0" y="84" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="62" font-weight="700" letter-spacing="-1.2">Асистент лікаря</text>
+      <text x="2" y="132" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="29" font-weight="600">Цифровий робочий простір лікаря</text>
+      <rect x="2" y="166" width="64" height="4" rx="2" fill="#14B8A6"/>
+      <text x="2" y="215" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="19" font-weight="600" letter-spacing="0.2">Калькулятори  ·  ЕКГ  ·  УЗД  ·  Препарати  ·  Документи</text>
+    </g>
+  </g>
+
+  <rect x="0" y="620" width="1640" height="4" fill="#14B8A6"/>
+</svg>

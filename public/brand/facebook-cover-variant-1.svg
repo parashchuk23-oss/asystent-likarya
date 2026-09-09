@@ -1,0 +1,28 @@
+<svg width="1640" height="624" viewBox="0 0 1640 624" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Facebook cover — Асистент лікаря, світлий варіант</title>
+  <desc id="desc">Щільна горизонтальна композиція з оригінальним логотипом проєкту.</desc>
+  <defs>
+    <linearGradient id="bg" x1="188" y1="0" x2="1452" y2="624" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FAFC"/>
+      <stop offset="0.52" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EAF4FA"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(817 294) rotate(90) scale(310 720)">
+      <stop stop-color="#14B8A6" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#14B8A6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1640" height="624" fill="url(#bg)"/>
+  <rect width="1640" height="624" fill="url(#glow)"/>
+  <path d="M0 0H238L112 312H0V0Z" fill="#0F172A" opacity="0.045"/>
+  <path d="M1640 624H1390L1514 312H1640V624Z" fill="#14B8A6" opacity="0.08"/>
+  <rect x="292" y="112" width="1056" height="400" rx="34" fill="#FFFFFF" fill-opacity="0.72" stroke="#E2E8F0"/>
+  <image href="youtube-watermark.png" x="348" y="157" width="310" height="310" preserveAspectRatio="xMidYMid meet"/>
+  <g font-family="Inter, Arial, sans-serif">
+    <text x="680" y="251" fill="#0F172A" font-size="76" font-weight="700" letter-spacing="-1.8">Асистент лікаря</text>
+    <text x="684" y="307" fill="#475569" font-size="34" font-weight="600">Цифровий робочий простір лікаря</text>
+    <rect x="684" y="337" width="78" height="5" rx="2.5" fill="#14B8A6"/>
+    <text x="684" y="385" fill="#64748B" font-size="23" font-weight="600">Калькулятори · ЕКГ · УЗД · Препарати · Документи</text>
+  </g>
+  <rect y="618" width="1640" height="6" fill="#14B8A6"/>
+</svg>

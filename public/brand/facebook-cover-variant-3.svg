@@ -1,0 +1,24 @@
+<svg width="1640" height="624" viewBox="0 0 1640 624" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Facebook cover — Асистент лікаря, текстовий варіант</title>
+  <desc id="desc">Текстова композиція без дублювання логотипа з Facebook profile picture.</desc>
+  <defs>
+    <linearGradient id="soft" x1="160" y1="0" x2="1480" y2="624" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EEF4FB"/>
+      <stop offset="0.5" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#ECFDF5"/>
+    </linearGradient>
+    <radialGradient id="center" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(820 300) rotate(90) scale(310 670)">
+      <stop stop-color="#38BDF8" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#38BDF8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1640" height="624" fill="url(#soft)"/>
+  <rect width="1640" height="624" fill="url(#center)"/>
+  <path d="M0 0H176Q198 0 190 20L88 268Q82 283 66 283H0V0Z" fill="#0F172A" opacity="0.95"/>
+  <path d="M1640 624H1464Q1442 624 1450 604L1552 356Q1558 341 1574 341H1640V624Z" fill="#14B8A6" opacity="0.95"/>
+  <path d="M0 624V438Q0 403 13 435L82 604Q90 624 68 624H0Z" fill="#14B8A6" opacity="0.34"/>
+  <path d="M1640 0V186Q1640 221 1627 189L1558 20Q1550 0 1572 0H1640Z" fill="#38BDF8" opacity="0.28"/>
+  <g text-anchor="middle" font-family="Inter, Arial, sans-serif">
+    <text x="820" y="345" fill="#0F172A" font-size="104" font-weight="700" letter-spacing="-2.6">Асистент лікаря</text>
+  </g>
+</svg>
