@@ -1,0 +1,83 @@
+{
+  "caseNumber": 2,
+  "seriesLabel": "КЛІНІЧНІ КЕЙСИ",
+  "tool": "ШКФ · CKD-EPI 2021",
+  "logo": "public/brand/youtube-watermark.png",
+  "outputDirectory": "public/content/clinical-cases/egfr",
+  "layout": {
+    "titleX": 72,
+    "titleY": 124,
+    "subtitleX": 72,
+    "subtitleY": 245,
+    "screenshotWindow": {
+      "left": 72,
+      "top": 300,
+      "width": 936,
+      "height": 665,
+      "padding": 14,
+      "radius": 24
+    }
+  },
+  "slides": [
+    {
+      "stepNumber": 1,
+      "title": "Крок 1. Відкриваю калькулятор ШКФ",
+      "subtitle": "Головна → Популярні інструменти → ШКФ (CKD-EPI)",
+      "screenshot": "01-home.png",
+      "crop": { "left": 20, "top": 335, "width": 820, "height": 565 },
+      "position": "centre",
+      "highlightRegion": { "x": 88, "y": 770, "width": 150, "height": 58, "radius": 14 },
+      "outputFilename": "01-open-egfr.png"
+    },
+    {
+      "stepNumber": 2,
+      "title": "Крок 2. Вводжу дані пацієнта",
+      "subtitle": "Жінка · 72 роки",
+      "screenshot": "02-filled.png",
+      "crop": { "left": 20, "top": 240, "width": 720, "height": 505 },
+      "position": "top",
+      "highlightRegion": { "x": 105, "y": 448, "width": 865, "height": 82, "radius": 18 },
+      "outputFilename": "02-patient-data.png"
+    },
+    {
+      "stepNumber": 3,
+      "title": "Крок 3. Вказую креатинін",
+      "subtitle": "Креатинін · 105 мкмоль/л",
+      "screenshot": "02-filled.png",
+      "crop": { "left": 20, "top": 330, "width": 720, "height": 505 },
+      "position": "top",
+      "highlightRegion": { "x": 105, "y": 408, "width": 865, "height": 98, "radius": 18 },
+      "outputFilename": "03-creatinine.png"
+    },
+    {
+      "stepNumber": 4,
+      "title": "Крок 4. Отримую розраховану ШКФ",
+      "subtitle": "Яка розрахункова функція нирок?",
+      "screenshot": "03-result.png",
+      "crop": { "left": 730, "top": 30, "width": 520, "height": 365 },
+      "position": "top",
+      "highlightRegion": { "x": 105, "y": 438, "width": 870, "height": 286, "radius": 18 },
+      "outputFilename": "04-egfr-result.png"
+    },
+    {
+      "stepNumber": 5,
+      "title": "Крок 5. Оцінюю категорію ШКФ",
+      "subtitle": "G3a · легке або помірне зниження ШКФ",
+      "screenshot": "03-result.png",
+      "crop": { "left": 730, "top": 65, "width": 520, "height": 365 },
+      "position": "top",
+      "highlightRegion": { "x": 105, "y": 565, "width": 870, "height": 132, "radius": 18 },
+      "outputFilename": "05-g-category.png"
+    },
+    {
+      "stepNumber": 6,
+      "title": "Крок 6. Інтерпретую результат",
+      "subtitle": "Одного розрахунку недостатньо для встановлення ХХН",
+      "screenshot": "04-interpretation.png",
+      "crop": { "left": 10, "top": 450, "width": 630, "height": 442 },
+      "position": "top",
+      "highlightRegion": { "x": 92, "y": 738, "width": 896, "height": 154, "radius": 18, "stroke": 6 },
+      "outputFilename": "06-next-step.png"
+    }
+  ]
+}

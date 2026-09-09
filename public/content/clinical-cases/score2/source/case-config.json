@@ -1,0 +1,83 @@
+{
+  "caseNumber": 1,
+  "seriesLabel": "КЛІНІЧНІ КЕЙСИ",
+  "tool": "SCORE2",
+  "logo": "public/brand/youtube-watermark.png",
+  "outputDirectory": "public/content/clinical-cases/score2",
+  "layout": {
+    "titleX": 72,
+    "titleY": 124,
+    "subtitleX": 72,
+    "subtitleY": 245,
+    "screenshotWindow": {
+      "left": 72,
+      "top": 300,
+      "width": 936,
+      "height": 665,
+      "padding": 14,
+      "radius": 24
+    }
+  },
+  "slides": [
+    {
+      "stepNumber": 1,
+      "title": "Крок 1. Відкриваю SCORE2",
+      "subtitle": "Головна → Популярні інструменти → SCORE2",
+      "screenshot": "01-home.png",
+      "crop": { "left": 20, "top": 335, "width": 820, "height": 565 },
+      "position": "centre",
+      "highlightRegion": { "x": 155, "y": 714, "width": 198, "height": 92, "radius": 18 },
+      "outputFilename": "01-open-score2.png"
+    },
+    {
+      "stepNumber": 2,
+      "title": "Крок 2. Вводжу дані пацієнта",
+      "subtitle": "Чоловік · 56 років · первинна профілактика",
+      "screenshot": "02-page.png",
+      "crop": { "left": 24, "top": 220, "width": 708, "height": 520 },
+      "position": "top",
+      "highlightRegion": { "x": 110, "y": 500, "width": 860, "height": 116, "radius": 18 },
+      "outputFilename": "02-patient-data.png"
+    },
+    {
+      "stepNumber": 3,
+      "title": "Крок 3. Вказую фактори ризику",
+      "subtitle": "Куріння · САТ 140 · ЗХ 6,1 · ЛПВЩ 1,2 ммоль/л",
+      "screenshot": "03-page.png",
+      "crop": { "left": 24, "top": 350, "width": 708, "height": 500 },
+      "position": "top",
+      "highlightRegion": { "x": 110, "y": 405, "width": 860, "height": 335, "radius": 18 },
+      "outputFilename": "03-risk-factors.png"
+    },
+    {
+      "stepNumber": 4,
+      "title": "Крок 4. Отримую SCORE2",
+      "subtitle": "Який серцево-судинний ризик?",
+      "screenshot": "04-page.png",
+      "crop": { "left": 740, "top": 290, "width": 516, "height": 362 },
+      "position": "top",
+      "highlightRegion": { "x": 105, "y": 388, "width": 870, "height": 150, "radius": 18 },
+      "outputFilename": "04-score2-result.png"
+    },
+    {
+      "stepNumber": 5,
+      "title": "Крок 5. Визначаю цільові показники",
+      "subtitle": "Персональна ціль, сформована після розрахунку",
+      "screenshot": "04-page.png",
+      "crop": { "left": 740, "top": 315, "width": 516, "height": 362 },
+      "position": "top",
+      "highlightRegion": { "x": 105, "y": 530, "width": 870, "height": 90, "radius": 18 },
+      "outputFilename": "05-treatment-targets.png"
+    },
+    {
+      "stepNumber": 6,
+      "title": "Крок 6. Переглядаю рекомендації",
+      "subtitle": "Від оцінки ризику до практичних наступних кроків",
+      "screenshot": "06-page.png",
+      "crop": { "left": 740, "top": 475, "width": 516, "height": 400 },
+      "position": "top",
+      "highlightRegion": { "x": 92, "y": 326, "width": 896, "height": 610, "radius": 18, "stroke": 6 },
+      "outputFilename": "06-recommendations.png"
+    }
+  ]
+}
