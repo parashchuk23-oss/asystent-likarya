@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { palliativeCareAdultCriteria, palliativeCareSource } from '../../data/palliativeCareCriteria';
 import { evaluatePalliativeCareNeed } from '../../utils/calculations';
+import PrintArea from '../PrintArea';
 import { PrintQuestionnaireButton } from './PrintableQuestionnaire';
 
 const ecogOptions = [
@@ -644,6 +645,25 @@ export default function PalliativeCareNeedQuestionnaire() {
         Модуль є допоміжним інструментом для лікаря. Він не встановлює діагноз і не
         замінює клінічне рішення, оцінку стану пацієнта та чинні нормативні вимоги.
       </p>
+
+      <PrintArea>
+        <div className="print-header">
+          <p className="print-brand">Асистент лікаря</p>
+          <h1>Оцінка потреби у паліативній допомозі</h1>
+          <p className="print-instruction">
+            Додаток 2 до Порядку надання паліативної допомоги.
+          </p>
+        </div>
+
+        <div className="print-preserve-lines">
+          {copyText || 'Заповніть форму та натисніть “Оцінити”, щоб сформувати висновок.'}
+        </div>
+
+        <p className="print-disclaimer">
+          Модуль є допоміжним інструментом для лікаря. Остаточне рішення приймається
+          лікарем з урахуванням клінічного стану пацієнта та чинних нормативних вимог.
+        </p>
+      </PrintArea>
     </div>
   );
 }

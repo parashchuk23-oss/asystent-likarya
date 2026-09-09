@@ -71,7 +71,7 @@ export default function PrintableQuestionnaire({
   const printedInterpretation = result?.category || result?.interpretation || '';
 
   const printMarkup = (
-    <section className="questionnaire-print-area hidden">
+    <section className="print-area questionnaire-print-area hidden">
       <div className="print-header">
         <p className="print-brand">Асистент лікаря</p>
         <h1>{title}</h1>

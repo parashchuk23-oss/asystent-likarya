@@ -20,7 +20,7 @@ body {
     color: #0f172a;
   }
 
-  body > :not(.questionnaire-print-area) {
+  body:has(.print-area) > :not(.print-area) {
     display: none !important;
   }
 
@@ -31,7 +31,7 @@ body {
     overflow: visible !important;
   }
 
-  .questionnaire-print-area {
+  .print-area {
     display: block !important;
     position: static !important;
     width: 100%;
@@ -144,5 +144,26 @@ body {
     padding-top: 8px;
     color: #475569;
     font-size: 10px;
+  }
+
+  .print-hidden,
+  .no-print {
+    display: none !important;
+  }
+
+  .print-report-section {
+    break-inside: avoid;
+    border-top: 1px solid #e2e8f0;
+    padding: 10px 0;
+  }
+
+  .print-report-section h2 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .print-preserve-lines {
+    white-space: pre-wrap;
   }
 }

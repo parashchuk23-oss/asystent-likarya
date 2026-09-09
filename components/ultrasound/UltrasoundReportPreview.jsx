@@ -1,6 +1,7 @@
 'use client';
 
 import { textareaClass } from '../formStyles';
+import ReportPrintArea, { printReportDocument } from '../ReportPrintArea';
 
 const disclaimer =
   'Модуль формує чернетку протоколу на основі введених лікарем даних. Автоматично сформований опис, висновок і рекомендації потребують перевірки та підтвердження лікарем ультразвукової діагностики. Модуль не замінює клінічне рішення та офіційні рекомендації.';
@@ -78,7 +79,13 @@ export default function UltrasoundReportPreview({
           </button>
           <button
             type="button"
-            onClick={() => window.print()}
+            onClick={() => printReportDocument({
+              title: 'ПРОТОКОЛ УЗД ЩИТОПОДІБНОЇ ЗАЛОЗИ',
+              overviewTitle: 'Оглядова частина',
+              overview,
+              conclusion,
+              recommendations,
+            })}
             className="rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:text-blue-700"
           >
             Друк / PDF
@@ -128,6 +135,13 @@ export default function UltrasoundReportPreview({
       <p className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
         {disclaimer}
       </p>
+      <ReportPrintArea
+        title="ПРОТОКОЛ УЗД ЩИТОПОДІБНОЇ ЗАЛОЗИ"
+        overviewTitle="Оглядова частина"
+        overview={overview}
+        conclusion={conclusion}
+        recommendations={recommendations}
+      />
     </aside>
   );
 }

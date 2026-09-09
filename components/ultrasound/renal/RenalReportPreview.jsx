@@ -1,6 +1,7 @@
 'use client';
 
 import { textareaClass } from '../../formStyles';
+import ReportPrintArea, { printReportDocument } from '../../ReportPrintArea';
 
 function CopyButton({ label, value }) {
   const copy = async () => {
@@ -65,6 +66,9 @@ export default function RenalReportPreview({
           <button type="button" onClick={onRegenerate} className="rounded-md bg-blue-700 px-3 py-2 text-xs font-semibold text-white">
             Сформувати протокол
           </button>
+          <button type="button" onClick={() => printReportDocument({ title: 'ПРОТОКОЛ УЗД НИРОК ТА СЕЧОВИДІЛЬНОЇ СИСТЕМИ', overview, conclusion, recommendations })} className="rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:text-blue-700">
+            Друк / PDF
+          </button>
           <button type="button" onClick={onClear} className="rounded-md border border-red-100 bg-white px-3 py-2 text-xs font-semibold text-red-600">
             Очистити
           </button>
@@ -97,6 +101,12 @@ export default function RenalReportPreview({
           <CopyButton label="Копіювати все" value={fullText} />
         </div>
       </div>
+      <ReportPrintArea
+        title="ПРОТОКОЛ УЗД НИРОК ТА СЕЧОВИДІЛЬНОЇ СИСТЕМИ"
+        overview={overview}
+        conclusion={conclusion}
+        recommendations={recommendations}
+      />
     </aside>
   );
 }
