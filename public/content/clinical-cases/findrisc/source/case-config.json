@@ -1,0 +1,73 @@
+{
+  "caseNumber": 3,
+  "seriesLabel": "КЛІНІЧНІ КЕЙСИ",
+  "tool": "FINDRISC",
+  "logo": "public/brand/youtube-watermark.png",
+  "outputDirectory": "public/content/clinical-cases/findrisc",
+  "layout": {
+    "titleX": 72,
+    "titleY": 124,
+    "subtitleX": 72,
+    "subtitleY": 245,
+    "screenshotWindow": {
+      "left": 72,
+      "top": 300,
+      "width": 936,
+      "height": 665,
+      "padding": 14,
+      "radius": 24
+    }
+  },
+  "slides": [
+    {
+      "stepNumber": 1,
+      "title": "Крок 1. Відкриваю FINDRISC",
+      "subtitle": "Головна → Популярні інструменти → FINDRISC",
+      "screenshot": "01-home.png",
+      "crop": { "left": 40, "top": 425, "width": 900, "height": 631 },
+      "position": "centre",
+      "highlightRegion": { "x": 470, "y": 630, "width": 112, "height": 52, "radius": 14 },
+      "outputFilename": "01-open-findrisc.png"
+    },
+    {
+      "stepNumber": 2,
+      "title": "Крок 2. Вводжу дані пацієнта",
+      "subtitle": "Жінка · 52 роки · 165 см · 82 кг",
+      "screenshot": "05-result-mobile-wrap.png",
+      "crop": { "left": 20, "top": 200, "width": 860, "height": 604 },
+      "position": "top",
+      "highlightRegion": { "x": 92, "y": 335, "width": 896, "height": 405, "radius": 18 },
+      "outputFilename": "02-patient-data.png"
+    },
+    {
+      "stepNumber": 3,
+      "title": "Крок 3. Оцінюю антропометрію",
+      "subtitle": "ІМТ · Окружність талії",
+      "screenshot": "05-result-mobile-wrap.png",
+      "crop": { "left": 20, "top": 400, "width": 860, "height": 604 },
+      "position": "top",
+      "highlightRegion": { "x": 92, "y": 326, "width": 896, "height": 470, "radius": 18 },
+      "outputFilename": "03-anthropometry.png"
+    },
+    {
+      "stepNumber": 4,
+      "title": "Крок 4. Оцінюю фактори ризику",
+      "subtitle": "Спосіб життя та анамнез",
+      "screenshot": "05-result-mobile-wrap.png",
+      "crop": { "left": 20, "top": 900, "width": 860, "height": 604 },
+      "position": "top",
+      "highlightRegion": { "x": 92, "y": 326, "width": 896, "height": 610, "radius": 18, "stroke": 6 },
+      "outputFilename": "04-risk-factors.png"
+    },
+    {
+      "stepNumber": 5,
+      "title": "Крок 5. Отримую FINDRISC",
+      "subtitle": "Оцінюю 10-річний ризик ЦД 2 типу",
+      "screenshot": "05-result-375.png",
+      "crop": { "left": 20, "top": 2050, "width": 335, "height": 235 },
+      "position": "top",
+      "highlightRegion": { "x": 92, "y": 326, "width": 896, "height": 610, "radius": 18, "stroke": 8 },
+      "outputFilename": "05-findrisc-result.png"
+    }
+  ]
+}
