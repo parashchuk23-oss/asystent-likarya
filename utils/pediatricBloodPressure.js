@@ -1,4 +1,4 @@
-import { pediatricBloodPressureScreening } from '../data/pediatrics/pediatricBloodPressureScreening';
+import { pediatricBloodPressureScreening } from '../data/pediatrics/pediatricBloodPressureScreening.js';
 
 const SEX_MAP = {
   чоловіча: 'male',
@@ -44,35 +44,32 @@ function getAgeYears(ageYears, ageMonths) {
 function getAdolescentCategory({ systolic, diastolic }) {
   if (systolic >= 140 || diastolic >= 90) {
     return {
-      category: 'артеріальна гіпертензія 2 ступеня',
+      category: 'рівень АТ відповідає категорії АГ 2 ступеня',
       tone: 'danger',
-      interpretation:
-        'Для дітей віком від 13 років цей рівень відповідає категорії АГ 2 ступеня за AAP 2017.',
+      interpretation: 'Категорія рівня АТ визначена за порогами AAP 2017 для дітей віком від 13 років.',
     };
   }
 
   if ((systolic >= 130 && systolic <= 139) || (diastolic >= 80 && diastolic <= 89)) {
     return {
-      category: 'артеріальна гіпертензія 1 ступеня',
+      category: 'рівень АТ відповідає категорії АГ 1 ступеня',
       tone: 'warning',
-      interpretation:
-        'Для дітей віком від 13 років цей рівень відповідає категорії АГ 1 ступеня за AAP 2017.',
+      interpretation: 'Категорія рівня АТ визначена за порогами AAP 2017 для дітей віком від 13 років.',
     };
   }
 
   if (systolic >= 120 && systolic <= 129 && diastolic < 80) {
     return {
-      category: 'підвищений артеріальний тиск',
+      category: 'рівень АТ відповідає категорії підвищеного АТ',
       tone: 'notice',
-      interpretation:
-        'Для дітей віком від 13 років цей рівень відповідає підвищеному АТ за AAP 2017.',
+      interpretation: 'Категорія рівня АТ визначена за порогами AAP 2017 для дітей віком від 13 років.',
     };
   }
 
   return {
-    category: 'АТ у межах очікуваного діапазону',
+    category: 'рівень АТ нижчий за пороги підвищеного АТ',
     tone: 'normal',
-    interpretation: 'Для дітей віком від 13 років показник нижчий за пороги підвищеного АТ.',
+    interpretation: 'Категорія рівня АТ визначена за порогами AAP 2017 для дітей віком від 13 років.',
   };
 }
 
@@ -92,11 +89,10 @@ function getChildScreeningResult({ sex, ageYears, systolic, diastolic }) {
   if (isAtOrAboveThreshold) {
     return {
       status: 'ready',
-      category: 'показник потребує повторної оцінки',
+      category: 'показник потребує повторного вимірювання та оцінки за повними таблицями AAP',
       tone: 'notice',
       threshold,
-      interpretation:
-        'АТ дорівнює або перевищує скринінговий поріг AAP 2017. Доцільно повторити вимірювання коректною манжетою та оцінити за повними перцентильними таблицями з урахуванням зросту.',
+      interpretation: 'АТ дорівнює або перевищує скринінговий поріг AAP 2017.',
     };
   }
 

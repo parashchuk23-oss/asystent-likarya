@@ -120,7 +120,7 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
             onChange={(value) => onChange('pediatricAgeYears', value)}
             placeholder="10"
             min="0"
-            max="17"
+            max="19"
           />
 
           <NumberField
@@ -188,7 +188,8 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
           </div>
 
           <div className="rounded-lg border border-teal-100 bg-teal-50/70 p-3 text-sm font-semibold leading-relaxed text-slate-700">
-            Оцінка виконується за WHO Growth Reference 2007 для дітей 5-19 років; підхід
+            Оцінка зросту для віку та ІМТ для віку виконується за WHO Growth Reference 2007
+            для віку 61-228 місяців; підхід
             відповідає принципу оцінювання за віком і статтю, передбаченому наказом МОЗ
             України №1590.
           </div>
@@ -196,7 +197,7 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
 
         <div className="mt-3 rounded-lg border border-slate-200 bg-white p-3">
           <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-teal-700">
-            Автоматична оцінка фізичного розвитку
+            Зріст для віку та ІМТ для віку
           </p>
           {growthAssessment.status === 'ready' ? (
             <div className="grid gap-3 md:grid-cols-2">
@@ -362,6 +363,11 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
             >
               {bloodPressureAssessment.status === 'ready' ? (
                 <>
+                  <span className="block text-[11px] font-bold uppercase tracking-wide text-slate-600">
+                    {Number(formData.pediatricAgeYears) >= 13
+                      ? 'Оцінка рівня АТ за AAP 2017'
+                      : 'Скринінг АТ за AAP 2017'}
+                  </span>
                   <span className="block text-sm">{bloodPressureAssessment.category}</span>
                   {bloodPressureAssessment.threshold && (
                     <span className="block text-slate-600">
@@ -370,6 +376,10 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
                     </span>
                   )}
                   <span className="block">{bloodPressureAssessment.interpretation}</span>
+                  <span className="mt-1 block font-medium text-slate-600">
+                    Одне вимірювання АТ не встановлює діагноз артеріальної гіпертензії.
+                    Потрібне коректне повторне вимірювання та клінічна оцінка.
+                  </span>
                 </>
               ) : (
                 bloodPressureAssessment.message

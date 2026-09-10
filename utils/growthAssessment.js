@@ -1,10 +1,17 @@
-import { whoGrowthReference2007 } from '../data/growth/whoGrowthReference2007';
+import { whoGrowthReference2007 } from '../data/growth/whoGrowthReference2007.js';
 
 const SEX_MAP = {
   чоловіча: 'male',
   жіноча: 'female',
   хлопчик: 'male',
   дівчинка: 'female',
+};
+
+const ANTHROPOMETRY_LIMITS = {
+  ageYears: { min: 0, max: 19 },
+  ageMonths: { min: 0, max: 11 },
+  heightCm: { min: 40, max: 220 },
+  weightKg: { min: 2, max: 180 },
 };
 
 function toNumber(value) {
@@ -19,13 +26,28 @@ function round(value, digits = 1) {
 
 function getAgeMonths(ageYears, ageMonths) {
   const years = toNumber(ageYears);
-  const months = toNumber(ageMonths) || 0;
+  const parsedMonths = ageMonths === '' || ageMonths === null || ageMonths === undefined
+    ? 0
+    : toNumber(ageMonths);
 
-  if (years === null || years < 0 || months < 0 || months > 11) {
+  if (
+    years === null
+    || parsedMonths === null
+    || !Number.isInteger(years)
+    || !Number.isInteger(parsedMonths)
+    || years < ANTHROPOMETRY_LIMITS.ageYears.min
+    || years > ANTHROPOMETRY_LIMITS.ageYears.max
+    || parsedMonths < ANTHROPOMETRY_LIMITS.ageMonths.min
+    || parsedMonths > ANTHROPOMETRY_LIMITS.ageMonths.max
+  ) {
     return null;
   }
 
-  return Math.round(years * 12 + months);
+  return years * 12 + parsedMonths;
+}
+
+function isWithinRange(value, limits) {
+  return value !== null && value >= limits.min && value <= limits.max;
 }
 
 function findReferenceRow(table, ageMonths) {
@@ -67,7 +89,7 @@ function zToPercentile(zScore) {
   return round(0.5 * (1 + erf(zScore / Math.sqrt(2))) * 100, 1);
 }
 
-function getHeightCategory(zScore) {
+export function classifyHeightZScore(zScore) {
   if (zScore === null) return '';
   if (zScore < -3) return 'дуже низький зріст';
   if (zScore < -2) return 'низький зріст';
@@ -76,7 +98,7 @@ function getHeightCategory(zScore) {
   return 'дуже високий зріст';
 }
 
-function getBmiCategory(zScore) {
+export function classifyBmiZScore(zScore) {
   if (zScore === null) return '';
   if (zScore < -3) return 'тяжкий дефіцит маси тіла';
   if (zScore < -2) return 'дефіцит маси тіла';
@@ -105,7 +127,7 @@ export function calculatePediatricGrowthAssessment({ sex, ageYears, ageMonths, h
   const heightCm = toNumber(height);
   const weightKg = toNumber(weight);
 
-  if (!normalizedSex || !ageInMonths) {
+  if (!normalizedSex || ageInMonths === null) {
     return {
       status: 'missing-data',
       message: 'Оберіть стать і вік дитини для автоматичної оцінки.',
@@ -116,7 +138,20 @@ export function calculatePediatricGrowthAssessment({ sex, ageYears, ageMonths, h
     return {
       status: 'out-of-range',
       ageInMonths,
-      message: 'Автоматична оцінка доступна для дітей 5-19 років за WHO Growth Reference 2007.',
+      message: 'Автоматична оцінка доступна за WHO Growth Reference 2007 для віку 61-228 місяців.',
+    };
+  }
+
+  const hasHeight = height !== '' && height !== null && height !== undefined;
+  const hasWeight = weight !== '' && weight !== null && weight !== undefined;
+  const isHeightValid = !hasHeight || isWithinRange(heightCm, ANTHROPOMETRY_LIMITS.heightCm);
+  const isWeightValid = !hasWeight || isWithinRange(weightKg, ANTHROPOMETRY_LIMITS.weightKg);
+
+  if (!isHeightValid || !isWeightValid) {
+    return {
+      status: 'invalid-anthropometry',
+      ageInMonths,
+      message: 'Перевірте антропометрію: зріст має бути 40-220 см, маса тіла — 2-180 кг.',
     };
   }
 
@@ -128,20 +163,20 @@ export function calculatePediatricGrowthAssessment({ sex, ageYears, ageMonths, h
     status: 'ready',
     ageInMonths,
     source: whoGrowthReference2007.source,
-    height: heightCm
+    height: hasHeight
       ? buildAssessment({
           value: heightCm,
           reference: heightReference,
-          category: getHeightCategory,
+          category: classifyHeightZScore,
         })
       : null,
-    bmi: bmi
+    bmi: bmi && hasHeight && hasWeight
       ? {
           value: round(bmi, 1),
           ...buildAssessment({
             value: bmi,
             reference: bmiReference,
-            category: getBmiCategory,
+            category: classifyBmiZScore,
           }),
         }
       : null,
