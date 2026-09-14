@@ -97,6 +97,7 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
     sex: formData.pediatricSex,
     ageYears: formData.pediatricAgeYears,
     ageMonths: formData.pediatricAgeMonths,
+    heightCm: formData.pediatricHeight,
   });
 
   return (
@@ -364,22 +365,17 @@ export default function PediatricPreventiveStatusForm({ formData, onChange }) {
               {bloodPressureAssessment.status === 'ready' ? (
                 <>
                   <span className="block text-[11px] font-bold uppercase tracking-wide text-slate-600">
-                    {Number(formData.pediatricAgeYears) >= 13
-                      ? 'Оцінка рівня АТ за AAP 2017'
-                      : 'Скринінг АТ за AAP 2017'}
+                    Оцінка рівня АТ за AAP 2017
                   </span>
-                  <span className="block text-sm">{bloodPressureAssessment.category}</span>
-                  {bloodPressureAssessment.threshold && (
-                    <span className="block text-slate-600">
-                      Скринінговий поріг: {bloodPressureAssessment.threshold.systolic}/
-                      {bloodPressureAssessment.threshold.diastolic} мм рт. ст.
-                    </span>
+                  {bloodPressureAssessment.mode === 'aap-2017-full' ? (
+                    <>
+                      <span className="block">САТ: {bloodPressureAssessment.systolicCategoryLabel}</span>
+                      <span className="block">ДАТ: {bloodPressureAssessment.diastolicCategoryLabel}</span>
+                      <span className="block text-sm">Підсумок: {bloodPressureAssessment.categoryLabel}</span>
+                    </>
+                  ) : (
+                    <span className="block text-sm">{bloodPressureAssessment.categoryLabel}</span>
                   )}
-                  <span className="block">{bloodPressureAssessment.interpretation}</span>
-                  <span className="mt-1 block font-medium text-slate-600">
-                    Одне вимірювання АТ не встановлює діагноз артеріальної гіпертензії.
-                    Потрібне коректне повторне вимірювання та клінічна оцінка.
-                  </span>
                 </>
               ) : (
                 bloodPressureAssessment.message
