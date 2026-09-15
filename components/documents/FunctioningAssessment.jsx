@@ -1,0 +1,131 @@
+'use client';
+
+import { useState } from 'react';
+import { functioningCategories, respiratoryAssessmentSections } from '../../data/functioning/respiratoryAssessment';
+
+function ToolCard({ tool }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const category = functioningCategories[tool.category];
+
+  return (
+    <article className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+      <button
+        type="button"
+        onClick={() => setIsOpen((current) => !current)}
+        aria-expanded={isOpen}
+        aria-controls={`tool-${tool.id}`}
+        className="flex w-full items-start justify-between gap-4 p-4 text-left transition hover:bg-slate-50"
+      >
+        <div>
+          <h4 className="text-base font-bold text-slate-950">{tool.name}</h4>
+          <span className={`mt-2 inline-flex rounded-full border px-2.5 py-1 text-xs font-bold ${category.classes}`}>
+            {category.icon} {category.label}
+          </span>
+        </div>
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-50 text-xl font-bold text-teal-700" aria-hidden="true">
+          {isOpen ? '−' : '+'}
+        </span>
+      </button>
+
+      {isOpen && (
+        <div id={`tool-${tool.id}`} className="space-y-4 border-t border-slate-200 p-4 text-sm leading-6 text-slate-600">
+          <Detail title="Що вимірює">{tool.measures}</Detail>
+          <Detail title="Що документує для функціональної оцінки">{tool.documents}</Detail>
+          {tool.metrics && (
+            <Detail title="Основні показники">
+              <ul className="list-disc space-y-1 pl-5">
+                {tool.metrics.map((metric) => <li key={metric}>{metric}</li>)}
+              </ul>
+            </Detail>
+          )}
+          {tool.protocol && <Detail title="Як виконати">{tool.protocol}</Detail>}
+          {tool.interpretation && <Detail title="Інтерпретація">{tool.interpretation}</Detail>}
+          <Detail title="Обмеження">{tool.limitations}</Detail>
+          {tool.licenseNotice && (
+            <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 font-semibold text-amber-900">
+              {tool.licenseNotice}
+            </div>
+          )}
+          <div>
+            <p className="font-bold text-slate-900">Джерело</p>
+            <a href={tool.source.url} target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline decoration-blue-200 underline-offset-2 hover:text-blue-900">
+              {tool.source.label}
+            </a>
+          </div>
+        </div>
+      )}
+    </article>
+  );
+}
+
+function Detail({ title, children }) {
+  return (
+    <div>
+      <p className="font-bold text-slate-900">{title}</p>
+      <div className="mt-1">{children}</div>
+    </div>
+  );
+}
+
+export default function FunctioningAssessment() {
+  const [activeSectionId, setActiveSectionId] = useState('general');
+  const activeSection = respiratoryAssessmentSections.find((section) => section.id === activeSectionId);
+
+  return (
+    <div className="space-y-5">
+      <section className="rounded-lg border border-slate-200 bg-white p-5">
+        <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">Оцінювання функціонування</p>
+        <h2 className="mt-2 text-2xl font-bold text-slate-950">Дихальна система</h2>
+        <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
+          Довідковий інструмент для вибору об’єктивних досліджень і валідованих функціональних тестів, якими можна документувати порушення функції та повсякденне обмеження.
+        </p>
+        <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold leading-6 text-amber-950">
+          Це не калькулятор групи інвалідності. Інструмент не визначає I, II або III групу та не робить юридичного висновку про право на інвалідність.
+        </div>
+      </section>
+
+      <section className="grid gap-3 md:grid-cols-3" aria-label="Розділи оцінювання дихальної системи">
+        {respiratoryAssessmentSections.map((section) => (
+          <button
+            key={section.id}
+            type="button"
+            onClick={() => setActiveSectionId(section.id)}
+            className={`rounded-lg border p-4 text-left transition-colors ${activeSectionId === section.id ? 'border-teal-300 bg-teal-50 text-teal-950 shadow-sm' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}
+          >
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">{section.eyebrow}</p>
+            <h3 className="mt-2 text-lg font-bold">{section.title}</h3>
+            <p className="mt-1 text-sm leading-6">{section.description}</p>
+          </button>
+        ))}
+      </section>
+
+      <section className="rounded-lg border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+        <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{activeSection.eyebrow}</p>
+        <h3 className="mt-2 text-xl font-bold text-slate-950">{activeSection.title}</h3>
+        <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{activeSection.description}</p>
+
+        {activeSection.inherited && (
+          <div className="mt-4 rounded-md border border-blue-200 bg-blue-50 p-3 text-sm leading-6 text-blue-950">
+            <span className="font-bold">Із загальної оцінки також застосовуються: </span>
+            {activeSection.inherited.join(' · ')}.
+          </div>
+        )}
+
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          {activeSection.tools.map((tool) => <ToolCard key={tool.id} tool={tool} />)}
+        </div>
+
+        <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">
+          {activeSection.note}
+        </p>
+      </section>
+
+      <section className="rounded-lg border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-600">
+        <h3 className="font-bold text-slate-950">Як користуватися</h3>
+        <p className="mt-1">
+          Поєднуйте клінічні об’єктивні докази з інструментами, що безпосередньо описують фізичну спроможність або повсякденне функціонування. Остаточну інтерпретацію виконує лікар з урахуванням клінічного контексту та чинної редакції нормативних документів.
+        </p>
+      </section>
+    </div>
+  );
+}

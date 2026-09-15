@@ -5,6 +5,7 @@ import { regulations } from '../data/regulations';
 import RegulationCard from './documents/RegulationCard';
 import RegulationViewer from './documents/RegulationViewer';
 import SocialCareMedicalConclusionForm from './documents/SocialCareMedicalConclusionForm';
+import FunctioningAssessment from './documents/FunctioningAssessment';
 
 const documentAreas = [
   {
@@ -16,6 +17,11 @@ const documentAreas = [
     id: 'templates',
     title: 'Довідки й шаблони',
     description: 'Медичні висновки та практичні шаблони для швидкого заповнення, копіювання і друку.',
+  },
+  {
+    id: 'functioning',
+    title: 'Оцінювання функціонування',
+    description: 'Об’єктивні дослідження та валідовані тести для документування функціональних порушень.',
   },
 ];
 
@@ -35,7 +41,7 @@ export default function DocumentsTab() {
         </p>
       </section>
 
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className="grid gap-3 md:grid-cols-3">
         {documentAreas.map((area) => (
           <button
             key={area.id}
@@ -56,6 +62,8 @@ export default function DocumentsTab() {
       {activeArea === 'templates' && (
         <SocialCareMedicalConclusionForm />
       )}
+
+      {activeArea === 'functioning' && <FunctioningAssessment />}
 
       {activeArea === 'regulations' && (
         <div className="space-y-5">
