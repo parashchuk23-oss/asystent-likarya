@@ -10,6 +10,7 @@ import { anticoagulants } from '../data/drugs/anticoagulants';
 import { weightManagementDrugs } from '../data/drugs/weightManagementDrugs';
 import { analgesics } from '../data/drugs/analgesics';
 import AvailableMedicinesModule from './available-medicines/AvailableMedicinesModule';
+import AntimicrobialTherapyModule from './pharmacology/AntimicrobialTherapyModule';
 import DrugClassSection from './pharmacology/DrugClassSection';
 
 const disclaimer =
@@ -352,6 +353,7 @@ export default function PharmacologyTab() {
           {[
             { id: 'guide', label: 'Практичний довідник' },
             { id: 'available', label: 'Доступні ліки' },
+            { id: 'antimicrobial', label: 'Антимікробна терапія' },
           ].map((section) => (
             <button
               key={section.id}
@@ -372,6 +374,10 @@ export default function PharmacologyTab() {
       {activeSection === 'available' ? (
         <div className="mt-6">
           <AvailableMedicinesModule />
+        </div>
+      ) : activeSection === 'antimicrobial' ? (
+        <div className="mt-6">
+          <AntimicrobialTherapyModule />
         </div>
       ) : (
         <>
