@@ -56,6 +56,26 @@ export function formatCopayment(value) {
   })} грн`;
 }
 
+export function buildTabletkiSearchUrl(medicine) {
+  const tradeName = String(medicine?.tradeName || '').trim();
+  const dosage = String(
+    medicine?.dosage || [medicine?.form, medicine?.dosageValue].filter(Boolean).join(' '),
+  ).trim();
+  const packageQuantity = Number(medicine?.packageQuantity);
+  const packageLabel = Number.isFinite(packageQuantity) && packageQuantity > 0
+    ? `№${packageQuantity}`
+    : '';
+  const query = [tradeName, dosage, packageLabel]
+    .filter(Boolean)
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!query) return 'https://tabletki.ua/uk/';
+
+  return `https://tabletki.ua/uk/search/${encodeURIComponent(query)}/`;
+}
+
 export function filterMedicines(medicines, query, copaymentFilter) {
   const normalizedQuery = normalizeMedicineSearchValue(query);
 

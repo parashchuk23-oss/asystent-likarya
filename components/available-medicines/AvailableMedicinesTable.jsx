@@ -1,6 +1,17 @@
 'use client';
 
-import { formatCopayment, formatPackageQuantity } from '../../utils/availableMedicines';
+import { sendGAEvent } from '@next/third-parties/google';
+import {
+  buildTabletkiSearchUrl,
+  formatCopayment,
+  formatPackageQuantity,
+} from '../../utils/availableMedicines';
+
+function trackTabletkiClick() {
+  sendGAEvent('event', 'medicine_availability_external_click', {
+    source: 'tabletki_ua',
+  });
+}
 
 export default function AvailableMedicinesTable({ medicines }) {
   return (
@@ -23,7 +34,19 @@ export default function AvailableMedicinesTable({ medicines }) {
                 {medicine.activeIngredient || 'Немає даних'}
               </td>
               <td className="border-b border-slate-100 px-3 py-2.5 text-slate-800">
-                {medicine.tradeName || 'Немає даних'}
+                <span className="block">{medicine.tradeName || 'Немає даних'}</span>
+                <a
+                  href={buildTabletkiSearchUrl(medicine)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  referrerPolicy="no-referrer"
+                  onClick={trackTabletkiClick}
+                  aria-label="Перевірити на Tabletki.ua — відкриється у новій вкладці"
+                  className="mt-2 inline-flex items-center gap-1 rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold leading-5 text-blue-700 transition hover:border-blue-300 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                >
+                  <span>Перевірити на Tabletki.ua</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
               </td>
               <td className="border-b border-slate-100 px-3 py-2.5 text-slate-700">
                 {medicine.dosage || 'Немає даних'}
