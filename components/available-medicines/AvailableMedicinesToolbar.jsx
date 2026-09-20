@@ -22,7 +22,7 @@ export default function AvailableMedicinesToolbar({
           type="search"
           value={query}
           onChange={(event) => onQueryChange(event.target.value)}
-          placeholder="Пошук за діючою речовиною або торговою назвою"
+          placeholder="Пошук за назвою, дозуванням або упаковкою"
           className="w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
         />
       </label>

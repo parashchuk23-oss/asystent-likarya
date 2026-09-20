@@ -13,7 +13,43 @@ export const MEDICINE_SORTS = {
 };
 
 export function normalizeMedicineSearchValue(value) {
-  return String(value || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('uk-UA');
+  return String(value || '')
+    .toLocaleLowerCase('uk-UA')
+    .replace(/№\s*/g, ' ')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+function normalizeMedicineSearchToken(token) {
+  if (token.startsWith('таблет')) return 'таблет';
+  if (token.startsWith('капсул')) return 'капсул';
+  if (token.startsWith('флакон')) return 'флакон';
+  if (token.startsWith('ампул')) return 'ампул';
+  if (token.startsWith('доз')) return 'доз';
+  if (token.startsWith('шприц')) return 'шприц';
+  if (token.startsWith('пакет')) return 'пакет';
+  return token;
+}
+
+function getMedicineSearchTokens(value) {
+  const normalizedValue = normalizeMedicineSearchValue(value);
+  if (!normalizedValue) return [];
+  return normalizedValue.split(' ').map(normalizeMedicineSearchToken).filter(Boolean);
+}
+
+function getMedicineSearchDocument(medicine) {
+  return getMedicineSearchTokens([
+    medicine.activeIngredient,
+    medicine.tradeName,
+    medicine.manufacturer,
+    medicine.form,
+    medicine.dosage,
+    medicine.dosageValue,
+    medicine.packageQuantity,
+    medicine.packageUnit,
+    medicine.packageDescription,
+  ].filter((value) => value !== null && value !== undefined).join(' '));
 }
 
 export function normalizeMedicineRecord(record) {
@@ -77,14 +113,17 @@ export function buildTabletkiSearchUrl(medicine) {
 }
 
 export function filterMedicines(medicines, query, copaymentFilter) {
-  const normalizedQuery = normalizeMedicineSearchValue(query);
+  const queryTokens = getMedicineSearchTokens(query);
 
   return medicines.filter((medicine) => {
-    const matchesQuery =
-      !normalizedQuery ||
-      [medicine.activeIngredient, medicine.tradeName].some((value) =>
-        normalizeMedicineSearchValue(value).includes(normalizedQuery),
-      );
+    const medicineTokens = getMedicineSearchDocument(medicine);
+    const matchesQuery = queryTokens.length === 0 || queryTokens.every((queryToken) =>
+      medicineTokens.some((medicineToken) => (
+        /^\d+$/.test(queryToken)
+          ? medicineToken === queryToken
+          : medicineToken.includes(queryToken)
+      )),
+    );
 
     if (!matchesQuery) return false;
 
