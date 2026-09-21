@@ -12,6 +12,7 @@ export default function sitemap() {
     { path: '/gad7', priority: 0.8 },
     { path: '/phq9', priority: 0.8 },
     { path: '/findrisk', priority: 0.8 },
+    { path: '/available-medicines', priority: 0.8 },
     { path: '/calculators/venous-thromboembolism', priority: 0.8 },
     { path: '/en/calculators/venous-thromboembolism', priority: 0.7 },
     { path: '/about', priority: 0.6 },

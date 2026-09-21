@@ -311,10 +311,10 @@ function drugMatchesQuery(drug, query) {
   );
 }
 
-export default function PharmacologyTab() {
+export default function PharmacologyTab({ initialSection = 'guide' }) {
   const [query, setQuery] = useState('');
   const [openClass, setOpenClass] = useState(null);
-  const [activeSection, setActiveSection] = useState('guide');
+  const [activeSection, setActiveSection] = useState(initialSection);
 
   const resultCount = useMemo(
     () =>

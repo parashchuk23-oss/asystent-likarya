@@ -65,8 +65,8 @@ const tabs = [
   },
 ];
 
-export default function AppTabs() {
-  const [activeTab, setActiveTab] = useState('home');
+export default function AppTabs({ initialTab = 'home', initialDrugSection = 'guide' }) {
+  const [activeTab, setActiveTab] = useState(initialTab);
   const activeTabData = tabs.find((tab) => tab.id === activeTab);
 
   return (
@@ -102,7 +102,7 @@ export default function AppTabs() {
         {activeTab === 'vaccination' && <VaccinationTab />}
         {activeTab === 'ultrasound' && <UltrasoundTab />}
         {activeTab === 'ecg' && <EcgTab />}
-        {activeTab === 'drugs' && <PharmacologyTab />}
+        {activeTab === 'drugs' && <PharmacologyTab initialSection={initialDrugSection} />}
         {activeTab === 'diseases' && <DiseasesTab />}
         {activeTab === 'documents' && <DocumentsTab />}
       </div>
