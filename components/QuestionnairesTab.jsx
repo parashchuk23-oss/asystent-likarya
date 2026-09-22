@@ -15,6 +15,7 @@ import Phq9Questionnaire from './questionnaires/Phq9Questionnaire';
 import SleepDifficultyQuestionnaire from './questionnaires/SleepDifficultyQuestionnaire';
 import StopBangQuestionnaire from './questionnaires/StopBangQuestionnaire';
 import StressPerceptionQuestionnaire from './questionnaires/StressPerceptionQuestionnaire';
+import TuberculosisScreeningQuestionnaire from './questionnaires/TuberculosisScreeningQuestionnaire';
 
 const questionnaires = [
   {
@@ -94,6 +95,12 @@ const questionnaires = [
     title: 'Функціональний вплив болю',
     description: 'Спрощений модуль замість копіювання BPI short form',
     component: <PainFunctionalImpactQuestionnaire />,
+  },
+  {
+    id: 'tuberculosis-screening',
+    title: 'Скринінг на туберкульоз',
+    description: 'Чинники ризику та симптоми за наказом МОЗ №102',
+    component: <TuberculosisScreeningQuestionnaire />,
   },
   {
     id: 'palliative-care-need',
