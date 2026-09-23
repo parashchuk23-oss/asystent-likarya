@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import {
   antimicrobialConditions,
   antimicrobialGeneralRules,
+  antimicrobialSpecializedStandardSource,
   antimicrobialStandardSource,
   awareGroups,
 } from '../../data/antimicrobial/primaryCareStandard';
@@ -249,13 +250,23 @@ export default function AntimicrobialTherapyModule() {
         Не використовуйте довідник як автоматичне призначення. Перед терапією перевірте алергії, вагітність, вік, масу тіла, функцію нирок і печінки, взаємодії, локальну резистентність та офіційну інструкцію. Педіатричні суперечності стандарту навмисно не автоматизовані.
       </aside>
 
-      <p className="mt-5 text-xs leading-5 text-slate-500">
-        Джерело:{' '}
-        <a href={antimicrobialStandardSource.url} target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline underline-offset-2">
-          {antimicrobialStandardSource.title}
-        </a>
-        .
-      </p>
+      <div className="mt-5 space-y-2 text-xs leading-5 text-slate-500">
+        <p>
+          <strong>Первинна медична допомога:</strong>{' '}
+          <a href={antimicrobialStandardSource.url} target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline underline-offset-2">
+            {antimicrobialStandardSource.code} · {antimicrobialStandardSource.title}
+          </a>
+          . Клінічні картки цього модуля спираються саме на цей стандарт.
+        </p>
+        <p>
+          <strong>Спеціалізована медична допомога:</strong>{' '}
+          <a href={antimicrobialSpecializedStandardSource.url} target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline underline-offset-2">
+            {antimicrobialSpecializedStandardSource.code} · {antimicrobialSpecializedStandardSource.title}
+          </a>
+          . Використовуйте для випадків, що виходять за межі первинної допомоги; її режими не включені до амбулаторних карток вище.
+        </p>
+        <p>{antimicrobialSpecializedStandardSource.order}.</p>
+      </div>
     </section>
   );
 }

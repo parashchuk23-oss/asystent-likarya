@@ -6,6 +6,14 @@ export const antimicrobialStandardSource = {
   url: 'https://www.dec.gov.ua/wp-content/uploads/2026/09/dn_1328_09092026_dod_1.pdf',
 };
 
+export const antimicrobialSpecializedStandardSource = {
+  title:
+    'Стандарт «Раціональне застосування протимікробних лікарських засобів з лікувальною та профілактичною метою у закладах охорони здоров’я, що надають спеціалізовану медичну допомогу»',
+  code: 'ГС 2026-1328-2',
+  order: 'Наказ МОЗ України від 09.09.2026 № 1328',
+  url: 'https://www.dec.gov.ua/wp-content/uploads/2026/09/dn_1328_09092026_dod_2.pdf',
+};
+
 export const awareGroups = [
   {
     id: 'access',
