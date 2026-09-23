@@ -18,6 +18,7 @@ const sections = [
 
 function ConditionCard({ condition, isOpen, onToggle }) {
   const panelId = `antimicrobial-${condition.id}`;
+  const regimens = condition.treatmentRegimens ?? condition.adultRegimens;
 
   return (
     <article className={`overflow-hidden rounded-md border bg-white ${isOpen ? 'border-teal-500 shadow-sm' : 'border-teal-200'}`}>
@@ -44,19 +45,51 @@ function ConditionCard({ condition, isOpen, onToggle }) {
             {condition.criteria.map((item) => <li key={item}>• {item}</li>)}
           </ul>
 
-          {condition.adultRegimens.length ? (
+          {condition.decisionGroups?.length ? (
+            <div className="mt-5 grid gap-3 md:grid-cols-2">
+              {condition.decisionGroups.map((group) => (
+                <section key={group.title} className={`rounded-md border px-4 py-4 ${group.tone === 'amber' ? 'border-amber-200 bg-amber-50' : 'border-teal-200 bg-teal-50/60'}`}>
+                  <h4 className="text-sm font-semibold text-slate-900">{group.title}</h4>
+                  <ul className="mt-2 space-y-2 text-sm leading-6 text-slate-700">
+                    {group.items.map((item) => <li key={item}>• {item}</li>)}
+                  </ul>
+                </section>
+              ))}
+            </div>
+          ) : null}
+
+          {regimens.length ? (
             <div className="mt-5 rounded-md border border-slate-200 bg-slate-50 px-4 py-4">
-              <h4 className="text-sm font-semibold text-slate-900">Режими для дорослих зі стандарту</h4>
+              <h4 className="text-sm font-semibold text-slate-900">{condition.regimenTitle ?? 'Режими для дорослих зі стандарту'}</h4>
               <ul className="mt-2 space-y-2 text-sm leading-6 text-slate-700">
-                {condition.adultRegimens.map((item) => <li key={item}>• {item}</li>)}
+                {regimens.map((item) => <li key={item}>• {item}</li>)}
               </ul>
               {condition.duration ? <p className="mt-3 text-sm font-medium text-slate-800">Тривалість: {condition.duration}</p> : null}
+            </div>
+          ) : null}
+
+          {condition.safetyNotes?.length ? (
+            <div className="mt-4 border-l-4 border-rose-400 bg-rose-50 px-4 py-3 text-sm leading-6 text-slate-700">
+              <strong>Важливо:</strong>
+              <ul className="mt-1 space-y-1">
+                {condition.safetyNotes.map((item) => <li key={item}>• {item}</li>)}
+              </ul>
             </div>
           ) : null}
 
           {condition.pediatricNote ? (
             <p className="mt-4 border-l-4 border-amber-400 bg-amber-50 px-4 py-3 text-sm leading-6 text-slate-700">
               <strong>Діти:</strong> {condition.pediatricNote}
+            </p>
+          ) : null}
+
+          {condition.source ? (
+            <p className="mt-4 text-xs leading-5 text-slate-500">
+              Джерело:{' '}
+              <a href={condition.source.url} target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline underline-offset-2">
+                {condition.source.label}
+              </a>
+              .
             </p>
           ) : null}
         </div>
