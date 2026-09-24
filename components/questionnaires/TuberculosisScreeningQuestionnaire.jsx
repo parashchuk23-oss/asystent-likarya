@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import {
   tuberculosisScreeningQuestions,
   tuberculosisScreeningSections,
@@ -14,7 +14,7 @@ import PrintArea from '../PrintArea';
 import { PrintQuestionnaireButton } from './PrintableQuestionnaire';
 
 const initialAnswers = tuberculosisScreeningQuestions.reduce((answers, question) => {
-  answers[question.id] = '';
+  answers[question.id] = 'no';
   return answers;
 }, {});
 
@@ -51,11 +51,6 @@ export default function TuberculosisScreeningQuestionnaire() {
   const [validationMessage, setValidationMessage] = useState('');
   const [copyStatus, setCopyStatus] = useState('');
   const [showSputumInstructions, setShowSputumInstructions] = useState(false);
-
-  const answeredCount = useMemo(
-    () => Object.values(answers).filter((answer) => answer === 'yes' || answer === 'no').length,
-    [answers],
-  );
 
   function handleAnswer(questionId, value) {
     setAnswers((current) => ({ ...current, [questionId]: value }));
@@ -111,7 +106,7 @@ export default function TuberculosisScreeningQuestionnaire() {
           підставою для подальшого обстеження з метою виявлення ТБ.
         </p>
         <p className="mt-2 font-medium text-slate-800">
-          Заповнено: {answeredCount} із {tuberculosisScreeningQuestions.length}
+          Усі відповіді за замовчуванням позначені «Ні». Оберіть «Так» лише для виявлених симптомів або чинників ризику.
         </p>
       </section>
 
@@ -167,7 +162,7 @@ export default function TuberculosisScreeningQuestionnaire() {
           onClick={handleClear}
           className="w-full rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 sm:w-auto"
         >
-          Очистити
+          Скинути всі до «Ні»
         </button>
         <PrintQuestionnaireButton label="Роздрукувати" />
       </div>
