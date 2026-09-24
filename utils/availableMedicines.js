@@ -94,18 +94,8 @@ export function formatCopayment(value) {
 
 export function buildTabletkiSearchUrl(medicine) {
   const tradeName = String(medicine?.tradeName || '').trim();
-  const dosage = String(
-    medicine?.dosage || [medicine?.form, medicine?.dosageValue].filter(Boolean).join(' '),
-  ).trim();
-  const packageQuantity = Number(medicine?.packageQuantity);
-  const packageLabel = Number.isFinite(packageQuantity) && packageQuantity > 0
-    ? `№${packageQuantity}`
-    : '';
-  const query = [tradeName, dosage, packageLabel]
-    .filter(Boolean)
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const activeIngredient = String(medicine?.activeIngredient || '').trim();
+  const query = tradeName || activeIngredient;
 
   if (!query) return 'https://tabletki.ua/uk/';
 
