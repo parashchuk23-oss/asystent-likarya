@@ -92,9 +92,17 @@ export function formatCopayment(value) {
   })} грн`;
 }
 
+export function normalizeTabletkiSearchQuery(value) {
+  return String(value || '')
+    .replace(/[®™]/g, '')
+    .replace(/\s*\([^)]*[A-Za-z][^)]*\)\s*/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export function buildTabletkiSearchUrl(medicine) {
-  const tradeName = String(medicine?.tradeName || '').trim();
-  const activeIngredient = String(medicine?.activeIngredient || '').trim();
+  const tradeName = normalizeTabletkiSearchQuery(medicine?.tradeName);
+  const activeIngredient = normalizeTabletkiSearchQuery(medicine?.activeIngredient);
   const query = tradeName || activeIngredient;
 
   if (!query) return 'https://tabletki.ua/uk/';
