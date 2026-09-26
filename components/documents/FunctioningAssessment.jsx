@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { functioningCategories, respiratoryAssessmentSections } from '../../data/functioning/respiratoryAssessment';
 
 function ToolCard({ tool, onOpenQuestionnaire }) {
@@ -30,6 +29,7 @@ function ToolCard({ tool, onOpenQuestionnaire }) {
       {isOpen && (
         <div id={`tool-${tool.id}`} className="space-y-4 border-t border-slate-200 p-4 text-sm leading-6 text-slate-600">
           <Detail title="Що вимірює">{tool.measures}</Detail>
+          {tool.indications && <Detail title="Основні показання">{tool.indications}</Detail>}
           <Detail title="Що документує для функціональної оцінки">{tool.documents}</Detail>
           {tool.metrics && (
             <Detail title="Основні показники">
@@ -77,8 +77,7 @@ function Detail({ title, children }) {
 }
 
 export default function FunctioningAssessment({ onOpenQuestionnaire }) {
-  const [activeSectionId, setActiveSectionId] = useState('general');
-  const activeSection = respiratoryAssessmentSections.find((section) => section.id === activeSectionId);
+  const respiratorySection = respiratoryAssessmentSections[0];
 
   return (
     <div className="space-y-5">
@@ -93,37 +92,20 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
         </div>
       </section>
 
-      <section className="grid gap-3 md:grid-cols-3" aria-label="Розділи оцінювання дихальної системи">
-        {respiratoryAssessmentSections.map((section) => (
-          <button
-            key={section.id}
-            type="button"
-            onClick={() => setActiveSectionId(section.id)}
-            className={`rounded-lg border p-4 text-left transition-colors ${activeSectionId === section.id ? 'border-teal-300 bg-teal-50 text-teal-950 shadow-sm' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}
-          >
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">{section.eyebrow}</p>
-            <h3 className="mt-2 text-lg font-bold">{section.title}</h3>
-            <p className="mt-1 text-sm leading-6">{section.description}</p>
-          </button>
-        ))}
-      </section>
-
       <section className="rounded-lg border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
-        {activeSection.inherited && (
-          <div className="rounded-md border border-blue-200 bg-blue-50 p-3 text-sm leading-6 text-blue-950">
-            <span className="font-bold">Із загальної оцінки також застосовуються: </span>
-            {activeSection.inherited.join(' · ')}.
-          </div>
-        )}
+        <div className="mb-5">
+          <h3 className="text-lg font-bold text-slate-950">{respiratorySection.title}</h3>
+          <p className="mt-1 max-w-4xl text-sm leading-6 text-slate-600">{respiratorySection.description}</p>
+        </div>
 
-        <div className={`${activeSection.inherited ? 'mt-5' : ''} grid gap-3`}>
-          {activeSection.tools.map((tool) => (
+        <div className="grid gap-3">
+          {respiratorySection.tools.map((tool) => (
             <ToolCard key={tool.id} tool={tool} onOpenQuestionnaire={onOpenQuestionnaire} />
           ))}
         </div>
 
         <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">
-          {activeSection.note}
+          {respiratorySection.note}
         </p>
       </section>
 
