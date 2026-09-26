@@ -20,6 +20,7 @@ import SixMinuteWalkTest from './questionnaires/SixMinuteWalkTest';
 import MmrcQuestionnaire from './questionnaires/MmrcQuestionnaire';
 import Whodas36Questionnaire from './questionnaires/Whodas36Questionnaire';
 import BarthelIndexQuestionnaire from './questionnaires/BarthelIndexQuestionnaire';
+import BodeIndexQuestionnaire from './questionnaires/BodeIndexQuestionnaire';
 
 const questionnaires = [
   {
@@ -135,6 +136,12 @@ const questionnaires = [
     title: 'Індекс Бартел',
     description: 'Оцінка незалежності у базових активностях повсякденного життя',
     component: <BarthelIndexQuestionnaire />,
+  },
+  {
+    id: 'bode-index',
+    title: 'BODE-індекс при ХОЗЛ',
+    description: 'Комплексна прогностична оцінка за ІМТ, ОФВ₁, mMRC і 6MWT',
+    component: <BodeIndexQuestionnaire />,
   },
 ];
 

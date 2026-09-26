@@ -189,6 +189,8 @@ const copdTools = [
   {
     id: 'bode',
     name: 'BODE index',
+    questionnaireId: 'bode-index',
+    actionLabel: 'Розрахувати BODE-індекс →',
     category: 'clinical',
     measures: 'Композитний прогноз при ХОЗЛ на підставі BMI, обструкції, задишки та фізичної спроможності.',
     documents: 'Поєднує системні та функціональні характеристики ХОЗЛ для прогностичної оцінки.',
