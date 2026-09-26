@@ -5,6 +5,22 @@ import { createPortal } from 'react-dom';
 
 const TEST_DURATION_SECONDS = 6 * 60;
 
+const borgOptions = [
+  { value: '', label: 'Оберіть оцінку' },
+  { value: '0', label: '0 — немає' },
+  { value: '0.5', label: '0,5 — дуже-дуже слабка' },
+  { value: '1', label: '1 — дуже слабка' },
+  { value: '2', label: '2 — слабка' },
+  { value: '3', label: '3 — помірна' },
+  { value: '4', label: '4 — дещо сильна' },
+  { value: '5', label: '5 — сильна' },
+  { value: '6', label: '6 — між сильною і дуже сильною' },
+  { value: '7', label: '7 — дуже сильна' },
+  { value: '8', label: '8 — дуже-дуже сильна' },
+  { value: '9', label: '9 — майже максимальна' },
+  { value: '10', label: '10 — максимальна' },
+];
+
 const initialValues = {
   indication: '',
   courseLength: '30',
@@ -67,10 +83,32 @@ function TextField({ id, label, value, onChange, placeholder = '' }) {
   );
 }
 
+function BorgSelect({ id, label, value, onChange }) {
+  return (
+    <label className="text-sm font-semibold text-slate-800" htmlFor={id}>
+      {label}
+      <select
+        id={id}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="mt-1.5 w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-base font-normal text-slate-950 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+      >
+        {borgOptions.map((option) => (
+          <option key={option.value || 'empty'} value={option.value}>{option.label}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 function formatTimer(seconds) {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   return `${minutes}:${String(remainingSeconds).padStart(2, '0')}`;
+}
+
+function formatBorgValue(value) {
+  return String(value || 'не вказано').replace('.', ',');
 }
 
 function buildResultText(values, distance) {
@@ -99,11 +137,11 @@ function buildResultText(values, distance) {
   }
 
   if (values.preDyspnea || values.postDyspnea) {
-    parts.push(`Задишка за Borg: ${values.preDyspnea || 'не вказано'} → ${values.postDyspnea || 'не вказано'} бала(ів).`);
+    parts.push(`Задишка за Borg: ${formatBorgValue(values.preDyspnea)} → ${formatBorgValue(values.postDyspnea)} балів.`);
   }
 
   if (values.preFatigue || values.postFatigue) {
-    parts.push(`Втома за Borg: ${values.preFatigue || 'не вказано'} → ${values.postFatigue || 'не вказано'} бала(ів).`);
+    parts.push(`Втома за Borg: ${formatBorgValue(values.preFatigue)} → ${formatBorgValue(values.postFatigue)} балів.`);
   }
 
   if (values.oxygenSupport === 'так') {
@@ -247,8 +285,8 @@ export default function SixMinuteWalkTest() {
           <NumberField id="sixmwt-pre-hr" label="ЧСС (/хв)" value={values.preHeartRate} onChange={(value) => updateValue('preHeartRate', value)} />
           <TextField id="sixmwt-pre-bp" label="АТ (мм рт. ст.)" value={values.preBloodPressure} onChange={(value) => updateValue('preBloodPressure', value)} placeholder="120/80" />
           <NumberField id="sixmwt-pre-spo2" label="SpO₂ (%)" value={values.preSpo2} onChange={(value) => updateValue('preSpo2', value)} max={100} />
-          <NumberField id="sixmwt-pre-dyspnea" label="Задишка Borg (0–10)" value={values.preDyspnea} onChange={(value) => updateValue('preDyspnea', value)} max={10} />
-          <NumberField id="sixmwt-pre-fatigue" label="Втома Borg (0–10)" value={values.preFatigue} onChange={(value) => updateValue('preFatigue', value)} max={10} />
+          <BorgSelect id="sixmwt-pre-dyspnea" label="Задишка за Borg" value={values.preDyspnea} onChange={(value) => updateValue('preDyspnea', value)} />
+          <BorgSelect id="sixmwt-pre-fatigue" label="Втома за Borg" value={values.preFatigue} onChange={(value) => updateValue('preFatigue', value)} />
         </div>
       </section>
 
@@ -286,8 +324,8 @@ export default function SixMinuteWalkTest() {
           <NumberField id="sixmwt-post-hr" label="ЧСС (/хв)" value={values.postHeartRate} onChange={(value) => updateValue('postHeartRate', value)} />
           <TextField id="sixmwt-post-bp" label="АТ (мм рт. ст.)" value={values.postBloodPressure} onChange={(value) => updateValue('postBloodPressure', value)} placeholder="130/80" />
           <NumberField id="sixmwt-post-spo2" label="SpO₂ (%)" value={values.postSpo2} onChange={(value) => updateValue('postSpo2', value)} max={100} />
-          <NumberField id="sixmwt-post-dyspnea" label="Задишка Borg (0–10)" value={values.postDyspnea} onChange={(value) => updateValue('postDyspnea', value)} max={10} />
-          <NumberField id="sixmwt-post-fatigue" label="Втома Borg (0–10)" value={values.postFatigue} onChange={(value) => updateValue('postFatigue', value)} max={10} />
+          <BorgSelect id="sixmwt-post-dyspnea" label="Задишка за Borg" value={values.postDyspnea} onChange={(value) => updateValue('postDyspnea', value)} />
+          <BorgSelect id="sixmwt-post-fatigue" label="Втома за Borg" value={values.postFatigue} onChange={(value) => updateValue('postFatigue', value)} />
           <NumberField id="sixmwt-recovery" label="Відновлення (хв)" value={values.recoveryTime} onChange={(value) => updateValue('recoveryTime', value)} step={0.5} />
         </div>
       </section>
