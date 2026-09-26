@@ -17,6 +17,7 @@ import StopBangQuestionnaire from './questionnaires/StopBangQuestionnaire';
 import StressPerceptionQuestionnaire from './questionnaires/StressPerceptionQuestionnaire';
 import TuberculosisScreeningQuestionnaire from './questionnaires/TuberculosisScreeningQuestionnaire';
 import SixMinuteWalkTest from './questionnaires/SixMinuteWalkTest';
+import MmrcQuestionnaire from './questionnaires/MmrcQuestionnaire';
 
 const questionnaires = [
   {
@@ -114,6 +115,12 @@ const questionnaires = [
     title: '6-хвилинний тест ходьби (6MWT)',
     description: 'Стандартизована оцінка функціональної переносимості навантаження',
     component: <SixMinuteWalkTest />,
+  },
+  {
+    id: 'mmrc',
+    title: 'mMRC — шкала задишки',
+    description: 'Оцінка впливу задишки на ходьбу та повсякденну активність',
+    component: <MmrcQuestionnaire />,
   },
 ];
 

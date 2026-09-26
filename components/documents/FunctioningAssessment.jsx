@@ -58,7 +58,7 @@ function ToolCard({ tool, onOpenQuestionnaire }) {
               onClick={() => onOpenQuestionnaire(tool.questionnaireId)}
               className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2.5 font-semibold text-white transition hover:bg-blue-700 sm:w-auto"
             >
-              Провести 6MWT →
+              {tool.actionLabel || 'Провести 6MWT →'}
             </button>
           )}
         </div>

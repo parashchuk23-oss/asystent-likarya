@@ -123,6 +123,8 @@ const generalTools = [
   {
     id: 'mmrc',
     name: 'mMRC',
+    questionnaireId: 'mmrc',
+    actionLabel: 'Оцінити задишку за mMRC →',
     category: 'functional',
     measures: 'Наскільки задишка обмежує ходьбу та звичну фізичну активність.',
     documents: 'Стандартизовано описує пов’язане із задишкою обмеження активності.',
