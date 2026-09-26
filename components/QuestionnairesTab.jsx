@@ -18,6 +18,7 @@ import StressPerceptionQuestionnaire from './questionnaires/StressPerceptionQues
 import TuberculosisScreeningQuestionnaire from './questionnaires/TuberculosisScreeningQuestionnaire';
 import SixMinuteWalkTest from './questionnaires/SixMinuteWalkTest';
 import MmrcQuestionnaire from './questionnaires/MmrcQuestionnaire';
+import Whodas36Questionnaire from './questionnaires/Whodas36Questionnaire';
 
 const questionnaires = [
   {
@@ -121,6 +122,12 @@ const questionnaires = [
     title: 'mMRC — шкала задишки',
     description: 'Оцінка впливу задишки на ходьбу та повсякденну активність',
     component: <MmrcQuestionnaire />,
+  },
+  {
+    id: 'whodas-36',
+    title: 'WHODAS 2.0 — 36 пунктів',
+    description: 'Оцінка функціонування у шести доменах за останні 30 днів',
+    component: <Whodas36Questionnaire />,
   },
 ];
 

@@ -32,6 +32,10 @@ const sources = {
     label: 'WHO Disability Assessment Schedule 2.0',
     url: 'https://www.who.int/standards/classifications/international-classification-of-functioning-disability-and-health/who-disability-assessment-schedule',
   },
+  whodasUkraine: {
+    label: 'Академія НСЗУ — українська версія WHODAS 2.0',
+    url: 'https://academy.nszu.gov.ua/pluginfile.php/415054/mod_page/content/101/%D0%86%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B8%20%D0%A4%D0%9E.pdf',
+  },
   gold: {
     label: 'GOLD Report 2026',
     url: 'https://goldcopd.org/2026-gold-report-and-pocket-guide/',
@@ -146,12 +150,17 @@ const generalTools = [
   {
     id: 'whodas',
     name: 'WHODAS 2.0',
+    questionnaireId: 'whodas-36',
+    actionLabel: 'Провести WHODAS 2.0 →',
     category: 'functional',
     measures: 'Загальне повсякденне функціонування у шести доменах незалежно від діагнозу.',
     documents: 'Структурує вплив стану на пізнання, мобільність, самообслуговування, взаємодію, життєву активність та участь у суспільстві.',
-    limitations: 'У модулі не відтворюються запитання або автоматичний підрахунок. Для електронного використання необхідно дотриматися умов WHO.',
-    source: sources.whodas,
-    licenseNotice: 'Інформаційна картка. Повний опитувальник не відтворюється через ліцензійні умови WHO.',
+    metrics: ['36 пунктів у шести доменах', 'простий сумарний бал', 'окремі суми за доменами'],
+    protocol: 'Оцінити труднощі за останні 30 днів. Пункти про роботу або навчання застосовувати лише до людини, яка працює чи навчається.',
+    interpretation: 'Вищий простий бал означає більші труднощі функціонування. Модуль не перетворює суму на складний IRT-бал 0–100.',
+    limitations: 'Результат не встановлює діагноз, ступінь інвалідності або потребу в допомозі автоматично.',
+    source: sources.whodasUkraine,
+    licenseNotice: 'Використано офіційно оприлюднений український текст. Методика та права на WHODAS 2.0 належать WHO.',
   },
 ];
 
