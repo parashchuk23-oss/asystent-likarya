@@ -111,6 +111,10 @@ function formatBorgValue(value) {
   return String(value || 'не вказано').replace('.', ',');
 }
 
+function formatPrintValue(value, suffix = '') {
+  return value ? `${String(value).replace('.', ',')}${suffix}` : '—';
+}
+
 function buildResultText(values, distance) {
   const parts = [`Проведено 6-хвилинний тест ходьби. Пройдена дистанція — ${distance} м.`];
 
@@ -218,6 +222,19 @@ export default function SixMinuteWalkTest() {
     resetTimer();
   }
 
+  function printProtocol() {
+    const previousTitle = document.title;
+    const restoreTitle = () => {
+      document.title = previousTitle;
+      window.removeEventListener('afterprint', restoreTitle);
+    };
+
+    document.title = '';
+    window.addEventListener('afterprint', restoreTitle);
+    window.print();
+    window.setTimeout(restoreTitle, 1000);
+  }
+
   function createResult() {
     if (distance <= 0) return;
     setResultText(buildResultText(values, distance));
@@ -237,16 +254,63 @@ export default function SixMinuteWalkTest() {
   const printMarkup = (
     <section className="print-area questionnaire-print-area hidden">
       <div className="print-header">
-        <p className="print-brand">Асистент лікаря</p>
-        <h1>6-хвилинний тест ходьби (6MWT)</h1>
+        <h1>Протокол проведення 6-хвилинного тесту ходьби (6MWT)</h1>
       </div>
       <div className="print-patient-grid">
         <div>ПІБ: ________________________________________________</div>
-        <div>Дата: ____ / ____ / ______</div>
+        <div>Дата і час: __________________________________________</div>
         <div>Лікар: ______________________________________________</div>
+        <div>Відділення: _________________________________________</div>
       </div>
-      <p className="print-instruction">{resultText || 'Результат тесту ще не сформовано.'}</p>
-      <p className="print-disclaimer">Результат описує виконаний тест і потребує клінічної інтерпретації.</p>
+
+      <section className="sixmwt-print-section">
+        <h2>Умови проведення</h2>
+        <div className="sixmwt-print-grid">
+          <div><strong>Показання:</strong> {formatPrintValue(values.indication)}</div>
+          <div><strong>Довжина доріжки:</strong> {formatPrintValue(values.courseLength, ' м')}</div>
+          <div><strong>Киснева підтримка:</strong> {values.oxygenSupport}{values.oxygenSupport === 'так' && values.oxygenFlow ? `, ${values.oxygenFlow} л/хв` : ''}</div>
+          <div><strong>Допоміжний засіб:</strong> {formatPrintValue(values.walkingAid)}</div>
+          <div className="sixmwt-print-wide"><strong>Препарати перед тестом:</strong> {formatPrintValue(values.medicationNote)}</div>
+        </div>
+      </section>
+
+      <section className="sixmwt-print-section">
+        <h2>Показники</h2>
+        <table className="sixmwt-print-table">
+          <thead>
+            <tr><th>Показник</th><th>До тесту</th><th>Мінімум під час тесту</th><th>Після тесту</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>ЧСС</td><td>{formatPrintValue(values.preHeartRate, '/хв')}</td><td>—</td><td>{formatPrintValue(values.postHeartRate, '/хв')}</td></tr>
+            <tr><td>АТ</td><td>{formatPrintValue(values.preBloodPressure, ' мм рт. ст.')}</td><td>—</td><td>{formatPrintValue(values.postBloodPressure, ' мм рт. ст.')}</td></tr>
+            <tr><td>SpO₂</td><td>{formatPrintValue(values.preSpo2, '%')}</td><td>{formatPrintValue(values.minimumSpo2, '%')}</td><td>{formatPrintValue(values.postSpo2, '%')}</td></tr>
+            <tr><td>Задишка за Borg, бали</td><td>{formatPrintValue(values.preDyspnea)}</td><td>—</td><td>{formatPrintValue(values.postDyspnea)}</td></tr>
+            <tr><td>Втома за Borg, бали</td><td>{formatPrintValue(values.preFatigue)}</td><td>—</td><td>{formatPrintValue(values.postFatigue)}</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section className="sixmwt-print-section">
+        <h2>Результат тесту</h2>
+        <div className="sixmwt-print-grid">
+          <div><strong>Загальна дистанція:</strong> {distance} м</div>
+          <div><strong>Повні відрізки:</strong> {formatPrintValue(values.fullLaps)}</div>
+          <div><strong>Залишкова відстань:</strong> {formatPrintValue(values.additionalDistance, ' м')}</div>
+          <div><strong>Кількість зупинок:</strong> {formatPrintValue(values.stopsCount)}</div>
+          <div><strong>Тривалість зупинок:</strong> {formatPrintValue(values.stopsDuration, ' с')}</div>
+          <div><strong>Час відновлення:</strong> {formatPrintValue(values.recoveryTime, ' хв')}</div>
+          <div className="sixmwt-print-wide"><strong>Симптоми:</strong> {formatPrintValue(values.symptoms)}</div>
+          <div className="sixmwt-print-wide"><strong>Причина дострокового припинення:</strong> {formatPrintValue(values.stopReason)}</div>
+        </div>
+      </section>
+
+      <section className="sixmwt-print-section">
+        <h2>Висновок</h2>
+        <p>{resultText || 'Результат тесту ще не сформовано.'}</p>
+      </section>
+
+      <div className="sixmwt-print-signature">Підпис лікаря: __________________________________</div>
+      <a className="sixmwt-print-site" href="https://www.asystentlikarya.com.ua">www.asystentlikarya.com.ua</a>
     </section>
   );
 
@@ -336,7 +400,7 @@ export default function SixMinuteWalkTest() {
       <div className="flex flex-col gap-2 border-t border-slate-200 pt-4 sm:flex-row">
         <button type="button" disabled={distance <= 0} onClick={createResult} className="rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300">Сформувати результат</button>
         <button type="button" onClick={clearAll} className="rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700">Очистити</button>
-        <button type="button" onClick={() => window.print()} className="rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700">Роздрукувати</button>
+        <button type="button" onClick={printProtocol} className="rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700">Роздрукувати</button>
       </div>
 
       <section className="rounded-lg border border-blue-100 bg-blue-50 p-4">
