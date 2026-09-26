@@ -48,6 +48,7 @@ export default function PrintableQuestionnaire({
   result,
   scoreLabel = 'Сума балів',
   interpretationLabel = 'Інтерпретація',
+  showInterpretation = true,
 }) {
   const normalizedQuestions = normalizeQuestions(questions, options);
   const [isMounted, setIsMounted] = useState(false);
@@ -113,9 +114,11 @@ export default function PrintableQuestionnaire({
 
       <div className="print-result-grid">
         <div>{scoreLabel}: {hasPrintedScore ? result.score : '____________________'}</div>
-        <div>
-          {interpretationLabel}: {printedInterpretation || '________________________________________________'}
-        </div>
+        {showInterpretation && (
+          <div>
+            {interpretationLabel}: {printedInterpretation || '________________________________________________'}
+          </div>
+        )}
       </div>
 
       <p className="print-disclaimer">

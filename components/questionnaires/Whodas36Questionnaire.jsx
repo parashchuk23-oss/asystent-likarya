@@ -126,9 +126,10 @@ function buildCopyText(result, days) {
 
 export default function Whodas36Questionnaire() {
   const [answers, setAnswers] = useState(defaultAnswers);
-  const [worksOrStudies, setWorksOrStudies] = useState('');
+  const [worksOrStudies, setWorksOrStudies] = useState('no');
   const [days, setDays] = useState({ h1: '', h2: '', h3: '' });
   const [copyStatus, setCopyStatus] = useState('');
+  const [hasCalculated, setHasCalculated] = useState(false);
 
   const activeDomains = useMemo(
     () => domains.filter((domain) => !domain.conditional || worksOrStudies === 'yes'),
@@ -136,10 +137,10 @@ export default function Whodas36Questionnaire() {
   );
   const activeQuestions = useMemo(() => flattenQuestions(activeDomains), [activeDomains]);
   const answeredCount = activeQuestions.filter((question) => answers[question.key] !== undefined).length;
-  const isComplete = worksOrStudies !== '' && answeredCount === activeQuestions.length;
+  const isComplete = answeredCount === activeQuestions.length;
 
   const result = useMemo(() => {
-    if (!isComplete) return null;
+    if (!isComplete || !hasCalculated) return null;
 
     const domainScores = activeDomains.map((domain) => {
       const score = domain.questions.reduce((sum, [key]) => sum + Number(answers[key]), 0);
@@ -157,23 +158,26 @@ export default function Whodas36Questionnaire() {
       domainScores,
       category: 'Простий підрахунок WHO',
     };
-  }, [activeDomains, answers, isComplete]);
+  }, [activeDomains, answers, hasCalculated, isComplete]);
 
   function updateAnswer(key, value) {
     setAnswers((current) => ({ ...current, [key]: Number(value) }));
     setCopyStatus('');
+    setHasCalculated(false);
   }
 
   function updateWorkStatus(value) {
     setWorksOrStudies(value);
     setCopyStatus('');
+    setHasCalculated(false);
   }
 
   function clearForm() {
     setAnswers(defaultAnswers);
-    setWorksOrStudies('');
+    setWorksOrStudies('no');
     setDays({ h1: '', h2: '', h3: '' });
     setCopyStatus('');
+    setHasCalculated(false);
   }
 
   async function copyResult() {
@@ -219,14 +223,6 @@ export default function Whodas36Questionnaire() {
         <p className="mt-2 text-xs leading-5 text-slate-500">Від відповіді залежить, чи враховуються пункти D5.5–D5.8 про роботу або навчання.</p>
       </div>
 
-      <div className="sticky top-2 z-10 rounded-lg border border-teal-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur">
-        <div className="flex items-center justify-between gap-3 text-sm">
-          <span className="font-semibold text-slate-900">Заповнено {answeredCount} із {activeQuestions.length} пунктів</span>
-          <span className="text-slate-500">{activeQuestions.length ? Math.round((answeredCount / activeQuestions.length) * 100) : 0}%</span>
-        </div>
-        <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-teal-500 transition-all" style={{ width: `${activeQuestions.length ? (answeredCount / activeQuestions.length) * 100 : 0}%` }} /></div>
-      </div>
-
       {activeDomains.map((domain) => (
         <fieldset key={domain.id} className="rounded-lg border border-slate-200 bg-white p-3 sm:p-4">
           <legend className="px-1 text-sm font-bold text-slate-950">{domain.title}</legend>
@@ -258,6 +254,7 @@ export default function Whodas36Questionnaire() {
       </fieldset>
 
       <div className="flex flex-col gap-2 border-t border-slate-200 pt-4 sm:flex-row">
+        <button type="button" onClick={() => setHasCalculated(true)} disabled={!isComplete} className="rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300">Розрахувати</button>
         <button type="button" onClick={clearForm} className="rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">Очистити</button>
         <PrintQuestionnaireButton label="Роздрукувати" />
       </div>
@@ -265,7 +262,7 @@ export default function Whodas36Questionnaire() {
       <section className="rounded-lg border border-blue-100 bg-blue-50 p-4">
         <p className="text-sm text-slate-600">Простий сумарний бал WHODAS 2.0</p>
         <p className="mt-1 text-3xl font-bold text-blue-800">{result ? `${result.score} із ${result.maximum}` : '—'}</p>
-        {!result && <p className="mt-2 text-sm leading-6 text-slate-700">Оберіть статус роботи / навчання та заповніть усі застосовні пункти.</p>}
+        {!result && <p className="mt-2 text-sm leading-6 text-slate-700">Натисніть «Розрахувати», щоб отримати сумарний результат і оцінки за доменами.</p>}
         {result && (
           <>
             <div className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -297,7 +294,7 @@ export default function Whodas36Questionnaire() {
         answers={answers}
         result={result}
         scoreLabel="Простий сумарний бал"
-        interpretationLabel="Метод підрахунку"
+        showInterpretation={false}
       />
     </div>
   );
