@@ -304,8 +304,8 @@ export default function SixMinuteWalkTest() {
           <button type="button" onClick={resetTimer} className="rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700">Скинути таймер</button>
         </div>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <NumberField id="sixmwt-laps" label="Повні відрізки доріжки" value={values.fullLaps} onChange={(value) => updateValue('fullLaps', value)} />
-          <NumberField id="sixmwt-extra" label="Додаткова відстань (м)" value={values.additionalDistance} onChange={(value) => updateValue('additionalDistance', value)} step={0.1} />
+          <NumberField id="sixmwt-laps" label="Кількість повністю пройдених відрізків" value={values.fullLaps} onChange={(value) => updateValue('fullLaps', value)} />
+          <NumberField id="sixmwt-extra" label="Відстань після останнього повного відрізка (м)" value={values.additionalDistance} onChange={(value) => updateValue('additionalDistance', value)} step={0.1} />
           <NumberField id="sixmwt-min-spo2" label="Мінімальна SpO₂ (%)" value={values.minimumSpo2} onChange={(value) => updateValue('minimumSpo2', value)} max={100} />
           <div className="rounded-md border border-teal-200 bg-white px-4 py-3">
             <p className="text-sm font-semibold text-slate-600">Загальна дистанція</p>
@@ -316,6 +316,9 @@ export default function SixMinuteWalkTest() {
           <TextField id="sixmwt-symptoms" label="Симптоми під час тесту" value={values.symptoms} onChange={(value) => updateValue('symptoms', value)} />
           <TextField id="sixmwt-stop-reason" label="Причина дострокового припинення" value={values.stopReason} onChange={(value) => updateValue('stopReason', value)} />
         </div>
+        <p className="mt-3 rounded-md border border-teal-200 bg-white px-3 py-2 text-sm leading-6 text-slate-600">
+          Один відрізок — шлях між двома позначками в одному напрямку. Загальна дистанція розраховується автоматично: довжина доріжки × кількість повних відрізків + залишкова відстань.
+        </p>
       </section>
 
       <section className="rounded-lg border border-slate-200 bg-white p-4">
