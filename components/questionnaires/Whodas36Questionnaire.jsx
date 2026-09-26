@@ -103,6 +103,15 @@ const defaultAnswers = Object.fromEntries(
   domains.flatMap((domain) => domain.questions.map(([key]) => [key, 0])),
 );
 
+const scoringDomains = [
+  { id: 'd1', code: 'D1', title: 'Розуміння та спілкування', sourceIds: ['d1'] },
+  { id: 'd2', code: 'D2', title: 'Пересування у просторі', sourceIds: ['d2'] },
+  { id: 'd3', code: 'D3', title: 'Догляд за собою', sourceIds: ['d3'] },
+  { id: 'd4', code: 'D4', title: 'Взаємодія з людьми', sourceIds: ['d4'] },
+  { id: 'd5', code: 'D5', title: 'Життєва активність', sourceIds: ['d5-household', 'd5-work'] },
+  { id: 'd6', code: 'D6', title: 'Участь у житті суспільства', sourceIds: ['d6'] },
+];
+
 function flattenQuestions(selectedDomains) {
   return selectedDomains.flatMap((domain) => domain.questions.map(([key, text]) => ({
     key,
@@ -114,14 +123,14 @@ function flattenQuestions(selectedDomains) {
 
 function buildCopyText(result, days) {
   const domainText = result.domainScores
-    .map((domain) => `${domain.title}: ${domain.score}/${domain.maximum}`)
-    .join('; ');
+    .map((domain) => `${domain.code} — ${domain.title}: ${domain.score} зі 100.`)
+    .join(' ');
   const dayText = dayQuestions
     .filter(([key]) => days[key] !== '')
     .map(([key, text]) => `${text} ${days[key]} дн.`)
     .join(' ');
 
-  return `WHODAS 2.0, 36-пунктова версія: простий сумарний бал ${result.score}/${result.maximum}. ${domainText}.${dayText ? ` ${dayText}` : ''}`;
+  return `WHODAS 2.0, 36-пунктова версія. Результати за доменами: ${domainText} Загальний результат WHODAS 2.0: ${result.score} зі 100.${dayText ? ` ${dayText}` : ''}`;
 }
 
 export default function Whodas36Questionnaire() {
@@ -142,21 +151,29 @@ export default function Whodas36Questionnaire() {
   const result = useMemo(() => {
     if (!isComplete || !hasCalculated) return null;
 
-    const domainScores = activeDomains.map((domain) => {
-      const score = domain.questions.reduce((sum, [key]) => sum + Number(answers[key]), 0);
+    const domainScores = scoringDomains.map((scoringDomain) => {
+      const applicableDomains = activeDomains.filter((domain) => scoringDomain.sourceIds.includes(domain.id));
+      const applicableQuestions = applicableDomains.flatMap((domain) => domain.questions);
+      const rawScore = applicableQuestions.reduce((sum, [key]) => sum + Number(answers[key]), 0);
+      const rawMaximum = applicableQuestions.length * 4;
+      const exactScore = rawMaximum > 0 ? (rawScore / rawMaximum) * 100 : 0;
+
       return {
-        id: domain.id,
-        title: domain.title.replace(/^Домен \d\. /, ''),
-        score,
-        maximum: domain.questions.length * 4,
+        ...scoringDomain,
+        rawScore,
+        rawMaximum,
+        exactScore,
+        score: Math.round(exactScore),
       };
     });
 
+    const exactOverallScore = domainScores.reduce((sum, domain) => sum + domain.exactScore, 0) / domainScores.length;
+
     return {
-      score: domainScores.reduce((sum, domain) => sum + domain.score, 0),
-      maximum: domainScores.reduce((sum, domain) => sum + domain.maximum, 0),
+      score: Math.round(exactOverallScore),
+      maximum: 100,
       domainScores,
-      category: 'Простий підрахунок WHO',
+      category: 'Результат за шістьма доменами',
     };
   }, [activeDomains, answers, hasCalculated, isComplete]);
 
@@ -204,11 +221,13 @@ export default function Whodas36Questionnaire() {
         </summary>
         <div className="space-y-3 border-t border-teal-100 px-4 py-4 text-sm leading-6 text-slate-700">
           <p>Для кожного пункту оберіть ступінь труднощів: від 0 «Жодних» до 4 «Надзвичайно важко або неможливо виконати». Питання про роботу або навчання застосовуються лише до людини, яка працює чи навчається.</p>
-          <p>Модуль використовує простий підрахунок WHO: бали відповідей сумуються. Він не виконує складний IRT-перерахунок у шкалу 0–100 і не встановлює ступінь інвалідності. Вищий бал означає більші труднощі функціонування.</p>
+          <p>Результат кожного домену нормалізується до шкали 0–100 відповідно до офіційної таблиці WHO для розрахунку за доменами. Загальний результат — середнє значення шести неокруглених доменних результатів, округлене до цілого числа. Вищий бал означає більші труднощі функціонування.</p>
+          <p>Якщо людина не працює і не навчається, D5 розраховується лише за чотирма питаннями про домашні обов’язки. Незастосовні питання D5.5–D5.8 не прирівнюються до відсутності труднощів.</p>
           <p>WHODAS оцінює функціонування, а не встановлює діагноз. Результат інтерпретує лікар разом із клінічними даними.</p>
           <div className="border-t border-slate-200 pt-3 text-xs leading-5 text-slate-500">
             <p>Український текст: <a href="https://academy.nszu.gov.ua/pluginfile.php/415054/mod_page/content/101/%D0%86%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B8%20%D0%A4%D0%9E.pdf" target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline">Академія НСЗУ — «Інструменти оцінювання функціонування»</a>.</p>
             <p className="mt-1">Методика: <a href="https://www.who.int/standards/classifications/international-classification-of-functioning-disability-and-health/who-disability-assessment-schedule" target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline">WHO Disability Assessment Schedule 2.0</a>.</p>
+            <p className="mt-1">Розрахунок: <a href="https://cdn.who.int/media/docs/default-source/classification/icf/whodas/36item-scoring-template-complex-scoring.xlsx?sfvrsn=de1228b3_2" target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline">офіційна таблиця WHO для 36-пунктової версії</a>.</p>
           </div>
         </div>
       </details>
@@ -260,7 +279,7 @@ export default function Whodas36Questionnaire() {
       </div>
 
       <section className="rounded-lg border border-blue-100 bg-blue-50 p-4">
-        <p className="text-sm text-slate-600">Простий сумарний бал WHODAS 2.0</p>
+        <p className="text-sm text-slate-600">Загальний результат WHODAS 2.0</p>
         <p className="mt-1 text-3xl font-bold text-blue-800">{result ? `${result.score} із ${result.maximum}` : '—'}</p>
         {!result && <p className="mt-2 text-sm leading-6 text-slate-700">Натисніть «Розрахувати», щоб отримати сумарний результат і оцінки за доменами.</p>}
         {result && (
@@ -269,7 +288,8 @@ export default function Whodas36Questionnaire() {
               {result.domainScores.map((domain) => (
                 <div key={domain.id} className="rounded-md border border-white/80 bg-white p-3">
                   <p className="text-xs font-semibold text-slate-500">{domain.title}</p>
-                  <p className="mt-1 text-lg font-bold text-slate-950">{domain.score} / {domain.maximum}</p>
+                  <p className="mt-1 text-lg font-bold text-slate-950">{domain.score} / 100</p>
+                  <p className="mt-1 text-xs text-slate-500">Сирий бал: {domain.rawScore} / {domain.rawMaximum}</p>
                 </div>
               ))}
             </div>
@@ -285,7 +305,7 @@ export default function Whodas36Questionnaire() {
         )}
       </section>
 
-      <p className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-950">Не інтерпретуйте просту суму як відсоток або як складний бал 0–100. WHODAS 2.0 не встановлює діагноз, групу інвалідності чи потребу в конкретному виді допомоги автоматично.</p>
+      <p className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-950">Результат 0–100 описує вираженість труднощів функціонування. Він не встановлює діагноз, групу інвалідності чи потребу в конкретному виді допомоги автоматично. Автоматичні категорії тяжкості не застосовуються.</p>
 
       <PrintableQuestionnaire
         title="WHODAS 2.0 — 36-пунктова версія"
@@ -293,8 +313,12 @@ export default function Whodas36Questionnaire() {
         questions={activeQuestions}
         answers={answers}
         result={result}
-        scoreLabel="Простий сумарний бал"
+        scoreLabel="Загальний результат WHODAS 2.0 (0–100)"
         showInterpretation={false}
+        resultDetails={result?.domainScores.map((domain) => ({
+          label: `${domain.code} — ${domain.title}`,
+          value: `${domain.score} зі 100`,
+        })) || []}
       />
     </div>
   );

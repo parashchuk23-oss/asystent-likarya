@@ -49,6 +49,7 @@ export default function PrintableQuestionnaire({
   scoreLabel = 'Сума балів',
   interpretationLabel = 'Інтерпретація',
   showInterpretation = true,
+  resultDetails = [],
 }) {
   const normalizedQuestions = normalizeQuestions(questions, options);
   const [isMounted, setIsMounted] = useState(false);
@@ -120,6 +121,14 @@ export default function PrintableQuestionnaire({
           </div>
         )}
       </div>
+
+      {resultDetails.length > 0 && (
+        <div className="print-result-grid">
+          {resultDetails.map((detail) => (
+            <div key={detail.label}>{detail.label}: {detail.value}</div>
+          ))}
+        </div>
+      )}
 
       <p className="print-disclaimer">
         Результат є допоміжним інструментом і оцінюється лікарем разом із клінічною
