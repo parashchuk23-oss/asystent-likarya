@@ -25,7 +25,7 @@ const documentAreas = [
   },
 ];
 
-export default function DocumentsTab() {
+export default function DocumentsTab({ onOpenQuestionnaire }) {
   const [activeArea, setActiveArea] = useState('regulations');
   const [selectedRegulationId, setSelectedRegulationId] = useState(regulations[0]?.id);
   const selectedRegulation = regulations.find((regulation) => regulation.id === selectedRegulationId);
@@ -63,7 +63,9 @@ export default function DocumentsTab() {
         <SocialCareMedicalConclusionForm />
       )}
 
-      {activeArea === 'functioning' && <FunctioningAssessment />}
+      {activeArea === 'functioning' && (
+        <FunctioningAssessment onOpenQuestionnaire={onOpenQuestionnaire} />
+      )}
 
       {activeArea === 'regulations' && (
         <div className="space-y-5">

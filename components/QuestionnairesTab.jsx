@@ -16,6 +16,7 @@ import SleepDifficultyQuestionnaire from './questionnaires/SleepDifficultyQuesti
 import StopBangQuestionnaire from './questionnaires/StopBangQuestionnaire';
 import StressPerceptionQuestionnaire from './questionnaires/StressPerceptionQuestionnaire';
 import TuberculosisScreeningQuestionnaire from './questionnaires/TuberculosisScreeningQuestionnaire';
+import SixMinuteWalkTest from './questionnaires/SixMinuteWalkTest';
 
 const questionnaires = [
   {
@@ -108,12 +109,24 @@ const questionnaires = [
     description: 'Оцінка за критеріями наказу МОЗ №1308',
     component: <PalliativeCareNeedQuestionnaire />,
   },
+  {
+    id: 'six-minute-walk-test',
+    title: '6-хвилинний тест ходьби (6MWT)',
+    description: 'Стандартизована оцінка функціональної переносимості навантаження',
+    component: <SixMinuteWalkTest />,
+  },
 ];
 
-export default function QuestionnairesTab() {
+export default function QuestionnairesTab({ requestedQuestionnaireId = null }) {
   const [openId, setOpenId] = useState(null);
   const buttonRefs = useRef({});
   const pendingScrollIdRef = useRef(null);
+
+  useEffect(() => {
+    if (!requestedQuestionnaireId) return;
+    pendingScrollIdRef.current = requestedQuestionnaireId;
+    setOpenId(requestedQuestionnaireId);
+  }, [requestedQuestionnaireId]);
 
   useEffect(() => {
     if (!openId || pendingScrollIdRef.current !== openId) return;

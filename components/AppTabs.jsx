@@ -67,7 +67,13 @@ const tabs = [
 
 export default function AppTabs({ initialTab = 'home', initialDrugSection = 'guide' }) {
   const [activeTab, setActiveTab] = useState(initialTab);
+  const [requestedQuestionnaireId, setRequestedQuestionnaireId] = useState(null);
   const activeTabData = tabs.find((tab) => tab.id === activeTab);
+
+  function openQuestionnaire(questionnaireId) {
+    setRequestedQuestionnaireId(questionnaireId);
+    setActiveTab('questionnaires');
+  }
 
   return (
     <section className="overflow-hidden rounded-lg border border-slate-200/80 bg-white/95 shadow-sm shadow-slate-200/70">
@@ -98,13 +104,15 @@ export default function AppTabs({ initialTab = 'home', initialDrugSection = 'gui
         {activeTab === 'home' && <HomeTab onSelectTab={setActiveTab} />}
         {activeTab === 'assistant' && <CardioAssistantTab />}
         {activeTab === 'calculators' && <CalculatorsTab />}
-        {activeTab === 'questionnaires' && <QuestionnairesTab />}
+        {activeTab === 'questionnaires' && (
+          <QuestionnairesTab requestedQuestionnaireId={requestedQuestionnaireId} />
+        )}
         {activeTab === 'vaccination' && <VaccinationTab />}
         {activeTab === 'ultrasound' && <UltrasoundTab />}
         {activeTab === 'ecg' && <EcgTab />}
         {activeTab === 'drugs' && <PharmacologyTab initialSection={initialDrugSection} />}
         {activeTab === 'diseases' && <DiseasesTab />}
-        {activeTab === 'documents' && <DocumentsTab />}
+        {activeTab === 'documents' && <DocumentsTab onOpenQuestionnaire={openQuestionnaire} />}
       </div>
     </section>
   );

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { functioningCategories, respiratoryAssessmentSections } from '../../data/functioning/respiratoryAssessment';
 
-function ToolCard({ tool }) {
+function ToolCard({ tool, onOpenQuestionnaire }) {
   const [isOpen, setIsOpen] = useState(false);
   const category = functioningCategories[tool.category];
 
@@ -52,6 +52,15 @@ function ToolCard({ tool }) {
               {tool.source.label}
             </a>
           </div>
+          {tool.questionnaireId && onOpenQuestionnaire && (
+            <button
+              type="button"
+              onClick={() => onOpenQuestionnaire(tool.questionnaireId)}
+              className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2.5 font-semibold text-white transition hover:bg-blue-700 sm:w-auto"
+            >
+              Провести 6MWT →
+            </button>
+          )}
         </div>
       )}
     </article>
@@ -67,7 +76,7 @@ function Detail({ title, children }) {
   );
 }
 
-export default function FunctioningAssessment() {
+export default function FunctioningAssessment({ onOpenQuestionnaire }) {
   const [activeSectionId, setActiveSectionId] = useState('general');
   const activeSection = respiratoryAssessmentSections.find((section) => section.id === activeSectionId);
 
@@ -108,7 +117,9 @@ export default function FunctioningAssessment() {
         )}
 
         <div className={`${activeSection.inherited ? 'mt-5' : ''} grid gap-3`}>
-          {activeSection.tools.map((tool) => <ToolCard key={tool.id} tool={tool} />)}
+          {activeSection.tools.map((tool) => (
+            <ToolCard key={tool.id} tool={tool} onOpenQuestionnaire={onOpenQuestionnaire} />
+          ))}
         </div>
 
         <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">

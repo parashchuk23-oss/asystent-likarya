@@ -110,6 +110,7 @@ const generalTools = [
   {
     id: 'six-minute-walk-test',
     name: '6-хвилинний тест ходьби (6MWT)',
+    questionnaireId: 'six-minute-walk-test',
     category: 'functional',
     measures: 'Субмаксимальну фізичну спроможність під час ходьби.',
     documents: 'Кількісно фіксує переносимість навантаження, десатурацію та причину припинення тесту.',
