@@ -99,6 +99,10 @@ const dayQuestions = [
   ['h3', 'За останні 30 днів на скільки днів ви скоротили або зменшили повсякденну чи робочу активність через погіршення стану здоров’я? Не враховуйте дні, коли ви були повністю не в змозі щось робити.'],
 ];
 
+const defaultAnswers = Object.fromEntries(
+  domains.flatMap((domain) => domain.questions.map(([key]) => [key, 0])),
+);
+
 function flattenQuestions(selectedDomains) {
   return selectedDomains.flatMap((domain) => domain.questions.map(([key, text]) => ({
     key,
@@ -121,7 +125,7 @@ function buildCopyText(result, days) {
 }
 
 export default function Whodas36Questionnaire() {
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState(defaultAnswers);
   const [worksOrStudies, setWorksOrStudies] = useState('');
   const [days, setDays] = useState({ h1: '', h2: '', h3: '' });
   const [copyStatus, setCopyStatus] = useState('');
@@ -162,18 +166,11 @@ export default function Whodas36Questionnaire() {
 
   function updateWorkStatus(value) {
     setWorksOrStudies(value);
-    if (value !== 'yes') {
-      setAnswers((current) => {
-        const next = { ...current };
-        domains.find((domain) => domain.id === 'd5-work').questions.forEach(([key]) => delete next[key]);
-        return next;
-      });
-    }
     setCopyStatus('');
   }
 
   function clearForm() {
-    setAnswers({});
+    setAnswers(defaultAnswers);
     setWorksOrStudies('');
     setDays({ h1: '', h2: '', h3: '' });
     setCopyStatus('');
