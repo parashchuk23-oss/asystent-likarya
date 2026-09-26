@@ -278,14 +278,14 @@ export default function SixMinuteWalkTest() {
         <h2>Показники</h2>
         <table className="sixmwt-print-table">
           <thead>
-            <tr><th>Показник</th><th>До тесту</th><th>Мінімум під час тесту</th><th>Після тесту</th></tr>
+            <tr><th>Показник</th><th>До тесту</th><th>Після тесту</th></tr>
           </thead>
           <tbody>
-            <tr><td>ЧСС</td><td>{formatPrintValue(values.preHeartRate, '/хв')}</td><td>—</td><td>{formatPrintValue(values.postHeartRate, '/хв')}</td></tr>
-            <tr><td>АТ</td><td>{formatPrintValue(values.preBloodPressure, ' мм рт. ст.')}</td><td>—</td><td>{formatPrintValue(values.postBloodPressure, ' мм рт. ст.')}</td></tr>
-            <tr><td>SpO₂</td><td>{formatPrintValue(values.preSpo2, '%')}</td><td>{formatPrintValue(values.minimumSpo2, '%')}</td><td>{formatPrintValue(values.postSpo2, '%')}</td></tr>
-            <tr><td>Задишка за Borg, бали</td><td>{formatPrintValue(values.preDyspnea)}</td><td>—</td><td>{formatPrintValue(values.postDyspnea)}</td></tr>
-            <tr><td>Втома за Borg, бали</td><td>{formatPrintValue(values.preFatigue)}</td><td>—</td><td>{formatPrintValue(values.postFatigue)}</td></tr>
+            <tr><td>ЧСС</td><td>{formatPrintValue(values.preHeartRate, '/хв')}</td><td>{formatPrintValue(values.postHeartRate, '/хв')}</td></tr>
+            <tr><td>АТ</td><td>{formatPrintValue(values.preBloodPressure, ' мм рт. ст.')}</td><td>{formatPrintValue(values.postBloodPressure, ' мм рт. ст.')}</td></tr>
+            <tr><td>SpO₂</td><td>{formatPrintValue(values.preSpo2, '%')}</td><td>{formatPrintValue(values.postSpo2, '%')}</td></tr>
+            <tr><td>Задишка за Borg, бали</td><td>{formatPrintValue(values.preDyspnea)}</td><td>{formatPrintValue(values.postDyspnea)}</td></tr>
+            <tr><td>Втома за Borg, бали</td><td>{formatPrintValue(values.preFatigue)}</td><td>{formatPrintValue(values.postFatigue)}</td></tr>
           </tbody>
         </table>
       </section>
@@ -296,17 +296,13 @@ export default function SixMinuteWalkTest() {
           <div><strong>Загальна дистанція:</strong> {distance} м</div>
           <div><strong>Повні відрізки:</strong> {formatPrintValue(values.fullLaps)}</div>
           <div><strong>Залишкова відстань:</strong> {formatPrintValue(values.additionalDistance, ' м')}</div>
+          <div><strong>Мінімальна SpO₂ під час тесту:</strong> {formatPrintValue(values.minimumSpo2, '%')}</div>
           <div><strong>Кількість зупинок:</strong> {formatPrintValue(values.stopsCount)}</div>
           <div><strong>Тривалість зупинок:</strong> {formatPrintValue(values.stopsDuration, ' с')}</div>
           <div><strong>Час відновлення:</strong> {formatPrintValue(values.recoveryTime, ' хв')}</div>
           <div className="sixmwt-print-wide"><strong>Симптоми:</strong> {formatPrintValue(values.symptoms)}</div>
           <div className="sixmwt-print-wide"><strong>Причина дострокового припинення:</strong> {formatPrintValue(values.stopReason)}</div>
         </div>
-      </section>
-
-      <section className="sixmwt-print-section">
-        <h2>Висновок</h2>
-        <p>{resultText || 'Результат тесту ще не сформовано.'}</p>
       </section>
 
       <div className="sixmwt-print-signature">Підпис лікаря: __________________________________</div>
