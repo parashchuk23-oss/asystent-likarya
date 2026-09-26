@@ -100,18 +100,14 @@ export default function FunctioningAssessment() {
       </section>
 
       <section className="rounded-lg border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
-        <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{activeSection.eyebrow}</p>
-        <h3 className="mt-2 text-xl font-bold text-slate-950">{activeSection.title}</h3>
-        <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{activeSection.description}</p>
-
         {activeSection.inherited && (
-          <div className="mt-4 rounded-md border border-blue-200 bg-blue-50 p-3 text-sm leading-6 text-blue-950">
+          <div className="rounded-md border border-blue-200 bg-blue-50 p-3 text-sm leading-6 text-blue-950">
             <span className="font-bold">Із загальної оцінки також застосовуються: </span>
             {activeSection.inherited.join(' · ')}.
           </div>
         )}
 
-        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+        <div className={`${activeSection.inherited ? 'mt-5' : ''} grid gap-3`}>
           {activeSection.tools.map((tool) => <ToolCard key={tool.id} tool={tool} />)}
         </div>
 
