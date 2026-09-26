@@ -19,6 +19,7 @@ import TuberculosisScreeningQuestionnaire from './questionnaires/TuberculosisScr
 import SixMinuteWalkTest from './questionnaires/SixMinuteWalkTest';
 import MmrcQuestionnaire from './questionnaires/MmrcQuestionnaire';
 import Whodas36Questionnaire from './questionnaires/Whodas36Questionnaire';
+import BarthelIndexQuestionnaire from './questionnaires/BarthelIndexQuestionnaire';
 
 const questionnaires = [
   {
@@ -128,6 +129,12 @@ const questionnaires = [
     title: 'WHODAS 2.0 — 36 пунктів',
     description: 'Оцінка функціонування у шести доменах за останні 30 днів',
     component: <Whodas36Questionnaire />,
+  },
+  {
+    id: 'barthel-index',
+    title: 'Індекс Бартел',
+    description: 'Оцінка незалежності у базових активностях повсякденного життя',
+    component: <BarthelIndexQuestionnaire />,
   },
 ];
 
