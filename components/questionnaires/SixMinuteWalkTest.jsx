@@ -303,7 +303,7 @@ export default function SixMinuteWalkTest() {
           <button type="button" disabled={!timerRunning} onClick={finishTimerEarly} className="rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 disabled:cursor-not-allowed disabled:text-slate-400">Завершити достроково</button>
           <button type="button" onClick={resetTimer} className="rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700">Скинути таймер</button>
         </div>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-4 grid items-end gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <NumberField id="sixmwt-laps" label="Кількість повністю пройдених відрізків" value={values.fullLaps} onChange={(value) => updateValue('fullLaps', value)} />
           <NumberField id="sixmwt-extra" label="Відстань після останнього повного відрізка (м)" value={values.additionalDistance} onChange={(value) => updateValue('additionalDistance', value)} step={0.1} />
           <NumberField id="sixmwt-min-spo2" label="Мінімальна SpO₂ (%)" value={values.minimumSpo2} onChange={(value) => updateValue('minimumSpo2', value)} max={100} />
