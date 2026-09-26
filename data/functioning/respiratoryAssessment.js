@@ -1,9 +1,4 @@
 export const functioningCategories = {
-  regulatory: {
-    label: 'Нормативний критерій',
-    icon: '🔵',
-    classes: 'border-blue-200 bg-blue-50 text-blue-900',
-  },
   functional: {
     label: 'Валідований функціональний інструмент',
     icon: '🟢',
@@ -17,10 +12,6 @@ export const functioningCategories = {
 };
 
 const sources = {
-  kmu1338: {
-    label: 'Постанова КМУ №1338 від 15.11.2024 — чинна редакція',
-    url: 'https://zakon.rada.gov.ua/laws/show/1338-2024-%D0%BF',
-  },
   atsErsPft: {
     label: 'ERS/ATS technical standard on interpretive strategies for routine lung function tests, 2022',
     url: 'https://publications.ersnet.org/content/erj/60/1/2101499',
@@ -64,22 +55,6 @@ const sources = {
 };
 
 const generalTools = [
-  {
-    id: 'legal-framework',
-    name: 'Нормативна рамка оцінювання функціонування',
-    category: 'regulatory',
-    measures: 'Стійкість порушень, обмеження життєдіяльності та потребу особи в заходах соціального захисту.',
-    documents: 'Допомагає структурувати медичні докази для експертної команди, але не визначає групу інвалідності.',
-    metrics: [
-      'Пункт 7: стійкі порушення функцій організму тривають або прогнозовано триватимуть щонайменше 12 місяців.',
-      'Пункт 8: одночасно оцінюються стійкі порушення, обмеження життєдіяльності та потреба у соціальному захисті.',
-      'Пункти 11–13: ступінь обмеження життєдіяльності є частиною комплексного рішення експертної команди.',
-      'Додатки містять окремі вузькі випадки, зокрема відсутність легені та визначені деформації грудної клітки з легеневою недостатністю.',
-    ],
-    interpretation: 'FEV₁, SpO₂, PaO₂, PaCO₂, 6MWT, GOLD або GINA не стають нормативними критеріями лише через клінічне використання.',
-    limitations: 'Цей модуль не встановлює I, II чи III групу і не формує юридичного висновку про право на інвалідність.',
-    source: sources.kmu1338,
-  },
   {
     id: 'spirometry',
     name: 'Спірометрія',
