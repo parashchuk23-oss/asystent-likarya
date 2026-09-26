@@ -317,6 +317,68 @@ export default function SixMinuteWalkTest() {
         <p className="mt-1">Тест оцінює субмаксимальну функціональну спроможність. Модуль не визначає «норму», діагноз або групу інвалідності.</p>
       </div>
 
+      <details className="group overflow-hidden rounded-lg border border-teal-200 bg-white">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-semibold text-teal-900 marker:content-none">
+          <span>Техніка, протипоказання та припинення тесту</span>
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-teal-50 text-xl text-teal-700 transition group-open:rotate-45" aria-hidden="true">+</span>
+        </summary>
+        <div className="space-y-5 border-t border-teal-100 px-4 py-4 text-sm leading-6 text-slate-700">
+          <section>
+            <h3 className="font-bold text-slate-950">Техніка проведення</h3>
+            <ul className="mt-2 list-disc space-y-1 pl-5">
+              <li>Рівна пряма доріжка рекомендованою довжиною 30 м із чітко позначеними точками розвороту.</li>
+              <li>Зручний одяг і взуття; звичний допоміжний засіб та призначена киснева підтримка використовуються без змін і документуються.</li>
+              <li>Без інтенсивного навантаження протягом 2 годин; перед тестом — щонайменше 15 хвилин спокою сидячи та звичайні призначені препарати.</li>
+              <li>До тесту визначають ЧСС, SpO₂, АТ, задишку та втому за Borg.</li>
+              <li>Пацієнт іде якомога далі за 6 хвилин без бігу. Можна сповільнюватися, зупинятися й відпочивати, але таймер не зупиняють.</li>
+              <li>Не задавайте темп ходьби. Використовуйте однакові стандартні фрази підтримки через кожну хвилину.</li>
+              <li>ЧСС і SpO₂ контролюють безперервно; фіксують найнижчу SpO₂, зупинки, симптоми та причину припинення.</li>
+              <li>Після тесту записують дистанцію, ЧСС, SpO₂, задишку й втому за Borg, за потреби — АТ.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h3 className="font-bold text-slate-950">Абсолютні протипоказання</h3>
+            <p className="mt-2">
+              Гострий інфаркт міокарда (3–5 діб), нестабільна стенокардія, симптомна або гемодинамічно значуща неконтрольована аритмія, синкопе, активний ендокардит, гострий міокардит/перикардит, симптомний тяжкий аортальний стеноз, неконтрольована серцева недостатність, гостра ТЕЛА/інфаркт легені, тромбоз вен нижніх кінцівок, підозра на розшарування аорти, неконтрольована астма, набряк легень, гостра дихальна недостатність, гострий стан, який може погіршитися через навантаження, або неможливість виконувати інструкції.
+            </p>
+            <p className="mt-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-amber-950">
+              SpO₂ у спокої на кімнатному повітрі ≤85% є протипоказанням, якщо тест не проводять на призначеній кисневій підтримці.
+            </p>
+          </section>
+
+          <section>
+            <h3 className="font-bold text-slate-950">Відносні протипоказання</h3>
+            <p className="mt-2">
+              Стеноз стовбура лівої коронарної артерії або еквівалент, помірний стенотичний клапанний порок, нелікований АТ у спокої ≥200/120 мм рт. ст., тахі-/брадіаритмія, AV-блокада високого ступеня, гіпертрофічна кардіоміопатія, значна легенева гіпертензія, ускладнена вагітність, електролітні порушення або ортопедичне обмеження ходьби. Рішення приймає лікар індивідуально.
+            </p>
+          </section>
+
+          <section>
+            <h3 className="font-bold text-slate-950">Критерії дострокового припинення</h3>
+            <ul className="mt-2 list-disc space-y-1 pl-5">
+              <li>SpO₂ &lt;80%.</li>
+              <li>Біль або дискомфорт у грудній клітці.</li>
+              <li>Нестерпна задишка або виражена слабкість.</li>
+              <li>Судоми чи сильний біль у ногах, хиткість ходи.</li>
+              <li>Запаморочення, передсинкопе або синкопе.</li>
+              <li>Холодний піт, різка блідість або попелястий колір шкіри.</li>
+              <li>Інша клінічна нестабільність або прохання пацієнта припинити тест.</li>
+            </ul>
+            <p className="mt-2">
+              Після припинення посадіть або покладіть пацієнта, оцініть ЧСС, АТ і SpO₂, зафіксуйте причину та надайте необхідну допомогу. Відновлення ходьби після десатурації можливе лише за локальним протоколом і після клінічної оцінки безпеки.
+            </p>
+          </section>
+
+          <p className="border-t border-slate-200 pt-3 text-xs leading-5 text-slate-500">
+            Джерело:{' '}
+            <a href="https://www.thoracic.org/statements/document-development/resources/tech_stds_ex.pdf" target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline">
+              ERS/ATS Technical Standard: Field Walking Tests in Chronic Respiratory Disease
+            </a>.
+          </p>
+        </div>
+      </details>
+
       <section className="rounded-lg border border-slate-200 bg-white p-4">
         <h3 className="font-bold text-slate-950">1. Підготовка та умови тесту</h3>
         <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
