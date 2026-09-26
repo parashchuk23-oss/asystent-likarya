@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import { functioningCategories, respiratoryAssessmentSections } from '../../data/functioning/respiratoryAssessment';
 
 function ToolCard({ tool, onOpenQuestionnaire }) {
