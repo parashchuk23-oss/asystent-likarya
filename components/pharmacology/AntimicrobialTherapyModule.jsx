@@ -165,6 +165,24 @@ function AntibioticReference() {
                                 {item.stepDown ? <div className="rounded-md border border-emerald-100 bg-emerald-50/60 p-3"><strong>В/в → per os:</strong> {item.stepDown}</div> : null}
                                 {item.note ? <div className="rounded-md border border-amber-100 bg-amber-50/60 p-3"><strong>Важливо:</strong> {item.note}</div> : null}
                               </div>
+                              {item.renalRegimens?.length ? (
+                                <section className="mt-4 rounded-md border border-blue-200 bg-blue-50/40 p-4">
+                                  <h5 className="font-semibold text-slate-950">Корекція за CrCl — режими зі стандарту</h5>
+                                  <div className="mt-3 grid gap-4 lg:grid-cols-2">
+                                    {item.renalRegimens.map((regimen) => (
+                                      <div key={regimen.title} className="rounded-md border border-blue-100 bg-white p-3">
+                                        <h6 className="font-semibold text-slate-900">{regimen.title}</h6>
+                                        <ul className="mt-2 space-y-1 text-slate-700">
+                                          {regimen.items.map((entry) => <li key={entry}>• {entry}</li>)}
+                                        </ul>
+                                      </div>
+                                    ))}
+                                  </div>
+                                  <p className="mt-3 text-xs leading-5 text-slate-500">
+                                    Співвідношення компонентів і шлях введення мають значення: форми 7:1, 4:1, пероральні таблетки та в/в форма не є дозово взаємозамінними.
+                                  </p>
+                                </section>
+                              ) : null}
                             </div>
                           ) : null}
                         </article>
