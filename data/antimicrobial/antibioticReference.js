@@ -1,3 +1,5 @@
+import { renalDosingRegimens } from './renalDosingRegimens';
+
 export const antibioticAwareOptions = [
   { id: 'all', label: 'Усі AWaRe' },
   { id: 'access', label: 'Access' },
@@ -12,6 +14,7 @@ const drug = (id, name, atc, aware, routes, scenarios, extra = {}) => ({
   aware,
   routes,
   scenarios,
+  renalRegimens: renalDosingRegimens[id],
   ...extra,
 });
 
@@ -70,6 +73,7 @@ export const antibioticGroups = [
             ],
           },
         ],
+        renalFormNote: 'Співвідношення компонентів і шлях введення мають значення: форми 7:1, 4:1, пероральні таблетки та в/в форма не є дозово взаємозамінними.',
         obesity: 'При ожирінні наведені максимальні режими 2/0,2 г в/в кожні 8 год або 875/125 мг per os кожні 8 год.',
         stepDown: 'Може бути ентеральним продовженням після цефтриаксону.',
       }),
