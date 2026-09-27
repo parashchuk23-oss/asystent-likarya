@@ -25,7 +25,6 @@ const sections = [
   { id: 'antibiotics', label: 'Антибіотики' },
   { id: 'aware', label: 'AWaRe' },
   { id: 'rules', label: 'Загальні правила' },
-  { id: 'documentation', label: 'Обґрунтування призначення' },
 ];
 
 const inpatientSections = [
@@ -491,74 +490,6 @@ function GeneralRules() {
   );
 }
 
-function DocumentationGenerator() {
-  const [conditionId, setConditionId] = useState('');
-  const [criteria, setCriteria] = useState('');
-  const [regimen, setRegimen] = useState('');
-  const [duration, setDuration] = useState('');
-  const [review, setReview] = useState('через 48–72 години');
-  const selected = antimicrobialConditions.find((condition) => condition.id === conditionId);
-
-  const generatedText = [
-    selected ? `Клінічний стан: ${selected.title}.` : '',
-    criteria.trim() ? `Обґрунтування антибактеріальної терапії: ${criteria.trim()}.` : '',
-    regimen.trim() ? `Призначення: ${regimen.trim()}.` : '',
-    duration.trim() ? `Очікувана тривалість: ${duration.trim()}.` : '',
-    review.trim() ? `Перегляд терапії: ${review.trim()}.` : '',
-  ].filter(Boolean).join(' ');
-
-  return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      <div className="space-y-4 rounded-md border border-slate-200 bg-white p-5">
-        <label className="block">
-          <span className="mb-2 block text-sm font-semibold text-slate-800">Клінічний стан</span>
-          <select value={conditionId} onChange={(event) => setConditionId(event.target.value)} className="w-full rounded-md border border-slate-300 bg-white px-3 py-3 text-sm">
-            <option value="">Оберіть стан</option>
-            {antimicrobialConditions.map((condition) => <option key={condition.id} value={condition.id}>{condition.title}</option>)}
-          </select>
-        </label>
-        <label className="block">
-          <span className="mb-2 block text-sm font-semibold text-slate-800">Критерії призначення</span>
-          <textarea value={criteria} onChange={(event) => setCriteria(event.target.value)} rows={3} placeholder="Задокументуйте клінічні критерії" className="w-full rounded-md border border-slate-300 px-3 py-3 text-sm" />
-        </label>
-        <label className="block">
-          <span className="mb-2 block text-sm font-semibold text-slate-800">МНН, доза, форма, кратність і шлях введення</span>
-          <textarea value={regimen} onChange={(event) => setRegimen(event.target.value)} rows={3} placeholder="Заповнюється лікарем після перевірки показань та інструкції" className="w-full rounded-md border border-slate-300 px-3 py-3 text-sm" />
-        </label>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <label>
-            <span className="mb-2 block text-sm font-semibold text-slate-800">Тривалість</span>
-            <input value={duration} onChange={(event) => setDuration(event.target.value)} placeholder="Наприклад: 5 діб" className="w-full rounded-md border border-slate-300 px-3 py-3 text-sm" />
-          </label>
-          <label>
-            <span className="mb-2 block text-sm font-semibold text-slate-800">Наступний перегляд</span>
-            <input value={review} onChange={(event) => setReview(event.target.value)} className="w-full rounded-md border border-slate-300 px-3 py-3 text-sm" />
-          </label>
-        </div>
-      </div>
-
-      <div className="rounded-md border border-teal-200 bg-teal-50/50 p-5">
-        <h3 className="font-semibold text-slate-950">Текст для документації</h3>
-        <textarea
-          readOnly
-          value={generatedText}
-          rows={12}
-          placeholder="Заповніть поля — тут з’явиться структурований текст. Дані не надсилаються на сервер і не зберігаються після закриття сторінки."
-          className="mt-4 w-full rounded-md border border-teal-200 bg-white px-4 py-3 text-sm leading-6 text-slate-800"
-        />
-        <button
-          type="button"
-          disabled={!generatedText}
-          onClick={() => navigator.clipboard?.writeText(generatedText)}
-          className="mt-3 rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          Копіювати текст
-        </button>
-      </div>
-    </div>
-  );
-}
-
 export default function AntimicrobialTherapyModule() {
   const [careLevel, setCareLevel] = useState('primary');
   const [activeSection, setActiveSection] = useState('conditions');
@@ -616,7 +547,6 @@ export default function AntimicrobialTherapyModule() {
         {activeSection === 'antibiotics' ? <AntibioticReference /> : null}
         {careLevel === 'primary' && activeSection === 'aware' ? <AwareReference /> : null}
         {careLevel === 'primary' && activeSection === 'rules' ? <GeneralRules /> : null}
-        {careLevel === 'primary' && activeSection === 'documentation' ? <DocumentationGenerator /> : null}
         {careLevel === 'inpatient' && activeSection === 'conditions' ? <InpatientReference /> : null}
       </div>
 
