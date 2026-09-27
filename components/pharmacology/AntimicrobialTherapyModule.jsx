@@ -8,6 +8,12 @@ import {
   antimicrobialStandardSource,
   awareGroups,
 } from '../../data/antimicrobial/primaryCareStandard';
+import {
+  inpatientConditions,
+  inpatientGeneralNotes,
+  inpatientSafetyChecklist,
+  inpatientStandardSource,
+} from '../../data/antimicrobial/specializedCareStandard';
 
 const sections = [
   { id: 'conditions', label: 'Клінічні стани' },
@@ -136,6 +142,130 @@ function ClinicalConditions() {
   );
 }
 
+function InpatientReference() {
+  const [query, setQuery] = useState('');
+  const [category, setCategory] = useState('all');
+  const [openCondition, setOpenCondition] = useState(null);
+  const categories = useMemo(
+    () => ['all', ...new Set(inpatientConditions.map((condition) => condition.category))],
+    [],
+  );
+  const filtered = useMemo(() => {
+    const normalized = query.trim().toLocaleLowerCase('uk-UA');
+    return inpatientConditions.filter((condition) => {
+      const matchesCategory = category === 'all' || condition.category === category;
+      const searchable = `${condition.title} ${condition.category} ${condition.summary} ${condition.firstChoice.join(' ')} ${(condition.secondChoice ?? []).join(' ')}`
+        .toLocaleLowerCase('uk-UA');
+      return matchesCategory && (!normalized || searchable.includes(normalized));
+    });
+  }, [category, query]);
+
+  return (
+    <div>
+      <div className="rounded-md border border-blue-200 bg-blue-50/70 p-5">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-700">Спеціалізована та стаціонарна допомога</p>
+        <h3 className="mt-1 text-xl font-semibold text-slate-950">Стаціонарний довідник антимікробної терапії</h3>
+        <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
+          Емпіричні режими для дорослих із додатка 4 стандарту МОЗ. Довідник допомагає звірити стартову схему, тривалість і ключові застереження, але не враховує автоматично локальний антибіограм, результати посівів або індивідуальну корекцію дози.
+        </p>
+        <p className="mt-3 text-xs leading-5 text-slate-500">{inpatientStandardSource.code} · {inpatientStandardSource.order}</p>
+      </div>
+
+      <section className="mt-5 rounded-md border border-amber-200 bg-amber-50 p-5">
+        <h4 className="font-semibold text-slate-950">Перед першою дозою</h4>
+        <ul className="mt-3 grid gap-2 text-sm leading-6 text-slate-700 lg:grid-cols-2">
+          {inpatientSafetyChecklist.map((item) => <li key={item}>• {item}</li>)}
+        </ul>
+      </section>
+
+      <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
+        <label className="block">
+          <span className="mb-2 block text-sm font-semibold text-slate-800">Пошук стану або препарату</span>
+          <input
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Наприклад: сепсис, менінгіт, піперацилін"
+            className="w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          />
+        </label>
+        <label className="block">
+          <span className="mb-2 block text-sm font-semibold text-slate-800">Система / група станів</span>
+          <select value={category} onChange={(event) => setCategory(event.target.value)} className="w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-sm">
+            {categories.map((item) => <option key={item} value={item}>{item === 'all' ? 'Усі категорії' : item}</option>)}
+          </select>
+        </label>
+      </div>
+
+      <p className="mt-3 text-sm text-slate-500">Клінічних сценаріїв: {filtered.length}</p>
+      <div className="mt-5 space-y-3">
+        {filtered.map((condition) => {
+          const isOpen = openCondition === condition.id;
+          const panelId = `inpatient-antimicrobial-${condition.id}`;
+          return (
+            <article key={condition.id} className={`overflow-hidden rounded-md border bg-white ${isOpen ? 'border-blue-500 shadow-sm' : 'border-slate-200'}`}>
+              <button
+                type="button"
+                onClick={() => setOpenCondition((current) => current === condition.id ? null : condition.id)}
+                aria-expanded={isOpen}
+                aria-controls={panelId}
+                className="flex w-full items-start justify-between gap-4 px-4 py-4 text-left hover:bg-blue-50/40 sm:px-5"
+              >
+                <span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.12em] text-blue-700">{condition.category}</span>
+                  <span className="mt-1 block font-semibold text-slate-950">{condition.title}</span>
+                  <span className="mt-1 block text-sm leading-5 text-slate-600">{condition.summary}</span>
+                </span>
+                <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-xl ${isOpen ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-700'}`} aria-hidden="true">
+                  {isOpen ? '−' : '+'}
+                </span>
+              </button>
+
+              {isOpen ? (
+                <div id={panelId} className="border-t border-blue-100 px-4 py-5 sm:px-5">
+                  <section className="rounded-md border border-teal-200 bg-teal-50/60 p-4">
+                    <h4 className="text-sm font-semibold text-slate-900">Режим зі стандарту</h4>
+                    <ul className="mt-2 space-y-2 text-sm leading-6 text-slate-700">
+                      {condition.firstChoice.map((item) => <li key={item}>• {item}</li>)}
+                    </ul>
+                  </section>
+
+                  {condition.secondChoice?.length ? (
+                    <section className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-4">
+                      <h4 className="text-sm font-semibold text-slate-900">Другий вибір / окремі умови</h4>
+                      <ul className="mt-2 space-y-2 text-sm leading-6 text-slate-700">
+                        {condition.secondChoice.map((item) => <li key={item}>• {item}</li>)}
+                      </ul>
+                    </section>
+                  ) : null}
+
+                  <p className="mt-4 text-sm font-medium leading-6 text-slate-800"><strong>Орієнтовна тривалість:</strong> {condition.duration}</p>
+                  {condition.notes.length ? (
+                    <ul className="mt-3 space-y-2 border-l-4 border-rose-400 bg-rose-50 px-4 py-3 text-sm leading-6 text-slate-700">
+                      {condition.notes.map((item) => <li key={item}>• {item}</li>)}
+                    </ul>
+                  ) : null}
+                </div>
+              ) : null}
+            </article>
+          );
+        })}
+        {!filtered.length ? <p className="rounded-md border border-slate-200 bg-white p-5 text-sm text-slate-600">За цим запитом сценаріїв не знайдено.</p> : null}
+      </div>
+
+      <section className="mt-6 rounded-md border border-slate-200 bg-slate-50 p-5">
+        <h4 className="font-semibold text-slate-950">Межі довідника</h4>
+        <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-700">
+          {inpatientGeneralNotes.map((item) => <li key={item}>• {item}</li>)}
+        </ul>
+        <a href={inpatientStandardSource.url} target="_blank" rel="noreferrer" className="mt-4 inline-flex text-sm font-semibold text-blue-700 underline underline-offset-2">
+          Відкрити повний офіційний стандарт ↗
+        </a>
+      </section>
+    </div>
+  );
+}
+
 function AwareReference() {
   const toneClasses = {
     emerald: 'border-emerald-200 bg-emerald-50 text-emerald-900',
@@ -244,22 +374,39 @@ function DocumentationGenerator() {
 }
 
 export default function AntimicrobialTherapyModule() {
+  const [careLevel, setCareLevel] = useState('primary');
   const [activeSection, setActiveSection] = useState('conditions');
 
   return (
     <section>
       <div className="rounded-md border border-teal-200 bg-teal-50/60 p-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">Первинна медична допомога</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">Клінічний довідник</p>
         <h3 className="mt-1 text-xl font-semibold text-slate-950">Антимікробна терапія</h3>
         <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">
-          Практичний навігатор за чинним стандартом МОЗ. Він допомагає перевірити показання, режим для дорослого, AWaRe-категорію та обов’язкову документацію, але не призначає антибіотик автоматично.
-        </p>
-        <p className="mt-3 text-xs leading-5 text-slate-500">
-          {antimicrobialStandardSource.code} · {antimicrobialStandardSource.order}
+          Окремі навігатори для первинної та стаціонарної допомоги за чинними стандартами МОЗ. Вони допомагають звірити показання, режим, тривалість і документацію, але не призначають антибіотик автоматично.
         </p>
       </div>
 
-      <nav className="mt-5 flex flex-wrap gap-2" aria-label="Розділи антимікробної терапії">
+      <div className="mt-5 grid gap-3 sm:grid-cols-2" aria-label="Рівень медичної допомоги">
+        <button
+          type="button"
+          onClick={() => setCareLevel('primary')}
+          className={`rounded-md border px-4 py-4 text-left transition ${careLevel === 'primary' ? 'border-teal-600 bg-teal-50 ring-2 ring-teal-100' : 'border-slate-200 bg-white hover:border-teal-300'}`}
+        >
+          <span className="block font-semibold text-slate-950">Первинна допомога</span>
+          <span className="mt-1 block text-sm text-slate-600">Амбулаторні клінічні стани та режими</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setCareLevel('inpatient')}
+          className={`rounded-md border px-4 py-4 text-left transition ${careLevel === 'inpatient' ? 'border-blue-600 bg-blue-50 ring-2 ring-blue-100' : 'border-slate-200 bg-white hover:border-blue-300'}`}
+        >
+          <span className="block font-semibold text-slate-950">Стаціонарна допомога</span>
+          <span className="mt-1 block text-sm text-slate-600">Тяжкі інфекції, сепсис і парентеральні режими</span>
+        </button>
+      </div>
+
+      {careLevel === 'primary' ? <nav className="mt-5 flex flex-wrap gap-2" aria-label="Розділи антимікробної терапії">
         {sections.map((section) => (
           <button
             key={section.id}
@@ -270,17 +417,19 @@ export default function AntimicrobialTherapyModule() {
             {section.label}
           </button>
         ))}
-      </nav>
+      </nav> : null}
 
       <div className="mt-6">
-        {activeSection === 'conditions' ? <ClinicalConditions /> : null}
-        {activeSection === 'aware' ? <AwareReference /> : null}
-        {activeSection === 'rules' ? <GeneralRules /> : null}
-        {activeSection === 'documentation' ? <DocumentationGenerator /> : null}
+        {careLevel === 'primary' && activeSection === 'conditions' ? <ClinicalConditions /> : null}
+        {careLevel === 'primary' && activeSection === 'aware' ? <AwareReference /> : null}
+        {careLevel === 'primary' && activeSection === 'rules' ? <GeneralRules /> : null}
+        {careLevel === 'primary' && activeSection === 'documentation' ? <DocumentationGenerator /> : null}
+        {careLevel === 'inpatient' ? <InpatientReference /> : null}
       </div>
 
       <aside className="mt-8 border-l-4 border-amber-400 bg-amber-50 px-4 py-3 text-sm leading-6 text-slate-700">
-        Не використовуйте довідник як автоматичне призначення. Перед терапією перевірте алергії, вагітність, вік, масу тіла, функцію нирок і печінки, взаємодії, локальну резистентність та офіційну інструкцію. Педіатричні суперечності стандарту навмисно не автоматизовані.
+        Не використовуйте довідник як автоматичне призначення. Перед терапією перевірте алергії, вагітність, вік, масу тіла, функцію нирок і печінки, взаємодії, локальну резистентність та офіційну інструкцію.
+        {careLevel === 'primary' ? ' Педіатричні суперечності стандарту навмисно не автоматизовані.' : ' Стаціонарні режими потребують мікробіологічного контролю, щоденної оцінки та корекції за клінічною відповіддю.'}
       </aside>
 
       <div className="mt-5 space-y-2 text-xs leading-5 text-slate-500">
@@ -296,7 +445,7 @@ export default function AntimicrobialTherapyModule() {
           <a href={antimicrobialSpecializedStandardSource.url} target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline underline-offset-2">
             {antimicrobialSpecializedStandardSource.code} · {antimicrobialSpecializedStandardSource.title}
           </a>
-          . Використовуйте для випадків, що виходять за межі первинної допомоги; її режими не включені до амбулаторних карток вище.
+          . Стаціонарні режими винесено в окремий рівень довідника та не змішано з амбулаторними картками.
         </p>
         <p>{antimicrobialSpecializedStandardSource.order}.</p>
       </div>
