@@ -236,6 +236,8 @@ function ConditionCard({ condition, isOpen, onToggle }) {
             {condition.criteria.map((item) => <li key={item}>• {item}</li>)}
           </ul>
 
+          {condition.assessment?.type === 'mcisaac' ? <McIsaacAssessment /> : null}
+
           {condition.decisionGroups?.length ? (
             <div className="mt-5 grid gap-3 md:grid-cols-2">
               {condition.decisionGroups.map((group) => (
@@ -286,6 +288,75 @@ function ConditionCard({ condition, isOpen, onToggle }) {
         </div>
       ) : null}
     </article>
+  );
+}
+
+function McIsaacAssessment() {
+  const [features, setFeatures] = useState({
+    fever: false,
+    noCough: false,
+    cervicalNodes: false,
+    tonsillarFindings: false,
+  });
+  const [ageAdjustment, setAgeAdjustment] = useState('');
+  const clinicalScore = Object.values(features).filter(Boolean).length;
+  const score = ageAdjustment === '' ? null : clinicalScore + Number(ageAdjustment);
+  const highProbability = score !== null && score >= 3;
+
+  const options = [
+    ['fever', 'Температура тіла >38 °C'],
+    ['noCough', 'Кашлю немає'],
+    ['cervicalNodes', 'Болючі/збільшені передні шийні лімфовузли'],
+    ['tonsillarFindings', 'Збільшення мигдаликів або нашарування'],
+  ];
+
+  return (
+    <section className="mt-5 rounded-md border border-blue-200 bg-blue-50/50 p-4">
+      <h4 className="text-sm font-semibold text-slate-950">Шкала Centor / McIsaac</h4>
+      <p className="mt-1 text-xs leading-5 text-slate-600">
+        Допомагає оцінити ймовірність БГСГА, але не встановлює етіологію без клінічної оцінки та, за потреби, тестування.
+      </p>
+      <div className="mt-3 grid gap-2 md:grid-cols-2">
+        {options.map(([key, label]) => (
+          <label key={key} className="flex cursor-pointer items-start gap-3 rounded-md border border-blue-100 bg-white px-3 py-3 text-sm text-slate-800">
+            <input
+              type="checkbox"
+              checked={features[key]}
+              onChange={(event) => setFeatures((current) => ({ ...current, [key]: event.target.checked }))}
+              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+            />
+            <span>{label} <strong className="text-blue-700">+1</strong></span>
+          </label>
+        ))}
+      </div>
+      <label className="mt-3 block max-w-sm text-sm font-semibold text-slate-800">
+        Вікова група
+        <select
+          value={ageAdjustment}
+          onChange={(event) => setAgeAdjustment(event.target.value)}
+          className="mt-1.5 w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm font-normal text-slate-950 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+        >
+          <option value="">Оберіть вікову групу</option>
+          <option value="1">3–14 років (+1)</option>
+          <option value="0">15–44 роки (0)</option>
+          <option value="-1">45 років і старше (−1)</option>
+        </select>
+      </label>
+      <div className={`mt-4 rounded-md border px-4 py-3 ${score === null ? 'border-slate-200 bg-white' : highProbability ? 'border-amber-300 bg-amber-50' : 'border-emerald-200 bg-emerald-50'}`} aria-live="polite">
+        {score === null ? (
+          <p className="text-sm text-slate-600">Оберіть вікову групу, щоб отримати результат.</p>
+        ) : (
+          <>
+            <p className="font-semibold text-slate-950">Результат: {score} {score === 1 ? 'бал' : score >= 2 && score <= 4 ? 'бали' : 'балів'}</p>
+            <p className="mt-1 text-sm leading-6 text-slate-700">
+              {highProbability
+                ? 'Підвищена ймовірність БГСГА-тонзиліту. Розгляньте експрес-тест або посів; результат шкали сам по собі не є автоматичним призначенням антибіотика.'
+                : 'Вища ймовірність вірусного тонзиліту. За сприятливого перебігу антибіотик і мікробіологічне дослідження зазвичай не потрібні.'}
+            </p>
+          </>
+        )}
+      </div>
+    </section>
   );
 }
 
