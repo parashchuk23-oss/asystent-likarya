@@ -54,6 +54,7 @@ function createMedicineId(record) {
     normalizeSearchKey(record.form),
     normalizeSearchKey(record.dosage),
     normalizeSearchKey(record.packageDescription),
+    String(record.copayment ?? ''),
   ].join('|');
 
   return crypto.createHash('sha1').update(key).digest('hex').slice(0, 16);
@@ -88,6 +89,7 @@ function normalizeRecords(records) {
 }
 
 module.exports = {
+  createMedicineId,
   normalizeRecords,
   parseNumber,
 };

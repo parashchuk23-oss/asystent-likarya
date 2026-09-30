@@ -20,7 +20,16 @@ function writeJson(filePath, data) {
   fs.writeFileSync(filePath, `${JSON.stringify(data, null, 2)}\n`);
 }
 
-function createMetadata({ sourceUrl, resolvedExcelUrl, sourceType, records, validation, version }) {
+function createMetadata({
+  sourceUrl,
+  resolvedExcelUrl,
+  sourceType,
+  sourceName,
+  validAsOf,
+  records,
+  validation,
+  version,
+}) {
   const manufacturers = new Set(records.map((record) => record.manufacturer).filter(Boolean));
   const activeIngredients = new Set(records.map((record) => record.activeIngredient).filter(Boolean));
 
@@ -28,11 +37,12 @@ function createMetadata({ sourceUrl, resolvedExcelUrl, sourceType, records, vali
     title: 'Доступні ліки',
     version,
     importedAt: new Date().toISOString(),
-    validAsOf: new Date().toISOString().slice(0, 10),
+    validAsOf: validAsOf || new Date().toISOString().slice(0, 10),
     sourceName:
-      sourceType === 'pdf'
+      sourceName ||
+      (sourceType === 'pdf'
         ? 'Офіційний PDF-перелік НСЗУ'
-        : 'Офіційний набір відкритих даних МОЗ України',
+        : 'Офіційний набір відкритих даних МОЗ України'),
     sourceUrl,
     resolvedExcelUrl,
     sourceType,
@@ -51,6 +61,8 @@ function generateJson({
   sourceUrl,
   resolvedExcelUrl,
   sourceType,
+  sourceName,
+  validAsOf,
   validation,
   outputJson = paths.outputJson,
   metadataJson = paths.metadataJson,
@@ -61,6 +73,8 @@ function generateJson({
     sourceUrl,
     resolvedExcelUrl,
     sourceType,
+    sourceName,
+    validAsOf,
     records: outputRecords,
     validation,
     version,

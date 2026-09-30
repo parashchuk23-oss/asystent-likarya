@@ -14,6 +14,7 @@ function getDuplicateKey(record) {
     record.manufacturer,
     record.dosage,
     record.packageDescription,
+    record.copayment,
   ]
     .map((value) => String(value || '').toLocaleLowerCase('uk-UA'))
     .join('|');
