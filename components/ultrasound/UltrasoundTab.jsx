@@ -5,6 +5,7 @@ import AbdomenUltrasoundModule from './abdomen/AbdomenUltrasoundModule';
 import BreastUltrasoundModule from './breast/BreastUltrasoundModule';
 import EchoUltrasoundModule from './echo/EchoUltrasoundModule';
 import NeckVesselsUltrasoundModule from './neck-vessels/NeckVesselsUltrasoundModule';
+import KneeUltrasoundModule from './knee/KneeUltrasoundModule';
 import RenalUltrasoundModule from './renal/RenalUltrasoundModule';
 import ThyroidUltrasoundModule from './ThyroidUltrasoundModule';
 
@@ -43,6 +44,13 @@ const ultrasoundModules = [
     title: 'Молочні залози',
     description:
       'Конструктор протоколу УЗД молочних залоз з описом утворень, регіонарних лімфовузлів, ACR BI-RADS, висновком і рекомендаціями.',
+  },
+  {
+    id: 'knee',
+    label: 'Колінні суглоби',
+    title: 'Колінні суглоби',
+    description:
+      'Структурований протокол УЗД колінних суглобів: сухожилки, зв’язки, меніски, синовія, випіт, бурси, хрящ і підколінна ділянка.',
   },
   {
     id: 'neckVessels',
@@ -95,6 +103,8 @@ export default function UltrasoundTab() {
             <BreastUltrasoundModule />
           ) : activeModuleId === 'neckVessels' ? (
             <NeckVesselsUltrasoundModule />
+          ) : activeModuleId === 'knee' ? (
+            <KneeUltrasoundModule />
           ) : (
             <ThyroidUltrasoundModule />
           )}
