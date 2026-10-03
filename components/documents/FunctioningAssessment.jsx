@@ -108,13 +108,13 @@ function formatProtocolResult(assessment, result) {
   return '';
 }
 
-function buildDraft(route, selectedDomains, protocolResults, assistiveProducts) {
+function buildDraft(route, diagnosis, selectedDomains, protocolResults, assistiveProducts) {
   const domains = route.domains.filter((domain) => selectedDomains.includes(domain.id));
   if (!domains.length) return '';
   const assessments = domains.flatMap((domain) => domain.assessments.map((item) => item.name)).filter((name, index, values) => values.indexOf(name) === index);
   const measuredResults = domains.flatMap((domain) => domain.assessments.map((assessment) => formatProtocolResult(assessment, protocolResults[assessment.id]))).filter(Boolean);
   return [
-    `Діагноз: ${route.code} — ${route.title}.`,
+    `Діагноз: ${diagnosis.code} — ${diagnosis.title}.`,
     `Потребують об’єктивізації такі функціональні домени: ${domains.map((domain) => domain.title.toLowerCase()).join(', ')}.`,
     `Для документування можуть бути використані: ${assessments.join(', ')}.`,
     measuredResults.length ? `Внесені результати: ${measuredResults.join('; ')}.` : 'Кількісні результати функціональних тестів ще не внесено.',
@@ -130,16 +130,27 @@ function DiagnosisRoute({ onOpenQuestionnaire }) {
   const [copied, setCopied] = useState(false);
   const [draftText, setDraftText] = useState('');
   const [protocolResults, setProtocolResults] = useState({});
+  const [icdCode, setIcdCode] = useState(rehabilitationPilotRoutes[0].code);
   const route = rehabilitationPilotRoutes.find((item) => item.id === routeId) || rehabilitationPilotRoutes[0];
   const selected = route.domains.filter((domain) => selectedDomains.includes(domain.id));
+  const diagnosis = route.icdOptions
+    ? route.icdOptions.find((item) => item.code === icdCode) || { code: route.code, title: 'підкод не уточнено' }
+    : { code: route.code, title: route.title };
   const assistiveProducts = useMemo(() => getVerifiedAssistiveProducts(route.id, selectedDomains), [route.id, selectedDomains]);
-  const draft = useMemo(() => buildDraft(route, selectedDomains, protocolResults, assistiveProducts), [route, selectedDomains, protocolResults, assistiveProducts]);
+  const draft = useMemo(() => buildDraft(route, diagnosis, selectedDomains, protocolResults, assistiveProducts), [route, diagnosis, selectedDomains, protocolResults, assistiveProducts]);
 
   useEffect(() => {
     setDraftText(draft);
   }, [draft]);
 
-  function selectRoute(nextId) { setRouteId(nextId); setSelectedDomains([]); setProtocolResults({}); setCopied(false); }
+  function selectRoute(nextId) {
+    const nextRoute = rehabilitationPilotRoutes.find((item) => item.id === nextId) || rehabilitationPilotRoutes[0];
+    setRouteId(nextId);
+    setIcdCode(nextRoute.icdOptions ? '' : nextRoute.code);
+    setSelectedDomains([]);
+    setProtocolResults({});
+    setCopied(false);
+  }
   function toggleDomain(domainId) {
     setSelectedDomains((current) => current.includes(domainId) ? current.filter((id) => id !== domainId) : [...current, domainId]);
     setCopied(false);
@@ -160,6 +171,7 @@ function DiagnosisRoute({ onOpenQuestionnaire }) {
         <h3 className="mt-5 text-xl font-bold text-slate-950">{route.code} — {route.title}</h3>
         <p className="mt-2 text-sm leading-6 text-slate-600">{route.description}</p>
         <p className="mt-3 rounded-md border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-semibold leading-6 text-blue-950">{route.codeNotice}</p>
+        {route.icdOptions && <div className="mt-4"><label htmlFor="rehabilitation-icd-subcode" className="text-sm font-bold text-slate-950">Уточнений підкод МКХ</label><select id="rehabilitation-icd-subcode" value={icdCode} onChange={(event) => { setIcdCode(event.target.value); setCopied(false); }} className="mt-2 w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900"><option value="" disabled>Оберіть підкод</option>{route.icdOptions.map((item) => <option key={item.code} value={item.code}>{item.code} — {item.title}</option>)}</select>{route.classificationSource && <a href={route.classificationSource.url} target="_blank" rel="noreferrer" className="mt-2 inline-flex text-xs font-semibold text-blue-700 underline">{route.classificationSource.label}</a>}</div>}
       </section>
 
       <section className="rounded-lg border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
@@ -196,7 +208,7 @@ function DiagnosisRoute({ onOpenQuestionnaire }) {
 
         <section className="rounded-lg border border-amber-200 bg-amber-50 p-4 sm:p-5">
           <h3 className="text-lg font-bold text-amber-950">5. Чого не вистачає</h3>
-          <ul className="mt-3 space-y-2 text-sm leading-6 text-amber-950"><li>✓ Діагноз і функціональні домени обрано.</li><li>{Object.values(protocolResults).some((result) => Object.values(result).some((value) => Number(value) > 0)) ? '✓ Внесено щонайменше один кількісний результат.' : '⚠ Кількісні результати запропонованих тестів ще не внесено.'}</li><li>⚠ Функціональне порушення має бути підтверджене клінічно.</li><li>{assistiveProducts.length ? '✓ Для обраного домену є вручну перевірена нормативна відповідність ДЗР; індивідуальну потребу ще потрібно оцінити.' : '⚠ Для обраного домену нормативна відповідність ДЗР у MVP ще не підтверджена.'}</li></ul>
+          <ul className="mt-3 space-y-2 text-sm leading-6 text-amber-950"><li>✓ Діагноз і функціональні домени обрано.</li>{route.icdOptions && <li>{icdCode ? `✓ Уточнено підкод ${icdCode}.` : '⚠ Підкод I69 ще не уточнено.'}</li>}<li>{Object.values(protocolResults).some((result) => Object.values(result).some((value) => Number(value) > 0)) ? '✓ Внесено щонайменше один кількісний результат.' : '⚠ Кількісні результати запропонованих тестів ще не внесено.'}</li><li>⚠ Функціональне порушення має бути підтверджене клінічно.</li><li>{assistiveProducts.length ? '✓ Для обраного домену є вручну перевірена нормативна відповідність ДЗР; індивідуальну потребу ще потрібно оцінити.' : '⚠ Для обраного домену нормативна відповідність ДЗР у MVP ще не підтверджена.'}</li></ul>
         </section>
 
         <section className="rounded-lg border border-slate-200 bg-white p-4 sm:p-5">
