@@ -237,6 +237,7 @@ function ConditionCard({ condition, isOpen, onToggle }) {
           </ul>
 
           {condition.assessment?.type === 'mcisaac' ? <McIsaacAssessment /> : null}
+          {condition.assessment?.type === 'crb65' ? <Crb65Assessment /> : null}
 
           {condition.decisionGroups?.length ? (
             <div className="mt-5 grid gap-3 md:grid-cols-2">
@@ -355,6 +356,46 @@ function McIsaacAssessment() {
             </p>
           </>
         )}
+      </div>
+    </section>
+  );
+}
+
+function Crb65Assessment() {
+  const [features, setFeatures] = useState({
+    confusion: false,
+    respiratoryRate: false,
+    lowBloodPressure: false,
+    age65: false,
+  });
+  const score = Object.values(features).filter(Boolean).length;
+  const options = [
+    ['confusion', 'Нова сплутаність свідомості'],
+    ['respiratoryRate', 'Частота дихання ≥30/хв'],
+    ['lowBloodPressure', 'Систолічний АТ <90 або діастолічний АТ ≤60 мм рт. ст.'],
+    ['age65', 'Вік ≥65 років'],
+  ];
+  const interpretation = score === 0
+    ? 'Низький ризик за CRB-65. Амбулаторне лікування можливе лише за відсутності інших клінічних і соціальних факторів ризику.'
+    : score === 1
+      ? 'Проміжний ризик. Проведіть розширену оцінку та індивідуально визначте місце лікування.'
+      : 'Високий ризик. Потрібна термінова спеціалізована оцінка та розгляд госпіталізації.';
+
+  return (
+    <section className="mt-5 rounded-md border border-blue-200 bg-blue-50/50 p-4">
+      <h4 className="text-sm font-semibold text-slate-950">CRB-65</h4>
+      <p className="mt-1 text-xs leading-5 text-slate-600">Оцінює ризик при позагоспітальній пневмонії без лабораторного визначення сечовини. Не враховує SpO₂, коморбідність і соціальні фактори.</p>
+      <div className="mt-3 grid gap-2 md:grid-cols-2">
+        {options.map(([key, label]) => (
+          <label key={key} className="flex cursor-pointer items-start gap-3 rounded-md border border-blue-100 bg-white px-3 py-3 text-sm text-slate-800">
+            <input type="checkbox" checked={features[key]} onChange={(event) => setFeatures((current) => ({ ...current, [key]: event.target.checked }))} className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+            <span>{label} <strong className="text-blue-700">+1</strong></span>
+          </label>
+        ))}
+      </div>
+      <div className={`mt-4 rounded-md border px-4 py-3 ${score === 0 ? 'border-emerald-200 bg-emerald-50' : score === 1 ? 'border-amber-300 bg-amber-50' : 'border-rose-300 bg-rose-50'}`} aria-live="polite">
+        <p className="font-semibold text-slate-950">Результат: {score} {score === 1 ? 'бал' : score >= 2 && score <= 4 ? 'бали' : 'балів'}</p>
+        <p className="mt-1 text-sm leading-6 text-slate-700">{interpretation}</p>
       </div>
     </section>
   );
