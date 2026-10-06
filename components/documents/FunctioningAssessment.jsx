@@ -6,14 +6,15 @@ import { getVerifiedAssistiveProductsByIcdCode } from '../../data/rehabilitation
 const supportedDiagnoses = [
   { code: 'G35', title: 'Розсіяний склероз', aliases: ['g35', 'розсіяний склероз', 'множинний склероз'] },
   { code: 'I69', title: 'Наслідки цереброваскулярної хвороби', aliases: ['i69', 'наслідки інсульту', 'інсульт', 'цереброваскулярна хвороба'] },
+  { code: 'M17', title: 'Гонартроз', aliases: ['m17', 'гонартроз', 'артроз колінного суглоба', 'артроз коліна'] },
 ];
 
 function resolveDiagnosis(value) {
   const query = String(value || '').trim().toLowerCase().replace(/\s+/g, ' ');
   if (!query) return null;
-  const codeMatch = query.toUpperCase().match(/^(G35|I69(?:\.[0-9A-Z]+)?)/);
+  const codeMatch = query.toUpperCase().match(/^(G35|I69(?:\.[0-9A-Z]+)?|M17(?:\.[0-9A-Z]+)?)/);
   if (codeMatch) {
-    const baseCode = codeMatch[1].startsWith('I69') ? 'I69' : 'G35';
+    const baseCode = supportedDiagnoses.find((item) => codeMatch[1].startsWith(item.code))?.code;
     return { ...supportedDiagnoses.find((item) => item.code === baseCode), enteredCode: codeMatch[1] };
   }
   const diagnosis = supportedDiagnoses.find((item) => item.aliases.some((alias) => query.includes(alias)));
@@ -84,7 +85,7 @@ export default function FunctioningAssessment() {
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Введіть код або назву діагнозу. Програма покаже лише засоби, для яких відповідність вручну перевірена за чинними нормативними документами.</p>
         <form onSubmit={submit} className="mt-5 flex flex-col gap-3 sm:flex-row">
           <label htmlFor="rehabilitation-diagnosis" className="sr-only">Діагноз або код МКХ-10</label>
-          <input id="rehabilitation-diagnosis" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Наприклад: G35, I69.3 або наслідки інсульту" autoComplete="off" className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-4 py-3 text-base text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-100" />
+          <input id="rehabilitation-diagnosis" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Наприклад: G35, I69.3, M17 або гонартроз" autoComplete="off" className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-4 py-3 text-base text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-100" />
           <button type="submit" className="rounded-lg bg-teal-700 px-5 py-3 font-bold text-white transition hover:bg-teal-800">Знайти засоби</button>
         </form>
         <div className="mt-3 flex flex-wrap gap-2">
@@ -96,12 +97,12 @@ export default function FunctioningAssessment() {
         </div>
       </section>
 
-      {!searched && <section className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm leading-6 text-slate-600">Результат з’явиться після введення діагнозу. Зараз перевірені пілотні маршрути для G35 та I69.x.</section>}
+      {!searched && <section className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm leading-6 text-slate-600">Результат з’явиться після введення діагнозу. Зараз перевірені маршрути для G35, I69.x та M17.x.</section>}
 
       {searched && !diagnosis && (
         <section className="rounded-xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-950">
           <h3 className="font-bold">Для цього діагнозу ще немає перевіреної відповідності</h3>
-          <p className="mt-1">Не показуємо неперевірені засоби. Спробуйте код G35 або I69.x.</p>
+          <p className="mt-1">Не показуємо неперевірені засоби. Спробуйте код G35, I69.x або M17.x.</p>
         </section>
       )}
 
