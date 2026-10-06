@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { functioningCategories, respiratoryAssessmentSections } from '../../data/functioning/respiratoryAssessment';
 import { getVerifiedAssistiveProductsByIcdCode } from '../../data/rehabilitation/assistiveProducts';
 
 const supportedDiagnoses = [
@@ -35,6 +36,58 @@ function ProductList({ title, items, tone }) {
   );
 }
 
+function Detail({ title, children }) {
+  return <div><p className="font-bold text-slate-900">{title}</p><div className="mt-1">{children}</div></div>;
+}
+
+function RespiratoryToolCard({ tool, onOpenQuestionnaire }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const category = functioningCategories[tool.category];
+
+  return (
+    <article className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+      <button type="button" onClick={() => setIsOpen((current) => !current)} aria-expanded={isOpen} aria-controls={`respiratory-tool-${tool.id}`} className="flex w-full items-start justify-between gap-4 p-4 text-left transition hover:bg-slate-50">
+        <div>
+          <h4 className="text-base font-bold text-slate-950">{tool.name}</h4>
+          <span className={`mt-2 inline-flex rounded-full border px-2.5 py-1 text-xs font-bold ${category.classes}`}>{category.icon} {category.label}</span>
+        </div>
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-50 text-xl font-bold text-teal-700" aria-hidden="true">{isOpen ? '−' : '+'}</span>
+      </button>
+      {isOpen && (
+        <div id={`respiratory-tool-${tool.id}`} className="space-y-4 border-t border-slate-200 p-4 text-sm leading-6 text-slate-600">
+          <Detail title="Що вимірює">{tool.measures}</Detail>
+          {tool.indications && <Detail title="Основні показання">{tool.indications}</Detail>}
+          <Detail title="Що документує для функціональної оцінки">{tool.documents}</Detail>
+          {tool.metrics && <Detail title="Основні показники"><ul className="list-disc space-y-1 pl-5">{tool.metrics.map((metric) => <li key={metric}>{metric}</li>)}</ul></Detail>}
+          {tool.protocol && <Detail title="Як виконати">{tool.protocol}</Detail>}
+          {tool.interpretation && <Detail title="Інтерпретація">{tool.interpretation}</Detail>}
+          <Detail title="Обмеження">{tool.limitations}</Detail>
+          {tool.licenseNotice && <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 font-semibold text-amber-900">{tool.licenseNotice}</div>}
+          <div><p className="font-bold text-slate-900">Джерело</p><a href={tool.source.url} target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline">{tool.source.label}</a></div>
+          {tool.questionnaireId && onOpenQuestionnaire && <button type="button" onClick={() => onOpenQuestionnaire(tool.questionnaireId)} className="inline-flex w-full justify-center rounded-md bg-blue-600 px-4 py-2.5 font-semibold text-white hover:bg-blue-700 sm:w-auto">{tool.actionLabel || 'Провести тест →'}</button>}
+        </div>
+      )}
+    </article>
+  );
+}
+
+function RespiratoryAssessment({ onOpenQuestionnaire }) {
+  const section = respiratoryAssessmentSections[0];
+  return (
+    <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+      <div className="mb-5">
+        <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{section.eyebrow}</p>
+        <h2 className="mt-2 text-2xl font-bold text-slate-950">{section.title}</h2>
+        <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{section.description}</p>
+      </div>
+      <div className="grid gap-3">
+        {section.tools.map((tool) => <RespiratoryToolCard key={tool.id} tool={tool} onOpenQuestionnaire={onOpenQuestionnaire} />)}
+      </div>
+      <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{section.note}</p>
+    </section>
+  );
+}
+
 function AssistiveProductCard({ product }) {
   return (
     <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
@@ -60,7 +113,8 @@ function AssistiveProductCard({ product }) {
   );
 }
 
-export default function FunctioningAssessment() {
+export default function FunctioningAssessment({ onOpenQuestionnaire }) {
+  const [mode, setMode] = useState('diagnosis');
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
   const diagnosis = useMemo(() => resolveDiagnosis(submittedQuery), [submittedQuery]);
@@ -79,7 +133,19 @@ export default function FunctioningAssessment() {
 
   return (
     <div className="space-y-5">
-      <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <button type="button" onClick={() => setMode('diagnosis')} className={`rounded-xl border p-4 text-left transition ${mode === 'diagnosis' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
+          <span className="block font-bold">Засоби за діагнозом / МКХ</span>
+          <span className="mt-1 block text-sm">G35, I69.x та M17.x</span>
+        </button>
+        <button type="button" onClick={() => setMode('respiratory')} className={`rounded-xl border p-4 text-left transition ${mode === 'respiratory' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
+          <span className="block font-bold">Дихальна система</span>
+          <span className="mt-1 block text-sm">Дослідження, ХОЗЛ, астма та функціональні тести</span>
+        </button>
+      </div>
+
+      {mode === 'diagnosis' ? <>
+        <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">Реабілітаційні засоби</p>
         <h2 className="mt-2 text-2xl font-bold text-slate-950">Пошук засобів за діагнозом або кодом МКХ-10</h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Введіть код або назву діагнозу. Програма покаже лише засоби, для яких відповідність вручну перевірена за чинними нормативними документами.</p>
@@ -119,10 +185,11 @@ export default function FunctioningAssessment() {
         </section>
       )}
 
-      <section className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
-        <p className="font-bold">Важливо</p>
-        <p className="mt-1">Результат є довідковим переліком для клінічного розгляду. Конкретний вид засобу та маршрут забезпечення визначаються після індивідуального функціонального оцінювання відповідно до чинної редакції нормативних документів.</p>
-      </section>
+        <section className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
+          <p className="font-bold">Важливо</p>
+          <p className="mt-1">Результат є довідковим переліком для клінічного розгляду. Конкретний вид засобу та маршрут забезпечення визначаються після індивідуального функціонального оцінювання відповідно до чинної редакції нормативних документів.</p>
+        </section>
+      </> : <RespiratoryAssessment onOpenQuestionnaire={onOpenQuestionnaire} />}
     </div>
   );
 }
