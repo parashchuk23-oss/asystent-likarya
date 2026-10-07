@@ -384,7 +384,7 @@ function Crb65Assessment() {
   return (
     <section className="mt-5 rounded-md border border-blue-200 bg-blue-50/50 p-4">
       <h4 className="text-sm font-semibold text-slate-950">CRB-65</h4>
-      <p className="mt-1 text-xs leading-5 text-slate-600">Оцінює ризик при позагоспітальній пневмонії без лабораторного визначення сечовини. Не враховує SpO₂, коморбідність і соціальні фактори.</p>
+      <p className="mt-1 text-xs leading-5 text-slate-600">CRB-65 оцінює тяжкість пневмонії за клінічними показниками.</p>
       <div className="mt-3 grid gap-2 md:grid-cols-2">
         {options.map(([key, label]) => (
           <label key={key} className="flex cursor-pointer items-start gap-3 rounded-md border border-blue-100 bg-white px-3 py-3 text-sm text-slate-800">
