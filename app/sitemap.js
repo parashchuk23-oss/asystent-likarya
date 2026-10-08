@@ -14,6 +14,7 @@ export default function sitemap() {
     { path: '/findrisk', priority: 0.8 },
     { path: '/6mwt', priority: 0.8 },
     { path: '/available-medicines', priority: 0.8 },
+    { path: '/antimicrobial-therapy', priority: 0.9 },
     { path: '/calculators/venous-thromboembolism', priority: 0.8 },
     { path: '/en/calculators/venous-thromboembolism', priority: 0.7 },
     { path: '/about', priority: 0.6 },

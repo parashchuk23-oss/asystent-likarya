@@ -1,0 +1,247 @@
+{
+  "createdAt": "2026-10-08T15:17:46.989Z",
+  "productionUrl": "https://www.asystentlikarya.com.ua/",
+  "scenario": "Препарати → Антимікробна терапія → гострий тонзиліт/фарингіт та позагоспітальна пневмонія",
+  "slides": [
+    {
+      "output": "01-open-pharmacology.png",
+      "source": "source/01-home.png",
+      "sourceUrl": "https://www.asystentlikarya.com.ua/",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1440,
+        "height": 1010
+      },
+      "fit": "proportional crop and cover",
+      "screenshotWindow": {
+        "left": 72,
+        "top": 300,
+        "width": 936,
+        "height": 665,
+        "padding": 14,
+        "radius": 24
+      },
+      "highlightSourceCoordinates": {
+        "x": 872,
+        "y": 18,
+        "width": 110,
+        "height": 54
+      }
+    },
+    {
+      "output": "02-open-antimicrobial.png",
+      "source": "source/02-pharmacology.png",
+      "sourceUrl": "https://www.asystentlikarya.com.ua/",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1440,
+        "height": 1010
+      },
+      "fit": "proportional crop and cover",
+      "screenshotWindow": {
+        "left": 72,
+        "top": 300,
+        "width": 936,
+        "height": 665,
+        "padding": 14,
+        "radius": 24
+      },
+      "highlightSourceCoordinates": {
+        "x": 450,
+        "y": 226,
+        "width": 198,
+        "height": 54
+      }
+    },
+    {
+      "output": "03-find-condition.png",
+      "source": "source/03-antimicrobial.png",
+      "sourceUrl": "https://www.asystentlikarya.com.ua/",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 1440,
+        "height": 1010
+      },
+      "fit": "proportional crop and cover",
+      "screenshotWindow": {
+        "left": 72,
+        "top": 300,
+        "width": 936,
+        "height": 665,
+        "padding": 14,
+        "radius": 24
+      },
+      "highlightSourceCoordinates": {
+        "x": 112,
+        "y": 480,
+        "width": 1212,
+        "height": 580
+      }
+    },
+    {
+      "output": "04-pharyngitis-assessment.png",
+      "source": "source/04-pharyngitis-top.png",
+      "sourceUrl": "https://www.asystentlikarya.com.ua/",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "crop": {
+        "left": 120,
+        "top": 400,
+        "width": 1200,
+        "height": 700
+      },
+      "fit": "proportional crop and contain",
+      "screenshotWindow": {
+        "left": 72,
+        "top": 300,
+        "width": 936,
+        "height": 665,
+        "padding": 14,
+        "radius": 24
+      },
+      "highlightSourceCoordinates": {
+        "x": 120,
+        "y": 520,
+        "width": 1200,
+        "height": 570
+      }
+    },
+    {
+      "output": "05-pharyngitis-treatment.png",
+      "source": "source/05-pharyngitis-treatment.png",
+      "sourceUrl": "https://www.asystentlikarya.com.ua/",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "crop": {
+        "left": 140,
+        "top": 150,
+        "width": 1160,
+        "height": 540
+      },
+      "fit": "proportional crop and contain",
+      "screenshotWindow": {
+        "left": 72,
+        "top": 300,
+        "width": 936,
+        "height": 665,
+        "padding": 14,
+        "radius": 24
+      },
+      "highlightSourceCoordinates": {
+        "x": 140,
+        "y": 166,
+        "width": 1160,
+        "height": 500
+      }
+    },
+    {
+      "output": "06-pneumonia-assessment.png",
+      "source": "source/06-pneumonia-assessment.png",
+      "sourceUrl": "https://www.asystentlikarya.com.ua/",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "crop": {
+        "left": 120,
+        "top": 400,
+        "width": 1200,
+        "height": 700
+      },
+      "fit": "proportional crop and contain",
+      "screenshotWindow": {
+        "left": 72,
+        "top": 300,
+        "width": 936,
+        "height": 665,
+        "padding": 14,
+        "radius": 24
+      },
+      "highlightSourceCoordinates": {
+        "x": 120,
+        "y": 520,
+        "width": 1200,
+        "height": 575
+      }
+    },
+    {
+      "output": "07-pneumonia-treatment.png",
+      "source": "source/07-pneumonia-treatment.png",
+      "sourceUrl": "https://www.asystentlikarya.com.ua/",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "crop": {
+        "left": 140,
+        "top": 300,
+        "width": 1160,
+        "height": 680
+      },
+      "fit": "proportional crop and contain",
+      "screenshotWindow": {
+        "left": 72,
+        "top": 300,
+        "width": 936,
+        "height": 665,
+        "padding": 14,
+        "radius": 24
+      },
+      "highlightSourceCoordinates": {
+        "x": 140,
+        "y": 378,
+        "width": 1160,
+        "height": 590
+      }
+    },
+    {
+      "output": "08-safety-and-sources.png",
+      "source": "source/08-pneumonia-safety-source.png",
+      "sourceUrl": "https://www.asystentlikarya.com.ua/",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "crop": {
+        "left": 120,
+        "top": 30,
+        "width": 1200,
+        "height": 700
+      },
+      "fit": "proportional crop and contain",
+      "screenshotWindow": {
+        "left": 72,
+        "top": 300,
+        "width": 936,
+        "height": 665,
+        "padding": 14,
+        "radius": 24
+      },
+      "highlightSourceCoordinates": {
+        "x": 120,
+        "y": 38,
+        "width": 1200,
+        "height": 690
+      }
+    }
+  ]
+}

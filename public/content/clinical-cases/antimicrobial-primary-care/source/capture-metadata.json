@@ -1,0 +1,15 @@
+{
+  "createdAt": "2026-10-08T00:00:00.000Z",
+  "productionUrl": "https://www.asystentlikarya.com.ua/",
+  "viewport": { "width": 1440, "height": 1100 },
+  "captures": [
+    { "filename": "01-home.png", "highlight": { "x": 872, "y": 18, "width": 110, "height": 54 } },
+    { "filename": "02-pharmacology.png", "highlight": { "x": 450, "y": 226, "width": 198, "height": 54 } },
+    { "filename": "03-antimicrobial.png", "highlight": { "x": 112, "y": 480, "width": 1212, "height": 580 } },
+    { "filename": "04-pharyngitis-top.png", "highlight": { "x": 120, "y": 520, "width": 1200, "height": 570 } },
+    { "filename": "05-pharyngitis-treatment.png", "highlight": { "x": 140, "y": 166, "width": 1160, "height": 500 } },
+    { "filename": "06-pneumonia-assessment.png", "highlight": { "x": 120, "y": 520, "width": 1200, "height": 575 } },
+    { "filename": "07-pneumonia-treatment.png", "highlight": { "x": 140, "y": 378, "width": 1160, "height": 590 } },
+    { "filename": "08-pneumonia-safety-source.png", "highlight": { "x": 120, "y": 38, "width": 1200, "height": 690 } }
+  ]
+}
