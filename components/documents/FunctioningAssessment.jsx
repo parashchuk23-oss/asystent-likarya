@@ -6,6 +6,7 @@ import { neurologicalAssessmentProfiles, neurologicalAssessmentSection } from '.
 import { musculoskeletalAssessmentProfiles, musculoskeletalAssessmentSection } from '../../data/functioning/musculoskeletalAssessment';
 import { cardiovascularAssessmentProfiles, cardiovascularAssessmentSection } from '../../data/functioning/cardiovascularAssessment';
 import { sensoryAssessmentProfiles, sensoryAssessmentSection } from '../../data/functioning/sensoryAssessment';
+import { cognitiveMentalAssessmentProfiles, cognitiveMentalAssessmentSection } from '../../data/functioning/cognitiveMentalAssessment';
 import { order774EntryCount, order774Source, searchOrder774 } from '../../data/rehabilitation/order774Search';
 
 const searchExamples = [
@@ -166,6 +167,10 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
           <span className="block font-bold">Сенсорні функції</span>
           <span className="mt-1 block text-sm">Зір, слух, орієнтування та спілкування</span>
         </button>
+        <button type="button" onClick={() => setMode('cognitive-mental')} className={`rounded-xl border p-4 text-left transition ${mode === 'cognitive-mental' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
+          <span className="block font-bold">Когніція і психоемоційний стан</span>
+          <span className="mt-1 block text-sm">Пам’ять, увага, тривога, настрій і повсякденна безпека</span>
+        </button>
       </div>
 
       {mode === 'diagnosis' ? <>
@@ -219,8 +224,10 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
         <ProfiledAssessment section={musculoskeletalAssessmentSection} profiles={musculoskeletalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
       ) : mode === 'cardiovascular' ? (
         <ProfiledAssessment section={cardiovascularAssessmentSection} profiles={cardiovascularAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
-      ) : (
+      ) : mode === 'sensory' ? (
         <ProfiledAssessment section={sensoryAssessmentSection} profiles={sensoryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
+      ) : (
+        <ProfiledAssessment section={cognitiveMentalAssessmentSection} profiles={cognitiveMentalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
       )}
     </div>
   );
