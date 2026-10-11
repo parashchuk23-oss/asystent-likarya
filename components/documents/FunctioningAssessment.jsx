@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { functioningCategories, respiratoryAssessmentSections } from '../../data/functioning/respiratoryAssessment';
 import { neurologicalAssessmentProfiles, neurologicalAssessmentSection } from '../../data/functioning/neurologicalAssessment';
 import { musculoskeletalAssessmentProfiles, musculoskeletalAssessmentSection } from '../../data/functioning/musculoskeletalAssessment';
+import { cardiovascularAssessmentProfiles, cardiovascularAssessmentSection } from '../../data/functioning/cardiovascularAssessment';
 import { order774EntryCount, order774Source, searchOrder774 } from '../../data/rehabilitation/order774Search';
 
 const searchExamples = [
@@ -39,6 +40,7 @@ function AssessmentToolCard({ tool, onOpenQuestionnaire }) {
           {tool.protocol && <Detail title="Як виконати">{tool.protocol}</Detail>}
           {tool.interpretation && <Detail title="Інтерпретація">{tool.interpretation}</Detail>}
           <Detail title="Обмеження">{tool.limitations}</Detail>
+          {tool.safety && <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-red-950"><p className="font-bold">Безпека</p><p className="mt-1">{tool.safety}</p></div>}
           {tool.licenseNotice && <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 font-semibold text-amber-900">{tool.licenseNotice}</div>}
           <div><p className="font-bold text-slate-900">Джерело</p><a href={tool.source.url} target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline">{tool.source.label}</a></div>
           {tool.questionnaireId && onOpenQuestionnaire && <button type="button" onClick={() => onOpenQuestionnaire(tool.questionnaireId)} className="inline-flex w-full justify-center rounded-md bg-blue-600 px-4 py-2.5 font-semibold text-white hover:bg-blue-700 sm:w-auto">{tool.actionLabel || 'Провести тест →'}</button>}
@@ -77,7 +79,7 @@ function ProfiledAssessment({ section, profiles, onOpenQuestionnaire }) {
         <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{section.description}</p>
       </div>
 
-      <div className={`mb-4 grid gap-2 sm:grid-cols-2 ${profiles.length === 3 ? 'xl:grid-cols-3' : 'xl:grid-cols-4'}`}>
+      <div className={`mb-4 grid gap-2 sm:grid-cols-2 ${profiles.length === 3 ? 'xl:grid-cols-3' : profiles.length === 5 ? 'xl:grid-cols-5' : 'xl:grid-cols-4'}`}>
         {profiles.map((profile) => (
           <button key={profile.id} type="button" onClick={() => setActiveProfileId(profile.id)} className={`rounded-lg border px-3 py-3 text-left transition ${activeProfileId === profile.id ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200'}`}>
             <span className="block text-sm font-bold">{profile.label}</span>
@@ -138,7 +140,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
 
   return (
     <div className="space-y-5">
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <button type="button" onClick={() => setMode('diagnosis')} className={`rounded-xl border p-4 text-left transition ${mode === 'diagnosis' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
           <span className="block font-bold">Засоби за діагнозом / МКХ</span>
           <span className="mt-1 block text-sm">Пошук по всьому переліку наказу №774/2691</span>
@@ -154,6 +156,10 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
         <button type="button" onClick={() => setMode('musculoskeletal')} className={`rounded-xl border p-4 text-left transition ${mode === 'musculoskeletal' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
           <span className="block font-bold">Опорно-рухова система</span>
           <span className="mt-1 block text-sm">Біль, суглоби, хребет і відновлення після травм та операцій</span>
+        </button>
+        <button type="button" onClick={() => setMode('cardiovascular')} className={`rounded-xl border p-4 text-left transition ${mode === 'cardiovascular' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
+          <span className="block font-bold">Серцево-судинна система</span>
+          <span className="mt-1 block text-sm">Серцева недостатність, ішемічна хвороба, периферичні артерії та ортостаз</span>
         </button>
       </div>
 
@@ -204,8 +210,10 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
         <RespiratoryAssessment onOpenQuestionnaire={onOpenQuestionnaire} />
       ) : mode === 'neurological' ? (
         <ProfiledAssessment section={neurologicalAssessmentSection} profiles={neurologicalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
-      ) : (
+      ) : mode === 'musculoskeletal' ? (
         <ProfiledAssessment section={musculoskeletalAssessmentSection} profiles={musculoskeletalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
+      ) : (
+        <ProfiledAssessment section={cardiovascularAssessmentSection} profiles={cardiovascularAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
       )}
     </div>
   );
