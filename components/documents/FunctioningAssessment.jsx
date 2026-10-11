@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { functioningCategories, respiratoryAssessmentSections } from '../../data/functioning/respiratoryAssessment';
 import { neurologicalAssessmentProfiles, neurologicalAssessmentSection } from '../../data/functioning/neurologicalAssessment';
 import { musculoskeletalAssessmentProfiles, musculoskeletalAssessmentSection } from '../../data/functioning/musculoskeletalAssessment';
@@ -152,15 +152,18 @@ function RespiratoryGroupCard({ group, tools, onOpenQuestionnaire }) {
   );
 }
 
-function RespiratoryAssessment({ onOpenQuestionnaire }) {
+function RespiratoryAssessment({ onOpenQuestionnaire, onCollapse }) {
   const section = respiratoryAssessmentSections[0];
   const toolsById = new Map(section.tools.map((tool) => [tool.id, tool]));
   return (
     <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
-      <div className="mb-5">
-        <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{section.eyebrow}</p>
-        <h2 className="mt-2 text-2xl font-bold text-slate-950">{section.title}</h2>
-        <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{section.description}</p>
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{section.eyebrow}</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">{section.title}</h2>
+          <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{section.description}</p>
+        </div>
+        <button type="button" onClick={onCollapse} className="shrink-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:border-blue-300 hover:bg-blue-50">Згорнути систему ↑</button>
       </div>
       <div className="grid gap-3">
         {respiratoryGroups.map((group) => (
@@ -172,17 +175,20 @@ function RespiratoryAssessment({ onOpenQuestionnaire }) {
   );
 }
 
-function ProfiledAssessment({ section, profiles, onOpenQuestionnaire }) {
+function ProfiledAssessment({ section, profiles, onOpenQuestionnaire, onCollapse }) {
   const tools = Array.from(
     new Map(profiles.flatMap((profile) => profile.tools).map((tool) => [tool.id, tool])).values(),
   );
 
   return (
     <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
-      <div className="mb-5">
-        <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{section.eyebrow}</p>
-        <h2 className="mt-2 text-2xl font-bold text-slate-950">{section.title}</h2>
-        <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{section.description}</p>
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{section.eyebrow}</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">{section.title}</h2>
+          <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{section.description}</p>
+        </div>
+        <button type="button" onClick={onCollapse} className="shrink-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:border-blue-300 hover:bg-blue-50">Згорнути систему ↑</button>
       </div>
 
       <div className="grid gap-3">
@@ -217,6 +223,7 @@ function AssistiveProductCard({ product }) {
 
 export default function FunctioningAssessment({ onOpenQuestionnaire }) {
   const [activeSystem, setActiveSystem] = useState('');
+  const systemsRef = useRef(null);
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
   const [visibleCount, setVisibleCount] = useState(12);
@@ -233,6 +240,19 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
     setQuery(`${item.code} — ${item.title}`);
     setSubmittedQuery(item.code);
     setVisibleCount(12);
+  }
+
+  function collapseSystem() {
+    setActiveSystem('');
+    requestAnimationFrame(() => systemsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  }
+
+  function selectSystem(systemId) {
+    if (!systemId || systemId === activeSystem) {
+      collapseSystem();
+      return;
+    }
+    setActiveSystem(systemId);
   }
 
   return (
@@ -278,7 +298,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
           <p className="mt-1">Діагноз лише звужує нормативний перелік і не є автоматичним призначенням. Конкретний засіб визначають після індивідуального функціонального оцінювання та перевірки чинної редакції документа.</p>
       </section>}
 
-      <section className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+      <section ref={systemsRef} className="scroll-mt-4 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-blue-700">Функціональні інструменти</p>
           <h2 className="mt-2 text-xl font-bold text-slate-950">Оцінювання за системами</h2>
@@ -286,14 +306,14 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
         </div>
 
         <label htmlFor="assessment-system" className="mt-4 block text-sm font-bold text-slate-800 sm:hidden">Система оцінювання</label>
-        <select id="assessment-system" value={activeSystem} onChange={(event) => setActiveSystem(event.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 sm:hidden">
+        <select id="assessment-system" value={activeSystem} onChange={(event) => selectSystem(event.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 sm:hidden">
           <option value="">Оберіть систему</option>
           {assessmentSystems.map((system) => <option key={system.id} value={system.id}>{system.label}</option>)}
         </select>
 
         <div className="mt-4 hidden flex-wrap gap-2 sm:flex" aria-label="Системи функціонального оцінювання">
           {assessmentSystems.map((system) => (
-            <button key={system.id} type="button" onClick={() => setActiveSystem(system.id)} className={`rounded-full border px-3.5 py-2 text-sm font-semibold transition ${activeSystem === system.id ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50'}`}>
+            <button key={system.id} type="button" onClick={() => selectSystem(system.id)} aria-pressed={activeSystem === system.id} className={`rounded-full border px-3.5 py-2 text-sm font-semibold transition ${activeSystem === system.id ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50'}`}>
               {system.label}
             </button>
           ))}
@@ -303,23 +323,23 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
       {!activeSystem && <section className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center text-sm leading-6 text-slate-600">Оберіть систему — нижче з’явиться перелік відповідних інструментів оцінювання.</section>}
 
       {activeSystem === 'respiratory' ? (
-        <RespiratoryAssessment onOpenQuestionnaire={onOpenQuestionnaire} />
+        <RespiratoryAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : activeSystem === 'neurological' ? (
-        <ProfiledAssessment section={neurologicalAssessmentSection} profiles={neurologicalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
+        <ProfiledAssessment section={neurologicalAssessmentSection} profiles={neurologicalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : activeSystem === 'musculoskeletal' ? (
-        <ProfiledAssessment section={musculoskeletalAssessmentSection} profiles={musculoskeletalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
+        <ProfiledAssessment section={musculoskeletalAssessmentSection} profiles={musculoskeletalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : activeSystem === 'cardiovascular' ? (
-        <ProfiledAssessment section={cardiovascularAssessmentSection} profiles={cardiovascularAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
+        <ProfiledAssessment section={cardiovascularAssessmentSection} profiles={cardiovascularAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : activeSystem === 'sensory' ? (
-        <ProfiledAssessment section={sensoryAssessmentSection} profiles={sensoryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
+        <ProfiledAssessment section={sensoryAssessmentSection} profiles={sensoryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : activeSystem === 'cognitive-mental' ? (
-        <ProfiledAssessment section={cognitiveMentalAssessmentSection} profiles={cognitiveMentalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
+        <ProfiledAssessment section={cognitiveMentalAssessmentSection} profiles={cognitiveMentalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : activeSystem === 'urinary' ? (
-        <ProfiledAssessment section={urinaryAssessmentSection} profiles={urinaryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
+        <ProfiledAssessment section={urinaryAssessmentSection} profiles={urinaryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : activeSystem === 'digestive' ? (
-        <ProfiledAssessment section={digestiveAssessmentSection} profiles={digestiveAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
+        <ProfiledAssessment section={digestiveAssessmentSection} profiles={digestiveAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : activeSystem === 'daily-living' ? (
-        <ProfiledAssessment section={dailyLivingAssessmentSection} profiles={dailyLivingAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
+        <ProfiledAssessment section={dailyLivingAssessmentSection} profiles={dailyLivingAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : null}
     </div>
   );
