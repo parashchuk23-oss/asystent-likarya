@@ -223,6 +223,7 @@ function AssistiveProductCard({ product }) {
 
 export default function FunctioningAssessment({ onOpenQuestionnaire }) {
   const [activeSystem, setActiveSystem] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(true);
   const systemsRef = useRef(null);
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
@@ -257,32 +258,50 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
 
   return (
     <div className="space-y-5">
-      <section className="rounded-xl border border-teal-200 bg-teal-50/50 p-5 sm:p-6">
-        <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">Реабілітаційні засоби</p>
-        <h2 className="mt-2 text-2xl font-bold text-slate-950">Пошук засобів за діагнозом або кодом МКХ-10</h2>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Введіть код МКХ-10 або назву діагнозу, щоб переглянути показання, протипоказання та нормативні джерела. Пошук працює локально по {order774EntryCount} позиціях наказу №774/2691.</p>
-        <form onSubmit={submit} className="mt-5 flex flex-col gap-3 sm:flex-row">
-          <label htmlFor="rehabilitation-diagnosis" className="sr-only">Діагноз або код МКХ-10</label>
-          <input id="rehabilitation-diagnosis" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Наприклад: G35, M17.1 або розсіяний склероз" autoComplete="off" className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-4 py-3 text-base text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-100" />
-          <button type="submit" className="rounded-lg bg-teal-700 px-5 py-3 font-bold text-white transition hover:bg-teal-800">Знайти засоби</button>
-        </form>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {searchExamples.map((item) => (
-            <button key={item.code} type="button" onClick={() => selectDiagnosis(item)} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:border-teal-300 hover:bg-teal-50">
-              {item.code} — {item.title}
-            </button>
-          ))}
-        </div>
-      </section>
+      {isSearchOpen ? (
+        <section className="rounded-xl border border-teal-200 bg-teal-50/50 p-5 sm:p-6">
+          <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">Реабілітаційні засоби</p>
+              <h2 className="mt-2 text-2xl font-bold text-slate-950">Пошук засобів за діагнозом або кодом МКХ-10</h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Введіть код МКХ-10 або назву діагнозу, щоб переглянути показання, протипоказання та нормативні джерела. Пошук працює локально по {order774EntryCount} позиціях наказу №774/2691.</p>
+            </div>
+            <button type="button" onClick={() => setIsSearchOpen(false)} aria-expanded="true" aria-controls="rehabilitation-search-content" className="shrink-0 rounded-lg border border-teal-300 bg-white px-3 py-2 text-sm font-bold text-teal-800 hover:bg-teal-50">Згорнути пошук ↑</button>
+          </div>
+          <div id="rehabilitation-search-content">
+            <form onSubmit={submit} className="mt-5 flex flex-col gap-3 sm:flex-row">
+              <label htmlFor="rehabilitation-diagnosis" className="sr-only">Діагноз або код МКХ-10</label>
+              <input id="rehabilitation-diagnosis" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Наприклад: G35, M17.1 або розсіяний склероз" autoComplete="off" className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-4 py-3 text-base text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-100" />
+              <button type="submit" className="rounded-lg bg-teal-700 px-5 py-3 font-bold text-white transition hover:bg-teal-800">Знайти засоби</button>
+            </form>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {searchExamples.map((item) => (
+                <button key={item.code} type="button" onClick={() => selectDiagnosis(item)} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:border-teal-300 hover:bg-teal-50">
+                  {item.code} — {item.title}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : (
+        <button type="button" onClick={() => setIsSearchOpen(true)} aria-expanded="false" aria-controls="rehabilitation-search-content" className="flex w-full items-center justify-between gap-4 rounded-xl border border-teal-200 bg-white p-4 text-left transition hover:bg-teal-50/50">
+          <span>
+            <span className="block text-xs font-bold uppercase tracking-[0.18em] text-teal-700">Реабілітаційні засоби</span>
+            <span className="mt-1 block font-bold text-slate-950">Пошук засобів за діагнозом або кодом МКХ-10</span>
+            {searched && <span className="mt-1 block text-xs text-slate-500">Запит і результати збережено</span>}
+          </span>
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-50 text-xl font-bold text-teal-700" aria-hidden="true">+</span>
+        </button>
+      )}
 
-      {searched && products.length === 0 && (
+      {isSearchOpen && searched && products.length === 0 && (
         <section className="rounded-xl border border-slate-200 bg-white p-5 text-sm leading-6 text-slate-700">
           <h3 className="font-bold text-slate-950">Збігів у наказі не знайдено</h3>
           <p className="mt-1">Перевірте код МКХ-10 або введіть коротшу офіційну назву діагнозу.</p>
         </section>
       )}
 
-      {searched && products.length > 0 && (
+      {isSearchOpen && searched && products.length > 0 && (
         <section className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
           <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2 border-b border-slate-200 pb-3">
             <h3 className="font-bold text-slate-950">Знайдено: {products.length}</h3>
@@ -293,7 +312,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
         </section>
       )}
 
-      {searched && <section className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
+      {isSearchOpen && searched && <section className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
           <p className="font-bold">Важливо</p>
           <p className="mt-1">Діагноз лише звужує нормативний перелік і не є автоматичним призначенням. Конкретний засіб визначають після індивідуального функціонального оцінювання та перевірки чинної редакції документа.</p>
       </section>}
