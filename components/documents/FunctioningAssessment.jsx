@@ -5,6 +5,7 @@ import { functioningCategories, respiratoryAssessmentSections } from '../../data
 import { neurologicalAssessmentProfiles, neurologicalAssessmentSection } from '../../data/functioning/neurologicalAssessment';
 import { musculoskeletalAssessmentProfiles, musculoskeletalAssessmentSection } from '../../data/functioning/musculoskeletalAssessment';
 import { cardiovascularAssessmentProfiles, cardiovascularAssessmentSection } from '../../data/functioning/cardiovascularAssessment';
+import { sensoryAssessmentProfiles, sensoryAssessmentSection } from '../../data/functioning/sensoryAssessment';
 import { order774EntryCount, order774Source, searchOrder774 } from '../../data/rehabilitation/order774Search';
 
 const searchExamples = [
@@ -140,7 +141,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
 
   return (
     <div className="space-y-5">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <button type="button" onClick={() => setMode('diagnosis')} className={`rounded-xl border p-4 text-left transition ${mode === 'diagnosis' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
           <span className="block font-bold">Засоби за діагнозом / МКХ</span>
           <span className="mt-1 block text-sm">Пошук по всьому переліку наказу №774/2691</span>
@@ -160,6 +161,10 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
         <button type="button" onClick={() => setMode('cardiovascular')} className={`rounded-xl border p-4 text-left transition ${mode === 'cardiovascular' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
           <span className="block font-bold">Серцево-судинна система</span>
           <span className="mt-1 block text-sm">Серцева недостатність, ішемічна хвороба, периферичні артерії та ортостаз</span>
+        </button>
+        <button type="button" onClick={() => setMode('sensory')} className={`rounded-xl border p-4 text-left transition ${mode === 'sensory' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
+          <span className="block font-bold">Сенсорні функції</span>
+          <span className="mt-1 block text-sm">Зір, слух, орієнтування та спілкування</span>
         </button>
       </div>
 
@@ -212,8 +217,10 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
         <ProfiledAssessment section={neurologicalAssessmentSection} profiles={neurologicalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
       ) : mode === 'musculoskeletal' ? (
         <ProfiledAssessment section={musculoskeletalAssessmentSection} profiles={musculoskeletalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
-      ) : (
+      ) : mode === 'cardiovascular' ? (
         <ProfiledAssessment section={cardiovascularAssessmentSection} profiles={cardiovascularAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
+      ) : (
+        <ProfiledAssessment section={sensoryAssessmentSection} profiles={sensoryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
       )}
     </div>
   );

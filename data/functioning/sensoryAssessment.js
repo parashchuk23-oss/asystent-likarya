@@ -1,0 +1,137 @@
+const sources = {
+  whoSensory: {
+    label: 'WHO Package of Interventions for Rehabilitation — sensory conditions',
+    url: 'https://www.who.int/publications/i/item/9789240071223',
+  },
+  whoIcope: {
+    label: 'WHO ICOPE — person-centred assessment and pathways in primary care',
+    url: 'https://www.who.int/publications/i/item/9789240103726',
+  },
+  whoEarCare: {
+    label: 'WHO Primary ear and hearing care training manual',
+    url: 'https://www.who.int/publications/i/item/9789240069152',
+  },
+  whodas: {
+    label: 'WHO Disability Assessment Schedule 2.0',
+    url: 'https://www.who.int/standards/classifications/international-classification-of-functioning-disability-and-health/who-disability-assessment-schedule',
+  },
+};
+
+const tools = {
+  visualAcuity: {
+    id: 'sensory-visual-acuity',
+    name: 'Гострота зору вдалину і зблизька',
+    category: 'clinical',
+    measures: 'Здатність розрізняти деталі вдалину і зблизька кожним оком окремо.',
+    indications: 'Скарги на погіршення зору, труднощі з читанням, орієнтуванням або контроль змін у динаміці.',
+    documents: 'Результат для OD і OS, відстань, використану таблицю та корекцію під час тесту.',
+    metrics: ['OD і OS окремо', 'без корекції та зі звичною корекцією за потреби', 'зір зблизька при скаргах на читання'],
+    protocol: 'Використовуйте однакову освітленість, відстань і таблицю; не дозволяйте пацієнту примружуватися або підглядати іншим оком.',
+    limitations: 'Гострота зору не оцінює повністю поля зору, контрастну чутливість і здатність безпечно виконувати повсякденні дії.',
+    safety: 'Раптова втрата або різке погіршення зору, сильний біль в оці, нова «завіса», спалахи чи значна кількість нових плаваючих помутнінь потребують невідкладної офтальмологічної оцінки.',
+    source: sources.whoIcope,
+  },
+  visualFields: {
+    id: 'sensory-visual-fields',
+    name: 'Поля зору',
+    category: 'clinical',
+    measures: 'Випадіння або асиметрію периферичного поля зору.',
+    indications: 'Скарги на зіткнення з предметами, труднощі орієнтування, підозра на неврологічне чи офтальмологічне ураження.',
+    documents: 'Око, ділянку та характер дефекту; за потреби — результат формальної периметрії.',
+    limitations: 'Конфронтаційна проба є скринінговою і не замінює периметрію та огляд офтальмолога.',
+    safety: 'Новий раптовий дефект поля зору, особливо разом із неврологічними симптомами, потребує термінової клінічної оцінки.',
+    source: sources.whoSensory,
+  },
+  functionalVision: {
+    id: 'sensory-functional-vision',
+    name: 'Функціональний вплив порушення зору',
+    category: 'supportive',
+    measures: 'Як зір впливає на читання, розпізнавання облич, орієнтування, сходи, ліки та побутові завдання.',
+    indications: 'Коли клінічний показник зору не пояснює реальні труднощі пацієнта або планується реабілітація.',
+    documents: 'Конкретні завдання, умови освітлення, потрібну допомогу та ризики безпеки.',
+    metrics: ['читання і робота зблизька', 'орієнтування в приміщенні та назовні', 'сходи, перешкоди й падіння', 'розпізнавання облич, написів і ліків'],
+    limitations: 'Це структурований клінічний опис, а не відтворення ліцензованого опитувальника.',
+    source: sources.whoSensory,
+  },
+  pureToneAudiometry: {
+    id: 'sensory-pure-tone-audiometry',
+    name: 'Тональна аудіометрія',
+    category: 'clinical',
+    measures: 'Пороги слуху за частотами окремо для кожного вуха.',
+    indications: 'Підозра на зниження слуху, труднощі розуміння мовлення або контроль у динаміці.',
+    documents: 'Пороги за частотами, вухо, тип проведення і умови тестування.',
+    metrics: ['праве і ліве вухо окремо', 'пороги повітряної провідності', 'кісткова провідність за показаннями'],
+    protocol: 'Проводьте відкаліброваним обладнанням у належних акустичних умовах; перед тестом оцініть вухо та можливі перешкоди в зовнішньому слуховому проході.',
+    limitations: 'Пороги тонів не відображають повністю розуміння мовлення в шумі та повсякденну комунікацію.',
+    safety: 'Раптове однобічне зниження слуху, гострі неврологічні симптоми, сильний біль або виділення з вуха потребують термінової клінічної оцінки.',
+    source: sources.whoEarCare,
+  },
+  speechHearing: {
+    id: 'sensory-speech-hearing',
+    name: 'Сприйняття мовлення',
+    category: 'clinical',
+    measures: 'Здатність виявляти та розуміти мовлення у стандартизованих умовах.',
+    indications: 'Скарги на нерозбірливість мовлення, особливо в шумі, або розбіжність між тональною аудіометрією і повсякденними труднощами.',
+    documents: 'Метод, мову матеріалу, рівень подачі, умови тиші або шуму та результат для кожного вуха.',
+    limitations: 'Результат залежить від мови, когнітивного стану, уваги та умов тесту; методика має відповідати можливостям пацієнта.',
+    source: sources.whoSensory,
+  },
+  functionalCommunication: {
+    id: 'sensory-functional-communication',
+    name: 'Функціональний вплив порушення слуху',
+    category: 'supportive',
+    measures: 'Як слух впливає на розмову, телефон, сигнали небезпеки та участь у спільній діяльності.',
+    indications: 'Для планування комунікаційних стратегій, слухової реабілітації та оцінки результату втручання.',
+    documents: 'Ситуації найбільших труднощів, необхідні пристосування і допомогу іншої людини.',
+    metrics: ['розмова в тиші та шумі', 'групова розмова і телефон', 'дверний дзвінок, сигналізація та інші звуки безпеки', 'використання слухового пристрою'],
+    limitations: 'Це структурований клінічний опис, а не відтворення ліцензованого опитувальника.',
+    source: sources.whoSensory,
+  },
+  whodas: {
+    id: 'sensory-whodas',
+    name: 'WHODAS 2.0',
+    questionnaireId: 'whodas-36',
+    actionLabel: 'Провести WHODAS 2.0 →',
+    category: 'functional',
+    measures: 'Загальний вплив стану на функціонування за останні 30 днів.',
+    indications: 'Коли потрібно оцінити не лише сенсорну функцію, а її вплив на спілкування, мобільність, активність та участь.',
+    documents: 'Профіль труднощів у шести доменах і загальний результат 0–100.',
+    limitations: 'Не визначає причину порушення, ступінь сенсорної втрати або потребу в конкретному засобі автоматично.',
+    source: sources.whodas,
+  },
+};
+
+export const sensoryAssessmentProfiles = [
+  {
+    id: 'basic',
+    label: 'Базова оцінка',
+    description: 'Короткий опис труднощів зору, слуху та загального функціонального впливу.',
+    tools: [tools.functionalVision, tools.functionalCommunication, tools.whodas],
+  },
+  {
+    id: 'vision',
+    label: 'Зір',
+    description: 'Гострота і поля зору разом із впливом на читання, орієнтування та безпеку.',
+    tools: [tools.visualAcuity, tools.visualFields, tools.functionalVision, tools.whodas],
+  },
+  {
+    id: 'hearing',
+    label: 'Слух',
+    description: 'Пороги слуху, сприйняття мовлення та труднощі повсякденної комунікації.',
+    tools: [tools.pureToneAudiometry, tools.speechHearing, tools.functionalCommunication, tools.whodas],
+  },
+  {
+    id: 'dual-sensory',
+    label: 'Зір і слух',
+    description: 'Комбінована оцінка сенсорних функцій, орієнтування, спілкування та участі.',
+    tools: [tools.visualAcuity, tools.pureToneAudiometry, tools.functionalVision, tools.functionalCommunication, tools.whodas],
+  },
+];
+
+export const sensoryAssessmentSection = {
+  id: 'sensory-system',
+  title: 'Сенсорні функції: зір і слух',
+  eyebrow: 'Сенсорна система',
+  description: 'Клінічні вимірювання і коротка оцінка того, як порушення зору або слуху впливає на орієнтування, безпеку, спілкування та повсякденні дії.',
+  note: 'Скринінг не встановлює причину порушення. При раптовій втраті зору чи слуху спочатку потрібен невідкладний клінічний маршрут. Засоби реабілітації підбирають після профільного та функціонального оцінювання.',
+};
