@@ -73,8 +73,9 @@ function RespiratoryAssessment({ onOpenQuestionnaire }) {
 }
 
 function ProfiledAssessment({ section, profiles, onOpenQuestionnaire }) {
-  const [activeProfileId, setActiveProfileId] = useState(profiles[0].id);
-  const activeProfile = profiles.find((profile) => profile.id === activeProfileId) || profiles[0];
+  const tools = Array.from(
+    new Map(profiles.flatMap((profile) => profile.tools).map((tool) => [tool.id, tool])).values(),
+  );
 
   return (
     <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
@@ -84,17 +85,8 @@ function ProfiledAssessment({ section, profiles, onOpenQuestionnaire }) {
         <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{section.description}</p>
       </div>
 
-      <div className={`mb-4 grid gap-2 sm:grid-cols-2 ${profiles.length === 3 ? 'xl:grid-cols-3' : profiles.length === 5 ? 'xl:grid-cols-5' : 'xl:grid-cols-4'}`}>
-        {profiles.map((profile) => (
-          <button key={profile.id} type="button" onClick={() => setActiveProfileId(profile.id)} className={`rounded-lg border px-3 py-3 text-left transition ${activeProfileId === profile.id ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200'}`}>
-            <span className="block text-sm font-bold">{profile.label}</span>
-            <span className="mt-1 block text-xs leading-5">{profile.description}</span>
-          </button>
-        ))}
-      </div>
-
       <div className="grid gap-3">
-        {activeProfile.tools.map((tool) => <AssessmentToolCard key={tool.id} tool={tool} onOpenQuestionnaire={onOpenQuestionnaire} />)}
+        {tools.map((tool) => <AssessmentToolCard key={tool.id} tool={tool} onOpenQuestionnaire={onOpenQuestionnaire} />)}
       </div>
       <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{section.note}</p>
     </section>
