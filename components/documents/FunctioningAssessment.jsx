@@ -8,6 +8,7 @@ import { cardiovascularAssessmentProfiles, cardiovascularAssessmentSection } fro
 import { sensoryAssessmentProfiles, sensoryAssessmentSection } from '../../data/functioning/sensoryAssessment';
 import { cognitiveMentalAssessmentProfiles, cognitiveMentalAssessmentSection } from '../../data/functioning/cognitiveMentalAssessment';
 import { urinaryAssessmentProfiles, urinaryAssessmentSection } from '../../data/functioning/urinaryAssessment';
+import { digestiveAssessmentProfiles, digestiveAssessmentSection } from '../../data/functioning/digestiveAssessment';
 import { order774EntryCount, order774Source, searchOrder774 } from '../../data/rehabilitation/order774Search';
 
 const searchExamples = [
@@ -176,6 +177,10 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
           <span className="block font-bold">Сечовидільні функції</span>
           <span className="mt-1 block text-sm">Нетримання, випорожнення міхура, тазове дно та нейрогенна дисфункція</span>
         </button>
+        <button type="button" onClick={() => setMode('digestive')} className={`rounded-xl border p-4 text-left transition ${mode === 'digestive' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
+          <span className="block font-bold">Травна система</span>
+          <span className="mt-1 block text-sm">Ковтання, харчування, дефекація та континенція</span>
+        </button>
       </div>
 
       {mode === 'diagnosis' ? <>
@@ -233,8 +238,10 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
         <ProfiledAssessment section={sensoryAssessmentSection} profiles={sensoryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
       ) : mode === 'cognitive-mental' ? (
         <ProfiledAssessment section={cognitiveMentalAssessmentSection} profiles={cognitiveMentalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
-      ) : (
+      ) : mode === 'urinary' ? (
         <ProfiledAssessment section={urinaryAssessmentSection} profiles={urinaryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
+      ) : (
+        <ProfiledAssessment section={digestiveAssessmentSection} profiles={digestiveAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
       )}
     </div>
   );
