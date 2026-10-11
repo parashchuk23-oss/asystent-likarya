@@ -31,8 +31,67 @@ const assessmentSystems = [
   { id: 'daily-living', label: 'Самообслуговування' },
 ];
 
+const respiratoryGroups = [
+  {
+    id: 'core',
+    title: 'Основна респіраторна оцінка',
+    label: 'Основне',
+    summary: 'Спірометрія · SpO₂ · оцінка задишки',
+    toolIds: ['spirometry', 'pulse-oximetry', 'mmrc'],
+    defaultOpen: true,
+  },
+  {
+    id: 'capacity',
+    title: 'Функціональна спроможність',
+    label: 'Основне',
+    summary: '6MWT · переносимість навантаження · повсякденне функціонування',
+    toolIds: ['six-minute-walk-test', 'whodas'],
+  },
+  {
+    id: 'copd',
+    title: 'Оцінювання при ХОЗЛ',
+    label: 'За діагнозом',
+    summary: 'CAT · BODE · результати постбронходилатаційної спірометрії',
+    note: 'Постбронходилатаційну спірометрію проводять у межах основної респіраторної оцінки; тут її результат використовують разом із CAT або складовими BODE.',
+    toolIds: ['cat', 'bode'],
+  },
+  {
+    id: 'asthma',
+    title: 'Оцінювання при бронхіальній астмі',
+    label: 'За діагнозом',
+    summary: 'ACT або ACQ · серійний PEF · FeNO',
+    note: 'Спірометрію з бронходилатаційною пробою проводять у межах основної оцінки. Для контролю астми обирають ACT або ACQ, а не трактують їх як два незалежні докази.',
+    toolIds: ['act', 'acq', 'pef-variability', 'feno'],
+  },
+  {
+    id: 'advanced',
+    title: 'Розширені дослідження',
+    label: 'За окремими показаннями',
+    summary: 'Гази крові · DLCO · візуалізація · CPET',
+    toolIds: ['arterial-blood-gases', 'dlco', 'thoracic-imaging', 'cpet'],
+  },
+];
+
 function Detail({ title, children }) {
   return <div><p className="font-bold text-slate-900">{title}</p><div className="mt-1">{children}</div></div>;
+}
+
+function AssessmentToolDetails({ tool, onOpenQuestionnaire }) {
+  return (
+    <div className="space-y-4 text-sm leading-6 text-slate-600">
+      <Detail title="Що вимірює">{tool.measures}</Detail>
+      {tool.indications && <Detail title="Основні показання">{tool.indications}</Detail>}
+      <Detail title="Що документує для функціональної оцінки">{tool.documents}</Detail>
+      {tool.metrics && <Detail title="Основні показники"><ul className="list-disc space-y-1 pl-5">{tool.metrics.map((metric) => <li key={metric}>{metric}</li>)}</ul></Detail>}
+      {tool.protocol && <Detail title="Як виконати">{tool.protocol}</Detail>}
+      {tool.interpretation && <Detail title="Інтерпретація">{tool.interpretation}</Detail>}
+      <Detail title="Обмеження">{tool.limitations}</Detail>
+      {tool.safety && <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-red-950"><p className="font-bold">Безпека</p><p className="mt-1">{tool.safety}</p></div>}
+      {tool.licenseNotice && <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 font-semibold text-amber-900">{tool.licenseNotice}</div>}
+      <div><p className="font-bold text-slate-900">Джерело</p><a href={tool.source.url} target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline">{tool.source.label}</a></div>
+      {tool.questionnaireId && onOpenQuestionnaire && <button type="button" onClick={() => onOpenQuestionnaire(tool.questionnaireId)} className="inline-flex w-full justify-center rounded-md bg-blue-600 px-4 py-2.5 font-semibold text-white hover:bg-blue-700 sm:w-auto">{tool.actionLabel || 'Провести тест →'}</button>}
+    </div>
+  );
 }
 
 function AssessmentToolCard({ tool, onOpenQuestionnaire }) {
@@ -50,17 +109,43 @@ function AssessmentToolCard({ tool, onOpenQuestionnaire }) {
       </button>
       {isOpen && (
         <div id={`respiratory-tool-${tool.id}`} className="space-y-4 border-t border-slate-200 p-4 text-sm leading-6 text-slate-600">
-          <Detail title="Що вимірює">{tool.measures}</Detail>
-          {tool.indications && <Detail title="Основні показання">{tool.indications}</Detail>}
-          <Detail title="Що документує для функціональної оцінки">{tool.documents}</Detail>
-          {tool.metrics && <Detail title="Основні показники"><ul className="list-disc space-y-1 pl-5">{tool.metrics.map((metric) => <li key={metric}>{metric}</li>)}</ul></Detail>}
-          {tool.protocol && <Detail title="Як виконати">{tool.protocol}</Detail>}
-          {tool.interpretation && <Detail title="Інтерпретація">{tool.interpretation}</Detail>}
-          <Detail title="Обмеження">{tool.limitations}</Detail>
-          {tool.safety && <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-red-950"><p className="font-bold">Безпека</p><p className="mt-1">{tool.safety}</p></div>}
-          {tool.licenseNotice && <div className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 font-semibold text-amber-900">{tool.licenseNotice}</div>}
-          <div><p className="font-bold text-slate-900">Джерело</p><a href={tool.source.url} target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline">{tool.source.label}</a></div>
-          {tool.questionnaireId && onOpenQuestionnaire && <button type="button" onClick={() => onOpenQuestionnaire(tool.questionnaireId)} className="inline-flex w-full justify-center rounded-md bg-blue-600 px-4 py-2.5 font-semibold text-white hover:bg-blue-700 sm:w-auto">{tool.actionLabel || 'Провести тест →'}</button>}
+          <AssessmentToolDetails tool={tool} onOpenQuestionnaire={onOpenQuestionnaire} />
+        </div>
+      )}
+    </article>
+  );
+}
+
+function RespiratoryGroupCard({ group, tools, onOpenQuestionnaire }) {
+  const [isOpen, setIsOpen] = useState(Boolean(group.defaultOpen));
+  const isPrimary = group.label === 'Основне';
+
+  return (
+    <article className={`overflow-hidden rounded-lg border bg-white ${isPrimary ? 'border-teal-300' : 'border-slate-200'}`}>
+      <button type="button" onClick={() => setIsOpen((current) => !current)} aria-expanded={isOpen} aria-controls={`respiratory-group-${group.id}`} className="flex w-full items-start justify-between gap-4 p-4 text-left transition hover:bg-slate-50 sm:p-5">
+        <div>
+          <span className={`text-xs font-bold uppercase tracking-wide ${isPrimary ? 'text-teal-700' : 'text-slate-500'}`}>{group.label}</span>
+          <h3 className="mt-1 text-lg font-bold text-slate-950">{group.title}</h3>
+          <p className="mt-1 text-sm leading-6 text-slate-600">{group.summary}</p>
+        </div>
+        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl font-bold ${isPrimary ? 'bg-teal-50 text-teal-700' : 'bg-slate-100 text-slate-600'}`} aria-hidden="true">{isOpen ? '−' : '+'}</span>
+      </button>
+
+      {isOpen && (
+        <div id={`respiratory-group-${group.id}`} className="border-t border-slate-200 px-4 sm:px-5">
+          {group.note && <p className="border-b border-slate-200 py-4 text-sm font-semibold leading-6 text-slate-700">{group.note}</p>}
+          {tools.map((tool) => {
+            const category = functioningCategories[tool.category];
+            return (
+              <section key={tool.id} className="border-b border-slate-200 py-5 last:border-b-0">
+                <div className="mb-4">
+                  <h4 className="font-bold text-slate-950">{tool.name}</h4>
+                  <span className={`mt-2 inline-flex rounded-full border px-2.5 py-1 text-xs font-bold ${category.classes}`}>{category.icon} {category.label}</span>
+                </div>
+                <AssessmentToolDetails tool={tool} onOpenQuestionnaire={onOpenQuestionnaire} />
+              </section>
+            );
+          })}
         </div>
       )}
     </article>
@@ -69,6 +154,7 @@ function AssessmentToolCard({ tool, onOpenQuestionnaire }) {
 
 function RespiratoryAssessment({ onOpenQuestionnaire }) {
   const section = respiratoryAssessmentSections[0];
+  const toolsById = new Map(section.tools.map((tool) => [tool.id, tool]));
   return (
     <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
       <div className="mb-5">
@@ -77,7 +163,9 @@ function RespiratoryAssessment({ onOpenQuestionnaire }) {
         <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{section.description}</p>
       </div>
       <div className="grid gap-3">
-        {section.tools.map((tool) => <AssessmentToolCard key={tool.id} tool={tool} onOpenQuestionnaire={onOpenQuestionnaire} />)}
+        {respiratoryGroups.map((group) => (
+          <RespiratoryGroupCard key={group.id} group={group} tools={group.toolIds.map((id) => toolsById.get(id)).filter(Boolean)} onOpenQuestionnaire={onOpenQuestionnaire} />
+        ))}
       </div>
       <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{section.note}</p>
     </section>
