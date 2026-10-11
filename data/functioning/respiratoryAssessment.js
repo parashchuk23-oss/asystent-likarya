@@ -9,6 +9,16 @@ export const functioningCategories = {
     icon: '🟡',
     classes: 'border-amber-200 bg-amber-50 text-amber-900',
   },
+  supportive: {
+    label: 'Допоміжна оцінка',
+    icon: '⚪',
+    classes: 'border-slate-200 bg-slate-50 text-slate-800',
+  },
+  symptom: {
+    label: 'Стандартизована оцінка симптому',
+    icon: '🔵',
+    classes: 'border-blue-200 bg-blue-50 text-blue-900',
+  },
 };
 
 const sources = {

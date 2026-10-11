@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { functioningCategories, respiratoryAssessmentSections } from '../../data/functioning/respiratoryAssessment';
 import { neurologicalAssessmentProfiles, neurologicalAssessmentSection } from '../../data/functioning/neurologicalAssessment';
+import { musculoskeletalAssessmentProfiles, musculoskeletalAssessmentSection } from '../../data/functioning/musculoskeletalAssessment';
 import { order774EntryCount, order774Source, searchOrder774 } from '../../data/rehabilitation/order774Search';
 
 const searchExamples = [
@@ -64,20 +65,20 @@ function RespiratoryAssessment({ onOpenQuestionnaire }) {
   );
 }
 
-function NeurologicalAssessment({ onOpenQuestionnaire }) {
-  const [activeProfileId, setActiveProfileId] = useState(neurologicalAssessmentProfiles[0].id);
-  const activeProfile = neurologicalAssessmentProfiles.find((profile) => profile.id === activeProfileId) || neurologicalAssessmentProfiles[0];
+function ProfiledAssessment({ section, profiles, onOpenQuestionnaire }) {
+  const [activeProfileId, setActiveProfileId] = useState(profiles[0].id);
+  const activeProfile = profiles.find((profile) => profile.id === activeProfileId) || profiles[0];
 
   return (
     <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
       <div className="mb-5">
-        <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{neurologicalAssessmentSection.eyebrow}</p>
-        <h2 className="mt-2 text-2xl font-bold text-slate-950">{neurologicalAssessmentSection.title}</h2>
-        <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{neurologicalAssessmentSection.description}</p>
+        <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{section.eyebrow}</p>
+        <h2 className="mt-2 text-2xl font-bold text-slate-950">{section.title}</h2>
+        <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{section.description}</p>
       </div>
 
-      <div className="mb-4 grid gap-2 sm:grid-cols-3">
-        {neurologicalAssessmentProfiles.map((profile) => (
+      <div className={`mb-4 grid gap-2 sm:grid-cols-2 ${profiles.length === 3 ? 'xl:grid-cols-3' : 'xl:grid-cols-4'}`}>
+        {profiles.map((profile) => (
           <button key={profile.id} type="button" onClick={() => setActiveProfileId(profile.id)} className={`rounded-lg border px-3 py-3 text-left transition ${activeProfileId === profile.id ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200'}`}>
             <span className="block text-sm font-bold">{profile.label}</span>
             <span className="mt-1 block text-xs leading-5">{profile.description}</span>
@@ -88,7 +89,7 @@ function NeurologicalAssessment({ onOpenQuestionnaire }) {
       <div className="grid gap-3">
         {activeProfile.tools.map((tool) => <AssessmentToolCard key={tool.id} tool={tool} onOpenQuestionnaire={onOpenQuestionnaire} />)}
       </div>
-      <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{neurologicalAssessmentSection.note}</p>
+      <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{section.note}</p>
     </section>
   );
 }
@@ -137,7 +138,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
 
   return (
     <div className="space-y-5">
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <button type="button" onClick={() => setMode('diagnosis')} className={`rounded-xl border p-4 text-left transition ${mode === 'diagnosis' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
           <span className="block font-bold">Засоби за діагнозом / МКХ</span>
           <span className="mt-1 block text-sm">Пошук по всьому переліку наказу №774/2691</span>
@@ -149,6 +150,10 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
         <button type="button" onClick={() => setMode('neurological')} className={`rounded-xl border p-4 text-left transition ${mode === 'neurological' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
           <span className="block font-bold">Неврологічна система</span>
           <span className="mt-1 block text-sm">Базова оцінка, наслідки інсульту та розсіяний склероз</span>
+        </button>
+        <button type="button" onClick={() => setMode('musculoskeletal')} className={`rounded-xl border p-4 text-left transition ${mode === 'musculoskeletal' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
+          <span className="block font-bold">Опорно-рухова система</span>
+          <span className="mt-1 block text-sm">Біль, суглоби, хребет і відновлення після травм та операцій</span>
         </button>
       </div>
 
@@ -195,7 +200,13 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
           <p className="font-bold">Важливо</p>
           <p className="mt-1">Діагноз лише звужує нормативний перелік і не є автоматичним призначенням. Конкретний засіб визначають після індивідуального функціонального оцінювання та перевірки чинної редакції документа.</p>
         </section>
-      </> : mode === 'respiratory' ? <RespiratoryAssessment onOpenQuestionnaire={onOpenQuestionnaire} /> : <NeurologicalAssessment onOpenQuestionnaire={onOpenQuestionnaire} />}
+      </> : mode === 'respiratory' ? (
+        <RespiratoryAssessment onOpenQuestionnaire={onOpenQuestionnaire} />
+      ) : mode === 'neurological' ? (
+        <ProfiledAssessment section={neurologicalAssessmentSection} profiles={neurologicalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
+      ) : (
+        <ProfiledAssessment section={musculoskeletalAssessmentSection} profiles={musculoskeletalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
+      )}
     </div>
   );
 }
