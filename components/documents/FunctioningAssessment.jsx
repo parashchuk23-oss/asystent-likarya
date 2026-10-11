@@ -223,7 +223,8 @@ function AssistiveProductCard({ product }) {
 
 export default function FunctioningAssessment({ onOpenQuestionnaire }) {
   const [activeSystem, setActiveSystem] = useState('');
-  const [isSearchOpen, setIsSearchOpen] = useState(true);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSystemsOpen, setIsSystemsOpen] = useState(false);
   const systemsRef = useRef(null);
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
@@ -259,7 +260,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
   return (
     <div className="space-y-5">
       {isSearchOpen ? (
-        <section className="rounded-xl border border-teal-200 bg-teal-50/50 p-5 sm:p-6">
+        <section className="rounded-xl border border-teal-200 bg-white p-5 sm:p-6">
           <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">Реабілітаційні засоби</p>
@@ -317,47 +318,61 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
           <p className="mt-1">Діагноз лише звужує нормативний перелік і не є автоматичним призначенням. Конкретний засіб визначають після індивідуального функціонального оцінювання та перевірки чинної редакції документа.</p>
       </section>}
 
-      <section ref={systemsRef} className="scroll-mt-4 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-blue-700">Функціональні інструменти</p>
-          <h2 className="mt-2 text-xl font-bold text-slate-950">Оцінювання за системами</h2>
-          <p className="mt-1 text-sm leading-6 text-slate-600">Оберіть систему, щоб переглянути доступні дослідження та тести.</p>
-        </div>
+      {isSystemsOpen ? (
+        <section ref={systemsRef} className="scroll-mt-4 rounded-xl border border-teal-200 bg-white p-5 sm:p-6">
+          <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">Функціональні інструменти</p>
+              <h2 className="mt-2 text-2xl font-bold text-slate-950">Оцінювання за системами</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600">Оберіть систему, щоб переглянути доступні дослідження та тести.</p>
+            </div>
+            <button type="button" onClick={() => setIsSystemsOpen(false)} aria-expanded="true" aria-controls="functioning-systems-content" className="shrink-0 rounded-lg border border-teal-300 bg-white px-3 py-2 text-sm font-bold text-teal-800 hover:bg-teal-50">Згорнути оцінювання ↑</button>
+          </div>
 
-        <label htmlFor="assessment-system" className="mt-4 block text-sm font-bold text-slate-800 sm:hidden">Система оцінювання</label>
-        <select id="assessment-system" value={activeSystem} onChange={(event) => selectSystem(event.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 sm:hidden">
-          <option value="">Оберіть систему</option>
-          {assessmentSystems.map((system) => <option key={system.id} value={system.id}>{system.label}</option>)}
-        </select>
+          <div id="functioning-systems-content">
+            <label htmlFor="assessment-system" className="mt-4 block text-sm font-bold text-slate-800 sm:hidden">Система оцінювання</label>
+            <select id="assessment-system" value={activeSystem} onChange={(event) => selectSystem(event.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-900 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100 sm:hidden">
+              <option value="">Оберіть систему</option>
+              {assessmentSystems.map((system) => <option key={system.id} value={system.id}>{system.label}</option>)}
+            </select>
 
-        <div className="mt-4 hidden flex-wrap gap-2 sm:flex" aria-label="Системи функціонального оцінювання">
-          {assessmentSystems.map((system) => (
-            <button key={system.id} type="button" onClick={() => selectSystem(system.id)} aria-pressed={activeSystem === system.id} className={`rounded-full border px-3.5 py-2 text-sm font-semibold transition ${activeSystem === system.id ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50'}`}>
-              {system.label}
-            </button>
-          ))}
-        </div>
-      </section>
+            <div className="mt-4 hidden flex-wrap gap-2 sm:flex" aria-label="Системи функціонального оцінювання">
+              {assessmentSystems.map((system) => (
+                <button key={system.id} type="button" onClick={() => selectSystem(system.id)} aria-pressed={activeSystem === system.id} className={`rounded-full border px-3.5 py-2 text-sm font-semibold transition ${activeSystem === system.id ? 'border-teal-700 bg-teal-700 text-white' : 'border-slate-300 bg-white text-slate-700 hover:border-teal-300 hover:bg-teal-50'}`}>
+                  {system.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : (
+        <button ref={systemsRef} type="button" onClick={() => setIsSystemsOpen(true)} aria-expanded="false" aria-controls="functioning-systems-content" className="flex w-full scroll-mt-4 items-center justify-between gap-4 rounded-xl border border-teal-200 bg-white p-4 text-left transition hover:bg-teal-50/50">
+          <span>
+            <span className="block text-xs font-bold uppercase tracking-[0.18em] text-teal-700">Функціональні інструменти</span>
+            <span className="mt-1 block font-bold text-slate-950">Оцінювання за системами</span>
+            {activeSystem && <span className="mt-1 block text-xs text-slate-500">Вибір системи збережено</span>}
+          </span>
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-50 text-xl font-bold text-teal-700" aria-hidden="true">+</span>
+        </button>
+      )}
 
-      {!activeSystem && <section className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center text-sm leading-6 text-slate-600">Оберіть систему — нижче з’явиться перелік відповідних інструментів оцінювання.</section>}
-
-      {activeSystem === 'respiratory' ? (
+      {isSystemsOpen && activeSystem === 'respiratory' ? (
         <RespiratoryAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
-      ) : activeSystem === 'neurological' ? (
+      ) : isSystemsOpen && activeSystem === 'neurological' ? (
         <ProfiledAssessment section={neurologicalAssessmentSection} profiles={neurologicalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
-      ) : activeSystem === 'musculoskeletal' ? (
+      ) : isSystemsOpen && activeSystem === 'musculoskeletal' ? (
         <ProfiledAssessment section={musculoskeletalAssessmentSection} profiles={musculoskeletalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
-      ) : activeSystem === 'cardiovascular' ? (
+      ) : isSystemsOpen && activeSystem === 'cardiovascular' ? (
         <ProfiledAssessment section={cardiovascularAssessmentSection} profiles={cardiovascularAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
-      ) : activeSystem === 'sensory' ? (
+      ) : isSystemsOpen && activeSystem === 'sensory' ? (
         <ProfiledAssessment section={sensoryAssessmentSection} profiles={sensoryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
-      ) : activeSystem === 'cognitive-mental' ? (
+      ) : isSystemsOpen && activeSystem === 'cognitive-mental' ? (
         <ProfiledAssessment section={cognitiveMentalAssessmentSection} profiles={cognitiveMentalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
-      ) : activeSystem === 'urinary' ? (
+      ) : isSystemsOpen && activeSystem === 'urinary' ? (
         <ProfiledAssessment section={urinaryAssessmentSection} profiles={urinaryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
-      ) : activeSystem === 'digestive' ? (
+      ) : isSystemsOpen && activeSystem === 'digestive' ? (
         <ProfiledAssessment section={digestiveAssessmentSection} profiles={digestiveAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
-      ) : activeSystem === 'daily-living' ? (
+      ) : isSystemsOpen && activeSystem === 'daily-living' ? (
         <ProfiledAssessment section={dailyLivingAssessmentSection} profiles={dailyLivingAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : null}
     </div>
