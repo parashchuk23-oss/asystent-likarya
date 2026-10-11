@@ -72,6 +72,42 @@ const respiratoryGroups = [
   },
 ];
 
+const neurologicalGroups = [
+  {
+    id: 'neuro-independence',
+    title: 'Незалежність і повсякденне функціонування',
+    label: 'Основне',
+    summary: 'Індекс Бартел · WHODAS 2.0',
+    note: 'Індекс Бартел описує базове самообслуговування та необхідну допомогу, а WHODAS 2.0 — ширший вплив стану на активність і участь. Інструменти доповнюють, а не замінюють один одного.',
+    toolIds: ['neuro-barthel', 'neuro-whodas'],
+    defaultOpen: true,
+  },
+  {
+    id: 'neuro-mobility',
+    title: 'Мобільність і швидкість ходьби',
+    label: 'Основне',
+    summary: 'TUG · 10-метровий тест ходьби (10MWT)',
+    note: 'TUG оцінює вставання, коротке переміщення, розворот і сідання; 10MWT — швидкість ходьби. Обирайте інструмент відповідно до клінічного питання або використовуйте обидва для різних компонентів мобільності.',
+    toolIds: ['neuro-tug', 'neuro-10mwt'],
+  },
+  {
+    id: 'neuro-endurance',
+    title: 'Витривалість ходьби',
+    label: 'За окремими показаннями',
+    summary: '6-хвилинний тест ходьби (6MWT)',
+    note: '6MWT потрібний, коли важливо оцінити дистанцію та переносимість тривалішої ходьби. Він не замінює 10MWT, який вимірює швидкість.',
+    toolIds: ['neuro-6mwt'],
+  },
+  {
+    id: 'neuro-specific',
+    title: 'Специфічні рухові функції',
+    label: 'За діагнозом',
+    summary: '9-Hole Peg Test · Timed 25-Foot Walk (T25FW)',
+    note: '9-Hole Peg Test застосовують при клінічно значущому порушенні дрібної моторики кисті, а T25FW — переважно для стандартизованого спостереження ходьби при розсіяному склерозі. Вони не є рутинними для кожного пацієнта.',
+    toolIds: ['neuro-9hpt', 'neuro-t25fw'],
+  },
+];
+
 function Detail({ title, children }) {
   return <div><p className="font-bold text-slate-900">{title}</p><div className="mt-1">{children}</div></div>;
 }
@@ -116,13 +152,13 @@ function AssessmentToolCard({ tool, onOpenQuestionnaire }) {
   );
 }
 
-function RespiratoryGroupCard({ group, tools, onOpenQuestionnaire }) {
+function AssessmentGroupCard({ group, tools, onOpenQuestionnaire }) {
   const [isOpen, setIsOpen] = useState(Boolean(group.defaultOpen));
   const isPrimary = group.label === 'Основне';
 
   return (
     <article className={`overflow-hidden rounded-lg border bg-white ${isPrimary ? 'border-teal-300' : 'border-slate-200'}`}>
-      <button type="button" onClick={() => setIsOpen((current) => !current)} aria-expanded={isOpen} aria-controls={`respiratory-group-${group.id}`} className="flex w-full items-start justify-between gap-4 p-4 text-left transition hover:bg-slate-50 sm:p-5">
+      <button type="button" onClick={() => setIsOpen((current) => !current)} aria-expanded={isOpen} aria-controls={`assessment-group-${group.id}`} className="flex w-full items-start justify-between gap-4 p-4 text-left transition hover:bg-slate-50 sm:p-5">
         <div>
           <span className={`text-xs font-bold uppercase tracking-wide ${isPrimary ? 'text-teal-700' : 'text-slate-500'}`}>{group.label}</span>
           <h3 className="mt-1 text-lg font-bold text-slate-950">{group.title}</h3>
@@ -132,7 +168,7 @@ function RespiratoryGroupCard({ group, tools, onOpenQuestionnaire }) {
       </button>
 
       {isOpen && (
-        <div id={`respiratory-group-${group.id}`} className="border-t border-slate-200 px-4 sm:px-5">
+        <div id={`assessment-group-${group.id}`} className="border-t border-slate-200 px-4 sm:px-5">
           {group.note && <p className="border-b border-slate-200 py-4 text-sm font-semibold leading-6 text-slate-700">{group.note}</p>}
           {tools.map((tool) => {
             const category = functioningCategories[tool.category];
@@ -167,10 +203,36 @@ function RespiratoryAssessment({ onOpenQuestionnaire, onCollapse }) {
       </div>
       <div className="grid gap-3">
         {respiratoryGroups.map((group) => (
-          <RespiratoryGroupCard key={group.id} group={group} tools={group.toolIds.map((id) => toolsById.get(id)).filter(Boolean)} onOpenQuestionnaire={onOpenQuestionnaire} />
+          <AssessmentGroupCard key={group.id} group={group} tools={group.toolIds.map((id) => toolsById.get(id)).filter(Boolean)} onOpenQuestionnaire={onOpenQuestionnaire} />
         ))}
       </div>
       <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{section.note}</p>
+    </section>
+  );
+}
+
+function NeurologicalAssessment({ onOpenQuestionnaire, onCollapse }) {
+  const tools = Array.from(
+    new Map(neurologicalAssessmentProfiles.flatMap((profile) => profile.tools).map((tool) => [tool.id, tool])).values(),
+  );
+  const toolsById = new Map(tools.map((tool) => [tool.id, tool]));
+
+  return (
+    <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{neurologicalAssessmentSection.eyebrow}</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">{neurologicalAssessmentSection.title}</h2>
+          <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{neurologicalAssessmentSection.description}</p>
+        </div>
+        <button type="button" onClick={onCollapse} className="shrink-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:border-blue-300 hover:bg-blue-50">Згорнути систему ↑</button>
+      </div>
+      <div className="grid gap-3">
+        {neurologicalGroups.map((group) => (
+          <AssessmentGroupCard key={group.id} group={group} tools={group.toolIds.map((id) => toolsById.get(id)).filter(Boolean)} onOpenQuestionnaire={onOpenQuestionnaire} />
+        ))}
+      </div>
+      <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{neurologicalAssessmentSection.note}</p>
     </section>
   );
 }
@@ -359,7 +421,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
       {isSystemsOpen && activeSystem === 'respiratory' ? (
         <RespiratoryAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'neurological' ? (
-        <ProfiledAssessment section={neurologicalAssessmentSection} profiles={neurologicalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
+        <NeurologicalAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'musculoskeletal' ? (
         <ProfiledAssessment section={musculoskeletalAssessmentSection} profiles={musculoskeletalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'cardiovascular' ? (
