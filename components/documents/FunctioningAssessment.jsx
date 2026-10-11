@@ -7,6 +7,7 @@ import { musculoskeletalAssessmentProfiles, musculoskeletalAssessmentSection } f
 import { cardiovascularAssessmentProfiles, cardiovascularAssessmentSection } from '../../data/functioning/cardiovascularAssessment';
 import { sensoryAssessmentProfiles, sensoryAssessmentSection } from '../../data/functioning/sensoryAssessment';
 import { cognitiveMentalAssessmentProfiles, cognitiveMentalAssessmentSection } from '../../data/functioning/cognitiveMentalAssessment';
+import { urinaryAssessmentProfiles, urinaryAssessmentSection } from '../../data/functioning/urinaryAssessment';
 import { order774EntryCount, order774Source, searchOrder774 } from '../../data/rehabilitation/order774Search';
 
 const searchExamples = [
@@ -171,6 +172,10 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
           <span className="block font-bold">Когніція і психоемоційний стан</span>
           <span className="mt-1 block text-sm">Пам’ять, увага, тривога, настрій і повсякденна безпека</span>
         </button>
+        <button type="button" onClick={() => setMode('urinary')} className={`rounded-xl border p-4 text-left transition ${mode === 'urinary' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
+          <span className="block font-bold">Сечовидільні функції</span>
+          <span className="mt-1 block text-sm">Нетримання, випорожнення міхура, тазове дно та нейрогенна дисфункція</span>
+        </button>
       </div>
 
       {mode === 'diagnosis' ? <>
@@ -226,8 +231,10 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
         <ProfiledAssessment section={cardiovascularAssessmentSection} profiles={cardiovascularAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
       ) : mode === 'sensory' ? (
         <ProfiledAssessment section={sensoryAssessmentSection} profiles={sensoryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
-      ) : (
+      ) : mode === 'cognitive-mental' ? (
         <ProfiledAssessment section={cognitiveMentalAssessmentSection} profiles={cognitiveMentalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
+      ) : (
+        <ProfiledAssessment section={urinaryAssessmentSection} profiles={urinaryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
       )}
     </div>
   );
