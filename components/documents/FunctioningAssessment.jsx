@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { functioningCategories, respiratoryAssessmentSections } from '../../data/functioning/respiratoryAssessment';
+import { neurologicalAssessmentProfiles, neurologicalAssessmentSection } from '../../data/functioning/neurologicalAssessment';
 import { order774EntryCount, order774Source, searchOrder774 } from '../../data/rehabilitation/order774Search';
 
 const searchExamples = [
@@ -15,7 +16,7 @@ function Detail({ title, children }) {
   return <div><p className="font-bold text-slate-900">{title}</p><div className="mt-1">{children}</div></div>;
 }
 
-function RespiratoryToolCard({ tool, onOpenQuestionnaire }) {
+function AssessmentToolCard({ tool, onOpenQuestionnaire }) {
   const [isOpen, setIsOpen] = useState(false);
   const category = functioningCategories[tool.category];
 
@@ -56,9 +57,38 @@ function RespiratoryAssessment({ onOpenQuestionnaire }) {
         <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{section.description}</p>
       </div>
       <div className="grid gap-3">
-        {section.tools.map((tool) => <RespiratoryToolCard key={tool.id} tool={tool} onOpenQuestionnaire={onOpenQuestionnaire} />)}
+        {section.tools.map((tool) => <AssessmentToolCard key={tool.id} tool={tool} onOpenQuestionnaire={onOpenQuestionnaire} />)}
       </div>
       <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{section.note}</p>
+    </section>
+  );
+}
+
+function NeurologicalAssessment({ onOpenQuestionnaire }) {
+  const [activeProfileId, setActiveProfileId] = useState(neurologicalAssessmentProfiles[0].id);
+  const activeProfile = neurologicalAssessmentProfiles.find((profile) => profile.id === activeProfileId) || neurologicalAssessmentProfiles[0];
+
+  return (
+    <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+      <div className="mb-5">
+        <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{neurologicalAssessmentSection.eyebrow}</p>
+        <h2 className="mt-2 text-2xl font-bold text-slate-950">{neurologicalAssessmentSection.title}</h2>
+        <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{neurologicalAssessmentSection.description}</p>
+      </div>
+
+      <div className="mb-4 grid gap-2 sm:grid-cols-3">
+        {neurologicalAssessmentProfiles.map((profile) => (
+          <button key={profile.id} type="button" onClick={() => setActiveProfileId(profile.id)} className={`rounded-lg border px-3 py-3 text-left transition ${activeProfileId === profile.id ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200'}`}>
+            <span className="block text-sm font-bold">{profile.label}</span>
+            <span className="mt-1 block text-xs leading-5">{profile.description}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="grid gap-3">
+        {activeProfile.tools.map((tool) => <AssessmentToolCard key={tool.id} tool={tool} onOpenQuestionnaire={onOpenQuestionnaire} />)}
+      </div>
+      <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{neurologicalAssessmentSection.note}</p>
     </section>
   );
 }
@@ -107,7 +137,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
 
   return (
     <div className="space-y-5">
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-3">
         <button type="button" onClick={() => setMode('diagnosis')} className={`rounded-xl border p-4 text-left transition ${mode === 'diagnosis' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
           <span className="block font-bold">Засоби за діагнозом / МКХ</span>
           <span className="mt-1 block text-sm">Пошук по всьому переліку наказу №774/2691</span>
@@ -115,6 +145,10 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
         <button type="button" onClick={() => setMode('respiratory')} className={`rounded-xl border p-4 text-left transition ${mode === 'respiratory' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
           <span className="block font-bold">Дихальна система</span>
           <span className="mt-1 block text-sm">Дослідження, ХОЗЛ, астма та функціональні тести</span>
+        </button>
+        <button type="button" onClick={() => setMode('neurological')} className={`rounded-xl border p-4 text-left transition ${mode === 'neurological' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
+          <span className="block font-bold">Неврологічна система</span>
+          <span className="mt-1 block text-sm">Базова оцінка, наслідки інсульту та розсіяний склероз</span>
         </button>
       </div>
 
@@ -161,7 +195,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
           <p className="font-bold">Важливо</p>
           <p className="mt-1">Діагноз лише звужує нормативний перелік і не є автоматичним призначенням. Конкретний засіб визначають після індивідуального функціонального оцінювання та перевірки чинної редакції документа.</p>
         </section>
-      </> : <RespiratoryAssessment onOpenQuestionnaire={onOpenQuestionnaire} />}
+      </> : mode === 'respiratory' ? <RespiratoryAssessment onOpenQuestionnaire={onOpenQuestionnaire} /> : <NeurologicalAssessment onOpenQuestionnaire={onOpenQuestionnaire} />}
     </div>
   );
 }
