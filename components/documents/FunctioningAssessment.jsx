@@ -19,6 +19,18 @@ const searchExamples = [
   { code: 'S72', title: 'Перелом стегнової кістки' },
 ];
 
+const assessmentSystems = [
+  { id: 'respiratory', label: 'Дихальна система' },
+  { id: 'neurological', label: 'Неврологічна система' },
+  { id: 'musculoskeletal', label: 'Опорно-рухова система' },
+  { id: 'cardiovascular', label: 'Серцево-судинна система' },
+  { id: 'sensory', label: 'Сенсорні функції' },
+  { id: 'cognitive-mental', label: 'Когніція і психоемоційний стан' },
+  { id: 'urinary', label: 'Сечовидільні функції' },
+  { id: 'digestive', label: 'Травна система' },
+  { id: 'daily-living', label: 'Самообслуговування' },
+];
+
 function Detail({ title, children }) {
   return <div><p className="font-bold text-slate-900">{title}</p><div className="mt-1">{children}</div></div>;
 }
@@ -116,7 +128,7 @@ function AssistiveProductCard({ product }) {
 }
 
 export default function FunctioningAssessment({ onOpenQuestionnaire }) {
-  const [mode, setMode] = useState('diagnosis');
+  const [activeSystem, setActiveSystem] = useState('');
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
   const [visibleCount, setVisibleCount] = useState(12);
@@ -137,54 +149,10 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
 
   return (
     <div className="space-y-5">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <button type="button" onClick={() => setMode('diagnosis')} className={`rounded-xl border p-4 text-left transition ${mode === 'diagnosis' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
-          <span className="block font-bold">Засоби за діагнозом / МКХ</span>
-          <span className="mt-1 block text-sm">Пошук по всьому переліку наказу №774/2691</span>
-        </button>
-        <button type="button" onClick={() => setMode('respiratory')} className={`rounded-xl border p-4 text-left transition ${mode === 'respiratory' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
-          <span className="block font-bold">Дихальна система</span>
-          <span className="mt-1 block text-sm">Дослідження, ХОЗЛ, астма та функціональні тести</span>
-        </button>
-        <button type="button" onClick={() => setMode('neurological')} className={`rounded-xl border p-4 text-left transition ${mode === 'neurological' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
-          <span className="block font-bold">Неврологічна система</span>
-          <span className="mt-1 block text-sm">Базова оцінка, наслідки інсульту та розсіяний склероз</span>
-        </button>
-        <button type="button" onClick={() => setMode('musculoskeletal')} className={`rounded-xl border p-4 text-left transition ${mode === 'musculoskeletal' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
-          <span className="block font-bold">Опорно-рухова система</span>
-          <span className="mt-1 block text-sm">Біль, суглоби, хребет і відновлення після травм та операцій</span>
-        </button>
-        <button type="button" onClick={() => setMode('cardiovascular')} className={`rounded-xl border p-4 text-left transition ${mode === 'cardiovascular' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
-          <span className="block font-bold">Серцево-судинна система</span>
-          <span className="mt-1 block text-sm">Серцева недостатність, ішемічна хвороба, периферичні артерії та ортостаз</span>
-        </button>
-        <button type="button" onClick={() => setMode('sensory')} className={`rounded-xl border p-4 text-left transition ${mode === 'sensory' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
-          <span className="block font-bold">Сенсорні функції</span>
-          <span className="mt-1 block text-sm">Зір, слух, орієнтування та спілкування</span>
-        </button>
-        <button type="button" onClick={() => setMode('cognitive-mental')} className={`rounded-xl border p-4 text-left transition ${mode === 'cognitive-mental' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
-          <span className="block font-bold">Когніція і психоемоційний стан</span>
-          <span className="mt-1 block text-sm">Пам’ять, увага, тривога, настрій і повсякденна безпека</span>
-        </button>
-        <button type="button" onClick={() => setMode('urinary')} className={`rounded-xl border p-4 text-left transition ${mode === 'urinary' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
-          <span className="block font-bold">Сечовидільні функції</span>
-          <span className="mt-1 block text-sm">Нетримання, випорожнення міхура, тазове дно та нейрогенна дисфункція</span>
-        </button>
-        <button type="button" onClick={() => setMode('digestive')} className={`rounded-xl border p-4 text-left transition ${mode === 'digestive' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
-          <span className="block font-bold">Травна система</span>
-          <span className="mt-1 block text-sm">Ковтання, харчування, дефекація та континенція</span>
-        </button>
-        <button type="button" onClick={() => setMode('daily-living')} className={`rounded-xl border p-4 text-left transition ${mode === 'daily-living' ? 'border-teal-400 bg-teal-50 text-teal-950' : 'border-slate-200 bg-white text-slate-700 hover:border-teal-200 hover:bg-slate-50'}`}>
-          <span className="block font-bold">Самообслуговування</span>
-          <span className="mt-1 block text-sm">Базові й складні побутові дії, допомога та безпечна виписка</span>
-        </button>
-      </div>
-
-      {mode === 'diagnosis' ? <>
-        <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <section className="rounded-xl border border-teal-200 bg-teal-50/50 p-5 sm:p-6">
         <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">Реабілітаційні засоби</p>
         <h2 className="mt-2 text-2xl font-bold text-slate-950">Пошук засобів за діагнозом або кодом МКХ-10</h2>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Введіть код МКХ-10 або назву діагнозу. Пошук працює локально по {order774EntryCount} позиціях офіційного переліку.</p>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Введіть код МКХ-10 або назву діагнозу, щоб переглянути показання, протипоказання та нормативні джерела. Пошук працює локально по {order774EntryCount} позиціях наказу №774/2691.</p>
         <form onSubmit={submit} className="mt-5 flex flex-col gap-3 sm:flex-row">
           <label htmlFor="rehabilitation-diagnosis" className="sr-only">Діагноз або код МКХ-10</label>
           <input id="rehabilitation-diagnosis" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Наприклад: G35, M17.1 або розсіяний склероз" autoComplete="off" className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-4 py-3 text-base text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-100" />
@@ -198,8 +166,6 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
           ))}
         </div>
       </section>
-
-      {!searched && <section className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center text-sm leading-6 text-slate-600">Введіть код МКХ-10 або назву діагнозу — результат з’явиться одразу після пошуку.</section>}
 
       {searched && products.length === 0 && (
         <section className="rounded-xl border border-slate-200 bg-white p-5 text-sm leading-6 text-slate-700">
@@ -219,29 +185,54 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
         </section>
       )}
 
-        <section className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
+      {searched && <section className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
           <p className="font-bold">Важливо</p>
           <p className="mt-1">Діагноз лише звужує нормативний перелік і не є автоматичним призначенням. Конкретний засіб визначають після індивідуального функціонального оцінювання та перевірки чинної редакції документа.</p>
-        </section>
-      </> : mode === 'respiratory' ? (
+      </section>}
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-blue-700">Функціональні інструменти</p>
+          <h2 className="mt-2 text-xl font-bold text-slate-950">Оцінювання за системами</h2>
+          <p className="mt-1 text-sm leading-6 text-slate-600">Оберіть систему, щоб переглянути доступні дослідження та тести.</p>
+        </div>
+
+        <label htmlFor="assessment-system" className="mt-4 block text-sm font-bold text-slate-800 sm:hidden">Система оцінювання</label>
+        <select id="assessment-system" value={activeSystem} onChange={(event) => setActiveSystem(event.target.value)} className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 sm:hidden">
+          <option value="">Оберіть систему</option>
+          {assessmentSystems.map((system) => <option key={system.id} value={system.id}>{system.label}</option>)}
+        </select>
+
+        <div className="mt-4 hidden flex-wrap gap-2 sm:flex" aria-label="Системи функціонального оцінювання">
+          {assessmentSystems.map((system) => (
+            <button key={system.id} type="button" onClick={() => setActiveSystem(system.id)} className={`rounded-full border px-3.5 py-2 text-sm font-semibold transition ${activeSystem === system.id ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50'}`}>
+              {system.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {!activeSystem && <section className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-5 text-center text-sm leading-6 text-slate-600">Оберіть систему — нижче з’явиться перелік відповідних інструментів оцінювання.</section>}
+
+      {activeSystem === 'respiratory' ? (
         <RespiratoryAssessment onOpenQuestionnaire={onOpenQuestionnaire} />
-      ) : mode === 'neurological' ? (
+      ) : activeSystem === 'neurological' ? (
         <ProfiledAssessment section={neurologicalAssessmentSection} profiles={neurologicalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
-      ) : mode === 'musculoskeletal' ? (
+      ) : activeSystem === 'musculoskeletal' ? (
         <ProfiledAssessment section={musculoskeletalAssessmentSection} profiles={musculoskeletalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
-      ) : mode === 'cardiovascular' ? (
+      ) : activeSystem === 'cardiovascular' ? (
         <ProfiledAssessment section={cardiovascularAssessmentSection} profiles={cardiovascularAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
-      ) : mode === 'sensory' ? (
+      ) : activeSystem === 'sensory' ? (
         <ProfiledAssessment section={sensoryAssessmentSection} profiles={sensoryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
-      ) : mode === 'cognitive-mental' ? (
+      ) : activeSystem === 'cognitive-mental' ? (
         <ProfiledAssessment section={cognitiveMentalAssessmentSection} profiles={cognitiveMentalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
-      ) : mode === 'urinary' ? (
+      ) : activeSystem === 'urinary' ? (
         <ProfiledAssessment section={urinaryAssessmentSection} profiles={urinaryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
-      ) : mode === 'digestive' ? (
+      ) : activeSystem === 'digestive' ? (
         <ProfiledAssessment section={digestiveAssessmentSection} profiles={digestiveAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
-      ) : (
+      ) : activeSystem === 'daily-living' ? (
         <ProfiledAssessment section={dailyLivingAssessmentSection} profiles={dailyLivingAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} />
-      )}
+      ) : null}
     </div>
   );
 }

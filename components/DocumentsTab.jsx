@@ -41,23 +41,30 @@ export default function DocumentsTab({ onOpenQuestionnaire }) {
         </p>
       </section>
 
-      <div className="grid gap-3 md:grid-cols-3">
+      <nav aria-label="Розділи документів" className="border-b border-slate-200">
+        <div className="flex gap-1 overflow-x-auto" role="tablist">
         {documentAreas.map((area) => (
           <button
             key={area.id}
             type="button"
             onClick={() => setActiveArea(area.id)}
-            className={`rounded-lg border p-4 text-left transition-colors ${
+            role="tab"
+            aria-selected={activeArea === area.id}
+            className={`shrink-0 border-b-2 px-4 py-3 text-sm font-bold transition-colors sm:text-base ${
               activeArea === area.id
-                ? 'border-blue-300 bg-blue-50 text-blue-900'
-                : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                ? 'border-blue-600 text-blue-800'
+                : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800'
             }`}
           >
-            <h3 className="text-lg font-bold">{area.title}</h3>
-            <p className="mt-1 text-sm leading-6">{area.description}</p>
+            {area.title}
           </button>
         ))}
-      </div>
+        </div>
+      </nav>
+
+      <p className="text-sm leading-6 text-slate-600">
+        {documentAreas.find((area) => area.id === activeArea)?.description}
+      </p>
 
       {activeArea === 'templates' && (
         <SocialCareMedicalConclusionForm />
