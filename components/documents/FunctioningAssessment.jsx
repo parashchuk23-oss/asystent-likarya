@@ -235,6 +235,42 @@ const cognitiveMentalGroups = [
   },
 ];
 
+const urinaryGroups = [
+  {
+    id: 'urinary-basic',
+    title: 'Симптоми і повсякденний патерн',
+    label: 'Основне',
+    summary: 'Структурована оцінка · щоденник сечовипускань · функціональний вплив',
+    note: 'Почніть із типу симптомів, звичних обставин і реального впливу на сон, пересування та активність. Щоденник допомагає об’єктивізувати цей патерн у звичних умовах.',
+    toolIds: ['urinary-history', 'urinary-bladder-diary', 'urinary-functional-impact'],
+    defaultOpen: true,
+  },
+  {
+    id: 'urinary-emptying',
+    title: 'Оцінювання випорожнення сечового міхура',
+    label: 'За симптомами',
+    summary: 'Залишковий об’єм сечі · урофлоуметрія',
+    note: 'Залишковий об’єм і урофлоуметрія доповнюють один одного, але жодне окреме значення не визначає механізм порушення без клінічного контексту.',
+    toolIds: ['urinary-pvr', 'urinary-uroflowmetry'],
+  },
+  {
+    id: 'urinary-incontinence',
+    title: 'Нетримання і функція тазового дна',
+    label: 'За показаннями',
+    summary: 'Функція тазового дна · стандартизований pad-тест',
+    note: 'Функцію тазового дна оцінює підготовлений фахівець за згодою пацієнта. Pad-тест використовуйте вибірково, лише якщо кількісний результат вплине на рішення.',
+    toolIds: ['urinary-pelvic-floor', 'urinary-pad-test'],
+  },
+  {
+    id: 'urinary-complex-functioning',
+    title: 'Ширше функціонування при комплексному стані',
+    label: 'За потреби',
+    summary: 'WHODAS 2.0',
+    note: 'WHODAS 2.0 додавайте, коли сечовидільні симптоми є частиною ширшого неврологічного, рухового або комплексного функціонального обмеження.',
+    toolIds: ['urinary-whodas'],
+  },
+];
+
 function Detail({ title, children }) {
   return <div><p className="font-bold text-slate-900">{title}</p><div className="mt-1">{children}</div></div>;
 }
@@ -474,6 +510,32 @@ function CognitiveMentalAssessment({ onOpenQuestionnaire, onCollapse }) {
   );
 }
 
+function UrinaryAssessment({ onOpenQuestionnaire, onCollapse }) {
+  const tools = Array.from(
+    new Map(urinaryAssessmentProfiles.flatMap((profile) => profile.tools).map((tool) => [tool.id, tool])).values(),
+  );
+  const toolsById = new Map(tools.map((tool) => [tool.id, tool]));
+
+  return (
+    <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{urinaryAssessmentSection.eyebrow}</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">{urinaryAssessmentSection.title}</h2>
+          <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{urinaryAssessmentSection.description}</p>
+        </div>
+        <button type="button" onClick={onCollapse} className="shrink-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:border-blue-300 hover:bg-blue-50">Згорнути систему ↑</button>
+      </div>
+      <div className="grid gap-3">
+        {urinaryGroups.map((group) => (
+          <AssessmentGroupCard key={group.id} group={group} tools={group.toolIds.map((id) => toolsById.get(id)).filter(Boolean)} onOpenQuestionnaire={onOpenQuestionnaire} />
+        ))}
+      </div>
+      <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{urinaryAssessmentSection.note}</p>
+    </section>
+  );
+}
+
 function ProfiledAssessment({ section, profiles, onOpenQuestionnaire, onCollapse }) {
   const tools = Array.from(
     new Map(profiles.flatMap((profile) => profile.tools).map((tool) => [tool.id, tool])).values(),
@@ -668,7 +730,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
       ) : isSystemsOpen && activeSystem === 'cognitive-mental' ? (
         <CognitiveMentalAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'urinary' ? (
-        <ProfiledAssessment section={urinaryAssessmentSection} profiles={urinaryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
+        <UrinaryAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'digestive' ? (
         <ProfiledAssessment section={digestiveAssessmentSection} profiles={digestiveAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'daily-living' ? (
