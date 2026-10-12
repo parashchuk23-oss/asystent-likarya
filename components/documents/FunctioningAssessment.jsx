@@ -179,6 +179,34 @@ const cardiovascularGroups = [
   },
 ];
 
+const sensoryGroups = [
+  {
+    id: 'sensory-functional-impact',
+    title: 'Вплив на повсякденне функціонування',
+    label: 'Основне',
+    summary: 'Зір · слух · спілкування · орієнтування · WHODAS 2.0',
+    note: 'Спочатку зафіксуйте конкретні труднощі у звичних ситуаціях. WHODAS 2.0 додавайте, коли потрібна ширша оцінка активності та участі, а не лише опис сенсорної функції.',
+    toolIds: ['sensory-functional-vision', 'sensory-functional-communication', 'sensory-whodas'],
+    defaultOpen: true,
+  },
+  {
+    id: 'sensory-vision',
+    title: 'Об’єктивна оцінка зору',
+    label: 'За скаргою',
+    summary: 'Гострота зору · поля зору',
+    note: 'Гострота зору оцінює розрізнення деталей, а дослідження полів — периферичні дефекти. Один тест не замінює інший.',
+    toolIds: ['sensory-visual-acuity', 'sensory-visual-fields'],
+  },
+  {
+    id: 'sensory-hearing',
+    title: 'Об’єктивна оцінка слуху',
+    label: 'За скаргою',
+    summary: 'Тональна аудіометрія · сприйняття мовлення',
+    note: 'Аудіометрія визначає пороги слуху, а оцінка мовлення — здатність його розуміти. Розбіжність між результатами потребує клінічної інтерпретації.',
+    toolIds: ['sensory-pure-tone-audiometry', 'sensory-speech-hearing'],
+  },
+];
+
 function Detail({ title, children }) {
   return <div><p className="font-bold text-slate-900">{title}</p><div className="mt-1">{children}</div></div>;
 }
@@ -356,6 +384,32 @@ function CardiovascularAssessment({ onOpenQuestionnaire, onCollapse }) {
         ))}
       </div>
       <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{cardiovascularAssessmentSection.note}</p>
+    </section>
+  );
+}
+
+function SensoryAssessment({ onOpenQuestionnaire, onCollapse }) {
+  const tools = Array.from(
+    new Map(sensoryAssessmentProfiles.flatMap((profile) => profile.tools).map((tool) => [tool.id, tool])).values(),
+  );
+  const toolsById = new Map(tools.map((tool) => [tool.id, tool]));
+
+  return (
+    <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{sensoryAssessmentSection.eyebrow}</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">{sensoryAssessmentSection.title}</h2>
+          <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{sensoryAssessmentSection.description}</p>
+        </div>
+        <button type="button" onClick={onCollapse} className="shrink-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:border-blue-300 hover:bg-blue-50">Згорнути систему ↑</button>
+      </div>
+      <div className="grid gap-3">
+        {sensoryGroups.map((group) => (
+          <AssessmentGroupCard key={group.id} group={group} tools={group.toolIds.map((id) => toolsById.get(id)).filter(Boolean)} onOpenQuestionnaire={onOpenQuestionnaire} />
+        ))}
+      </div>
+      <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{sensoryAssessmentSection.note}</p>
     </section>
   );
 }
@@ -550,7 +604,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
       ) : isSystemsOpen && activeSystem === 'cardiovascular' ? (
         <CardiovascularAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'sensory' ? (
-        <ProfiledAssessment section={sensoryAssessmentSection} profiles={sensoryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
+        <SensoryAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'cognitive-mental' ? (
         <ProfiledAssessment section={cognitiveMentalAssessmentSection} profiles={cognitiveMentalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'urinary' ? (
