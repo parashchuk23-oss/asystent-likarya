@@ -207,6 +207,34 @@ const sensoryGroups = [
   },
 ];
 
+const cognitiveMentalGroups = [
+  {
+    id: 'cognitive-function',
+    title: 'Когнітивне функціонування',
+    label: 'Основне',
+    summary: 'Когнітивні труднощі · самостійність і безпека · MoCA за потреби',
+    note: 'Почніть із змін порівняно зі звичним рівнем і конкретних помилок у побуті. MoCA додавайте як поглиблений скринінг, якщо результат може змінити подальший маршрут.',
+    toolIds: ['cognitive-history', 'cognitive-daily-safety', 'cognitive-moca'],
+    defaultOpen: true,
+  },
+  {
+    id: 'mental-symptoms',
+    title: 'Тривога і депресивні симптоми',
+    label: 'За симптомами',
+    summary: 'PHQ-9 · GAD-7 · психосоціальне функціонування',
+    note: 'PHQ-9 і GAD-7 оцінюють різні групи симптомів. Їхні результати потрібно доповнювати описом реального впливу на сон, побут, роботу, стосунки та участь.',
+    toolIds: ['mental-phq9', 'mental-gad7', 'mental-psychosocial-function'],
+  },
+  {
+    id: 'cognitive-mental-functioning',
+    title: 'Загальне повсякденне функціонування',
+    label: 'За потреби',
+    summary: 'WHODAS 2.0',
+    note: 'WHODAS 2.0 застосовуйте, коли потрібна ширша оцінка активності та участі, а не лише когнітивних або емоційних симптомів.',
+    toolIds: ['cognitive-mental-whodas'],
+  },
+];
+
 function Detail({ title, children }) {
   return <div><p className="font-bold text-slate-900">{title}</p><div className="mt-1">{children}</div></div>;
 }
@@ -414,6 +442,38 @@ function SensoryAssessment({ onOpenQuestionnaire, onCollapse }) {
   );
 }
 
+function CognitiveMentalAssessment({ onOpenQuestionnaire, onCollapse }) {
+  const tools = Array.from(
+    new Map(cognitiveMentalAssessmentProfiles.flatMap((profile) => profile.tools).map((tool) => [tool.id, tool])).values(),
+  );
+  const toolsById = new Map(tools.map((tool) => [tool.id, tool]));
+
+  return (
+    <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{cognitiveMentalAssessmentSection.eyebrow}</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">{cognitiveMentalAssessmentSection.title}</h2>
+          <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{cognitiveMentalAssessmentSection.description}</p>
+        </div>
+        <button type="button" onClick={onCollapse} className="shrink-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:border-blue-300 hover:bg-blue-50">Згорнути систему ↑</button>
+      </div>
+
+      <div className="mb-3 rounded-lg border border-red-200 bg-white px-4 py-3 text-sm leading-6 text-slate-700">
+        <p className="font-bold text-red-800">Перед плановим оцінюванням</p>
+        <p>Гостра або мінлива сплутаність, порушення свідомості, новий неврологічний дефіцит, суїцидальні наміри чи психотичні симптоми потребують невідкладної оцінки.</p>
+      </div>
+
+      <div className="grid gap-3">
+        {cognitiveMentalGroups.map((group) => (
+          <AssessmentGroupCard key={group.id} group={group} tools={group.toolIds.map((id) => toolsById.get(id)).filter(Boolean)} onOpenQuestionnaire={onOpenQuestionnaire} />
+        ))}
+      </div>
+      <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{cognitiveMentalAssessmentSection.note}</p>
+    </section>
+  );
+}
+
 function ProfiledAssessment({ section, profiles, onOpenQuestionnaire, onCollapse }) {
   const tools = Array.from(
     new Map(profiles.flatMap((profile) => profile.tools).map((tool) => [tool.id, tool])).values(),
@@ -606,7 +666,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
       ) : isSystemsOpen && activeSystem === 'sensory' ? (
         <SensoryAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'cognitive-mental' ? (
-        <ProfiledAssessment section={cognitiveMentalAssessmentSection} profiles={cognitiveMentalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
+        <CognitiveMentalAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'urinary' ? (
         <ProfiledAssessment section={urinaryAssessmentSection} profiles={urinaryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'digestive' ? (
