@@ -108,6 +108,34 @@ const neurologicalGroups = [
   },
 ];
 
+const musculoskeletalGroups = [
+  {
+    id: 'msk-pain-function',
+    title: 'Біль і повсякденне функціонування',
+    label: 'Основне',
+    summary: 'Інтенсивність болю · функціональний вплив · WHODAS 2.0',
+    note: 'Інтенсивність болю показує вираженість симптому, а функціональний вплив і WHODAS 2.0 — обмеження активності та участі. Ці оцінки доповнюють, а не замінюють одна одну.',
+    toolIds: ['msk-pain-intensity', 'msk-pain-impact', 'msk-whodas'],
+    defaultOpen: true,
+  },
+  {
+    id: 'msk-mobility',
+    title: 'Рухливість, сила і базова мобільність',
+    label: 'Основне',
+    summary: 'Обсяг рухів і сила · 30-секундний тест вставання · TUG',
+    note: 'Обирайте тест за клінічним завданням: обсяг рухів і сила — для локального порушення, тест вставання — для функції нижніх кінцівок, TUG — для базової мобільності.',
+    toolIds: ['msk-range-strength', 'msk-chair-stand', 'msk-tug'],
+  },
+  {
+    id: 'msk-endurance',
+    title: 'Витривалість ходьби',
+    label: 'За окремими показаннями',
+    summary: '6-хвилинний тест ходьби (6MWT)',
+    note: '6MWT застосовуйте, коли клінічно важливі дистанція та переносимість тривалої ходьби і пацієнт може безпечно виконати тест. Він не потрібний рутинно кожному пацієнту.',
+    toolIds: ['msk-6mwt'],
+  },
+];
+
 function Detail({ title, children }) {
   return <div><p className="font-bold text-slate-900">{title}</p><div className="mt-1">{children}</div></div>;
 }
@@ -233,6 +261,32 @@ function NeurologicalAssessment({ onOpenQuestionnaire, onCollapse }) {
         ))}
       </div>
       <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{neurologicalAssessmentSection.note}</p>
+    </section>
+  );
+}
+
+function MusculoskeletalAssessment({ onOpenQuestionnaire, onCollapse }) {
+  const tools = Array.from(
+    new Map(musculoskeletalAssessmentProfiles.flatMap((profile) => profile.tools).map((tool) => [tool.id, tool])).values(),
+  );
+  const toolsById = new Map(tools.map((tool) => [tool.id, tool]));
+
+  return (
+    <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{musculoskeletalAssessmentSection.eyebrow}</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">{musculoskeletalAssessmentSection.title}</h2>
+          <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{musculoskeletalAssessmentSection.description}</p>
+        </div>
+        <button type="button" onClick={onCollapse} className="shrink-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:border-blue-300 hover:bg-blue-50">Згорнути систему ↑</button>
+      </div>
+      <div className="grid gap-3">
+        {musculoskeletalGroups.map((group) => (
+          <AssessmentGroupCard key={group.id} group={group} tools={group.toolIds.map((id) => toolsById.get(id)).filter(Boolean)} onOpenQuestionnaire={onOpenQuestionnaire} />
+        ))}
+      </div>
+      <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{musculoskeletalAssessmentSection.note}</p>
     </section>
   );
 }
@@ -423,7 +477,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
       ) : isSystemsOpen && activeSystem === 'neurological' ? (
         <NeurologicalAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'musculoskeletal' ? (
-        <ProfiledAssessment section={musculoskeletalAssessmentSection} profiles={musculoskeletalAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
+        <MusculoskeletalAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'cardiovascular' ? (
         <ProfiledAssessment section={cardiovascularAssessmentSection} profiles={cardiovascularAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'sensory' ? (
