@@ -271,6 +271,41 @@ const urinaryGroups = [
   },
 ];
 
+const digestiveGroups = [
+  {
+    id: 'digestive-swallowing',
+    title: 'Оцінювання при підозрі на дисфагію',
+    label: 'За симптомами',
+    summary: 'Скринінг ковтання · фактичне приймання їжі · консистенції IDDSI',
+    note: 'Спочатку оцініть безпечність ковтання і фактичний спосіб харчування. IDDSI використовуйте лише для документування вже визначеної фахівцем консистенції, а не для її автоматичного вибору.',
+    toolIds: ['digestive-swallowing-screen', 'digestive-oral-intake', 'digestive-iddsi'],
+  },
+  {
+    id: 'digestive-nutrition',
+    title: 'Ризик недостатнього харчування',
+    label: 'За показаннями',
+    summary: 'ІМТ · ненавмисна втрата маси · фактичне споживання',
+    note: 'Скринінг визначає потребу в поглибленій нутритивній оцінці, але не формує план харчової підтримки автоматично.',
+    toolIds: ['digestive-nutrition-risk'],
+  },
+  {
+    id: 'digestive-bowel',
+    title: 'Кишкові функції і континенція',
+    label: 'За симптомами',
+    summary: 'Щоденник кишкових функцій · повсякденний вплив',
+    note: 'Щоденник показує звичний патерн, а функціональна оцінка — потребу в допомозі та вплив на участь. Вони не встановлюють причину симптомів.',
+    toolIds: ['digestive-bowel-diary', 'digestive-bowel-impact'],
+  },
+  {
+    id: 'digestive-complex-functioning',
+    title: 'Ширше функціонування при комплексному стані',
+    label: 'За потреби',
+    summary: 'WHODAS 2.0',
+    note: 'WHODAS 2.0 додавайте, коли ковтання, харчування або кишкові симптоми впливають на ширші сфери активності та участі.',
+    toolIds: ['digestive-whodas'],
+  },
+];
+
 function Detail({ title, children }) {
   return <div><p className="font-bold text-slate-900">{title}</p><div className="mt-1">{children}</div></div>;
 }
@@ -536,6 +571,32 @@ function UrinaryAssessment({ onOpenQuestionnaire, onCollapse }) {
   );
 }
 
+function DigestiveAssessment({ onOpenQuestionnaire, onCollapse }) {
+  const tools = Array.from(
+    new Map(digestiveAssessmentProfiles.flatMap((profile) => profile.tools).map((tool) => [tool.id, tool])).values(),
+  );
+  const toolsById = new Map(tools.map((tool) => [tool.id, tool]));
+
+  return (
+    <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{digestiveAssessmentSection.eyebrow}</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">{digestiveAssessmentSection.title}</h2>
+          <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{digestiveAssessmentSection.description}</p>
+        </div>
+        <button type="button" onClick={onCollapse} className="shrink-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:border-blue-300 hover:bg-blue-50">Згорнути систему ↑</button>
+      </div>
+      <div className="grid gap-3">
+        {digestiveGroups.map((group) => (
+          <AssessmentGroupCard key={group.id} group={group} tools={group.toolIds.map((id) => toolsById.get(id)).filter(Boolean)} onOpenQuestionnaire={onOpenQuestionnaire} />
+        ))}
+      </div>
+      <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{digestiveAssessmentSection.note}</p>
+    </section>
+  );
+}
+
 function ProfiledAssessment({ section, profiles, onOpenQuestionnaire, onCollapse }) {
   const tools = Array.from(
     new Map(profiles.flatMap((profile) => profile.tools).map((tool) => [tool.id, tool])).values(),
@@ -732,7 +793,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
       ) : isSystemsOpen && activeSystem === 'urinary' ? (
         <UrinaryAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'digestive' ? (
-        <ProfiledAssessment section={digestiveAssessmentSection} profiles={digestiveAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
+        <DigestiveAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'daily-living' ? (
         <ProfiledAssessment section={dailyLivingAssessmentSection} profiles={dailyLivingAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : null}
