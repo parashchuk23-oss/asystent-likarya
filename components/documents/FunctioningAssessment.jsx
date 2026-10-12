@@ -136,6 +136,49 @@ const musculoskeletalGroups = [
   },
 ];
 
+const cardiovascularGroups = [
+  {
+    id: 'cardio-exercise-response',
+    title: 'Реакція на навантаження',
+    label: 'Основне',
+    summary: 'ЧСС · АТ · SpO₂ · задишка і втома',
+    note: 'Життєві показники та симптоми оцінюють разом до, під час і після однакового навантаження. Суб’єктивна шкала симптомів не замінює об’єктивні вимірювання.',
+    toolIds: ['cardio-vital-response', 'cardio-exertional-symptoms'],
+    defaultOpen: true,
+  },
+  {
+    id: 'cardio-functional-capacity',
+    title: 'Функціональна спроможність',
+    label: 'Основне',
+    summary: '6MWT · повсякденне функціонування',
+    note: '6MWT показує переносимість стандартизованої ходьби, а WHODAS 2.0 — ширший вплив стану на повсякденну активність та участь.',
+    toolIds: ['cardio-6mwt', 'cardio-whodas'],
+  },
+  {
+    id: 'cardio-heart-failure',
+    title: 'Оцінювання при серцевій недостатності',
+    label: 'За діагнозом',
+    summary: 'Функціональний клас NYHA',
+    note: 'NYHA застосовують для опису симптомного обмеження при серцевій недостатності; клас доповнює, але не замінює об’єктивні дослідження.',
+    toolIds: ['cardio-nyha'],
+  },
+  {
+    id: 'cardio-peripheral-arteries',
+    title: 'Оцінювання периферичних артерій',
+    label: 'За діагнозом',
+    summary: 'Кісточково-плечовий індекс · ходьба з фіксацією кульгавості',
+    note: 'КПІ характеризує артеріальний кровоплин, а стандартизована ходьба — фактичне симптомне обмеження. Ці оцінки відповідають на різні клінічні питання.',
+    toolIds: ['cardio-abi', 'cardio-claudication-walk'],
+  },
+  {
+    id: 'cardio-orthostatic',
+    title: 'Оцінювання ортостатичних симптомів',
+    label: 'За симптомами',
+    summary: 'Ортостатична проба з АТ і ЧСС',
+    toolIds: ['cardio-orthostatic-bp'],
+  },
+];
+
 function Detail({ title, children }) {
   return <div><p className="font-bold text-slate-900">{title}</p><div className="mt-1">{children}</div></div>;
 }
@@ -287,6 +330,32 @@ function MusculoskeletalAssessment({ onOpenQuestionnaire, onCollapse }) {
         ))}
       </div>
       <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{musculoskeletalAssessmentSection.note}</p>
+    </section>
+  );
+}
+
+function CardiovascularAssessment({ onOpenQuestionnaire, onCollapse }) {
+  const tools = Array.from(
+    new Map(cardiovascularAssessmentProfiles.flatMap((profile) => profile.tools).map((tool) => [tool.id, tool])).values(),
+  );
+  const toolsById = new Map(tools.map((tool) => [tool.id, tool]));
+
+  return (
+    <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{cardiovascularAssessmentSection.eyebrow}</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">{cardiovascularAssessmentSection.title}</h2>
+          <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{cardiovascularAssessmentSection.description}</p>
+        </div>
+        <button type="button" onClick={onCollapse} className="shrink-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:border-blue-300 hover:bg-blue-50">Згорнути систему ↑</button>
+      </div>
+      <div className="grid gap-3">
+        {cardiovascularGroups.map((group) => (
+          <AssessmentGroupCard key={group.id} group={group} tools={group.toolIds.map((id) => toolsById.get(id)).filter(Boolean)} onOpenQuestionnaire={onOpenQuestionnaire} />
+        ))}
+      </div>
+      <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{cardiovascularAssessmentSection.note}</p>
     </section>
   );
 }
@@ -479,7 +548,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
       ) : isSystemsOpen && activeSystem === 'musculoskeletal' ? (
         <MusculoskeletalAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'cardiovascular' ? (
-        <ProfiledAssessment section={cardiovascularAssessmentSection} profiles={cardiovascularAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
+        <CardiovascularAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'sensory' ? (
         <ProfiledAssessment section={sensoryAssessmentSection} profiles={sensoryAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'cognitive-mental' ? (
