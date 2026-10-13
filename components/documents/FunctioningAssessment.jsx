@@ -306,6 +306,42 @@ const digestiveGroups = [
   },
 ];
 
+const dailyLivingGroups = [
+  {
+    id: 'daily-basic-activities',
+    title: 'Базове самообслуговування',
+    label: 'Основне',
+    summary: 'Індекс Бартел · спостереження за виконанням дії',
+    note: 'Фіксуйте те, що людина фактично виконує, а не лише її потенційну здатність. Спостереження за конкретною дією допомагає уточнити тип потрібної допомоги.',
+    toolIds: ['daily-barthel', 'daily-task-observation'],
+    defaultOpen: true,
+  },
+  {
+    id: 'daily-instrumental',
+    title: 'Складні побутові дії',
+    label: 'За потреби',
+    summary: 'Ліки · покупки · харчування · фінанси · транспорт · домашні справи',
+    note: 'Оцінюйте фактичне виконання з урахуванням звичного попереднього рівня, ролей, середовища та доступної підтримки.',
+    toolIds: ['daily-instrumental-activities'],
+  },
+  {
+    id: 'daily-discharge-support',
+    title: 'Безпечна виписка і необхідна підтримка',
+    label: 'Перед випискою',
+    summary: 'Домашнє середовище · допомога · нагляд · незакриті потреби',
+    note: 'До повернення додому визначте конкретні небезпеки, дії, для яких потрібна допомога, її частоту та доступного помічника.',
+    toolIds: ['daily-home-safety', 'daily-assistance-plan'],
+  },
+  {
+    id: 'daily-broader-functioning',
+    title: 'Ширше повсякденне функціонування',
+    label: 'За потреби',
+    summary: 'WHODAS 2.0',
+    note: 'WHODAS 2.0 додавайте, коли потрібно оцінити когніцію, мобільність, життєву активність та участь поза межами базового самообслуговування.',
+    toolIds: ['daily-whodas'],
+  },
+];
+
 function Detail({ title, children }) {
   return <div><p className="font-bold text-slate-900">{title}</p><div className="mt-1">{children}</div></div>;
 }
@@ -597,6 +633,32 @@ function DigestiveAssessment({ onOpenQuestionnaire, onCollapse }) {
   );
 }
 
+function DailyLivingAssessment({ onOpenQuestionnaire, onCollapse }) {
+  const tools = Array.from(
+    new Map(dailyLivingAssessmentProfiles.flatMap((profile) => profile.tools).map((tool) => [tool.id, tool])).values(),
+  );
+  const toolsById = new Map(tools.map((tool) => [tool.id, tool]));
+
+  return (
+    <section className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-teal-700">{dailyLivingAssessmentSection.eyebrow}</p>
+          <h2 className="mt-2 text-2xl font-bold text-slate-950">{dailyLivingAssessmentSection.title}</h2>
+          <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{dailyLivingAssessmentSection.description}</p>
+        </div>
+        <button type="button" onClick={onCollapse} className="shrink-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:border-blue-300 hover:bg-blue-50">Згорнути систему ↑</button>
+      </div>
+      <div className="grid gap-3">
+        {dailyLivingGroups.map((group) => (
+          <AssessmentGroupCard key={group.id} group={group} tools={group.toolIds.map((id) => toolsById.get(id)).filter(Boolean)} onOpenQuestionnaire={onOpenQuestionnaire} />
+        ))}
+      </div>
+      <p className="mt-5 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-semibold leading-6 text-slate-700">{dailyLivingAssessmentSection.note}</p>
+    </section>
+  );
+}
+
 function ProfiledAssessment({ section, profiles, onOpenQuestionnaire, onCollapse }) {
   const tools = Array.from(
     new Map(profiles.flatMap((profile) => profile.tools).map((tool) => [tool.id, tool])).values(),
@@ -795,7 +857,7 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
       ) : isSystemsOpen && activeSystem === 'digestive' ? (
         <DigestiveAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : isSystemsOpen && activeSystem === 'daily-living' ? (
-        <ProfiledAssessment section={dailyLivingAssessmentSection} profiles={dailyLivingAssessmentProfiles} onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
+        <DailyLivingAssessment onOpenQuestionnaire={onOpenQuestionnaire} onCollapse={collapseSystem} />
       ) : null}
     </div>
   );
