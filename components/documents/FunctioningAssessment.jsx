@@ -10,7 +10,7 @@ import { cognitiveMentalAssessmentProfiles, cognitiveMentalAssessmentSection } f
 import { urinaryAssessmentProfiles, urinaryAssessmentSection } from '../../data/functioning/urinaryAssessment';
 import { digestiveAssessmentProfiles, digestiveAssessmentSection } from '../../data/functioning/digestiveAssessment';
 import { dailyLivingAssessmentProfiles, dailyLivingAssessmentSection } from '../../data/functioning/dailyLivingAssessment';
-import { order774EntryCount, order774Source, searchOrder774 } from '../../data/rehabilitation/order774Search';
+import { order774EntryCount, order774Source, searchOrder774, searchOrder774Diagnoses } from '../../data/rehabilitation/order774Search';
 
 const assessmentSystems = [
   { id: 'respiratory', label: 'Дихальна система' },
@@ -706,13 +706,48 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
   const [visibleCount, setVisibleCount] = useState(12);
+  const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
   const products = useMemo(() => searchOrder774(submittedQuery), [submittedQuery]);
+  const diagnosisSuggestions = useMemo(() => searchOrder774Diagnoses(query), [query]);
   const searched = Boolean(submittedQuery);
 
   function submit(event) {
     event.preventDefault();
     setSubmittedQuery(query.trim());
     setVisibleCount(12);
+    setIsSuggestionsOpen(false);
+  }
+
+  function selectDiagnosis(diagnosis) {
+    setQuery(`${diagnosis.code} — ${diagnosis.title}`);
+    setSubmittedQuery(diagnosis.code);
+    setVisibleCount(12);
+    setIsSuggestionsOpen(false);
+  }
+
+  function handleDiagnosisKeyDown(event) {
+    if (!isSuggestionsOpen || diagnosisSuggestions.length === 0) {
+      if (event.key === 'ArrowDown' && diagnosisSuggestions.length > 0) {
+        event.preventDefault();
+        setIsSuggestionsOpen(true);
+      }
+      return;
+    }
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setActiveSuggestionIndex((index) => (index + 1) % diagnosisSuggestions.length);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setActiveSuggestionIndex((index) => (index - 1 + diagnosisSuggestions.length) % diagnosisSuggestions.length);
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      selectDiagnosis(diagnosisSuggestions[activeSuggestionIndex] || diagnosisSuggestions[0]);
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      setIsSuggestionsOpen(false);
+    }
   }
 
   function collapseSystem() {
@@ -742,8 +777,50 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
           </div>
           <div id="rehabilitation-search-content">
             <form onSubmit={submit} className="mt-5 flex flex-col gap-3 sm:flex-row">
-              <label htmlFor="rehabilitation-diagnosis" className="sr-only">Діагноз або код МКХ-10</label>
-              <input id="rehabilitation-diagnosis" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Наприклад: G35, M17.1 або розсіяний склероз" autoComplete="off" className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-4 py-3 text-base text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-100" />
+              <div className="relative min-w-0 flex-1" onBlur={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget)) setIsSuggestionsOpen(false);
+              }}>
+                <label htmlFor="rehabilitation-diagnosis" className="sr-only">Діагноз або код МКХ-10</label>
+                <input
+                  id="rehabilitation-diagnosis"
+                  value={query}
+                  onChange={(event) => {
+                    setQuery(event.target.value);
+                    setActiveSuggestionIndex(0);
+                    setIsSuggestionsOpen(Boolean(event.target.value.trim()));
+                  }}
+                  onFocus={() => setIsSuggestionsOpen(Boolean(query.trim()))}
+                  onKeyDown={handleDiagnosisKeyDown}
+                  placeholder="Введіть код МКХ-10 або назву діагнозу"
+                  autoComplete="off"
+                  role="combobox"
+                  aria-autocomplete="list"
+                  aria-expanded={isSuggestionsOpen && diagnosisSuggestions.length > 0}
+                  aria-controls="rehabilitation-diagnosis-suggestions"
+                  aria-activedescendant={isSuggestionsOpen && diagnosisSuggestions.length > 0 ? `rehabilitation-diagnosis-option-${activeSuggestionIndex}` : undefined}
+                  className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-base text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-100"
+                />
+                {isSuggestionsOpen && diagnosisSuggestions.length > 0 && (
+                  <ul id="rehabilitation-diagnosis-suggestions" role="listbox" className="absolute z-20 mt-1 max-h-80 w-full overflow-y-auto rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
+                    {diagnosisSuggestions.map((diagnosis, index) => (
+                      <li key={diagnosis.code} role="none">
+                        <button
+                          id={`rehabilitation-diagnosis-option-${index}`}
+                          type="button"
+                          role="option"
+                          aria-selected={index === activeSuggestionIndex}
+                          onMouseEnter={() => setActiveSuggestionIndex(index)}
+                          onClick={() => selectDiagnosis(diagnosis)}
+                          className={`flex w-full items-start gap-3 px-4 py-2.5 text-left text-sm ${index === activeSuggestionIndex ? 'bg-teal-50 text-teal-950' : 'text-slate-800 hover:bg-slate-50'}`}
+                        >
+                          <span className="shrink-0 font-bold text-teal-800">{diagnosis.code}</span>
+                          <span>{diagnosis.title}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
               <button type="submit" className="rounded-lg bg-teal-700 px-5 py-3 font-bold text-white transition hover:bg-teal-800">Знайти засоби</button>
             </form>
           </div>
