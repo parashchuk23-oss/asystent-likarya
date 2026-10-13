@@ -27,8 +27,8 @@ const sources = {
     url: 'https://publications.ersnet.org/content/erj/60/1/2101499',
   },
   ats6mwt: {
-    label: 'ATS Statement: Guidelines for the Six-Minute Walk Test, 2002',
-    url: 'https://www.thoracic.org/statements/resources/pfet/sixminute.pdf',
+    label: 'American Thoracic Society — Field Walking Tests',
+    url: 'https://site.thoracic.org/assemblies/pr/outcome-measures/field-walking-tests',
   },
   ersFieldWalking: {
     label: 'ERS/ATS technical standard: field walking tests in chronic respiratory disease, 2014',
