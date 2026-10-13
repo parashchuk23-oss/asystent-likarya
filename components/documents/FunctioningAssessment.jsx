@@ -12,13 +12,6 @@ import { digestiveAssessmentProfiles, digestiveAssessmentSection } from '../../d
 import { dailyLivingAssessmentProfiles, dailyLivingAssessmentSection } from '../../data/functioning/dailyLivingAssessment';
 import { order774EntryCount, order774Source, searchOrder774 } from '../../data/rehabilitation/order774Search';
 
-const searchExamples = [
-  { code: 'G35', title: 'Розсіяний склероз' },
-  { code: 'I69', title: 'Наслідки інсульту' },
-  { code: 'M17', title: 'Гонартроз' },
-  { code: 'S72', title: 'Перелом стегнової кістки' },
-];
-
 const assessmentSystems = [
   { id: 'respiratory', label: 'Дихальна система' },
   { id: 'neurological', label: 'Неврологічна система' },
@@ -722,12 +715,6 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
     setVisibleCount(12);
   }
 
-  function selectDiagnosis(item) {
-    setQuery(`${item.code} — ${item.title}`);
-    setSubmittedQuery(item.code);
-    setVisibleCount(12);
-  }
-
   function collapseSystem() {
     setActiveSystem('');
     requestAnimationFrame(() => systemsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
@@ -759,13 +746,6 @@ export default function FunctioningAssessment({ onOpenQuestionnaire }) {
               <input id="rehabilitation-diagnosis" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Наприклад: G35, M17.1 або розсіяний склероз" autoComplete="off" className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-4 py-3 text-base text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-100" />
               <button type="submit" className="rounded-lg bg-teal-700 px-5 py-3 font-bold text-white transition hover:bg-teal-800">Знайти засоби</button>
             </form>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {searchExamples.map((item) => (
-                <button key={item.code} type="button" onClick={() => selectDiagnosis(item)} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:border-teal-300 hover:bg-teal-50">
-                  {item.code} — {item.title}
-                </button>
-              ))}
-            </div>
           </div>
         </section>
       ) : (
