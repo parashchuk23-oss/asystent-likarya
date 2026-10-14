@@ -42,8 +42,13 @@ export default function Gad7Page() {
     <SeoToolPage
       title="Скринінг тривожності — GAD-7"
       description="Оцінка вираженості симптомів тривоги протягом останніх двох тижнів."
+      path="/gad7"
       faq={faq}
       disclaimer="GAD-7 не встановлює діагноз і не замінює консультацію фахівця. Результат потрібно інтерпретувати разом із клінічними симптомами, анамнезом і впливом стану на повсякденне життя."
+      relatedTools={[
+        { href: '/phq9', label: 'Опитувальник PHQ-9' },
+        { href: '/findrisk', label: 'Калькулятор FINDRISC' },
+      ]}
     >
       <Gad7Questionnaire showIntro={false} />
     </SeoToolPage>

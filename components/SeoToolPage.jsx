@@ -1,9 +1,61 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function SeoToolPage({ title, description, children, faq, disclaimer }) {
+const siteUrl = 'https://www.asystentlikarya.com.ua';
+
+function JsonLd({ title, description, path, faq }) {
+  const pageUrl = `${siteUrl}${path}`;
+  const structuredData = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: title,
+      description,
+      url: pageUrl,
+      applicationCategory: 'HealthApplication',
+      operatingSystem: 'Any',
+      inLanguage: 'uk',
+      isAccessibleForFree: true,
+      publisher: {
+        '@type': 'Organization',
+        name: 'Асистент лікаря',
+        url: siteUrl,
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faq.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.answer,
+        },
+      })),
+    },
+  ];
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }}
+    />
+  );
+}
+
+export default function SeoToolPage({
+  title,
+  description,
+  path,
+  children,
+  faq,
+  disclaimer,
+  relatedTools = [],
+}) {
   return (
     <main className="min-h-screen">
+      <JsonLd title={title} description={description} path={path} faq={faq} />
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <header className="flex items-center justify-between gap-4 border-b border-slate-200 py-4">
           <Link href="/" className="flex min-w-0 items-center gap-2 text-slate-900">
@@ -55,6 +107,23 @@ export default function SeoToolPage({ title, description, children, faq, disclai
             <h2 className="font-semibold text-slate-900">Медичний дисклеймер</h2>
             <p className="mt-1">{disclaimer}</p>
           </aside>
+
+          {relatedTools.length > 0 ? (
+            <nav className="mt-8 border-t border-slate-200 pt-6" aria-label="Пов’язані інструменти">
+              <h2 className="text-base font-semibold text-slate-950">Пов’язані інструменти</h2>
+              <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
+                {relatedTools.map((tool) => (
+                  <Link
+                    key={tool.href}
+                    href={tool.href}
+                    className="text-sm font-semibold text-blue-700 hover:text-blue-800 hover:underline"
+                  >
+                    {tool.label}
+                  </Link>
+                ))}
+              </div>
+            </nav>
+          ) : null}
         </article>
 
         <footer className="border-t border-slate-200 py-5 text-xs leading-relaxed text-slate-500">

@@ -43,8 +43,14 @@ export default function EgfrPage() {
     <SeoToolPage
       title="Калькулятор ШКФ (eGFR) за CKD-EPI 2021"
       description="Розрахуйте ниркову функцію за креатиніном, визначте категорію ШКФ, оцініть ACR і орієнтовний ризик за матрицею KDIGO."
+      path="/egfr"
       faq={faq}
       disclaimer="Результат залежить від точності введених даних і клінічної ситуації. Він не встановлює діагноз самостійно та не замінює оцінку лікаря, повторні дослідження або локальні рекомендації щодо дозування препаратів."
+      relatedTools={[
+        { href: '/score2', label: 'Калькулятор SCORE2' },
+        { href: '/calculators/bmi', label: 'Калькулятор ІМТ' },
+        { href: '/available-medicines', label: 'Доступні ліки' },
+      ]}
     >
       <EgfrTab />
     </SeoToolPage>

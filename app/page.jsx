@@ -4,9 +4,18 @@ import AppTabs from '../components/AppTabs';
 const popularTools = [
   { href: '/egfr', label: 'ШКФ (CKD-EPI)' },
   { href: '/score2', label: 'SCORE2' },
+  { href: '/calculators/bmi', label: 'ІМТ' },
+  { href: '/calculators/venous-thromboembolism', label: 'Венозна тромбоемболія' },
+  { href: '/6mwt', label: '6-хвилинний тест ходьби' },
   { href: '/gad7', label: 'GAD-7' },
   { href: '/phq9', label: 'PHQ-9' },
   { href: '/findrisk', label: 'FINDRISK' },
+];
+
+const clinicalReferences = [
+  { href: '/antimicrobial-therapy', label: 'Антимікробна терапія' },
+  { href: '/available-medicines', label: 'Доступні ліки' },
+  { href: '/rehabilitation-aids', label: 'Засоби реабілітації' },
 ];
 
 export default function HomePage() {
@@ -27,6 +36,18 @@ export default function HomePage() {
                 className="text-sm font-medium text-blue-700 transition hover:text-blue-800 hover:underline"
               >
                 {tool.label}
+              </Link>
+            ))}
+          </nav>
+          <h2 className="mt-4 text-sm font-semibold text-slate-900">Клінічні довідники</h2>
+          <nav className="mt-2 flex flex-wrap gap-x-5 gap-y-2" aria-label="Клінічні довідники">
+            {clinicalReferences.map((reference) => (
+              <Link
+                key={reference.href}
+                href={reference.href}
+                className="text-sm font-medium text-blue-700 transition hover:text-blue-800 hover:underline"
+              >
+                {reference.label}
               </Link>
             ))}
           </nav>

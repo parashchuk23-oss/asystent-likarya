@@ -43,8 +43,14 @@ export default function FindriskPage() {
     <SeoToolPage
       title="Калькулятор FINDRISC українською"
       description="Оцініть основні фактори, пов’язані з ризиком розвитку цукрового діабету 2 типу, без лабораторних досліджень на етапі первинного скринінгу."
+      path="/findrisk"
       faq={faq}
       disclaimer="FINDRISC не діагностує цукровий діабет. Підвищений результат потребує клінічної оцінки та, за показами, лабораторного підтвердження відповідно до чинних рекомендацій."
+      relatedTools={[
+        { href: '/calculators/bmi', label: 'Калькулятор ІМТ' },
+        { href: '/score2', label: 'Калькулятор SCORE2' },
+        { href: '/egfr', label: 'Калькулятор ШКФ' },
+      ]}
     >
       <FindriscQuestionnaire showIntro={false} />
     </SeoToolPage>

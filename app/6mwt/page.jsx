@@ -45,8 +45,14 @@ export default function SixMinuteWalkTestPage() {
     <SeoToolPage
       title="6-хвилинний тест ходьби (6MWT)"
       description="Стандартизоване проведення та документування тесту з таймером, автоматичним розрахунком дистанції й протоколом для друку."
+      path="/6mwt"
       faq={faq}
       disclaimer="Результат 6MWT потрібно інтерпретувати в клінічному контексті. Модуль не визначає діагноз, індивідуальну норму або функціональну групу автоматично."
+      relatedTools={[
+        { href: '/calculators/bmi', label: 'Калькулятор ІМТ' },
+        { href: '/egfr', label: 'Калькулятор ШКФ' },
+        { href: '/rehabilitation-aids', label: 'Засоби реабілітації' },
+      ]}
     >
       <SixMinuteWalkTest />
     </SeoToolPage>

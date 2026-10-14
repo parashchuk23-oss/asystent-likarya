@@ -43,8 +43,14 @@ export default function Score2Page() {
     <SeoToolPage
       title="Калькулятор SCORE2 та SCORE2-OP"
       description="Оцініть орієнтовний 10-річний серцево-судинний ризик за клінічними показниками та факторами первинної профілактики."
+      path="/score2"
       faq={faq}
       disclaimer="SCORE2 і SCORE2-OP є допоміжними інструментами стратифікації ризику. Результат не замінює клінічну оцінку, перевірку показань та протипоказань або індивідуальне рішення щодо профілактики."
+      relatedTools={[
+        { href: '/egfr', label: 'Калькулятор ШКФ' },
+        { href: '/calculators/bmi', label: 'Калькулятор ІМТ' },
+        { href: '/findrisk', label: 'Калькулятор FINDRISC' },
+      ]}
     >
       <Score2Tab />
     </SeoToolPage>

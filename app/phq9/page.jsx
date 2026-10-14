@@ -42,8 +42,13 @@ export default function Phq9Page() {
     <SeoToolPage
       title="Опитувальник PHQ-9 українською"
       description="Заповніть дев’ять запитань для структурованої оцінки вираженості депресивних симптомів за останні два тижні."
+      path="/phq9"
       faq={faq}
       disclaimer="PHQ-9 є скринінговим інструментом і не замінює клінічну діагностику. Позитивна відповідь на запитання про смерть або самоушкодження потребує окремої своєчасної оцінки безпеки."
+      relatedTools={[
+        { href: '/gad7', label: 'Опитувальник GAD-7' },
+        { href: '/findrisk', label: 'Калькулятор FINDRISC' },
+      ]}
     >
       <Phq9Questionnaire showIntro={false} />
     </SeoToolPage>
