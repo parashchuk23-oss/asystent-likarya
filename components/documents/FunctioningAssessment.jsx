@@ -698,9 +698,9 @@ function AssistiveProductCard({ product }) {
   );
 }
 
-export default function FunctioningAssessment({ onOpenQuestionnaire }) {
+export default function FunctioningAssessment({ initialSearchOpen = false, onOpenQuestionnaire }) {
   const [activeSystem, setActiveSystem] = useState('');
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(initialSearchOpen);
   const [isSystemsOpen, setIsSystemsOpen] = useState(false);
   const systemsRef = useRef(null);
   const [query, setQuery] = useState('');

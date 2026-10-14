@@ -65,7 +65,12 @@ const tabs = [
   },
 ];
 
-export default function AppTabs({ initialTab = 'home', initialDrugSection = 'guide' }) {
+export default function AppTabs({
+  initialTab = 'home',
+  initialDrugSection = 'guide',
+  initialDocumentArea = 'regulations',
+  initialRehabilitationSearchOpen = false,
+}) {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [requestedQuestionnaireId, setRequestedQuestionnaireId] = useState(null);
   const activeTabData = tabs.find((tab) => tab.id === activeTab);
@@ -112,7 +117,13 @@ export default function AppTabs({ initialTab = 'home', initialDrugSection = 'gui
         {activeTab === 'ecg' && <EcgTab />}
         {activeTab === 'drugs' && <PharmacologyTab initialSection={initialDrugSection} />}
         {activeTab === 'diseases' && <DiseasesTab />}
-        {activeTab === 'documents' && <DocumentsTab onOpenQuestionnaire={openQuestionnaire} />}
+        {activeTab === 'documents' && (
+          <DocumentsTab
+            initialArea={initialDocumentArea}
+            initialRehabilitationSearchOpen={initialRehabilitationSearchOpen}
+            onOpenQuestionnaire={openQuestionnaire}
+          />
+        )}
       </div>
     </section>
   );

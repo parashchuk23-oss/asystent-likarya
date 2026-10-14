@@ -25,8 +25,12 @@ const documentAreas = [
   },
 ];
 
-export default function DocumentsTab({ onOpenQuestionnaire }) {
-  const [activeArea, setActiveArea] = useState('regulations');
+export default function DocumentsTab({
+  initialArea = 'regulations',
+  initialRehabilitationSearchOpen = false,
+  onOpenQuestionnaire,
+}) {
+  const [activeArea, setActiveArea] = useState(initialArea);
   const [selectedRegulationId, setSelectedRegulationId] = useState(regulations[0]?.id);
   const selectedRegulation = regulations.find((regulation) => regulation.id === selectedRegulationId);
 
@@ -71,7 +75,10 @@ export default function DocumentsTab({ onOpenQuestionnaire }) {
       )}
 
       {activeArea === 'functioning' && (
-        <FunctioningAssessment onOpenQuestionnaire={onOpenQuestionnaire} />
+        <FunctioningAssessment
+          initialSearchOpen={initialRehabilitationSearchOpen}
+          onOpenQuestionnaire={onOpenQuestionnaire}
+        />
       )}
 
       {activeArea === 'regulations' && (
