@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function SeoToolPage({ title, description, children, faq, disclaimer }) {
   return (
@@ -6,9 +7,11 @@ export default function SeoToolPage({ title, description, children, faq, disclai
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <header className="flex items-center justify-between gap-4 border-b border-slate-200 py-4">
           <Link href="/" className="flex min-w-0 items-center gap-2 text-slate-900">
-            <img
+            <Image
               src="/brand/logo-mark.png"
               alt=""
+              width={36}
+              height={36}
               className="h-9 w-9 shrink-0 object-contain"
             />
             <span className="truncate text-sm font-semibold sm:text-base">Асистент лікаря</span>

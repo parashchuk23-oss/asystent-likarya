@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 const productSections = [
   {
     tabId: 'assistant',
@@ -38,9 +40,12 @@ export default function HomeTab({ onSelectTab }) {
     <div className="space-y-6">
       <section className="rounded-lg border border-slate-200 bg-white p-5">
         <div className="flex items-center gap-4">
-          <img
+          <Image
             src="/brand/logo-mark.png"
             alt="Логотип Асистента лікаря"
+            width={56}
+            height={56}
+            priority
             className="h-14 w-14 shrink-0 object-contain"
           />
           <div>

@@ -1,16 +1,26 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
-import CalculatorsTab from './CalculatorsTab';
-import CardioAssistantTab from './CardioAssistantTab';
-import DiseasesTab from './DiseasesTab';
-import DocumentsTab from './DocumentsTab';
-import EcgTab from './ecg/EcgTab';
 import HomeTab from './HomeTab';
-import PharmacologyTab from './PharmacologyTab';
-import QuestionnairesTab from './QuestionnairesTab';
-import UltrasoundTab from './ultrasound/UltrasoundTab';
-import VaccinationTab from './VaccinationTab';
+
+function TabLoading() {
+  return (
+    <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-8 text-center text-sm font-medium text-slate-500">
+      Завантаження розділу…
+    </div>
+  );
+}
+
+const CalculatorsTab = dynamic(() => import('./CalculatorsTab'), { loading: TabLoading });
+const CardioAssistantTab = dynamic(() => import('./CardioAssistantTab'), { loading: TabLoading });
+const DiseasesTab = dynamic(() => import('./DiseasesTab'), { loading: TabLoading });
+const DocumentsTab = dynamic(() => import('./DocumentsTab'), { loading: TabLoading });
+const EcgTab = dynamic(() => import('./ecg/EcgTab'), { loading: TabLoading });
+const PharmacologyTab = dynamic(() => import('./PharmacologyTab'), { loading: TabLoading });
+const QuestionnairesTab = dynamic(() => import('./QuestionnairesTab'), { loading: TabLoading });
+const UltrasoundTab = dynamic(() => import('./ultrasound/UltrasoundTab'), { loading: TabLoading });
+const VaccinationTab = dynamic(() => import('./VaccinationTab'), { loading: TabLoading });
 
 const tabs = [
   {
