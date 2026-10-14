@@ -76,7 +76,7 @@ export default function PrintableQuestionnaire({
     <section className="print-area questionnaire-print-area hidden">
       <div className="print-header">
         <p className="print-brand">Асистент лікаря</p>
-        <h1>{title}</h1>
+        <p className="print-document-title">{title}</p>
         {instruction ? <p className="print-instruction">{instruction}</p> : null}
       </div>
 

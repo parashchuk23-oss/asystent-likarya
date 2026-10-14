@@ -37,6 +37,14 @@ export default function AntimicrobialTherapyPage() {
   return (
     <main className="min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:py-4">
+        <header className="mb-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">
+            Клінічний навігатор
+          </p>
+          <h1 className="mt-2 text-2xl font-bold text-slate-950 sm:text-3xl">
+            Антимікробна терапія для первинної допомоги
+          </h1>
+        </header>
         <AppTabs initialTab="drugs" initialDrugSection="antimicrobial" />
 
         <footer className="mt-6 rounded-lg border border-slate-200/80 bg-white/90 p-4 text-xs leading-relaxed text-slate-500 shadow-sm shadow-slate-200/60">

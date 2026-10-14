@@ -254,7 +254,7 @@ export default function SixMinuteWalkTest() {
   const printMarkup = (
     <section className="print-area questionnaire-print-area hidden">
       <div className="print-header">
-        <h1>Протокол проведення 6-хвилинного тесту ходьби (6MWT)</h1>
+        <p className="print-document-title">Протокол проведення 6-хвилинного тесту ходьби (6MWT)</p>
       </div>
       <div className="print-patient-grid">
         <div>ПІБ: ________________________________________________</div>

@@ -29,6 +29,14 @@ export default function BmiUkrainianPage() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-6 text-slate-900 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
+        <header className="mb-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">
+            Клінічний калькулятор
+          </p>
+          <h1 className="mt-2 text-2xl font-bold text-slate-950 sm:text-3xl">
+            Калькулятор ІМТ та оцінка маси тіла
+          </h1>
+        </header>
         <BmiCalculator />
       </div>
     </main>

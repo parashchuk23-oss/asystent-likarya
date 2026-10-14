@@ -37,6 +37,14 @@ export default function RehabilitationAidsPage() {
   return (
     <main className="min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:py-4">
+        <header className="mb-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-teal-700">
+            Реабілітаційні засоби
+          </p>
+          <h1 className="mt-2 text-2xl font-bold text-slate-950 sm:text-3xl">
+            Пошук засобів за діагнозом або кодом МКХ-10
+          </h1>
+        </header>
         <AppTabs
           initialTab="documents"
           initialDocumentArea="functioning"

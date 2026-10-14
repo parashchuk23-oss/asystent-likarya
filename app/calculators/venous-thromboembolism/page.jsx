@@ -35,6 +35,9 @@ export default function VenousThromboembolismUkrainianPage() {
         <span className="mx-2">/</span>
         <span className="font-semibold text-slate-800">Венозна тромбоемболія</span>
       </nav>
+      <h1 className="mb-5 text-2xl font-bold text-slate-950 sm:text-3xl">
+        Калькулятори венозної тромбоемболії
+      </h1>
       <WellsDimerCalculator />
     </main>
   );
