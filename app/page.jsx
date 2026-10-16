@@ -19,6 +19,21 @@ const clinicalReferences = [
   { href: '/rehabilitation-aids', label: 'Засоби реабілітації' },
 ];
 
+const clinicalScales = [
+  { href: '/has-bled', label: 'HAS-BLED' },
+  { href: '/heart-score', label: 'HEART Score' },
+  { href: '/h2fpef', label: 'H₂FPEF' },
+  { href: '/frax', label: 'FRAX' },
+  { href: '/stop-bang', label: 'STOP-Bang' },
+  { href: '/epworth', label: 'Шкала Епворт' },
+  { href: '/audit-c', label: 'AUDIT-C' },
+  { href: '/fagerstrom', label: 'Тест Фагерстрема' },
+  { href: '/barthel-index', label: 'Індекс Бартел' },
+  { href: '/whodas-2', label: 'WHODAS 2.0' },
+  { href: '/mmrc', label: 'mMRC' },
+  { href: '/bode-index', label: 'BODE' },
+];
+
 export default function HomePage() {
   return (
     <main className="min-h-screen">
@@ -49,6 +64,18 @@ export default function HomePage() {
                 className="text-sm font-medium text-blue-700 transition hover:text-blue-800 hover:underline"
               >
                 {reference.label}
+              </Link>
+            ))}
+          </nav>
+          <h2 className="mt-4 text-sm font-semibold text-slate-900">Клінічні шкали</h2>
+          <nav className="mt-2 flex flex-wrap gap-x-5 gap-y-2" aria-label="Клінічні шкали">
+            {clinicalScales.map((scale) => (
+              <Link
+                key={scale.href}
+                href={scale.href}
+                className="text-sm font-medium text-blue-700 transition hover:text-blue-800 hover:underline"
+              >
+                {scale.label}
               </Link>
             ))}
           </nav>
