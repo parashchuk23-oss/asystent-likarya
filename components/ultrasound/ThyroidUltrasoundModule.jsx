@@ -11,6 +11,7 @@ import ThyroidNoduleForm from './ThyroidNoduleForm';
 import ThyroidOptionalVascularForm from './ThyroidOptionalVascularForm';
 import ThyroidParenchymaForm from './ThyroidParenchymaForm';
 import ThyroidTiradsCalculator, { initialTiradsData } from './ThyroidTiradsCalculator';
+import ThyroidUltrasoundGuide from './ThyroidUltrasoundGuide';
 import ThyroidPerithyroidForm from './ThyroidPerithyroidForm';
 import ThyroidVolumeCalculator from './ThyroidVolumeCalculator';
 import UltrasoundReportPreview from './UltrasoundReportPreview';
@@ -149,9 +150,9 @@ const thyroidTools = [
     eyebrow: 'Практичний довідник',
     title: 'Рекомендації та УЗ-атлас',
     description:
-      'Техніка дослідження, стандартизований опис і перевірені приклади поширених патологічних змін.',
-    action: 'Наступний етап',
-    available: false,
+      'Коротка пам’ятка з техніки дослідження, обов’язкових елементів протоколу та типових помилок. УЗ-атлас буде додано окремо.',
+    action: 'Відкрити пам’ятку',
+    available: true,
   },
 ];
 
@@ -259,6 +260,10 @@ export default function ThyroidUltrasoundModule() {
 
   if (activeTool === 'tirads') {
     return <ThyroidTiradsCalculator data={tiradsData} onChange={setTiradsData} onBack={() => setActiveTool('home')} />;
+  }
+
+  if (activeTool === 'guide') {
+    return <ThyroidUltrasoundGuide onBack={() => setActiveTool('home')} onOpenTool={setActiveTool} />;
   }
 
   return (
