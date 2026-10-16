@@ -97,10 +97,7 @@ function generateMeasurementsText(data) {
 
   const isthmusThickness = parsePositiveNumber(data.measurements.isthmus.thickness);
   if (isthmusThickness) {
-    const isthmusStatus =
-      isthmusThickness > 5 && data.measurements.isthmus.status === 'notThickened'
-        ? 'статус потребує перевірки'
-        : optionLabel('isthmusStatus', data.measurements.isthmus.status);
+    const isthmusStatus = isthmusThickness > 5 ? 'потовщений' : 'не потовщений';
     lines.push(
       sentence([
         `Перешийок ${formatDecimal(isthmusThickness)} мм,`,
