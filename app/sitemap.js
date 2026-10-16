@@ -4,6 +4,7 @@ export default function sitemap() {
     { path: '', priority: 1, lastModified: '2026-08-13' },
     { path: '/egfr', priority: 0.9, lastModified: '2026-07-29' },
     { path: '/score2', priority: 0.9, lastModified: '2026-07-29' },
+    { path: '/cha2ds2-vasc', priority: 0.9, lastModified: '2026-10-16' },
     { path: '/en/calculators/score2', priority: 0.8, lastModified: '2026-10-14' },
     { path: '/calculators/bmi', priority: 0.8, lastModified: '2026-10-14' },
     { path: '/en/calculators/bmi', priority: 0.8, lastModified: '2026-10-14' },

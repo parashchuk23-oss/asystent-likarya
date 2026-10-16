@@ -4,6 +4,7 @@ import AppTabs from '../components/AppTabs';
 const popularTools = [
   { href: '/egfr', label: 'ШКФ (CKD-EPI)' },
   { href: '/score2', label: 'SCORE2' },
+  { href: '/cha2ds2-vasc', label: 'CHA₂DS₂-VASc' },
   { href: '/calculators/bmi', label: 'ІМТ' },
   { href: '/calculators/venous-thromboembolism', label: 'Венозна тромбоемболія' },
   { href: '/6mwt', label: '6-хвилинний тест ходьби' },

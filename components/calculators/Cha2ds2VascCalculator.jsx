@@ -4,26 +4,34 @@ import { useState } from 'react';
 import { calculateCha2ds2Vasc } from '../../utils/calculations';
 
 const initialFormData = {
+  age: '',
+  sex: '',
   heartFailure: false,
   hypertension: false,
-  age75OrOlder: false,
   diabetes: false,
   strokeTiaThromboembolism: false,
   vascularDisease: false,
-  age65To74: false,
-  femaleSex: false,
 };
 
 const fields = [
   { key: 'heartFailure', label: 'Серцева недостатність', points: 1 },
   { key: 'hypertension', label: 'Гіпертензія', points: 1 },
-  { key: 'age75OrOlder', label: 'Вік ≥75', points: 2 },
   { key: 'diabetes', label: 'Цукровий діабет', points: 1 },
   { key: 'strokeTiaThromboembolism', label: 'Інсульт/ТІА/тромбоемболія в анамнезі', points: 2 },
   { key: 'vascularDisease', label: 'Судинне захворювання', points: 1 },
-  { key: 'age65To74', label: 'Вік 65-74', points: 1 },
-  { key: 'femaleSex', label: 'Жіноча стать', points: 1 },
 ];
+
+function getInterpretation(score, sex) {
+  if ((sex === 'male' && score === 0) || (sex === 'female' && score === 1)) {
+    return 'Низький ризик за CHA₂DS₂-VASc. Періодично переглядайте фактори ризику.';
+  }
+
+  if ((sex === 'male' && score === 1) || (sex === 'female' && score === 2)) {
+    return 'Проміжний ризик. Потрібна індивідуальна оцінка користі та ризику антикоагуляції.';
+  }
+
+  return 'Підвищений ризик. Розгляньте антикоагуляцію відповідно до клінічного контексту та чинної настанови.';
+}
 
 function CheckboxField({ label, points, checked, onChange }) {
   return (
@@ -45,6 +53,8 @@ function CheckboxField({ label, points, checked, onChange }) {
 export default function Cha2ds2VascCalculator() {
   const [formData, setFormData] = useState(initialFormData);
   const [result, setResult] = useState(null);
+  const age = Number(formData.age);
+  const canCalculate = Number.isInteger(age) && age >= 18 && age <= 120 && Boolean(formData.sex);
 
   function handleChange(field, value) {
     setFormData((current) => ({
@@ -55,7 +65,19 @@ export default function Cha2ds2VascCalculator() {
   }
 
   function handleCalculate() {
-    setResult(calculateCha2ds2Vasc(formData));
+    if (!canCalculate) return;
+
+    const score = calculateCha2ds2Vasc({
+      ...formData,
+      age75OrOlder: age >= 75,
+      age65To74: age >= 65 && age < 75,
+      femaleSex: formData.sex === 'female',
+    });
+
+    setResult({
+      ...score,
+      interpretation: getInterpretation(score.score, formData.sex),
+    });
   }
 
   function handleClear() {
@@ -76,6 +98,35 @@ export default function Cha2ds2VascCalculator() {
         </p>
       </div>
 
+      <div className="mb-4 grid gap-3 sm:grid-cols-2">
+        <label className="text-sm font-medium text-slate-800">
+          <span className="mb-1.5 block">Вік</span>
+          <input
+            type="number"
+            min="18"
+            max="120"
+            step="1"
+            value={formData.age}
+            onChange={(event) => handleChange('age', event.target.value)}
+            placeholder="Наприклад, 72"
+            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          />
+        </label>
+
+        <label className="text-sm font-medium text-slate-800">
+          <span className="mb-1.5 block">Стать</span>
+          <select
+            value={formData.sex}
+            onChange={(event) => handleChange('sex', event.target.value)}
+            className="w-full rounded-md border border-slate-300 bg-white px-3 py-2.5 text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          >
+            <option value="">Оберіть стать</option>
+            <option value="male">Чоловік</option>
+            <option value="female">Жінка</option>
+          </select>
+        </label>
+      </div>
+
       <div className="grid gap-3">
         {fields.map((field) => (
           <CheckboxField
@@ -92,7 +143,8 @@ export default function Cha2ds2VascCalculator() {
         <button
           type="button"
           onClick={handleCalculate}
-          className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 sm:w-auto"
+          disabled={!canCalculate}
+          className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none sm:w-auto"
         >
           Розрахувати
         </button>
@@ -111,7 +163,7 @@ export default function Cha2ds2VascCalculator() {
         <p className="text-3xl font-semibold text-blue-800">{result?.score ?? '—'}</p>
         <p className="mt-2">
           <span className="font-semibold">Інтерпретація:</span>{' '}
-          {result?.interpretation || 'Натисніть “Розрахувати” після вибору факторів.'}
+          {result?.interpretation || 'Введіть вік, оберіть стать і позначте фактори ризику.'}
         </p>
         <p className="mt-2 text-slate-700">
           Рішення щодо антикоагуляції приймає лікар з урахуванням клінічного контексту.

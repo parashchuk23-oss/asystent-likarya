@@ -61,6 +61,7 @@ export default function EgfrPage() {
       faq={faq}
       disclaimer="Результат залежить від точності введених даних і клінічної ситуації. Він не встановлює діагноз самостійно та не замінює оцінку лікаря, повторні дослідження або локальні рекомендації щодо дозування препаратів."
       relatedTools={[
+        { href: '/cha2ds2-vasc', label: 'Калькулятор CHA₂DS₂-VASc' },
         { href: '/score2', label: 'Калькулятор SCORE2' },
         { href: '/calculators/bmi', label: 'Калькулятор ІМТ' },
         { href: '/available-medicines', label: 'Доступні ліки' },
