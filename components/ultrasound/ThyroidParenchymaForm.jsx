@@ -72,8 +72,12 @@ export default function ThyroidParenchymaForm({ appearance, parenchyma, vascular
             values={parenchyma.features}
             onChange={(values) => updateParenchyma('features', values)}
           />
-          <div className="mt-4 grid gap-3 md:grid-cols-3">
-            <FormField className="mb-2" label="Гіпоехогенні ділянки до" hint="мм">
+          <div
+            className={`mt-4 grid items-start gap-3 ${
+              parenchyma.features.includes('other') ? 'md:grid-cols-3' : 'md:grid-cols-2'
+            }`}
+          >
+            <FormField className="mb-2 md:[&>label]:min-h-10" label="Гіпоехогенні ділянки до" hint="мм">
               <input
                 type="number"
                 min="0"
@@ -83,7 +87,7 @@ export default function ThyroidParenchymaForm({ appearance, parenchyma, vascular
                 className={inputClass}
               />
             </FormField>
-            <FormField className="mb-2" label="Фіброзні ділянки до" hint="мм">
+            <FormField className="mb-2 md:[&>label]:min-h-10" label="Фіброзні ділянки до" hint="мм">
               <input
                 type="number"
                 min="0"
@@ -94,7 +98,7 @@ export default function ThyroidParenchymaForm({ appearance, parenchyma, vascular
               />
             </FormField>
             {parenchyma.features.includes('other') ? (
-              <FormField className="mb-2" label="Інше">
+              <FormField className="mb-2 md:[&>label]:min-h-10" label="Інше">
                 <input value={parenchyma.other} onChange={(event) => updateParenchyma('other', event.target.value)} className={inputClass} />
               </FormField>
             ) : null}
