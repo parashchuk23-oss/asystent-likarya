@@ -114,7 +114,98 @@ function buildReport(data) {
   };
 }
 
+const thyroidTools = [
+  {
+    id: 'protocol',
+    eyebrow: 'Основний інструмент',
+    title: 'Повний протокол УЗД',
+    description:
+      'Структурована форма з розмірами, паренхімою, вузлами, лімфатичними вузлами, висновком і рекомендаціями.',
+    action: 'Відкрити протокол',
+    available: true,
+  },
+  {
+    id: 'volume',
+    eyebrow: 'Швидкий розрахунок',
+    title: 'Об’єм щитоподібної залози',
+    description:
+      'Окремий калькулятор для правої та лівої часток, сумарного об’єму й автоматичної оцінки перешийка.',
+    action: 'Наступний етап',
+    available: false,
+  },
+  {
+    id: 'tirads',
+    eyebrow: 'Оцінювання вузла',
+    title: 'Калькулятор ACR TI-RADS',
+    description:
+      'Швидке визначення балів, категорії ACR TI-RADS і тактики відповідно до максимального розміру вузла.',
+    action: 'Наступний етап',
+    available: false,
+  },
+  {
+    id: 'guide',
+    eyebrow: 'Практичний довідник',
+    title: 'Рекомендації та УЗ-атлас',
+    description:
+      'Техніка дослідження, стандартизований опис і перевірені приклади поширених патологічних змін.',
+    action: 'Наступний етап',
+    available: false,
+  },
+];
+
+function ThyroidToolsHome({ onOpenProtocol }) {
+  return (
+    <section>
+      <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 sm:p-5">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-700">Інструменти ЩЗ</p>
+        <h3 className="mt-2 text-xl font-bold text-slate-950">Оберіть потрібний формат роботи</h3>
+        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
+          Відкрийте повний протокол або скористайтеся окремим швидким інструментом без заповнення всієї форми.
+        </p>
+      </div>
+
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+        {thyroidTools.map((tool) => {
+          const content = (
+            <>
+              <div className="flex items-start justify-between gap-3">
+                <p className={`text-xs font-bold uppercase tracking-[0.16em] ${tool.available ? 'text-teal-700' : 'text-slate-400'}`}>
+                  {tool.eyebrow}
+                </p>
+                {!tool.available ? (
+                  <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">У розробці</span>
+                ) : null}
+              </div>
+              <h4 className="mt-3 text-lg font-bold text-slate-950">{tool.title}</h4>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">{tool.description}</p>
+              <span className={`mt-5 inline-flex text-sm font-bold ${tool.available ? 'text-teal-700' : 'text-slate-400'}`}>
+                {tool.action}{tool.available ? ' →' : ''}
+              </span>
+            </>
+          );
+
+          return tool.available ? (
+            <button
+              key={tool.id}
+              type="button"
+              onClick={onOpenProtocol}
+              className="rounded-lg border border-teal-300 bg-white p-5 text-left shadow-sm transition hover:border-teal-400 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+            >
+              {content}
+            </button>
+          ) : (
+            <article key={tool.id} className="rounded-lg border border-slate-200 bg-white p-5">
+              {content}
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 export default function ThyroidUltrasoundModule() {
+  const [activeTool, setActiveTool] = useState('home');
   const [data, setData] = useState(initialData);
   const [openSection, setOpenSection] = useState('general');
   const [autoUpdate, setAutoUpdate] = useState(true);
@@ -150,9 +241,21 @@ export default function ThyroidUltrasoundModule() {
     );
   const removePerithyroid = (id) => updateData('perithyroidFormations', data.perithyroidFormations.filter((item) => item.id !== id));
 
+  if (activeTool === 'home') {
+    return <ThyroidToolsHome onOpenProtocol={() => setActiveTool('protocol')} />;
+  }
+
   return (
-    <div className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(420px,0.9fr)]">
-      <div className="space-y-4">
+    <div className="space-y-4">
+      <button
+        type="button"
+        onClick={() => setActiveTool('home')}
+        className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-teal-300 hover:text-teal-700"
+      >
+        ← До інструментів ЩЗ
+      </button>
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(420px,0.9fr)]">
+        <div className="space-y-4">
         <UltrasoundComplaintsField value={data.complaints} onChange={(value) => updateData('complaints', value)} />
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -246,9 +349,9 @@ export default function ThyroidUltrasoundModule() {
         >
           <ThyroidOptionalVascularForm data={data.optionalVascular} onChange={(value) => updateData('optionalVascular', value)} />
         </AccordionSection>
-      </div>
+        </div>
 
-      <UltrasoundReportPreview
+        <UltrasoundReportPreview
         overview={report.overview}
         conclusion={report.conclusion}
         recommendations={report.recommendations}
@@ -268,7 +371,8 @@ export default function ThyroidUltrasoundModule() {
         onAutoUpdateChange={setAutoUpdate}
         onRegenerate={regenerateReport}
         onClear={clearAll}
-      />
+        />
+      </div>
     </div>
   );
 }
