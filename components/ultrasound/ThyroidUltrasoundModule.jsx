@@ -36,7 +36,7 @@ const createNodule = (lobe = 'right') => ({
 
 const createPerithyroidFormation = () => ({
   id: `perithyroid-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-  localization: 'по нижньому полюсу щитоподібної залози',
+  localization: 'біля нижнього полюса щитоподібної залози',
   dimensions: { length: '', thickness: '', width: '' },
   shape: 'овальна',
   echogenicity: 'гіпоехогенна',

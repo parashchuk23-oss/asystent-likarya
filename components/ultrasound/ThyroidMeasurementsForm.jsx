@@ -52,6 +52,9 @@ function LobeFields({ title, value, volume, onChange }) {
 
 export default function ThyroidMeasurementsForm({ data, onChange }) {
   const volumes = getCalculatedVolumes(data);
+  const isthmusThickness = Number(String(data.isthmus.thickness || '').replace(',', '.'));
+  const isthmusStatusNeedsReview =
+    Number.isFinite(isthmusThickness) && isthmusThickness > 5 && data.isthmus.status === 'notThickened';
   const update = (field, value) => onChange({ ...data, [field]: value });
 
   return (
@@ -86,6 +89,11 @@ export default function ThyroidMeasurementsForm({ data, onChange }) {
             {volumes.totalVolume ? `${formatDecimal(volumes.totalVolume)} см³` : 'Буде розраховано автоматично'}
           </div>
         </FormField>
+        {isthmusStatusNeedsReview ? (
+          <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-900 md:col-span-3" role="alert">
+            Перевірте статус перешийка: для дорослого товщина понад 5 мм може не узгоджуватися з варіантом «не потовщений».
+          </p>
+        ) : null}
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">

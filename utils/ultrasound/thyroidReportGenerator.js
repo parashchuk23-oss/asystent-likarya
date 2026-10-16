@@ -26,6 +26,25 @@ function listLabels(group, values = [], otherText = '') {
   return labels.join(', ');
 }
 
+function formatEnteredDecimal(value) {
+  const number = parsePositiveNumber(value);
+  return number ? formatDecimal(number) : '';
+}
+
+const volumeStatusText = {
+  notEnlarged: 'не збільшений',
+  enlarged: 'збільшений',
+  decreased: 'зменшений',
+};
+
+const bloodFlowPhrase = {
+  avascular: 'без кровотоку',
+  perinodular: 'із перинодулярним кровотоком',
+  intranodular: 'з інтранодулярним кровотоком',
+  mixed: 'зі змішаним кровотоком',
+  notAssessed: 'кровотік не оцінювався',
+};
+
 const noduleLocationText = {
   upperThird: 'верхній третині',
   middleThird: 'середній третині',
@@ -65,7 +84,7 @@ function generateGeneralText(data) {
   return commaSentence([
     `Щитоподібна залоза ${optionLabel('surgeryStatus', data.general.surgeryStatus)}`,
     optionLabel('location', data.general.location),
-    shape ? `Форма ${shape}` : '',
+    shape ? `форма ${shape}` : '',
   ]);
 }
 
@@ -78,19 +97,20 @@ function generateMeasurementsText(data) {
 
   const isthmusThickness = parsePositiveNumber(data.measurements.isthmus.thickness);
   if (isthmusThickness) {
+    const isthmusStatus =
+      isthmusThickness > 5 && data.measurements.isthmus.status === 'notThickened'
+        ? 'статус потребує перевірки'
+        : optionLabel('isthmusStatus', data.measurements.isthmus.status);
     lines.push(
       sentence([
         `Перешийок ${formatDecimal(isthmusThickness)} мм,`,
-        optionLabel('isthmusStatus', data.measurements.isthmus.status),
+        isthmusStatus,
       ]),
     );
   }
 
   if (totalVolume) {
-    const status =
-      data.measurements.totalVolumeStatus !== 'notAssessed'
-        ? optionLabel('volumeStatus', data.measurements.totalVolumeStatus)
-        : '';
+    const status = volumeStatusText[data.measurements.totalVolumeStatus] || '';
     lines.push(
       sentence([
         `Сумарний об’єм ${formatDecimal(totalVolume)} см³`,
@@ -106,8 +126,8 @@ function generateAppearanceText(data) {
   return commaSentence([
     `Контури ${optionLabel('contour', data.appearance.contour)}`,
     optionLabel('clarity', data.appearance.clarity),
-    `Капсула ${optionLabel('capsule', data.appearance.capsule)}`,
-    `Ехогенність ${optionLabel('echogenicity', data.appearance.echogenicity)}`,
+    `капсула ${optionLabel('capsule', data.appearance.capsule)}`,
+    `ехогенність ${optionLabel('echogenicity', data.appearance.echogenicity)}`,
   ]);
 }
 
@@ -123,7 +143,9 @@ function generateParenchymaText(data) {
     data.parenchyma.fibroticSize ? `фіброзні ділянки до ${data.parenchyma.fibroticSize} мм` : '',
   ]).join(', ');
 
-  return commaSentence([`Паренхіма ${structure}`, features ? `(${features})` : '', sizes]);
+  const details = features ? ` (${features})` : '';
+  const sizeText = sizes ? `, ${sizes}` : '';
+  return `Паренхіма ${structure}${details}${sizeText}.`;
 }
 
 function generateNoduleText(nodule, index) {
@@ -132,18 +154,21 @@ function generateNoduleText(nodule, index) {
   const inclusions = listLabels('noduleInclusions', nodule.inclusions, nodule.inclusionOther);
   const dimensions = formatDimensions(nodule.dimensions);
 
-  return commaSentence([
-    `${index + 1}. ${location}, візуалізується`,
-    compact([optionLabel('noduleType', nodule.type), optionLabel('noduleEchogenicity', nodule.echogenicity)]).join(', '),
-    'вузлове утворення',
-    `${optionLabel('noduleShape', nodule.shape)} ${optionLabel('noduleOrientation', nodule.orientation)}`.trim(),
+  const description = commaSentence([
+    `${index + 1}. ${location} візуалізується ${compact([
+      optionLabel('noduleType', nodule.type),
+      optionLabel('noduleEchogenicity', nodule.echogenicity),
+    ]).join(' ')} вузлове утворення`,
+    optionLabel('noduleShape', nodule.shape),
+    optionLabel('noduleOrientation', nodule.orientation),
     contour,
     optionLabel('noduleStructure', nodule.structure),
     inclusions,
     dimensions ? `розміром ${dimensions}` : '',
-    optionLabel('bloodFlow', nodule.bloodFlow),
-    getEffectiveTirads(nodule),
+    bloodFlowPhrase[nodule.bloodFlow] || optionLabel('bloodFlow', nodule.bloodFlow),
   ]);
+  const tirads = getEffectiveTirads(nodule);
+  return tirads ? `${description} ${tirads}.` : description;
 }
 
 function getNoduleLocationPhrase(nodule) {
@@ -167,7 +192,7 @@ function getNoduleContourPhrase(nodule) {
   const clarity = clarityInstrumentalText[nodule.clarity];
 
   if (contour && clarity) {
-    return `з ${contour}, ${clarity} контуром`;
+    return `з ${contour} ${clarity} контуром`;
   }
 
   if (contour) {
@@ -188,41 +213,48 @@ function getNoduleContourPhrase(nodule) {
 function generatePerithyroidText(item, index) {
   const dimensions = formatDimensions(item.dimensions);
   const differential = listLabels('differential', item.differential, item.differentialOther);
-
-  return sentence([
-    `${index + 1}. Додаткове утворення ${item.localization || 'перитиреоїдно'}`,
+  const localization = item.localization || 'перитиреоїдно';
+  const main = sentence([
+    `${index + 1}. Додаткове утворення ${localization}`,
     dimensions ? `розміром ${dimensions}` : '',
-    item.shape ? `форма: ${item.shape}` : '',
-    item.echogenicity ? `ехогенність: ${item.echogenicity}` : '',
-    item.contours ? `контури: ${item.contours}` : '',
-    item.bloodFlow ? `кровотік: ${item.bloodFlow}` : '',
-    item.compression ? `компресія: ${item.compression}` : '',
-    differential ? `Диференційний ряд: ${differential}` : '',
   ]);
+  const compression = item.compression === 'не оцінено' ? 'не оцінена' : item.compression;
+  const characteristics = compact([
+    item.shape ? `Форма — ${item.shape}` : '',
+    item.echogenicity ? `ехогенність — ${item.echogenicity}` : '',
+    item.contours ? `контури — ${item.contours}` : '',
+    item.bloodFlow ? `кровотік — ${item.bloodFlow}` : '',
+    compression ? `компресія — ${compression}` : '',
+  ]);
+  const details = characteristics.length ? `${characteristics.join('; ')}.` : '';
+  const differentialText = differential ? `Диференційний ряд: ${differential}.` : '';
+  return compact([main, details, differentialText]).join(' ');
 }
 
 function generateFocalText(data) {
   const noduleLines = data.nodules.map(generateNoduleText);
-  const perithyroidLines = data.perithyroidFormations.map(generatePerithyroidText);
+  const perithyroidLines = data.perithyroidFormations.map((item, index) =>
+    generatePerithyroidText(item, index + noduleLines.length),
+  );
   return [...noduleLines, ...perithyroidLines].filter(Boolean).join('\n');
 }
 
 function generateLymphText(data) {
   const lymph = data.lymphNodes;
   const zones = listLabels('lymphZones', lymph.zones);
-  const statusText = `Регіонарні лімфатичні вузли ${lymph.status === 'enlarged' ? 'збільшені' : 'не збільшені'}.`;
+  const statusText = `Регіонарні лімфатичні вузли ${lymph.status === 'enlarged' ? 'збільшені' : 'не збільшені'}`;
   const details = compact([
-    zones ? `зони — ${zones}` : '',
-    lymph.structure ? `структура — ${lymph.structure}` : '',
-    lymph.bloodFlow ? `кровотік — ${lymph.bloodFlow}` : '',
-    lymph.shortAxisMax ? `максимальна коротка вісь — ${lymph.shortAxisMax} мм` : '',
+    zones ? `зони: ${zones}` : '',
+    lymph.structure ? `структура: ${lymph.structure}` : '',
+    lymph.bloodFlow ? `кровотік: ${lymph.bloodFlow}` : '',
+    lymph.shortAxisMax ? `максимальна коротка вісь: ${formatEnteredDecimal(lymph.shortAxisMax)} мм` : '',
   ]);
 
   if (!details.length) {
-    return statusText;
+    return `${statusText}.`;
   }
 
-  return `${statusText} ${details.join(', ')}.`;
+  return `${statusText}; ${details.join('; ')}.`;
 }
 
 function generateOptionalVascularText(data) {
@@ -231,8 +263,8 @@ function generateOptionalVascularText(data) {
 
   if (data.optionalVascular.jugularEnabled) {
     const diameterText = compact([
-      jugular.rightDiameter ? `праворуч — ${jugular.rightDiameter} мм` : '',
-      jugular.leftDiameter ? `ліворуч — ${jugular.leftDiameter} мм` : '',
+      jugular.rightDiameter ? `праворуч — ${formatEnteredDecimal(jugular.rightDiameter)} мм` : '',
+      jugular.leftDiameter ? `ліворуч — ${formatEnteredDecimal(jugular.leftDiameter)} мм` : '',
     ]).join(', ');
     const jugularSentences = compact([
       diameterText ? `Внутрішні яремні вени: ${diameterText}.` : 'Внутрішні яремні вени.',
@@ -250,8 +282,8 @@ function generateOptionalVascularText(data) {
       carotid.intima ? `інтима ${carotid.intima}` : '',
     ]).join(', ');
     const cimtText = compact([
-      carotid.cimtRight ? `КІМ праворуч — ${carotid.cimtRight} мм` : '',
-      carotid.cimtLeft ? `КІМ ліворуч — ${carotid.cimtLeft} мм` : '',
+      carotid.cimtRight ? `КІМ праворуч — ${formatEnteredDecimal(carotid.cimtRight)} мм` : '',
+      carotid.cimtLeft ? `КІМ ліворуч — ${formatEnteredDecimal(carotid.cimtLeft)} мм` : '',
     ]).join(', ');
     const plaqueText =
       carotid.plaques === 'detected'
