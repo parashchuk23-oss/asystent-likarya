@@ -68,11 +68,11 @@ export default function ThyroidMeasurementsForm({ data, onChange }) {
           onChange={(value) => update('isthmus', { ...data.isthmus, thickness: value })}
           max={80}
         />
-        <FormField className="mb-2" label="Статус перешийка">
+        <FormField className="mb-2 md:[&>label]:mb-1.5 md:[&>label]:flex md:[&>label]:min-h-5 md:[&>label]:items-baseline md:[&>label]:leading-tight" label="Статус перешийка">
           <select
             value={data.isthmus.status}
             onChange={(event) => update('isthmus', { ...data.isthmus, status: event.target.value })}
-            className={inputClass}
+            className={`${inputClass} h-[38px]`}
           >
             {thyroidOptions.isthmusStatus.map((option) => (
               <option key={option.value} value={option.value}>
