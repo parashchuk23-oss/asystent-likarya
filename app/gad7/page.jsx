@@ -8,6 +8,19 @@ export const metadata = {
   alternates: {
     canonical: 'https://www.asystentlikarya.com.ua/gad7',
   },
+  openGraph: {
+    title: 'Опитувальник GAD-7 українською',
+    description: 'Скринінгова оцінка вираженості симптомів тривоги за останні два тижні.',
+    url: 'https://www.asystentlikarya.com.ua/gad7',
+    siteName: 'Асистент лікаря',
+    locale: 'uk_UA',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Опитувальник GAD-7 українською',
+    description: 'Структурована скринінгова оцінка вираженості симптомів тривоги.',
+  },
 };
 
 const faq = [

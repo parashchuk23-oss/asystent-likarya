@@ -8,6 +8,19 @@ export const metadata = {
   alternates: {
     canonical: 'https://www.asystentlikarya.com.ua/findrisk',
   },
+  openGraph: {
+    title: 'Калькулятор FINDRISC українською',
+    description: 'Орієнтовна оцінка ризику розвитку цукрового діабету 2 типу.',
+    url: 'https://www.asystentlikarya.com.ua/findrisk',
+    siteName: 'Асистент лікаря',
+    locale: 'uk_UA',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Калькулятор FINDRISC українською',
+    description: 'Оцінка ризику цукрового діабету 2 типу за клінічними факторами.',
+  },
 };
 
 const faq = [

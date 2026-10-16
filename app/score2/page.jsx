@@ -8,6 +8,20 @@ export const metadata = {
   alternates: {
     canonical: 'https://www.asystentlikarya.com.ua/score2',
   },
+  openGraph: {
+    title: 'Калькулятор SCORE2 та SCORE2-OP',
+    description:
+      'Оцінка 10-річного ризику фатальних і нефатальних серцево-судинних подій.',
+    url: 'https://www.asystentlikarya.com.ua/score2',
+    siteName: 'Асистент лікаря',
+    locale: 'uk_UA',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Калькулятор SCORE2 та SCORE2-OP',
+    description: 'Оцінка 10-річного серцево-судинного ризику для первинної профілактики.',
+  },
 };
 
 const faq = [

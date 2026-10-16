@@ -8,6 +8,20 @@ export const metadata = {
   alternates: {
     canonical: 'https://www.asystentlikarya.com.ua/egfr',
   },
+  openGraph: {
+    title: 'Калькулятор ШКФ (eGFR) CKD-EPI 2021',
+    description:
+      'Розрахунок ШКФ, кліренсу креатиніну, категорій альбумінурії та ризику KDIGO.',
+    url: 'https://www.asystentlikarya.com.ua/egfr',
+    siteName: 'Асистент лікаря',
+    locale: 'uk_UA',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Калькулятор ШКФ (eGFR) CKD-EPI 2021',
+    description: 'ШКФ, Cockcroft-Gault, ACR і оцінка ризику за KDIGO.',
+  },
 };
 
 const faq = [

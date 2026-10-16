@@ -13,7 +13,14 @@ export const metadata = {
     description:
       'Проведення та документування 6MWT: таймер, дистанція, клінічні показники і друк протоколу.',
     url: 'https://www.asystentlikarya.com.ua/6mwt',
+    siteName: 'Асистент лікаря',
+    locale: 'uk_UA',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '6-хвилинний тест ходьби (6MWT)',
+    description: 'Таймер, розрахунок дистанції та структурований протокол 6MWT для друку.',
   },
 };
 

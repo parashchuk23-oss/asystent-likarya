@@ -8,6 +8,20 @@ export const metadata = {
   alternates: {
     canonical: 'https://www.asystentlikarya.com.ua/phq9',
   },
+  openGraph: {
+    title: 'Опитувальник PHQ-9 українською',
+    description:
+      'Скринінгова оцінка вираженості депресивних симптомів за останні два тижні.',
+    url: 'https://www.asystentlikarya.com.ua/phq9',
+    siteName: 'Асистент лікаря',
+    locale: 'uk_UA',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Опитувальник PHQ-9 українською',
+    description: 'Структурована скринінгова оцінка вираженості депресивних симптомів.',
+  },
 };
 
 const faq = [
