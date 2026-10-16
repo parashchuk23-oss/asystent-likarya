@@ -1,5 +1,5 @@
 import { thyroidOptions } from '../../data/ultrasound/thyroidOptions';
-import { calculateAcrTirads } from '../../utils/ultrasound/thyroidTirads';
+import { calculateAcrTirads, formatTiradsPoints } from '../../utils/ultrasound/thyroidTirads';
 import FormField from '../FormField';
 import { inputClass } from '../formStyles';
 
@@ -163,7 +163,7 @@ export default function ThyroidNoduleForm({ nodules, onAdd, onUpdate, onRemove }
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">Автоматичний ACR TI-RADS</p>
                   <p className="mt-1 text-base font-bold text-slate-950">
-                    {tirads.label}: {tirads.points} балів
+                    {tirads.label}: {formatTiradsPoints(tirads.points)}
                   </p>
                   <p className="mt-1 text-sm text-slate-700">{tirads.interpretation}</p>
                 </div>

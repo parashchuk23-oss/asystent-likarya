@@ -10,6 +10,7 @@ import ThyroidMeasurementsForm from './ThyroidMeasurementsForm';
 import ThyroidNoduleForm from './ThyroidNoduleForm';
 import ThyroidOptionalVascularForm from './ThyroidOptionalVascularForm';
 import ThyroidParenchymaForm from './ThyroidParenchymaForm';
+import ThyroidTiradsCalculator, { initialTiradsData } from './ThyroidTiradsCalculator';
 import ThyroidPerithyroidForm from './ThyroidPerithyroidForm';
 import ThyroidVolumeCalculator from './ThyroidVolumeCalculator';
 import UltrasoundReportPreview from './UltrasoundReportPreview';
@@ -140,8 +141,8 @@ const thyroidTools = [
     title: 'Калькулятор ACR TI-RADS',
     description:
       'Швидке визначення балів, категорії ACR TI-RADS і тактики відповідно до максимального розміру вузла.',
-    action: 'Наступний етап',
-    available: false,
+    action: 'Відкрити калькулятор',
+    available: true,
   },
   {
     id: 'guide',
@@ -212,6 +213,7 @@ export default function ThyroidUltrasoundModule() {
     left: { length: '', thickness: '', width: '' },
     isthmusThickness: '',
   });
+  const [tiradsData, setTiradsData] = useState(initialTiradsData);
   const [data, setData] = useState(initialData);
   const [openSection, setOpenSection] = useState('general');
   const [autoUpdate, setAutoUpdate] = useState(true);
@@ -253,6 +255,10 @@ export default function ThyroidUltrasoundModule() {
 
   if (activeTool === 'volume') {
     return <ThyroidVolumeCalculator data={volumeData} onChange={setVolumeData} onBack={() => setActiveTool('home')} />;
+  }
+
+  if (activeTool === 'tirads') {
+    return <ThyroidTiradsCalculator data={tiradsData} onChange={setTiradsData} onBack={() => setActiveTool('home')} />;
   }
 
   return (

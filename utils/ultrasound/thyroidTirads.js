@@ -11,7 +11,7 @@ function getMaxNoduleSizeCm(dimensions = {}) {
 }
 
 function getCompositionPoints(type) {
-  if (type === 'mixed') return 1;
+  if (type === 'mixed' || type === 'predominantlyCystic') return 1;
   if (type === 'solid' || type === 'predominantlySolid') return 2;
   return 0;
 }
@@ -65,6 +65,14 @@ export function getTiradsLabel(category) {
   return labels[category] || '';
 }
 
+export function formatTiradsPoints(points) {
+  const lastTwo = points % 100;
+  const last = points % 10;
+  if (last === 1 && lastTwo !== 11) return `${points} бал`;
+  if (last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14)) return `${points} бали`;
+  return `${points} балів`;
+}
+
 export function getTiradsInterpretation(category) {
   const interpretations = {
     TR1: 'Доброякісні ознаки.',
@@ -89,20 +97,20 @@ export function getTiradsRecommendation(category, dimensions) {
   }
 
   if (category === 'TR3') {
-    if (maxSizeCm >= 2.5) return 'За ACR TI-RADS можна розглянути ТАПБ при розмірі >= 2,5 см.';
-    if (maxSizeCm >= 1.5) return 'За ACR TI-RADS можна розглянути УЗ-спостереження при розмірі >= 1,5 см.';
+    if (maxSizeCm >= 2.5) return 'За ACR TI-RADS рекомендована ТАПБ при розмірі ≥ 2,5 см.';
+    if (maxSizeCm >= 1.5) return 'За ACR TI-RADS рекомендоване УЗ-спостереження через 1, 3 і 5 років при розмірі ≥ 1,5 см.';
     return 'За ACR TI-RADS поріг для планового спостереження за розміром не досягнутий.';
   }
 
   if (category === 'TR4') {
-    if (maxSizeCm >= 1.5) return 'За ACR TI-RADS можна розглянути ТАПБ при розмірі >= 1,5 см.';
-    if (maxSizeCm >= 1) return 'За ACR TI-RADS можна розглянути УЗ-спостереження при розмірі >= 1,0 см.';
+    if (maxSizeCm >= 1.5) return 'За ACR TI-RADS рекомендована ТАПБ при розмірі ≥ 1,5 см.';
+    if (maxSizeCm >= 1) return 'За ACR TI-RADS рекомендоване УЗ-спостереження через 1, 2, 3 і 5 років при розмірі ≥ 1,0 см.';
     return 'За ACR TI-RADS поріг для планового спостереження за розміром не досягнутий.';
   }
 
   if (category === 'TR5') {
-    if (maxSizeCm >= 1) return 'За ACR TI-RADS можна розглянути ТАПБ при розмірі >= 1,0 см.';
-    if (maxSizeCm >= 0.5) return 'За ACR TI-RADS можна розглянути УЗ-спостереження при розмірі >= 0,5 см.';
+    if (maxSizeCm >= 1) return 'За ACR TI-RADS рекомендована ТАПБ при розмірі ≥ 1,0 см.';
+    if (maxSizeCm >= 0.5) return 'За ACR TI-RADS рекомендоване щорічне УЗ-спостереження до 5 років при розмірі ≥ 0,5 см.';
     return 'За ACR TI-RADS поріг для планового спостереження за розміром не досягнутий.';
   }
 
