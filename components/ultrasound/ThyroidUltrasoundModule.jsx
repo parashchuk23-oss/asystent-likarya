@@ -11,6 +11,7 @@ import ThyroidNoduleForm from './ThyroidNoduleForm';
 import ThyroidOptionalVascularForm from './ThyroidOptionalVascularForm';
 import ThyroidParenchymaForm from './ThyroidParenchymaForm';
 import ThyroidPerithyroidForm from './ThyroidPerithyroidForm';
+import ThyroidVolumeCalculator from './ThyroidVolumeCalculator';
 import UltrasoundReportPreview from './UltrasoundReportPreview';
 import UltrasoundComplaintsField from './UltrasoundComplaintsField';
 import { addComplaintsToOverview } from '../../utils/ultrasound/reportComplaints';
@@ -130,8 +131,8 @@ const thyroidTools = [
     title: 'Об’єм щитоподібної залози',
     description:
       'Окремий калькулятор для правої та лівої часток, сумарного об’єму й автоматичної оцінки перешийка.',
-    action: 'Наступний етап',
-    available: false,
+    action: 'Відкрити калькулятор',
+    available: true,
   },
   {
     id: 'tirads',
@@ -153,7 +154,7 @@ const thyroidTools = [
   },
 ];
 
-function ThyroidToolsHome({ onOpenProtocol }) {
+function ThyroidToolsHome({ onOpenTool }) {
   return (
     <section>
       <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 sm:p-5">
@@ -188,7 +189,7 @@ function ThyroidToolsHome({ onOpenProtocol }) {
             <button
               key={tool.id}
               type="button"
-              onClick={onOpenProtocol}
+              onClick={() => onOpenTool(tool.id)}
               className="rounded-lg border border-teal-300 bg-white p-5 text-left shadow-sm transition hover:border-teal-400 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
             >
               {content}
@@ -206,6 +207,11 @@ function ThyroidToolsHome({ onOpenProtocol }) {
 
 export default function ThyroidUltrasoundModule() {
   const [activeTool, setActiveTool] = useState('home');
+  const [volumeData, setVolumeData] = useState({
+    right: { length: '', thickness: '', width: '' },
+    left: { length: '', thickness: '', width: '' },
+    isthmusThickness: '',
+  });
   const [data, setData] = useState(initialData);
   const [openSection, setOpenSection] = useState('general');
   const [autoUpdate, setAutoUpdate] = useState(true);
@@ -242,7 +248,11 @@ export default function ThyroidUltrasoundModule() {
   const removePerithyroid = (id) => updateData('perithyroidFormations', data.perithyroidFormations.filter((item) => item.id !== id));
 
   if (activeTool === 'home') {
-    return <ThyroidToolsHome onOpenProtocol={() => setActiveTool('protocol')} />;
+    return <ThyroidToolsHome onOpenTool={setActiveTool} />;
+  }
+
+  if (activeTool === 'volume') {
+    return <ThyroidVolumeCalculator data={volumeData} onChange={setVolumeData} onBack={() => setActiveTool('home')} />;
   }
 
   return (
