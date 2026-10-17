@@ -58,6 +58,53 @@ const commonErrors = [
   'Описувати лімфовузол лише як «збільшений» без локалізації та морфологічних ознак.',
 ];
 
+const atlasItems = [
+  {
+    title: 'Нормальна поперечна анатомія',
+    image: '/images/thyroid-atlas/normal-transverse.jpg',
+    alt: 'Поперечне УЗ-зображення нормальної щитоподібної залози з цифровими позначками анатомічних структур',
+    findings: 'Частки залози позначені 2 і 4, трахея — 3, загальні сонні артерії — 1 і 5, внутрішня яремна вена — 6.',
+    caution: 'Орієнтуйтеся на взаємне розташування структур, а не на абсолютну ехогенність одного зображення.',
+    source: 'https://commons.wikimedia.org/wiki/File:SD-Sono001-Nummern.jpg',
+    author: 'Drahreg01',
+    license: 'CC BY-SA 4.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/',
+  },
+  {
+    title: 'Колоїд і «хвіст комети»',
+    image: '/images/thyroid-atlas/colloid-comet-tail.png',
+    alt: 'УЗ-зображення колоїдного утворення щитоподібної залози з артефактами типу хвіст комети',
+    findings: 'Яскраві ехогенні фокуси з ревербераційним артефактом у кістозному компоненті можуть відповідати колоїду.',
+    caution: 'Не ототожнюйте короткий «хвіст комети» в солідній частині з великим доброякісним артефактом у кісті; оцінюйте всі ознаки ACR TI-RADS.',
+    source: 'https://commons.wikimedia.org/wiki/File:Ultrasound_Scan_ND_0124141638_1428320.png',
+    author: 'Nevit Dilmen',
+    license: 'CC BY-SA 3.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0/',
+  },
+  {
+    title: 'Дифузна гіпоехогенність',
+    image: '/images/thyroid-atlas/hashimoto.jpg',
+    alt: 'Поздовжнє УЗ-зображення гіпоехогенної щитоподібної залози при тиреоїдиті Хашимото',
+    findings: 'У цьому прикладі паренхіма дифузно гіпоехогенна; подібна картина може супроводжувати автоімунний тиреоїдит.',
+    caution: 'УЗД не встановлює тиреоїдит Хашимото самостійно: потрібне зіставлення з клінікою, ТТГ, вільним T4 та антитілами за показаннями.',
+    source: 'https://commons.wikimedia.org/wiki/File:Hashimoto-Thyreoiditis.JPG',
+    author: 'Drahreg01',
+    license: 'CC BY-SA 3.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0/',
+  },
+  {
+    title: 'Кальцинати в шийному лімфовузлі',
+    image: '/images/thyroid-atlas/papillary-node-calcifications.jpg',
+    alt: 'УЗ-зображення шийного лімфатичного вузла з ехогенними кальцинатами у пацієнтки з папілярним раком щитоподібної залози',
+    findings: 'Ехогенні кальцинати в патологічному шийному лімфовузлі є підозрілою ознакою та потребують повної оцінки вузла.',
+    caution: 'Окреме зображення не підтверджує метастаз: зазначте шийну зону, розміри, форму, хілюс, кістозні зміни й кровотік та визначте подальшу тактику клінічно.',
+    source: 'https://commons.wikimedia.org/wiki/File:Papillary_Thyroid_carcinoma_Ultrasound_37F_20160010.jpg',
+    author: 'Nevit Dilmen',
+    license: 'CC BY-SA 3.0',
+    licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0/',
+  },
+];
+
 export default function ThyroidUltrasoundGuide({ onBack, onOpenTool }) {
   return (
     <div className="space-y-4">
@@ -105,6 +152,32 @@ export default function ThyroidUltrasoundGuide({ onBack, onOpenTool }) {
         </section>
       </div>
 
+      <section className="rounded-lg border border-slate-200 bg-slate-50 p-4 sm:p-5">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-700">Навчальний УЗ-атлас</p>
+        <h4 className="mt-2 text-lg font-bold text-slate-950">Приклади, на яких варто тренувати опис ознак</h4>
+        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
+          Зображення ілюструють окремі ознаки, а не замінюють повне дослідження. Натисніть на зображення, щоб відкрити його у повному розмірі.
+        </p>
+
+        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+          {atlasItems.map((item) => (
+            <article key={item.title} className="overflow-hidden rounded-lg border border-slate-200 bg-white">
+              <a href={item.image} target="_blank" rel="noreferrer" className="block bg-black">
+                <img src={item.image} alt={item.alt} loading="lazy" className="aspect-[4/3] w-full object-contain" />
+              </a>
+              <div className="p-4">
+                <h5 className="font-bold text-slate-950">{item.title}</h5>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700"><span className="font-semibold">Що видно:</span> {item.findings}</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600"><span className="font-semibold">Важливо:</span> {item.caution}</p>
+                <p className="mt-3 text-xs leading-relaxed text-slate-500">
+                  Джерело: <a href={item.source} target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline">Wikimedia Commons, {item.author}</a> · <a href={item.licenseUrl} target="_blank" rel="noreferrer" className="underline">{item.license}</a> · зображення не змінено.
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="rounded-lg border border-slate-200 bg-white p-4 sm:p-5">
         <h4 className="font-bold text-slate-950">Перейти до роботи</h4>
         <div className="mt-3 flex flex-wrap gap-2">
@@ -115,7 +188,7 @@ export default function ThyroidUltrasoundGuide({ onBack, onOpenTool }) {
       </section>
 
       <p className="text-xs leading-relaxed text-slate-500">
-        Джерела: <a href="https://www.aium.org/resources/practice-parameters" target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline">AIUM Practice Parameters: Thyroid and Extracranial Head and Neck</a> та <a href="https://www.acr.org/clinical-resources/clinical-tools-and-reference/reporting-and-data-systems/ti-rads" target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline">ACR TI-RADS</a>. Дата клінічного перегляду: 16.10.2026.
+        Клінічні джерела: <a href="https://www.aium.org/resources/practice-parameters" target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline">AIUM Practice Parameters: Thyroid and Extracranial Head and Neck</a> та <a href="https://www.acr.org/clinical-resources/clinical-tools-and-reference/reporting-and-data-systems/ti-rads" target="_blank" rel="noreferrer" className="font-semibold text-blue-700 underline">ACR TI-RADS</a>. Дата клінічного перегляду: 17.10.2026.
       </p>
     </div>
   );
