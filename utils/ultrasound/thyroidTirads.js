@@ -118,15 +118,16 @@ export function getTiradsRecommendation(category, dimensions) {
 }
 
 export function calculateAcrTirads(nodule) {
+  const hasBenignComposition = nodule.type === 'cystic' || nodule.type === 'spongiform';
   const pointsByFeature = {
     composition: getCompositionPoints(nodule.type),
-    echogenicity: getEchogenicityPoints(nodule.echogenicity),
-    shape: getShapePoints(nodule.orientation),
-    margin: getMarginPoints(nodule.contour),
-    echogenicFoci: getEchogenicFociPoints(nodule.inclusions),
+    echogenicity: hasBenignComposition ? 0 : getEchogenicityPoints(nodule.echogenicity),
+    shape: hasBenignComposition ? 0 : getShapePoints(nodule.orientation),
+    margin: hasBenignComposition ? 0 : getMarginPoints(nodule.contour),
+    echogenicFoci: hasBenignComposition ? 0 : getEchogenicFociPoints(nodule.inclusions),
   };
   const points = Object.values(pointsByFeature).reduce((sum, value) => sum + value, 0);
-  const category = getTiradsCategory(points);
+  const category = hasBenignComposition ? 'TR1' : getTiradsCategory(points);
 
   return {
     points,

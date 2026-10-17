@@ -28,9 +28,8 @@ export function calculateLobeVolume(dimensions) {
 }
 
 export function calculateTotalVolume(rightVolume, leftVolume) {
-  const volumes = [rightVolume, leftVolume].filter((value) => typeof value === 'number');
-  if (!volumes.length) return null;
-  return volumes.reduce((sum, value) => sum + value, 0);
+  if (typeof rightVolume !== 'number' || typeof leftVolume !== 'number') return null;
+  return rightVolume + leftVolume;
 }
 
 export function formatDimensions(dimensions) {

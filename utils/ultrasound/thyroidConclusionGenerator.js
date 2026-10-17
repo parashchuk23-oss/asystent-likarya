@@ -1,7 +1,7 @@
 import { getCalculatedVolumes } from './thyroidCalculations';
 import { getEffectiveTirads } from './thyroidTirads';
 
-function hasThyroiditisPattern(data) {
+function hasDiffuseParenchymalChanges(data) {
   return data.parenchyma.structure === 'diffuselyHeterogeneous';
 }
 
@@ -46,8 +46,8 @@ export function generateThyroidConclusion(data) {
 
   const lines = [];
 
-  if (hasThyroiditisPattern(data)) {
-    lines.push('УЗ-ознаки дифузних змін ЩЗ по типу тиреоїдиту.');
+  if (hasDiffuseParenchymalChanges(data)) {
+    lines.push('УЗ-ознаки дифузних змін паренхіми щитоподібної залози; клініко-лабораторна кореляція.');
   }
 
   const noduleConclusion = getNoduleConclusion(data);
@@ -66,9 +66,10 @@ export function generateThyroidConclusion(data) {
 export function generateThyroidRecommendations(data) {
   const recommendations = [];
 
-  if (hasThyroiditisPattern(data)) {
-    recommendations.push('Консультація ендокринолога.');
-    recommendations.push('ТТГ, Т4, АТ-ТПО, АТ-ТГ.');
+  if (hasDiffuseParenchymalChanges(data)) {
+    recommendations.push(
+      'Оцінити функцію щитоподібної залози та потребу в додаткових лабораторних дослідженнях з урахуванням клінічних даних.',
+    );
   }
 
   if (data.perithyroidFormations.length) {
@@ -79,7 +80,6 @@ export function generateThyroidRecommendations(data) {
     recommendations.push(
       'Тактика щодо спостереження або ТАПБ визначається з урахуванням категорії ACR TI-RADS, максимального розміру вузла, анамнезу та клінічних факторів ризику.',
     );
-    recommendations.push('Динамічний УЗ-контроль.');
   }
 
   return recommendations.join('\n');
