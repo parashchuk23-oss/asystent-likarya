@@ -15,13 +15,17 @@ function compact(items) {
   return items.filter(Boolean);
 }
 
+function cleanFragment(value) {
+  return String(value || '').trim().replace(/[.,;]+$/u, '');
+}
+
 function sentence(parts) {
-  const text = compact(parts).join(' ');
+  const text = compact(parts).map(cleanFragment).filter(Boolean).join(' ');
   return text ? `${text}.` : '';
 }
 
 function commaSentence(parts) {
-  const text = compact(parts).reduce((result, part) => {
+  const text = compact(parts).map(cleanFragment).filter(Boolean).reduce((result, part) => {
     if (!result) return part;
     return `${result}${result.endsWith(':') ? ' ' : ', '}${part}`;
   }, '');
@@ -59,8 +63,7 @@ function generateLiver(data) {
     commaSentence([
       `Контури ${abdomenOptionLabel('contours', liver.contours)}`,
       `ехогенність ${abdomenOptionLabel('echogenicity', liver.echogenicity)}`,
-      `структура ${abdomenOptionLabel('structure', liver.structure)}`,
-      changes ? `(${changes})` : '',
+      `структура ${abdomenOptionLabel('structure', liver.structure)}${changes ? ` (${cleanFragment(changes)})` : ''}`,
     ]),
     commaSentence([
       `Судинний малюнок ${abdomenOptionLabel('liverVascularPattern', liver.vascularPattern)}`,
@@ -71,7 +74,7 @@ function generateLiver(data) {
     commaSentence([
       liver.portalVein ? `Портальна вена ${formatMm(liver.portalVein)}` : '',
       liver.portalVein ? (isPortalVeinDilated(liver.portalVein) ? 'розширена' : 'не розширена') : '',
-      `Печінкові вени ${liver.hepaticVeins === 'dilated' ? 'розширені' : 'не розширені'}`,
+      `печінкові вени ${liver.hepaticVeins === 'dilated' ? 'розширені' : 'не розширені'}`,
       `внутрішньопечінкові жовчні протоки ${liver.bileDucts === 'dilated' ? 'розширені' : 'не розширені'}`,
     ]),
   ].filter(Boolean).join('\n');
@@ -79,8 +82,7 @@ function generateLiver(data) {
 
 function generateStoneText(stone, index) {
   return commaSentence([
-    `${index + 1}. Конкремент`,
-    stone.size ? `розміром ${formatMm(stone.size)}` : '',
+    `${index + 1}. Конкремент${stone.size ? ` розміром ${formatMm(stone.size)}` : ''}`,
     stone.shadow === 'yes' ? 'з акустичною тінню' : 'без чіткої акустичної тіні',
     stone.mobile === 'yes' ? 'рухомий' : 'нерухомий',
   ]);
@@ -88,16 +90,16 @@ function generateStoneText(stone, index) {
 
 function generatePolypText(polyp, index) {
   const assessment = assessGallbladderPolypSru(polyp);
-  return commaSentence([
-    `${index + 1}. Пристінкове утворення / поліп`,
-    polyp.size ? `розміром ${formatMm(polyp.size)}` : '',
-    polyp.localization ? `локалізація: ${polyp.localization}` : '',
-    `морфологія: ${abdomenOptionLabel('gallbladderPolypMorphology', polyp.morphology)}`,
+  const details = compact([
+    polyp.localization ? `локалізація — ${cleanFragment(polyp.localization)}` : '',
+    `морфологія — ${abdomenOptionLabel('gallbladderPolypMorphology', polyp.morphology)}`,
     polyp.adjacentWallThickness ? `прилегла стінка ${formatMm(polyp.adjacentWallThickness)}` : '',
-    `кровотік: ${abdomenOptionLabel('gallbladderPolypVascularity', polyp.vascularity)}`,
+    abdomenOptionLabel('gallbladderPolypVascularity', polyp.vascularity),
     polyp.previousSize ? `попередній розмір ${formatMm(polyp.previousSize)}${polyp.previousDate ? ` від ${polyp.previousDate}` : ''}` : '',
     `категорія ${assessment.riskLabel} за SRU 2022`,
-  ]);
+  ]).map(cleanFragment).filter(Boolean).join('; ');
+
+  return `${index + 1}. Пристінкове утворення / поліп${polyp.size ? ` розміром ${formatMm(polyp.size)}` : ''}${details ? `; ${details}` : ''}.`;
 }
 
 function generateGallbladder(data) {
@@ -137,9 +139,8 @@ function generateCommonBileDuct(data) {
 
 function generateLesionText(item, index) {
   return commaSentence([
-    `${index + 1}. Утворення`,
-    item.localization ? `локалізація: ${item.localization}` : '',
-    formatDimensions(item.length, item.width) ? `розміром ${formatDimensions(item.length, item.width)}` : '',
+    `${index + 1}. Утворення${formatDimensions(item.length, item.width) ? ` розміром ${formatDimensions(item.length, item.width)}` : ''}`,
+    item.localization ? `локалізація: ${cleanFragment(item.localization)}` : '',
     item.description,
   ]);
 }
@@ -160,8 +161,8 @@ function generatePancreas(data) {
       `контури ${abdomenOptionLabel('contours', pancreas.contours)}`,
       `ехогенність ${abdomenOptionLabel('echogenicity', pancreas.echogenicity)}`,
       `структура ${abdomenOptionLabel('structure', pancreas.structure)}`,
-      pancreas.additionalDescription,
     ]),
+    pancreas.additionalDescription ? sentence([`Додатковий опис: ${pancreas.additionalDescription}`]) : '',
     commaSentence([
       pancreas.wirsung ? `Вірсунгова протока ${formatMm(pancreas.wirsung)}` : '',
       pancreas.wirsung ? (isPancreaticDuctDilated(pancreas.wirsung) ? 'розширена' : 'не розширена') : '',
@@ -198,7 +199,7 @@ function generateOther(data) {
     sentence([
       'Лімфатичні вузли:',
       data.lymphNodes.status === 'yes'
-        ? `збільшені${data.lymphNodes.size ? `, розміри ${data.lymphNodes.size}` : ''}${data.lymphNodes.localization ? `, локалізація: ${data.lymphNodes.localization}` : ''}`
+        ? `збільшені${data.lymphNodes.size ? `, розміри ${cleanFragment(data.lymphNodes.size)}` : ''}${data.lymphNodes.localization ? `, локалізація: ${cleanFragment(data.lymphNodes.localization)}` : ''}`
         : 'не збільшені',
     ]),
     data.hollowOrgans.text ? commaSentence(['Порожнисті органи:', data.hollowOrgans.text]) : '',
