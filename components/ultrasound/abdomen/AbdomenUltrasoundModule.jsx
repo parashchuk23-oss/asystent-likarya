@@ -13,6 +13,8 @@ import PancreasForm from './PancreasForm';
 import SpleenForm from './SpleenForm';
 import UltrasoundComplaintsField from '../UltrasoundComplaintsField';
 import { addComplaintsToOverview } from '../../../utils/ultrasound/reportComplaints';
+import AbdomenPolypCalculator, { initialAbdomenPolypData } from './AbdomenPolypCalculator';
+import AbdomenUltrasoundGuide from './AbdomenUltrasoundGuide';
 
 const initialData = {
   complaints: '',
@@ -99,7 +101,55 @@ function buildReport(data) {
   };
 }
 
+const abdomenTools = [
+  {
+    id: 'protocol',
+    eyebrow: 'Основний інструмент',
+    title: 'Повний протокол УЗД ОЧП',
+    description: 'Структурований огляд печінки, жовчного міхура, холедоха, підшлункової залози, селезінки та додаткових знахідок.',
+    action: 'Відкрити протокол',
+  },
+  {
+    id: 'polyps',
+    eyebrow: 'Оцінювання знахідки',
+    title: 'Поліпи жовчного міхура',
+    description: 'Окремий інструмент для оцінки морфології, розміру, росту та рекомендованої тактики за SRU 2022.',
+    action: 'Відкрити калькулятор',
+  },
+  {
+    id: 'guide',
+    eyebrow: 'Практичний довідник',
+    title: 'Рекомендації та УЗ-атлас',
+    description: 'Коротка пам’ятка з техніки, обов’язкових елементів протоколу, типових помилок і реальних УЗ-прикладів.',
+    action: 'Відкрити довідник',
+  },
+];
+
+function AbdomenToolsHome({ onOpenTool }) {
+  return (
+    <section>
+      <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 sm:p-5">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-700">Інструменти УЗД ОЧП</p>
+        <h3 className="mt-2 text-xl font-bold text-slate-950">Оберіть потрібний формат роботи</h3>
+        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">Відкрийте повний протокол, окремо оцініть поліп жовчного міхура або скористайтеся практичною пам’яткою.</p>
+      </div>
+      <div className="mt-4 grid gap-3 md:grid-cols-3">
+        {abdomenTools.map((tool) => (
+          <button key={tool.id} type="button" onClick={() => onOpenTool(tool.id)} className="rounded-lg border border-teal-300 bg-white p-5 text-left shadow-sm transition hover:border-teal-400 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-teal-700">{tool.eyebrow}</p>
+            <h4 className="mt-3 text-lg font-bold text-slate-950">{tool.title}</h4>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">{tool.description}</p>
+            <span className="mt-5 inline-flex text-sm font-bold text-teal-700">{tool.action} →</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default function AbdomenUltrasoundModule() {
+  const [activeTool, setActiveTool] = useState('home');
+  const [polypData, setPolypData] = useState(initialAbdomenPolypData);
   const [data, setData] = useState(initialData);
   const [openSection, setOpenSection] = useState('liver');
   const [autoUpdate, setAutoUpdate] = useState(true);
@@ -124,8 +174,24 @@ export default function AbdomenUltrasoundModule() {
     setAutoUpdate(true);
   };
 
+  if (activeTool === 'home') {
+    return <AbdomenToolsHome onOpenTool={setActiveTool} />;
+  }
+
+  if (activeTool === 'polyps') {
+    return <AbdomenPolypCalculator data={polypData} onChange={setPolypData} onBack={() => setActiveTool('home')} />;
+  }
+
+  if (activeTool === 'guide') {
+    return <AbdomenUltrasoundGuide onBack={() => setActiveTool('home')} onOpenTool={setActiveTool} />;
+  }
+
   return (
-    <div className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(420px,0.9fr)]">
+    <div className="space-y-4">
+      <button type="button" onClick={() => setActiveTool('home')} className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-teal-300 hover:text-teal-700">
+        ← До інструментів УЗД ОЧП
+      </button>
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(420px,0.9fr)]">
       <div className="space-y-4">
         <UltrasoundComplaintsField value={data.complaints} onChange={(value) => updateData('complaints', value)} />
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
@@ -200,6 +266,7 @@ export default function AbdomenUltrasoundModule() {
         onRegenerate={regenerate}
         onClear={clear}
       />
+      </div>
     </div>
   );
 }
