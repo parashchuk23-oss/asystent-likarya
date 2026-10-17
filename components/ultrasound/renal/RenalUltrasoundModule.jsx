@@ -50,10 +50,6 @@ const initialData = {
     status: 'notDilated',
     details: '',
   },
-  renalArteries: {
-    stenosis: 'no',
-    details: '',
-  },
   bladder: {
     volume: '250',
     wallStatus: 'notThickened',
@@ -62,7 +58,7 @@ const initialData = {
     contentDetails: '',
     pathologyStatus: 'absent',
     pathologyDetails: '',
-    uretericOrifices: 'notDilated',
+    uretericJets: 'notAssessed',
     residualVolume: '0',
   },
 };
@@ -170,17 +166,15 @@ export default function RenalUltrasoundModule() {
 
         <AccordionSection
           id="renal-urinary-tract"
-          title="5. Сечоводи, ниркові артерії, сечовий міхур"
-          subtitle="Сечоводи, дані за стеноз, об’єм міхура, стінка, вміст, залишкова сеча"
+          title="5. Сечоводи та сечовий міхур"
+          subtitle="Сечоводи, об’єм міхура, стінка, вміст, сечовідні викиди, залишкова сеча"
           isOpen={openSection === 'urinaryTract'}
           onToggle={() => toggleSection('urinaryTract')}
         >
           <RenalUrinaryTractForm
             ureters={data.ureters}
-            arteries={data.renalArteries}
             bladder={data.bladder}
             onUretersChange={(value) => updateData('ureters', value)}
-            onArteriesChange={(value) => updateData('renalArteries', value)}
             onBladderChange={(value) => updateData('bladder', value)}
           />
         </AccordionSection>

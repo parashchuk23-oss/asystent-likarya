@@ -1,9 +1,8 @@
 import { renalSelectOptions } from '../../../data/ultrasound/renalOptions';
 import { RenalNumberField, RenalSelectField, RenalTextareaField } from './RenalFormControls';
 
-export default function RenalUrinaryTractForm({ ureters, arteries, bladder, onUretersChange, onArteriesChange, onBladderChange }) {
+export default function RenalUrinaryTractForm({ ureters, bladder, onUretersChange, onBladderChange }) {
   const updateUreters = (field, value) => onUretersChange({ ...ureters, [field]: value });
-  const updateArteries = (field, value) => onArteriesChange({ ...arteries, [field]: value });
   const updateBladder = (field, value) => onBladderChange({ ...bladder, [field]: value });
 
   return (
@@ -19,16 +18,6 @@ export default function RenalUrinaryTractForm({ ureters, arteries, bladder, onUr
       </section>
 
       <section className="rounded-lg border border-slate-200 bg-white p-4">
-        <h4 className="text-base font-bold text-slate-950">Ниркові артерії</h4>
-        <div className="mt-3">
-          <RenalSelectField label="Дані за стеноз" value={arteries.stenosis} onChange={(value) => updateArteries('stenosis', value)} options={renalSelectOptions.arteryStenosis} />
-          {arteries.stenosis === 'yes' ? (
-            <RenalTextareaField label="Опис" value={arteries.details} onChange={(value) => updateArteries('details', value)} placeholder="сторона, локалізація, додаткові ознаки" />
-          ) : null}
-        </div>
-      </section>
-
-      <section className="rounded-lg border border-slate-200 bg-white p-4">
         <h4 className="text-base font-bold text-slate-950">Сечовий міхур</h4>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           <RenalNumberField label="Об'єм" unit="мл" value={bladder.volume} onChange={(value) => updateBladder('volume', value)} />
@@ -39,7 +28,7 @@ export default function RenalUrinaryTractForm({ ureters, arteries, bladder, onUr
           <RenalSelectField label="Стінки" value={bladder.wallStatus} onChange={(value) => updateBladder('wallStatus', value)} options={renalSelectOptions.bladderWall} />
           <RenalSelectField label="Вміст" value={bladder.content} onChange={(value) => updateBladder('content', value)} options={renalSelectOptions.bladderContent} />
           <RenalSelectField label="Патологічні утворення / конкременти" value={bladder.pathologyStatus} onChange={(value) => updateBladder('pathologyStatus', value)} options={renalSelectOptions.findingStatus} />
-          <RenalSelectField label="Вічка сечоводів" value={bladder.uretericOrifices} onChange={(value) => updateBladder('uretericOrifices', value)} options={renalSelectOptions.uretericOrifices} />
+          <RenalSelectField label="Сечовідні викиди" value={bladder.uretericJets} onChange={(value) => updateBladder('uretericJets', value)} options={renalSelectOptions.uretericJets} />
         </div>
         {bladder.content === 'heterogeneous' ? (
           <RenalTextareaField label="Причина неоднорідності вмісту" value={bladder.contentDetails} onChange={(value) => updateBladder('contentDetails', value)} placeholder="суспензія, згустки, осад" />

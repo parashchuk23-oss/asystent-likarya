@@ -44,10 +44,6 @@ export const renalSelectOptions = {
     { value: 'notDilated', label: 'не розширені, просвіти вільні' },
     { value: 'dilated', label: 'розширені' },
   ],
-  arteryStenosis: [
-    { value: 'no', label: 'даних за стеноз ниркових артерій немає' },
-    { value: 'yes', label: 'є дані за стеноз ниркових артерій' },
-  ],
   bladderWall: [
     { value: 'notThickened', label: 'не потовщені' },
     { value: 'thickened', label: 'потовщені' },
@@ -56,9 +52,11 @@ export const renalSelectOptions = {
     { value: 'anechoic', label: 'однорідний анехогенний' },
     { value: 'heterogeneous', label: 'неоднорідний' },
   ],
-  uretericOrifices: [
-    { value: 'notDilated', label: 'не розширені' },
-    { value: 'dilated', label: 'розширені' },
+  uretericJets: [
+    { value: 'notAssessed', label: 'не оцінювалися' },
+    { value: 'bilateral', label: 'візуалізуються з обох боків' },
+    { value: 'asymmetric', label: 'асиметричні' },
+    { value: 'unilateralAbsent', label: 'з одного боку не візуалізуються' },
   ],
   yesNo: [
     { value: 'no', label: 'ні' },

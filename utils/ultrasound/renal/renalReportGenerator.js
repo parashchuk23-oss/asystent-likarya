@@ -4,13 +4,17 @@ function compact(items) {
   return items.filter(Boolean);
 }
 
+function cleanFragment(value) {
+  return String(value || '').trim().replace(/[.,;]+$/u, '');
+}
+
 function sentence(parts) {
-  const text = compact(parts).join(' ');
+  const text = compact(parts).map(cleanFragment).filter(Boolean).join(' ');
   return text ? `${text}.` : '';
 }
 
 function commaSentence(parts) {
-  const text = compact(parts).reduce((result, part) => {
+  const text = compact(parts).map(cleanFragment).filter(Boolean).reduce((result, part) => {
     if (!result) return part;
     return `${result}${result.endsWith(':') ? ' ' : ', '}${part}`;
   }, '');
@@ -18,21 +22,16 @@ function commaSentence(parts) {
 }
 
 function formatMm(value) {
-  return value ? `${value} мм` : '';
+  return value ? `${String(value).replace('.', ',')} мм` : '';
 }
 
 function formatMl(value) {
-  return value ? `${value} мл` : '';
+  return value !== '' && value !== null && value !== undefined ? `${String(value).replace('.', ',')} мл` : '';
 }
 
-function kidneySizeStatus(kidney) {
-  const length = Number(kidney.length);
-  const width = Number(kidney.width);
-
-  if (!length || !width) return 'розміри не оцінені';
-  if (length > 120 || width > 60) return 'збільшена';
-  if (length < 90 || width < 40) return 'зменшена';
-  return 'не збільшена';
+function formatDimensions(length, width) {
+  if (!length || !width) return '';
+  return `${String(length).replace('.', ',')} × ${String(width).replace('.', ',')} мм`;
 }
 
 function generateKidney(name, kidney) {
@@ -42,10 +41,9 @@ function generateKidney(name, kidney) {
 
   return [
     commaSentence([
-      `${name} нирка`,
+      `${name} нирка:`,
       position,
-      kidney.length && kidney.width ? `розміри ${kidney.length} x ${kidney.width} мм` : '',
-      kidneySizeStatus(kidney),
+      formatDimensions(kidney.length, kidney.width) ? `розміри ${formatDimensions(kidney.length, kidney.width)}` : '',
     ]),
     commaSentence([
       `Контури ${renalOptionLabel('contours', kidney.contours)}`,
@@ -60,11 +58,11 @@ function generateKidney(name, kidney) {
       `судинний малюнок ${renalOptionLabel('vascularPattern', kidney.vascularPattern)}`,
     ]),
     commaSentence([
-      `Чашечки, лоханка ${renalOptionLabel('collectingSystem', kidney.collectingSystem)}`,
+      `Чашково-мискова система ${renalOptionLabel('collectingSystem', kidney.collectingSystem)}`,
       kidney.collectingSystem === 'dilated' && kidney.collectingSystemDetails ? kidney.collectingSystemDetails : '',
     ]),
     commaSentence([
-      `Додаткові утворення ${renalOptionLabel('findingStatus', kidney.lesionsStatus)}`,
+      `Вогнищеві утворення ${renalOptionLabel('findingStatus', kidney.lesionsStatus)}`,
       kidney.lesionsStatus === 'present' ? kidney.lesionsDetails : '',
     ]),
     commaSentence([
@@ -72,14 +70,14 @@ function generateKidney(name, kidney) {
       kidney.stonesStatus === 'present' ? kidney.stonesDetails : '',
     ]),
     kidney.microInclusions === 'yes'
-      ? 'На фоні ЧМС визначаються поодинокі гіперехогенні включення до 2 мм без ехо-тіні.'
+      ? 'На фоні ЧМС визначаються поодинокі гіперехогенні включення до 2 мм без акустичної тіні.'
       : '',
   ].filter(Boolean).join('\n');
 }
 
 function generateAdrenal(name, adrenal) {
   return commaSentence([
-    `${name} наднирник`,
+    `${name} наднирник:`,
     renalOptionLabel('adrenalStatus', adrenal.status),
     adrenal.status === 'changed' ? adrenal.details : '',
   ]);
@@ -87,16 +85,9 @@ function generateAdrenal(name, adrenal) {
 
 function generateUreters(ureters) {
   return commaSentence([
-    'Сечоводи',
+    'Сечоводи:',
     renalOptionLabel('uretersStatus', ureters.status),
     ureters.status === 'dilated' ? ureters.details : '',
-  ]);
-}
-
-function generateRenalArteries(arteries) {
-  return commaSentence([
-    renalOptionLabel('arteryStenosis', arteries.stenosis),
-    arteries.stenosis === 'yes' ? arteries.details : '',
   ]);
 }
 
@@ -104,7 +95,7 @@ function generateBladder(bladder) {
   return [
     commaSentence([
       'Сечовий міхур:',
-      bladder.volume ? `об'єм ${formatMl(bladder.volume)}` : '',
+      bladder.volume ? `об’єм ${formatMl(bladder.volume)}` : '',
       `стінки ${renalOptionLabel('bladderWall', bladder.wallStatus)}`,
       bladder.wallThickness ? `до ${formatMm(bladder.wallThickness)}` : '',
     ]),
@@ -117,8 +108,8 @@ function generateBladder(bladder) {
       bladder.pathologyStatus === 'present' ? bladder.pathologyDetails : '',
     ]),
     commaSentence([
-      `Вічка сечоводів ${renalOptionLabel('uretericOrifices', bladder.uretericOrifices)}`,
-      bladder.residualVolume ? `об'єм залишкової сечі ${formatMl(bladder.residualVolume)}` : '',
+      `Сечовідні викиди ${renalOptionLabel('uretericJets', bladder.uretericJets)}`,
+      bladder.residualVolume !== '' ? `об’єм залишкової сечі ${formatMl(bladder.residualVolume)}` : '',
     ]),
   ].filter(Boolean).join('\n');
 }
@@ -130,7 +121,6 @@ export function generateRenalOverview(data) {
     generateKidney('Ліва', data.leftKidney),
     generateAdrenal('Лівий', data.leftAdrenal),
     generateUreters(data.ureters),
-    generateRenalArteries(data.renalArteries),
     generateBladder(data.bladder),
   ].filter(Boolean).join('\n\n');
 }
@@ -143,21 +133,17 @@ export function generateRenalConclusion(data) {
   ];
 
   kidneys.forEach(({ side, data: kidney }) => {
-    if (kidneySizeStatus(kidney) === 'збільшена') lines.push(`УЗ-ознаки збільшення ${side}.`);
-    if (kidneySizeStatus(kidney) === 'зменшена') lines.push(`УЗ-ознаки зменшення ${side}.`);
     if (kidney.collectingSystem === 'dilated') lines.push(`УЗ-ознаки розширення чашково-мискової системи ${side}.`);
-    if (kidney.stonesStatus === 'present') lines.push(`УЗ-ознаки конкременту / конкрементів ${side}.`);
-    if (kidney.lesionsStatus === 'present') lines.push(`УЗ-ознаки додаткового утворення ${side}.`);
-    if (kidney.microInclusions === 'yes') lines.push(`Поодинокі гіперехогенні включення ЧМС ${side} без чіткої ехо-тіні.`);
+    if (kidney.stonesStatus === 'present') lines.push(`УЗ-ознаки конкрементів ${side}.`);
+    if (kidney.lesionsStatus === 'present') lines.push(`Вогнищеве утворення ${side}; потребує характеристики з урахуванням ультразвукових ознак.`);
     if (kidney.corticomedullary !== 'preserved') lines.push(`УЗ-ознаки порушення корково-мозкової диференціації ${side}.`);
   });
 
   if (data.ureters.status === 'dilated') lines.push('УЗ-ознаки розширення сечоводів.');
-  if (data.renalArteries.stenosis === 'yes') lines.push('УЗ-ознаки можливого стенозу ниркових артерій; потребує профільного уточнення.');
   if (data.bladder.wallStatus === 'thickened') lines.push('УЗ-ознаки потовщення стінок сечового міхура.');
   if (data.bladder.content === 'heterogeneous') lines.push('Неоднорідний вміст сечового міхура.');
   if (data.bladder.pathologyStatus === 'present') lines.push('УЗ-ознаки патологічного утворення / конкременту сечового міхура.');
-  if (Number(data.bladder.residualVolume) > 50) lines.push('Збільшений об’єм залишкової сечі.');
+  if (Number(data.bladder.residualVolume) > 0) lines.push(`Після сечовипускання визначається залишкова сеча об’ємом ${formatMl(data.bladder.residualVolume)}.`);
 
   return lines.length ? lines.join('\n') : 'УЗ-ознак структурних змін нирок та сечового міхура не виявлено.';
 }
@@ -172,15 +158,11 @@ export function generateRenalRecommendations(data) {
     data.rightKidney.stonesStatus === 'present' ||
     data.leftKidney.stonesStatus === 'present'
   ) {
-    recommendations.push('ЗАС, креатинін, ШКФ; консультація уролога.');
+    recommendations.push('Загальний аналіз сечі, креатинін, розрахунок ШКФ; консультація уролога за клінічними показаннями.');
   }
 
   if (data.rightKidney.lesionsStatus === 'present' || data.leftKidney.lesionsStatus === 'present') {
-    recommendations.push('КТ або МРТ нирок для уточнення характеру виявленого утворення.');
-  }
-
-  if (data.renalArteries.stenosis === 'yes') {
-    recommendations.push('Доплерографія ниркових артерій або інше судинне дообстеження.');
+    recommendations.push('Подальшу візуалізацію визначити за ультразвуковими характеристиками утворення та клінічним контекстом.');
   }
 
   if (Number(data.bladder.residualVolume) > 50 || data.bladder.wallStatus === 'thickened') {

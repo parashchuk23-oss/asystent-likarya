@@ -18,11 +18,11 @@ export default function RenalKidneyForm({ title, data, onChange }) {
 
       <div className="rounded-lg border border-slate-200 bg-white p-4">
         <h4 className="text-sm font-bold text-slate-950">Розміри</h4>
-        <p className="mt-1 text-xs font-medium text-slate-500">Орієнтир норми: 90-120 x 40-60 мм. У протокол ця підказка не додається.</p>
+        <p className="mt-1 text-xs font-medium text-slate-500">Орієнтир для дорослих: 90–120 × 40–60 мм. Розміри залежать від віку, зросту та методики вимірювання; автоматичний висновок не формується.</p>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
-          <RenalNumberField label="Довжина" value={data.length} onChange={(value) => update('length', value)} norm="90-120 мм" />
-          <RenalNumberField label="Ширина" value={data.width} onChange={(value) => update('width', value)} norm="40-60 мм" />
-          <RenalNumberField label="Паренхіма" value={data.parenchyma} onChange={(value) => update('parenchyma', value)} norm="орієнтовно 14-20 мм" />
+          <RenalNumberField label="Довжина" value={data.length} onChange={(value) => update('length', value)} norm="90–120 мм" />
+          <RenalNumberField label="Ширина" value={data.width} onChange={(value) => update('width', value)} norm="40–60 мм" />
+          <RenalNumberField label="Паренхіма" value={data.parenchyma} onChange={(value) => update('parenchyma', value)} norm="орієнтовно 14–20 мм" />
         </div>
       </div>
 
@@ -32,7 +32,7 @@ export default function RenalKidneyForm({ title, data, onChange }) {
         <RenalSelectField label="Корково-мозкова диференціація" value={data.corticomedullary} onChange={(value) => update('corticomedullary', value)} options={renalSelectOptions.corticomedullary} />
         <RenalSelectField label="Нирковий синус" value={data.sinusEchogenicity} onChange={(value) => update('sinusEchogenicity', value)} options={renalSelectOptions.sinusEchogenicity} />
         <RenalSelectField label="Судинний малюнок" value={data.vascularPattern} onChange={(value) => update('vascularPattern', value)} options={renalSelectOptions.vascularPattern} />
-        <RenalSelectField label="Чашечки, лоханка" value={data.collectingSystem} onChange={(value) => update('collectingSystem', value)} options={renalSelectOptions.collectingSystem} />
+        <RenalSelectField label="Чашково-мискова система" value={data.collectingSystem} onChange={(value) => update('collectingSystem', value)} options={renalSelectOptions.collectingSystem} />
       </div>
 
       {data.collectingSystem === 'dilated' ? (
@@ -49,11 +49,11 @@ export default function RenalKidneyForm({ title, data, onChange }) {
       ) : null}
 
       {data.stonesStatus === 'present' ? (
-        <RenalTextareaField label="Опис конкрементів" value={data.stonesDetails} onChange={(value) => update('stonesDetails', value)} placeholder="локалізація, розміри, ехо-тінь" />
+        <RenalTextareaField label="Опис конкрементів" value={data.stonesDetails} onChange={(value) => update('stonesDetails', value)} placeholder="локалізація, розміри, акустична тінь" />
       ) : null}
 
       <RenalSelectField
-        label="Поодинокі гіперехогенні включення до 2 мм без ехо-тіні на фоні ЧМС"
+        label="Поодинокі гіперехогенні включення до 2 мм без акустичної тіні на фоні ЧМС"
         value={data.microInclusions}
         onChange={(value) => update('microInclusions', value)}
         options={renalSelectOptions.yesNo}
