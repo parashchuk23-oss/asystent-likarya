@@ -6,6 +6,7 @@ import RenalAdrenalForm from './RenalAdrenalForm';
 import RenalKidneyForm from './RenalKidneyForm';
 import RenalReportPreview from './RenalReportPreview';
 import RenalUrinaryTractForm from './RenalUrinaryTractForm';
+import RenalUltrasoundAtlas from './RenalUltrasoundAtlas';
 import {
   generateRenalConclusion,
   generateRenalOverview,
@@ -102,8 +103,9 @@ export default function RenalUltrasoundModule() {
   };
 
   return (
-    <div className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(420px,0.9fr)]">
-      <div className="space-y-4">
+    <div className="space-y-5">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(420px,0.9fr)]">
+        <div className="space-y-4">
         <UltrasoundComplaintsField value={data.complaints} onChange={(value) => updateData('complaints', value)} />
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -182,29 +184,32 @@ export default function RenalUltrasoundModule() {
         <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-slate-700">
           Модуль формує чернетку протоколу УЗД. Остаточний опис, висновок і рекомендації перевіряє та редагує лікар УЗД.
         </div>
+        </div>
+
+        <RenalReportPreview
+          overview={report.overview}
+          conclusion={report.conclusion}
+          recommendations={report.recommendations}
+          onOverviewChange={(value) => {
+            setAutoUpdate(false);
+            setReport((current) => ({ ...current, overview: value }));
+          }}
+          onConclusionChange={(value) => {
+            setAutoUpdate(false);
+            setReport((current) => ({ ...current, conclusion: value }));
+          }}
+          onRecommendationsChange={(value) => {
+            setAutoUpdate(false);
+            setReport((current) => ({ ...current, recommendations: value }));
+          }}
+          autoUpdate={autoUpdate}
+          onAutoUpdateChange={setAutoUpdate}
+          onRegenerate={regenerate}
+          onClear={clear}
+        />
       </div>
 
-      <RenalReportPreview
-        overview={report.overview}
-        conclusion={report.conclusion}
-        recommendations={report.recommendations}
-        onOverviewChange={(value) => {
-          setAutoUpdate(false);
-          setReport((current) => ({ ...current, overview: value }));
-        }}
-        onConclusionChange={(value) => {
-          setAutoUpdate(false);
-          setReport((current) => ({ ...current, conclusion: value }));
-        }}
-        onRecommendationsChange={(value) => {
-          setAutoUpdate(false);
-          setReport((current) => ({ ...current, recommendations: value }));
-        }}
-        autoUpdate={autoUpdate}
-        onAutoUpdateChange={setAutoUpdate}
-        onRegenerate={regenerate}
-        onClear={clear}
-      />
+      <RenalUltrasoundAtlas />
     </div>
   );
 }
